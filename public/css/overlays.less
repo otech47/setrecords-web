@@ -1,0 +1,27 @@
+@import "colors.less";
+@import "mixins.less";
+@import "variables.less";
+
+.placeholder {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	opacity:1;
+	.transition(0.2s, ease-out, all);
+	color:@setmine-white;
+}
+
+.removed-my-set-container {
+	.flexContainer(column, vertical);
+	padding:17.5px 5px 0;
+	> .text-container {
+		background-color: fade(@setmine-black, 30%);
+		.flex();
+		font-size:@defaultFontSize*.7;
+		> .fa-star-o {
+			padding:5px 0;
+		}
+	}
+}
