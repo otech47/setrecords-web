@@ -1,4 +1,0 @@
-# run npm install to get dependencies
-node_modules/
-public/js/build/index.js
-npm-debug.log
