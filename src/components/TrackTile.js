@@ -1,4 +1,4 @@
-import React from 'React';
+import React from 'react';
 import constants from '../constants/constants';
 
 var TrackTile = React.createClass({

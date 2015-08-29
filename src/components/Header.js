@@ -1,7 +1,6 @@
-import React from 'react'
+import React from 'react';
 import {Navigation, Link} from 'react-router';
-import SearchBar from './SearchBar';
-import LoginButton from './LoginButton';
+import LoginButton from'./LoginButton';
 
 var Header = React.createClass({
 	mixins: [Navigation],
@@ -11,33 +10,32 @@ var Header = React.createClass({
 	_attachStream: function() {
 		var _this = this;
 	},
+	showArtistOptions: function (loggedIn) {
+		if (loggedIn) {
+			return (
+				<div className="flex-row artist">
+					<div className="flex-column artist-options center">
+						<span className="artist-name">DJ Quinn Harley</span>
+						<span>Logout</span>
+					</div>
+					<img className="artist-image" src="/public/images/userImage.jpg" />
+				</div>
+			);
+		}
+		else {
+			return "";
+		}
+	},
 	render: function() {
+		var appState = this.props.appState;
 		return (
-			<header className="flex-row flex-zero">
-          	<Link className='nav-button fa icon-setmine fa-2x click center' to='landing'/>
-	          <Link className='nav-button click center flex set-flex' to='user'>
-	          	<div className='center'>Home</div>
-	          </Link>
-	          <Link className='nav-button click flex set-flex' to='featured'>
-	          	<div className='center'>DON'T FUCKING CLICK THIS</div>
-	          </Link>
-	          <Link className='nav-button click flex set-flex' to='artists'>
-	          	<div className='center'>Artists</div>
-	          </Link>
-	          <Link className='nav-button click flex set-flex' to='festivals'>
-	          	<div className='center'>Festivals</div>
-	          </Link>
-	          <Link className='nav-button click flex set-flex' to='mixes'>
-	          	<div className='center'>Mixes</div>
-	          </Link>
-	          <Link className='nav-button click flex set-flex' to='activities'>
-	          	<div className='center'>Activities</div>
-	          </Link>
-	          <Link className='search-bar flex-row flex-3x' to='search'>
-		          <SearchBar searchInput={this.props.searchInput}/>
-		       </Link>   
-	          <LoginButton />
-	      </header>
+			<header className="flex-row">
+				<div className="flex-row logo">
+					<img className="logo-icon center" src="/public/images/setrecords.png" />
+					<span className="center logo-text">setrecords</span>
+				</div>
+				{this.showArtistOptions(appState.get('loggedIn'))}
+			</header>
 		);
 	}
 });

@@ -196,8 +196,9 @@ footer {
     font-size: 1rem;
 }
 header {
-    background-color: @set-purple;
-    color: #fff*.75;
+    background-color: @setrecords-light-black;
+    color: @setrecords-white;
+    font-size: @defaultFontStyle;
     height: @headerHeight;
     // padding: 0 2vw;
     font-family:  @defaultFontStyle;
@@ -212,6 +213,35 @@ header {
     }
     .active {
         color: white;
+    }
+
+    .artist {
+        margin: auto 3rem auto auto;
+    }
+    .artist-name{
+        font-size: @defaultFontSize * 1.5;
+    }
+    .artist-options {
+        text-align: right;
+    }
+    .artist-image {
+        height: @headerHeight * .66;
+        border-radius: 50%;
+        margin: auto 0 auto 1rem;
+        border: 4px solid @setrecords-blue;
+    }
+
+    .logo {
+        margin: auto auto auto 3rem;
+    }
+    .logo-icon {
+        padding: 0 1rem 0 0;
+        height: @headerHeight * .66;
+    }
+    .logo-text {
+        font-size: @defaultFontSize * 3;
+        font-family: @demiFontStyle;
+        color: @setrecords-white;
     }
 }
 #home {
@@ -404,9 +434,9 @@ input#search {
     cursor: pointer;
 }
 .search-results {
-	min-height:80vh;
-	position: relative;
-	top: 10vh;
+    min-height:80vh;
+    position: relative;
+    top: 10vh;
 }
 .set-tile {
     color:white;
@@ -458,104 +488,104 @@ input#search {
     }
 }
 .slide-2 {
-	.text-container {
-		.background(@set-blue, white);
-	}
+    .text-container {
+        .background(@set-blue, white);
+    }
 }
 .slide-3 {
-	.text-container {
-	.background(@set-salmon, white);
-	}
-	.image-container {
-	background-color:#ebebeb;
-	}
-	.divider {
-	.createDivider(60%, 2px, @set-white);
-	}
+    .text-container {
+    .background(@set-salmon, white);
+    }
+    .image-container {
+    background-color:#ebebeb;
+    }
+    .divider {
+    .createDivider(60%, 2px, @set-white);
+    }
 }
 .text-container {
-	padding: 0 4vw;
+    padding: 0 4vw;
 }
 .tile-button {
-	&:hover {
-	background-color: rgba(255,255,255,0.2);
-		.transition(0.3s);
-	}
+    &:hover {
+    background-color: rgba(255,255,255,0.2);
+        .transition(0.3s);
+    }
 }
 .track-tile {
-	background-size: cover;
-	color:white;
-	cursor: pointer;
-	max-width: 220px;
-	margin: 2vw 1vw;
-	.flex-column {
-		padding:1vmin;
-	}
-	.tile-controls {
-		.gradient(@set-darker-gray, @set-darker-gray*0.5);
-	    text-align: center;
-		}
-	.overlay {
-		.createOverlay(30%);
-	}
-	.fa-play {
-		margin: 1vw auto;
-		visibility: hidden;
-	}
-	&:hover {
-		.fa-play {
-			visibility: visible;
-			.animation(0.3s);
-		}
-	}
+    background-size: cover;
+    color:white;
+    cursor: pointer;
+    max-width: 220px;
+    margin: 2vw 1vw;
+    .flex-column {
+        padding:1vmin;
+    }
+    .tile-controls {
+        .gradient(@set-darker-gray, @set-darker-gray*0.5);
+        text-align: center;
+        }
+    .overlay {
+        .createOverlay(30%);
+    }
+    .fa-play {
+        margin: 1vw auto;
+        visibility: hidden;
+    }
+    &:hover {
+        .fa-play {
+            visibility: visible;
+            .animation(0.3s);
+        }
+    }
 }
 .user-background {
-	background-color: @set-light-gray;
+    background-color: @set-light-gray;
 }
 .user-nav {
-	background-color: fade(@set-black, 50%);
+    background-color: fade(@set-black, 50%);
 }
 .user-image {
-	.size(100px, 100px);
-	border-radius: 50%;
-	border:solid;
+    .size(100px, 100px);
+    border-radius: 50%;
+    border:solid;
 }
 .view {
-	min-height:90vh;//make sure this doesn't fuck up any other pages
-	margin-top: 10vh;
-	&#featured {
-		color:@set-dark-gray;
-		.results-container {
-		    min-height: 40vh;
-		}
-	}
-	&#search-results {
-		color: @set-dark-gray;
-	}
-	&#landing {
-		color:white;
-	}
-	&#browse {
-		color: @set-dark-gray;
-	}
+    min-height:90vh;//make sure this doesn't fuck up any other pages
+    margin-top: 10vh;
+    &#featured {
+        color:@set-dark-gray;
+        .results-container {
+            min-height: 40vh;
+        }
+    }
+    &#search-results {
+        color: @set-dark-gray;
+    }
+    &#landing {
+        color:white;
+    }
+    &#browse {
+        color: @set-dark-gray;
+    }
 }
 .view-title-container {
-	height: @headerHeight;
-	font-size: @defaultFontSize*1.5;
-	position:relative;
-	background-color: white;
-	.divider {
-		.createDivider(33%, 4px, @set-blue);
-		position:absolute;
-		bottom:0;
-		left:33%;
-	}
-	&.search {
-		position: fixed;
-		width: 100%;
-		z-index: 100;
-		.divider {
-			left:0;
-		}
-	}
+    height: @headerHeight;
+    font-size: @defaultFontSize*1.5;
+    position:relative;
+    background-color: white;
+    .divider {
+        .createDivider(33%, 4px, @set-blue);
+        position:absolute;
+        bottom:0;
+        left:33%;
+    }
+    &.search {
+        position: fixed;
+        width: 100%;
+        z-index: 100;
+        .divider {
+            left:0;
+        }
+    }
 }
