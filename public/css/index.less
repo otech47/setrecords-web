@@ -200,9 +200,10 @@ header {
     color: @setrecords-white;
     font-size: @defaultFontStyle;
     height: @headerHeight;
+    position: fixed;
+    display: block;
     // padding: 0 2vw;
     font-family:  @defaultFontStyle;
-    position:fixed;
     width:100%;
     z-index: 100;
     .nav-button:hover {
@@ -552,7 +553,7 @@ input#search {
 }
 .view {
     min-height:90vh;//make sure this doesn't fuck up any other pages
-    margin-top: 10vh;
+    margin-top: 12vh;
     &#featured {
         color:@set-dark-gray;
         .results-container {
