@@ -4,7 +4,6 @@
 /*Username and passowrd*/
 /*password*/
 var React = require('react');
-
 var LoginPage = React.createClass ({
 	getInitialState: function() {
     	return {
@@ -16,11 +15,18 @@ var LoginPage = React.createClass ({
   	},
 	submitLogin:function(){ 
 		var requestURL = "https://setmine.com/api/v/7/artist/" + this.state.username;
+
 		
 		$.ajax({
 				url: requestURL,
 				success: function(res){
 						
+		console.log(requestURL);
+		$.ajax({
+				url: requestURL,
+				success: function(res){
+						console.log(res);
+ 
 						var artistObject = res.payload.artist; 
 						console.log(artistObject.artist);
 				},

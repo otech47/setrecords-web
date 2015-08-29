@@ -11,11 +11,12 @@ var Player = React.createClass({
 	displayName: 'Player',
 
 	componentDidMount: function() {
-		var push = this.props.pushFn;
+		/*var push = this.props.pushFn;
 		playerService.generateSound(0, this.props.appState, push)
 		  .then(function(smObj) {
 		    console.log('AYYLMAO', smObj);
 		  });
+		*/
 	},
 
 	render: function() {
