@@ -95,6 +95,7 @@ var App = React.createClass({
 		return (
 			<div className="main-container flex-column">
 				<Header appState={appState} pushFn={push} />
+				<RouteHandler />
 			</div>
 		);
 	}
@@ -122,14 +123,6 @@ var routes = (
 	</Route>
 );
 
-// <Route name='artist' path='artist/:id' handler={ArtistDetail}>
-// 			<Route name='artistSets' path='sets'/>
-// 			<Route name='artistEvents' path='events'/>
-// 		</Route>
-// 		<Route name='event' path='event/:id' handler={EventDetail}>
-// 		</Route>
-
-//var headMount = document.getElementById('head-mount-point');
 var bodyMount = document.getElementById('body-mount-point');
 
 Router.run(routes, Router.HashLocation, function(Root) {
