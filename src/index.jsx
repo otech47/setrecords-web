@@ -31,7 +31,7 @@ import SetTile from './components/SetTile';
 import EventTile from './components/EventTile';
 import TrackTile from './components/TrackTile';
 
-import LoginPage from '/components/LoginPage';
+import LoginPage from './components/LoginPage';
 
 //subscribe in componentDidMount()
 //unsubscribe in componentWillUnmount()
@@ -94,8 +94,8 @@ var App = React.createClass({
 		//pass in appState and push to every component you want to access event dispatcher
 		return (
 			<div className="main-container flex-column">
-				<Header appState={appState} pushFn={push} />
-				<RouteHandler />
+				<Header appState={appState} />
+				<RouteHandler appState={appState} pushFn={push}/>
 			</div>
 		);
 	}

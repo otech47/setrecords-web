@@ -1,9 +1,14 @@
 import React from 'react';
 import {Navigation, Link} from 'react-router';
-import LoginButton from'./LoginButton';
 
 var Header = React.createClass({
 	mixins: [Navigation],
+	getInitialState: function() {
+		return {
+			artistName: "",
+			artistImage: ""
+		};
+	},
 	componentDidMount: function() {
 		this._attachStream();
 	},
@@ -27,14 +32,14 @@ var Header = React.createClass({
 		}
 	},
 	render: function() {
-		var appState = this.props.appState;
+		var loggedIn = this.props.appState.get('loggedIn');
 		return (
 			<header className="flex-row">
 				<div className="flex-row logo">
 					<img className="logo-icon center" src="/public/images/setrecords.png" />
 					<span className="center logo-text">setrecords</span>
 				</div>
-				{this.showArtistOptions(appState.get('loggedIn'))}
+				{this.showArtistOptions(loggedIn)}
 			</header>
 		);
 	}

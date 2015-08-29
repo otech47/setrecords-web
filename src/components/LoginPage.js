@@ -14,17 +14,21 @@ var LoginPage = React.createClass ({
   		this.setState({username: event.target.value});
   	},
 	submitLogin:function(){ 
+		var push = this.props.pushFn;
 		var requestURL = "https://setmine.com/api/v/7/artist/" + this.state.username;
 		$.ajax({
 			url: requestURL,
-			success: function(res){			
-				console.log(requestURL);
+			success: function(res){
 				$.ajax({
 					url: requestURL,
 					success: function(res){
-						console.log(res);
 						var artistObject = res.payload.artist; 
-						console.log(artistObject.artist);
+						push({
+							type: "SHALLOW_MERGE",
+							data: {
+								artistData: artistObject
+							}
+						});
 					},
 					error: function(err){
 						console.log (err);
@@ -44,7 +48,7 @@ var LoginPage = React.createClass ({
 					</div>
 		    		<div>
 		    			<label htmlFor="password"></label>
-		    			<input type="text" className="password-input" id="password-input" placeholder="Password"/>
+		    			<input type="text" className="password-input" id="password-input" placeholder={"Password"}/>
 		    		</div>
 		    		<button type="submit" className="setrecords-signin" onClick={this.submitLogin}>DOO IT , JUST DOO IT</button>
 					</form>
