@@ -1,0 +1,269 @@
+@import "variables.less";
+@import "colors.less";
+@import "fonts.less";
+
+// complementary color scheme
+@base: #663333;
+@complement1: spin(@base, 180);
+@complement2: darken(spin(@base, 180), 5%);
+@lighten1: lighten(@base, 15%);
+@lighten2: lighten(@base, 30%);
+
+.active(@color, @multiplier: 0.8) {
+    color: @color;
+    &:active {
+        color: @color*@multiplier;
+    }
+}
+.active-bg(@color, @multiplier: 0.8) {
+        background-color: @color;
+    &:active {
+        background-color: @color*@multiplier;
+    }
+}
+.animation(@time: 1s, @delay: 0s,) {
+    animation-duration: @time!important;
+    animation-delay: @delay!important;
+}
+.background(@color, @textColor) {
+    background-color:@color;
+    color:@textColor;
+}
+.blur {
+    background-size: cover;
+    left: -25px;
+    right: -25px;
+    top: -25px;
+    bottom: -25px;
+}
+.border-radius(@radius) {
+  -webkit-border-radius: @radius;
+    -moz-border-radius: @radius;
+    border-radius: @radius;
+}
+.box-shadow (@x, @y, @blur: 0px, @color) {
+    -webkit-box-shadow: @x @y @blur @color;
+    -moz-box-shadow: @x @y @blur @color;
+    box-shadow: @x @y @blur @color;
+}
+.buffer {
+  .flex(1,1,auto)!important;
+}
+.buffer-2x {
+    .flex(2,1,auto)!important;
+}
+.buffer-3x {
+    .flex(3,1,auto)!important;
+}
+.buffer-4x {
+    .flex(4,1,auto)!important;
+}
+.buffer-5x {
+    .flex(5,1,auto)!important;
+}
+.buffer-6x {
+    .flex(6,1,auto)!important;
+}
+.buffer-lg {
+    .flex(10,1,auto)!important;   
+}
+.center {
+    margin:auto;
+}
+.click {
+    cursor:pointer;
+    .transition(0.1s, ease-in, color);
+    &:hover {
+        color: @set-light-gray;
+    }
+}
+.createBlur(@image, @length) {
+    filter: blur(@length);
+    -webkit-filter: blur(@length);
+    background: @image;
+    position: absolute;
+}
+.createDivider(@width, @height:initial, @color) {
+    height: @height;
+    width: @width;
+    background-color: @color;
+}
+.createOverlay(@percentage, @color: #2b2b2b) {
+    color: white;
+    background-color: fade(@color, @percentage);
+}
+.desktop(@rules, @min-value: 980px) {
+    @media screen and (min-width: @min-value) {@rules();}
+}
+.mobile(@rules, @max-value: 980px) {
+    @media screen and (max-width: @max-value) {@rules();}
+}
+.fadeBackground(@color:@setmine-royal-blue, @alpha:100%) {
+    background-color: fade(@color, @alpha);
+}
+.set-flex {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+.flexContainer(@direction:row, @oldDirection:horizontal, @wrap:nowrap) {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient:@oldDirection;
+    -moz-box-orient:@oldDirection;
+    -ms-box-orient:@oldDirection;
+    -webkit-flex-direction:@direction;
+    flex-direction:@direction;
+    webkit-flex-flow: @direction @wrap;
+    -moz-flex-flow: @direction @wrap;
+    -ms-flex-flow: @direction @wrap;
+    flex-flow: @direction @wrap;
+    flex-wrap: @wrap;
+    -webkit-flex-wrap: @wrap;
+    -moz-flex-wrap: @wrap;
+    -ms-flex-wrap: @wrap;
+}
+.flex(@flexGrow:1, @flexShrink: 1, @flexBasis: auto) {
+    -webkit-box-flex: @flexGrow @flexShrink @flexBasis;
+    -moz-box-flex: @flexGrow @flexShrink @flexBasis; 
+    -webkit-flex: @flexGrow @flexShrink @flexBasis;
+    -ms-flex: @flexGrow @flexShrink @flexBasis;
+    flex: @flexGrow @flexShrink @flexBasis;
+}
+.flex-column {
+  .flexContainer(column, vertical, wrap);
+}
+.flex-row {
+  .flexContainer(row, horizontal, wrap);
+}
+.flex-zero {
+  .flex(0,1,auto)!important;
+}
+.flex {
+  .flex(1,1,auto)!important;
+}
+.flex-2x {
+  .flex(2,1,auto)!important;
+}
+.flex-3x {
+  .flex(3,1,auto)!important;
+}
+.flex-4x {
+  .flex(4,1,auto)!important;
+}
+.flex-5x {
+  .flex(5,1,auto)!important;
+}
+.flex-6x {
+  .flex(6,1,auto)!important;
+}
+.flex-lg {
+  .flex(10,1,auto)!important;
+}
+.flex-fixed {
+  .flex(1,1,0)!important;
+}
+.flex-fixed-2x {
+  .flex(2,1,0)!important;
+}
+.flex-fixed-3x {
+  .flex(3,1,0)!important;
+}
+.flex-fixed-4x {
+  .flex(4,1,0)!important;
+}
+.flex-fixed-5x {
+  .flex(5,1,0)!important;
+}
+.gradient(@origin, @stops){
+    background: -webkit-linear-gradient(@origin, @stops) no-repeat;
+    background:    -moz-linear-gradient(@origin, @stops) no-repeat;
+    background:    -ms-linear-gradient(@origin, @stops) no-repeat;
+    background:      -o-linear-gradient(@origin, @stops) no-repeat;
+    background:         linear-gradient(@origin, @stops) no-repeat;
+}
+.hidden  {
+    display:none!important;
+}
+.header  {
+    font-size:4rem;
+    font-weight: 400;
+    font-family: @defaultFontStyle;
+    letter-spacing: 0.5rem;
+}
+.header-medium {
+    font-size:3rem;
+    font-weight:400;
+    font-family: @defaultFontStyle;
+    letter-spacing: 0.2rem;
+}
+.header-small  {
+    font-size:1.5rem;
+    font-weight: 300;
+    font-family: @defaultFontStyle;
+    letter-spacing: 0.1rem;
+}
+.hidden-fade {
+    opacity:0!important;
+}
+.hover(@color, @multiplier: 0.8) {
+    color: @color;
+    &:hover {
+      color: @color*@multiplier;
+    }
+}
+.hover-bg(@color, @multiplier: 0.8) {
+    background-color: @color;
+    &:hover {
+      background-color: @color*@multiplier;
+    }
+}
+.overlay-container {
+    position: relative;
+}
+.overlay {
+    position:absolute;
+    width:100%;
+    height:100%;
+    z-index: 2;
+    ~ * {
+        z-index: 3;
+    }
+    ~ img {
+        z-index: 1;
+    }
+}
+.scrollable {
+    overflow-y:scroll!important;
+}
+.setrecords-panel {
+    border: solid 2px @setrecords-border;
+    background: @setrecords-panel-background;
+}
+.size-min(@width, @height) {
+    min-width: @width!important;
+    min-height: @height!important;
+}
+.size(@width, @height) {
+    width: @width!important;
+    height: @height!important;
+}
+.transition(@durationTime:@defaultDuration, @transitionType:ease-out, @transitionProperty:all) {
+    transition: @transitionProperty @durationTime @transitionType;
+    transition-duration: @durationTime;
+}
+.transform(@value) {
+    -webkit-transform: @value;
+    -moz-transform:    @value;
+    -ms-transform:     @value;
+    -o-transform:      @value;
+    transform:         @value;
+}
+.unflexContainer {
+    display: initial;
+}

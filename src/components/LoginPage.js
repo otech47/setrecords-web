@@ -15,8 +15,6 @@ var LoginPage = React.createClass ({
   	},
 	submitLogin:function(){ 
 		var requestURL = "https://setmine.com/api/v/7/artist/" + this.state.username;
-
-		
 		$.ajax({
 			url: requestURL,
 			success: function(res){			
