@@ -31,7 +31,7 @@ import SetTile from './components/SetTile';
 import EventTile from './components/EventTile';
 import TrackTile from './components/TrackTile';
 
-import LoginPage from './components/LoginPage';
+import LoginPage from '/components/LoginPage';
 
 //subscribe in componentDidMount()
 //unsubscribe in componentWillUnmount()
