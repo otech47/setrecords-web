@@ -40,7 +40,7 @@ var LoginPage = React.createClass ({
 						self.loginSuccessful();
 					},
 					error: function(err){
-						console.log (err);
+						 console.log("Username or Password Incoreect" + " " + err);
 					}
 				});
 			}
@@ -48,21 +48,31 @@ var LoginPage = React.createClass ({
 	},
 	render: function (){
 		return(
+
+			
 			<div className="view">
-				<div className="form-group">
-					<form className="login-container">
-					<div>
-						<label htmlFor="username"></label>
-						<input type="text" className="username-input" id="username" placeholder="Username" onChange={this.handleChange}/>
-					</div>
-		    		<div>
-		    			<label htmlFor="password"></label>
-		    			<input type="text" className="password-input" id="password-input" placeholder={"Password"}/>
-		    		</div>
-		    		<button type="submit" className="setrecords-signin" onClick={this.submitLogin}>DOO IT , JUST DOO IT</button>
+				<div>
+					<video id="introvid" preload="auto" autoplay="auto" loop="loop" src="https//:setmine.com/videos/setrecords-login-compress.mp4"></video>
+					<form>
+						<div className="format"> 
+
+							<div>
+								<label htmlFor="username"></label>
+								<input type="text" className="username-input main-input" id="username" placeholder="Username" onChange={this.handleChange}/>
+							</div>
+				    		<div>
+				    			<label htmlFor="password"></label>
+				    			<input type="text" className="password-input main-input" id="password-input" placeholder="Password"/>
+				    		</div>
+				    		<div>
+				    		<button type="submit" className="setrecords-signin main-input" onClick={this.submitLogin}>
+				    		Sign In
+				    		</button>
+							</div>
+						</div>
 					</form>
 				</div>
-			</div>	
+			</div>
 		);
 	}
 })

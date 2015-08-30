@@ -9,6 +9,7 @@ var ContentView = React.createClass({
 	},
 	componentDidMount: function() {
 		this._attachStreams();
+		console.log("got to the content page");
 	},
 	render: function() {
 		var tiles = [];
