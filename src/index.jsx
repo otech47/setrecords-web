@@ -32,6 +32,7 @@ import EventTile from './components/EventTile';
 import TrackTile from './components/TrackTile';
 
 import LoginPage from './components/LoginPage';
+import ContentView from './components/ContentView';
 
 //subscribe in componentDidMount()
 //unsubscribe in componentWillUnmount()
@@ -114,7 +115,7 @@ var App = React.createClass({
 var routes = (
 	<Route path='/' handler={App}>
 		<DefaultRoute name='login' handler={LoginPage} />
-		<Route name='home' path='home' handler={HomeView}>
+		<Route name='content' path='content' handler={ContentView}>
 		</Route>
 		<Route name='artist'>
 		</Route>

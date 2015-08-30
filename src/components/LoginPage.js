@@ -4,7 +4,10 @@
 /*Username and passowrd*/
 /*password*/
 var React = require('react');
+import {Router, Navigation} from 'react-router';
+
 var LoginPage = React.createClass ({
+	mixins: [Navigation],
 	getInitialState: function() {
     	return {
       		username: ""
@@ -13,7 +16,11 @@ var LoginPage = React.createClass ({
   	handleChange: function(event) {
   		this.setState({username: event.target.value});
   	},
+  	loginSuccessful:function() {
+  		this.transitionTo("content");
+  	},
 	submitLogin:function(){ 
+		var self = this;
 		var push = this.props.pushFn;
 		var requestURL = "https://setmine.com/api/v/7/artist/" + this.state.username;
 		$.ajax({
@@ -26,9 +33,11 @@ var LoginPage = React.createClass ({
 						push({
 							type: "SHALLOW_MERGE",
 							data: {
+								loggedIn: true,
 								artistData: artistObject
 							}
 						});
+						self.loginSuccessful();
 					},
 					error: function(err){
 						console.log (err);

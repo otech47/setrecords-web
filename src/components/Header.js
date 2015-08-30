@@ -1,14 +1,9 @@
 import React from 'react';
 import {Navigation, Link} from 'react-router';
+import constants from '../constants/constants';
 
 var Header = React.createClass({
 	mixins: [Navigation],
-	getInitialState: function() {
-		return {
-			artistName: "",
-			artistImage: ""
-		};
-	},
 	componentDidMount: function() {
 		this._attachStream();
 	},
@@ -16,14 +11,18 @@ var Header = React.createClass({
 		var _this = this;
 	},
 	showArtistOptions: function (loggedIn) {
+		var artistData = this.props.appState.get('artistData');
+		var artistName = artistData.artist;
+		console.log(artistName);
+
 		if (loggedIn) {
 			return (
 				<div className="flex-row artist">
 					<div className="flex-column artist-options center">
-						<span className="artist-name">DJ Quinn Harley</span>
+						<span className="artist-name">{artistName}</span>
 						<span>Logout</span>
 					</div>
-					<img className="artist-image" src="/public/images/userImage.jpg" />
+					<img className="artist-image" src={constants.S3_ROOT_FOR_IMAGES + artistData.imageURL} />
 				</div>
 			);
 		}
