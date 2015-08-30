@@ -7,6 +7,7 @@
 @import "overlays.css";
 @import "variables.less";
 @import "fonts.less";
+@import "grid.css";
 
 /* CSS */
 
@@ -45,7 +46,7 @@ body {
     cursor:default;
     width:100vw!important;
     overflow-x:hidden;
-    background-color: black;
+    background-color: @setrecords-lighter-gray;
     color: black;
 
         
@@ -108,8 +109,9 @@ body {
     }
 }
 .event-image {
-    .size(100%, 100%);
-    z-index: 1;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
     position: absolute;
 }
 .event-info {
@@ -446,9 +448,8 @@ input#search {
 }
 .set-tile {
     color:white;
-    width: 30%;
-    height: 200px;
-    margin: 2vw 1vw;
+    height: 256px;
+    position: relative;
     .artist-image {
         .size(70px, 70px);
         border-radius: 50%;
@@ -558,7 +559,7 @@ input#search {
 }
 .view {
     min-height:90vh;//make sure this doesn't fuck up any other pages
-    margin-top: 12vh;
+    margin-top: 12vh !important;
     &#featured {
         color:@set-dark-gray;
         .results-container {

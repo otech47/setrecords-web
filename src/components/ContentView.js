@@ -9,19 +9,21 @@ var ContentView = React.createClass({
 	},
 	componentDidMount: function() {
 		this._attachStreams();
-		console.log("got to the content page");
 	},
 	render: function() {
-		var tiles = [];
-		var artistData = this.props.appState.get("artistData");
+		var setTiles = [];
+		var appState = this.props.appState;
+		var artistData = appState.get("artistData");
 		var sets = artistData.sets;
 		sets.map(function(set, index) {
-			tiles.push(<SetTile />);
+			setTiles.push(<SetTile key={set.id} set={set} />);
 		});
 
 		return (
-			<div className="content-container view">
-
+			<div className="view">
+				<div className="Grid Grid--1of3 Grid--gutters">
+					{setTiles}
+				</div>
 			</div>
 		);
 	}
