@@ -54,9 +54,8 @@ var LoginPage = React.createClass ({
 	},
 	render: function (){
 		return(
-			<div className="view">
+			<div className="view black-bkgrd">
 				<div>
-					<video id="introvid" preload="auto" autoplay="auto" loop="loop" src="https//:setmine.com/videos/setrecords-login-compress.mp4"></video>
 					<form>
 						<div className="format"> 
 

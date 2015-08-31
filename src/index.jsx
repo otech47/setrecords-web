@@ -38,6 +38,7 @@ import Home from './components/Home';
 import MetricsView from './components/MetricsView';
 import SuperfansView from './components/SuperfansView';
 import iBeaconsView from './components/iBeaconsView';
+import UploadWizardWrapper from './components/UploadWizardWrapper';
 
 //subscribe in componentDidMount()
 //unsubscribe in componentWillUnmount()
@@ -46,7 +47,7 @@ import iBeaconsView from './components/iBeaconsView';
 var initialAppState = Immutable.Map({
 	artistData: {
 		"id": 1,
-		"artist": "12th Planet",
+		"artist": "Not Logged In",
 		"bio": "No Biography Available",
 		"fb_link": "https://www.facebook.com/12thplanet2012",
 		"twitter_link": "https://twitter.com/12thplanet",
@@ -381,11 +382,11 @@ var App = React.createClass({
 
 var routes = (
 	<Route path='/' handler={App}>
-		<DefaultRoute name='content' handler={ContentView} />
+		<Route name='content' handler={ContentView} />
 		<Route name='metrics' path='metrics' handler={MetricsView} />
 		<Route name='superfans' path='superfans' handler={SuperfansView} />
 		<Route name='ibeacons' path='ibeacons' handler={iBeaconsView} />
-		<Route name='login' path='login' handler={LoginPage} />
+		<DefaultRoute name='login' path='login' handler={LoginPage} />
 	</Route>
 );
 

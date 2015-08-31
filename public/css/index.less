@@ -37,6 +37,9 @@ a {
     right:5px;
     height:80vh;
 }
+.black-bkgrd {
+    background-color: @setrecords-black;
+}
 body {
     font-family: @defaultFontStyle;
     font-size: ;
@@ -366,6 +369,7 @@ input#search {
     margin-top: 12vh;
     height: 6vh;
     width: 100%;
+    z-index: 7;
     background-color: @setrecords-dark-gray;
     .option {
         text-align: center;
@@ -478,7 +482,8 @@ input#search {
 }
 .set-tile {
     position: relative;
-    margin: 2.5% 2.5% 2.5% 2.5%;
+    margin: 2% 2.5% 2% 2.5%;
+    box-shadow: 3px 7px 4px;
     .mobile({
         width: 95%;
     });
@@ -639,6 +644,46 @@ input#search {
         }
     }
 }
+.uploadOverlay {
+    z-index: 10;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-color: @setrecords-black;
+    opacity: 0.8;
+}
+.uploadWizard {
+        color: @setrecords-white;
+        position: fixed;
+        z-index: 14;
+        width: 70%;
+        height: 60%;
+        margin: 20vh 15% 20vh 15%;
+        .wizardBanner {
+            font-family: @demiFontStyle;
+            font-size: @defaultFontSize * 3;
+            background-color: @setrecords-dark-gray;
+            border-radius: 10px 10px 0 0;
+            padding: 2%;
+            height: 16.66%;
+        }
+        .wizardBody {
+            background-color: @setrecords-gray;
+            border-radius: 0 0 10px 10px;
+            .stepText {
+                color: @setrecords-black;
+                font-size: @defaultFontSize * 2;
+                font-family: @defaultFontStyle;
+                padding-left: 3%;
+                padding-top: 3%;
+                margin: 0;
+            }
+            .wizard-progress-bubbles {
+                color: @setrecords-black;
+                padding-bottom: 3%;
+            }
+        }
+}
 .user-input{
   color: black;
 }
@@ -705,3 +750,11 @@ button{
     }
 }
 
+//animations
+.example-enter {
+    opacity: 0.01;
+}
+.example-enter.example-enter-active {
+    opacity: 1;
+    transition: opacity .05s ease-in;
+}

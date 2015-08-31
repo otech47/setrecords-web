@@ -15,7 +15,7 @@ var Header = React.createClass({
 			<div className="flex-row artist">
 				<div className="flex-column artist-options center">
 					<span className="artist-name">{artistName}</span>
-					<span>New Set  |  Impact  |  Logout</span>
+					<span>New Set | My Impact | Logout</span>
 				</div>
 				<img className="artist-image" src={constants.S3_ROOT_FOR_IMAGES + artistData.imageURL} />
 			</div>
