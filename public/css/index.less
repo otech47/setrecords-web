@@ -7,7 +7,6 @@
 @import "overlays.css";
 @import "variables.less";
 @import "fonts.less";
-@import "grid.css";
 
 /* CSS */
 
@@ -72,6 +71,10 @@ body {
     color:@set-blue;
     cursor:pointer;
     font-family: @defaultFontStyle;
+}
+.content-container {
+    padding: 1% 2% 1% 2%;
+    position: relative;
 }
 #detail-button {
     #listen-now;
@@ -358,6 +361,27 @@ input#search {
         width: 66%;
     })
 }
+.nav-bar {
+    position: fixed;
+    margin-top: 12vh;
+    height: 6vh;
+    width: 100%;
+    background-color: @setrecords-dark-gray;
+    .option {
+        text-align: center;
+        font-family: @defaultFontStyle;
+        font-size: @defaultFontSize * 1.5;
+        color: @setrecords-gray;
+        align-self: center;
+
+        &:hover {
+            color: @setrecords-white;
+        }
+    }
+    .active {
+            color: @setrecords-white;
+        }
+}
 .nav-button {
     padding:0 1vw;
     text-align: center;
@@ -447,35 +471,48 @@ input#search {
     top: 10vh;
 }
 .set-tile {
-    color:white;
-    height: 256px;
     position: relative;
-    .artist-image {
-        .size(70px, 70px);
-        border-radius: 50%;
-        border: solid 4px @set-blue;
-        z-index: 4;
-        position: absolute;
-        left:25%;
-        top:-20%;
-    }
-    .overlay {
-        .createOverlay(0%);
-    }
-    .tile-controls {
-        background-color: fade(@set-darker-gray, 70%);
-        font-size: 1rem;
-        >.divider {
-            .createDivider(100%, 1px, @set-gray);
-        }
-        .flex-row .divider {
-            .createDivider(1px, initial, @set-gray);
-        }
-    }
+    margin: 2.5% 2.5% 2.5% 2.5%;
+    .mobile({
+        width: 95%;
+    });
+    .medium({
+        width: 45%;
+    });
+    .large({
+        width: 28.3333%;
+    });
 }
-.set-info {
-    padding: 1vh;
-    width:50%;
+.tile-info {
+        color:white;
+        height: 256px;
+        width: 100%;
+        .artist-image {
+            .size(70px, 70px);
+            border-radius: 50%;
+            border: solid 4px @set-blue;
+            z-index: 4;
+            position: absolute;
+            left:25%;
+            top:-20%;
+        }
+        .overlay {
+            .createOverlay(0%);
+        }
+        .tile-controls {
+            background-color: fade(@set-darker-gray, 70%);
+            font-size: 1rem;
+            >.divider {
+                .createDivider(100%, 1px, @set-gray);
+            }
+            .flex-row .divider {
+                .createDivider(1px, initial, @set-gray);
+            }
+        }
+        .set-info {
+            padding: 1vh;
+            width:50%;
+        }
 }
 .slide-controls {
     position: absolute;
@@ -559,7 +596,7 @@ input#search {
 }
 .view {
     min-height:90vh;//make sure this doesn't fuck up any other pages
-    margin-top: 12vh !important;
+    margin-top: 18vh !important;
     &#featured {
         color:@set-dark-gray;
         .results-container {

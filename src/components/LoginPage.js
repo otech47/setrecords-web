@@ -7,6 +7,12 @@ var React = require('react');
 import {Router, Navigation} from 'react-router';
 
 var LoginPage = React.createClass ({
+	statics: {
+		willTransitionTo: function (transition) {
+			console.log("checking login...");
+
+		}
+	},
 	mixins: [Navigation],
 	getInitialState: function() {
     	return {
@@ -48,8 +54,6 @@ var LoginPage = React.createClass ({
 	},
 	render: function (){
 		return(
-
-			
 			<div className="view">
 				<div>
 					<video id="introvid" preload="auto" autoplay="auto" loop="loop" src="https//:setmine.com/videos/setrecords-login-compress.mp4"></video>

@@ -6,8 +6,8 @@ var constants = require('../constants/constants');
 var SetTile = React.createClass({
 	render: function() {
 		return (
-			<div className="Grid-cell">
-				<div className="flex-column set-tile">
+			<div className="set-tile">
+				<div className="flex-column tile-info">
 					<img className="event-image" src={constants.S3_ROOT_FOR_IMAGES + this.props.set.main_eventimageURL} />
 				    <div className="overlay"></div>
 				    <div className="buffer-4x"></div>

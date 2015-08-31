@@ -21,7 +21,7 @@ var ContentView = React.createClass({
 
 		return (
 			<div className="view">
-				<div className="Grid Grid--1of3 Grid--gutters">
+				<div className="flex-row content-container">
 					{setTiles}
 				</div>
 			</div>

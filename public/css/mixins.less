@@ -92,11 +92,14 @@
     color: white;
     background-color: fade(@color, @percentage);
 }
-.desktop(@rules, @min-value: 980px) {
-    @media screen and (min-width: @min-value) {@rules();}
+.large(@rules, @min-value: 1200px) {
+    @media (min-width: @min-value) {@rules();}
 }
-.mobile(@rules, @max-value: 980px) {
-    @media screen and (max-width: @max-value) {@rules();}
+.medium(@rules, @min-value: 768px) {
+    @media (min-width: @min-value) {@rules();}
+}
+.mobile(@rules, @max-value: 768px) {
+    @media (max-width: @max-value) {@rules();}
 }
 .fadeBackground(@color:@setmine-royal-blue, @alpha:100%) {
     background-color: fade(@color, @alpha);
