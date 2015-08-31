@@ -369,17 +369,23 @@ input#search {
     background-color: @setrecords-dark-gray;
     .option {
         text-align: center;
+        align-self: center;
         font-family: @defaultFontStyle;
         font-size: @defaultFontSize * 1.5;
         color: @setrecords-gray;
-        align-self: center;
-
+        height: 100%;
+        width: 25%;
         &:hover {
             color: @setrecords-white;
+        }
+        .text {
+            background-color: @setrecords-blue;
+            margin: auto auto auto auto;
         }
     }
     .active {
             color: @setrecords-white;
+            border-bottom: 6px solid @setrecords-blue;
         }
 }
 .nav-button {
