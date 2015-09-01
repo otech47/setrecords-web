@@ -14,19 +14,17 @@ var ContentView = React.createClass({
 	render: function() {
 		var setTiles = [];
 		var appState = this.props.appState;
-		var artistData = appState.get("artistData");
+		var artistData = appState.get('artistData');
 		var sets = artistData.sets;
 		sets.map(function(set, index) {
 			setTiles.push(<SetTile key={set.id} set={set} />);
 			console.log(set.id);
 		});
-
 		return (
 			<div className="view">
-					<ReactCSSTransitionGroup transitionName="example" className="flex-row content-container">
-						{setTiles}
-					</ReactCSSTransitionGroup>
-				
+				<div className="flex-row content-container">
+					{setTiles}
+				</div>
 			</div>
 		);
 	}

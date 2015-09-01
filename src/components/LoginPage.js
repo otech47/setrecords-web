@@ -3,72 +3,64 @@
 /*Acutal Login information*/
 /*Username and passowrd*/
 /*password*/
-var React = require('react');
-import {Router, Navigation} from 'react-router';
+import React, {findDOMNode} from 'react';
+import {Router, Route, Link, Navigation} from 'react-router';
+import auth from './auth';
 
 var LoginPage = React.createClass ({
-	statics: {
-		willTransitionTo: function (transition) {
-			console.log("checking login...");
-
-		}
-	},
 	mixins: [Navigation],
-	getInitialState: function() {
-    	return {
-      		username: ""
-    	};
+  	handleSubmit: function(event) {
+  		event.preventDefault();
+
+  		var username = React.findDOMNode(this.refs.userField).value;
+  		var password = React.findDOMNode(this.refs.passField).value;
+  		var self = this;
+  		auth.login(username, password, (loggedIn) => {
+  			if (!loggedIn) {
+  				console.log('incorrect password');
+  				React.findDOMNode(this.refs.userField).value = '';
+  				React.findDOMNode(this.refs.passField).value = '';
+  			} else {
+  				var push = this.props.push;
+  				var artistId = JSON.parse(auth.getToken()).artist_id;
+  				var requestUrl = "https://setmine.com/api/v/7/artist/" + artistId;
+  				$.ajax({
+  					type: "GET",
+  					url: requestUrl,
+  					success: function(res) {
+  						push({
+  							type: "SHALLOW_MERGE",
+  							data: {
+  								loggedIn: true,
+  								artistData: res.payload.artist
+  							}
+  						});
+  						console.log('redirecting to content...');
+  						self.transitionTo('content', {appState: self.props.appState}, {push: self.props.push});
+  					},
+  					error: function(err) {
+  						console.log('no data in the api for that artist');
+  					}
+  				});
+	  		}
+  		});
   	},
-  	handleChange: function(event) {
-  		this.setState({username: event.target.value});
-  	},
-  	loginSuccessful:function() {
-  		this.transitionTo("content");
-  	},
-	submitLogin:function(){ 
-		var self = this;
-		var push = this.props.pushFn;
-		var requestURL = "https://setmine.com/api/v/7/artist/" + this.state.username;
-		$.ajax({
-			url: requestURL,
-			success: function(res){
-				$.ajax({
-					url: requestURL,
-					success: function(res){
-						var artistObject = res.payload.artist; 
-						push({
-							type: "SHALLOW_MERGE",
-							data: {
-								loggedIn: true,
-								artistData: artistObject
-							}
-						});
-						self.loginSuccessful();
-					},
-					error: function(err){
-						 console.log("Username or Password Incoreect" + " " + err);
-					}
-				});
-			}
-		});
-	},
 	render: function (){
 		return(
 			<div className="view black-bkgrd">
 				<div>
 					<form>
-						<div className="format"> 
-
+						<div className="format">
 							<div>
 								<label htmlFor="username"></label>
-								<input type="text" className="username-input main-input" id="username" placeholder="Username" onChange={this.handleChange}/>
+								<input type="text" ref="userField" className="username-input main-input" id="username" placeholder="Username" onChange={this.handleUser}/>
 							</div>
 				    		<div>
 				    			<label htmlFor="password"></label>
-				    			<input type="text" className="password-input main-input" id="password-input" placeholder="Password"/>
+				    			<input type="text" ref="passField" className="password-input main-input" id="password-input" placeholder="Password" onChange={this.handlePass}/>
 				    		</div>
 				    		<div>
-				    		<button type="submit" className="setrecords-signin main-input" onClick={this.submitLogin}>
+				    		<button type="submit" className="setrecords-signin main-input" onClick={this.handleSubmit}>
 				    		Sign In
 				    		</button>
 							</div>
