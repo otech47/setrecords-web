@@ -41,6 +41,18 @@
     -moz-border-radius: @radius;
     border-radius: @radius;
 }
+.bottom {
+    align-self: flex-end;
+}
+.top {
+    align-self: flex-start;
+}
+.left {
+    justify-content: flex-start;
+}
+.right {
+    justify-content: flex-end;
+}
 .box-shadow (@x, @y, @blur: 0px, @color) {
     -webkit-box-shadow: @x @y @blur @color;
     -moz-box-shadow: @x @y @blur @color;
@@ -92,6 +104,7 @@
     color: white;
     background-color: fade(@color, @percentage);
 }
+
 .large(@rules, @min-value: 1200px) {
     @media (min-width: @min-value) {@rules();}
 }
@@ -193,6 +206,7 @@
 .hidden  {
     display:none!important;
 }
+/*
 .header  {
     font-size:4rem;
     font-weight: 400;
@@ -211,6 +225,7 @@
     font-family: @defaultFontStyle;
     letter-spacing: 0.1rem;
 }
+*/
 .hidden-fade {
     opacity:0!important;
 }

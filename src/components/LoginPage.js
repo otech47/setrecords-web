@@ -9,6 +9,13 @@ import auth from './auth';
 
 var LoginPage = React.createClass ({
 	mixins: [Navigation],
+	statics: {
+		willTransitionTo: function(transition) {
+			if (auth.loggedIn()) {
+				transition.abort();
+			}
+		}
+	},
   	handleSubmit: function(event) {
   		event.preventDefault();
 

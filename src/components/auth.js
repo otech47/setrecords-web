@@ -52,7 +52,7 @@ var auth = {
         cb(res);
       },
       error: function(err) {
-        cb(res);
+        cb(err);
       }
     });
   }

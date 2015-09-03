@@ -13,7 +13,7 @@ var NavBar = React.createClass({
 	render: function() {
 		return (
 			<div className="flex-row nav-bar">
-				<Link className='option flex set-flex' to="content">
+				<Link className='option flex set-flex' to="/content">
 					<div className="center">Content</div>
 				</Link>
 				<Link className='option flex set-flex' to="metrics">
