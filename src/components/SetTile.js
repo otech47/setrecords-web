@@ -9,7 +9,7 @@ var SetTile = React.createClass({
 			<div className="set-tile">
 				<div className="flex-column tile-info">
 					<img className="event-image" src={constants.S3_ROOT_FOR_IMAGES + this.props.set.main_eventimageURL} />
-				    <div className="overlay"></div>
+					<div className="overlay"></div>
 				    <div className="buffer-4x"></div>
 				    <div className="flex-column flex tile-controls">
 				        <div className="flex-row flex">
@@ -38,4 +38,4 @@ var SetTile = React.createClass({
 	}
 })
 
-module.exports = SetTile
+module.exports = SetTile;

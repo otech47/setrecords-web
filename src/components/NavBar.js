@@ -12,18 +12,15 @@ var NavBar = React.createClass({
 	},
 	render: function() {
 		return (
-			<div className="flex-row nav-bar">
-				<Link className='option flex set-flex' to="/content">
-					<div className="center">Content</div>
-				</Link>
-				<Link className='option flex set-flex' to="metrics">
+			<div className="nav-bar flex-row">
+				<Link className="flex set-flex" to="metrics">
 					<div className="center">Metrics</div>
 				</Link>
-				<Link className='option flex set-flex' to="superfans">
-					<div className="center">Superfans</div>
+				<Link className="flex set-flex" to="content">
+					<div className="center">Content</div>
 				</Link>
-				<Link className='option flex set-flex' to="ibeacons">
-					<div className="center">iBeacons</div>
+				<Link className="flex set-flex" to="account">
+					<div className="center">Account</div>
 				</Link>
 			</div>
 		);

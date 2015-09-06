@@ -6,8 +6,6 @@ import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-route
 
 import GlobalEventHandler from './services/globalEventHandler';
 
-import Footer from './components/Footer';
-import Header from './components/Header';
 import PlayerWrapper from './components/Player';
 import DetailView from './components/DetailView';
 import LandingView from './components/LandingView';
@@ -31,21 +29,32 @@ import SetTile from './components/SetTile';
 import EventTile from './components/EventTile';
 import TrackTile from './components/TrackTile';
 
-import LoginPage from './components/LoginPage';
-import ContentView from './components/ContentView';
+import Header from './components/Header';
 import NavBar from './components/NavBar';
+import ViewContainer from './components/ViewContainer';
+import FooterSetrecords from './components/Footer-Setrecords';
+
+import ContentView from './components/ContentView';
+
+import LoginPage from './components/LoginPage';
 import Home from './components/Home';
 import MetricsView from './components/MetricsView';
 import SuperfansView from './components/SuperfansView';
 import iBeaconsView from './components/iBeaconsView';
 import UploadWizardWrapper from './components/UploadWizardWrapper';
 import auth from './components/auth';
+import AccountView from './components/AccountView';
 
 //subscribe in componentDidMount()
 //unsubscribe in componentWillUnmount()
 //call setState which pushes to event stream when receiving an event
 
 var initialAppState = Immutable.Map({
+	'wizardData': {
+		'step': 0,
+		'pendingData': {
+		}
+	},
 	'artistData': {
 		"id": 40,
 		"artist": "Calvin Harris",
@@ -239,14 +248,24 @@ var App = React.createClass({
 			_this.setState({ appState: newState });
 		});
 	},
+	showUploadWizard: function() {
+		if (this.state.appState.get("wizardData").step > 0) {
+			return (<UploadWizardWrapper appState={this.state.appState} push={push} />);
+		}
+		else {
+			return "";
+		}
+	},
 	render: function() {
 		var appState = this.state.appState;
 		//pass in appState and push to every component you want to access event dispatcher
 		return (
-			<div className="main-container flex-column">
-				<Header appState={appState} />
-				<NavBar appState={appState} />
-				<RouteHandler appState={appState} push={push}/>
+			<div className="main-container">
+				<Header appState={appState} push={push} />
+				<NavBar />
+				<ViewContainer appState={appState} push={push}
+					routeHandler={RouteHandler} />
+				<FooterSetrecords />
 			</div>
 		);
 	}
@@ -267,8 +286,7 @@ var routes = (
 		<DefaultRoute name='content' handler={ContentView} />
 		<Route path='content' handler={ContentView} />
 		<Route name='metrics' path='metrics' handler={MetricsView} />
-		<Route name='superfans' path='superfans' handler={SuperfansView} />
-		<Route name='ibeacons' path='ibeacons' handler={iBeaconsView} />
+		<Route name='account' path='account' handler={AccountView} />
 	</Route>
 );
 

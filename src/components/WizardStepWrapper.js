@@ -13,11 +13,31 @@ var WizardStepWrapper = React.createClass({
 		var _this = this;
 	},
 	render: function() {
-		return (
-			<div className="flex center">
-				this is where we show the step
-			</div>
-		)
+		switch(this.props.wizardData.step) {
+			case 1:
+			return <WizardStep1 appState={this.props.appState} wizardData={this.props.wizardData} />
+			break;
+
+			case 2:
+			return <WizardStep2 appState={this.props.appState} wizardData={this.props.wizardData} />
+			break;
+
+			case 3:
+			return <WizardStep3 appState={this.props.appState} wizardData={this.props.wizardData} />
+			break;
+
+			case 4:
+			return <WizardStep4 appState={this.props.appState} wizardData={this.props.wizardData} />
+			break;
+
+			case 5:
+			return <WizardStep5 appState={this.props.appState} wizardData={this.props.wizardData} />
+			break;
+
+			default:
+			console.log("step out of bounds! ERROROROROROROR");
+			break;
+		}
 	}
 });
 

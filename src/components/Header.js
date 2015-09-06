@@ -10,14 +10,14 @@ var Header = React.createClass({
 	},
 	showArtistOptions: function () {
 		if (this.props.appState) {
-			var artistData = this.props.appState.get('artistData');
+			var artistData = this.props.appState.get("artistData");
 			return (
-				<div className="flex-row artistOptions">
-					<div className="flex-column center">
-						<span className="artistName bottom">{artistData.artist}</span>
-						<span className="bottom">New Set | My Impact | Logout</span>
+				<div className="header-artist flex-row">
+					<div className="flex-column">
+						<h1>{artistData.artist}</h1>
+						<p>New Set | Logout</p>
 					</div>
-					<img className="artist-image" src={constants.S3_ROOT_FOR_IMAGES + artistData.imageURL} />
+					<img src={constants.S3_ROOT_FOR_IMAGES + artistData.imageURL} />
 				</div>
 			);
 		} else {
@@ -27,9 +27,9 @@ var Header = React.createClass({
 	render: function() {
 		return (
 			<header className="flex-row">
-				<div className="flex-row logo center">
-					<img className="center" src="/public/images/setrecords.png" />
-					<span className="center">setrecords</span>
+				<div className="logo flex-row">
+					<img src="/public/images/setrecords.png" />
+					<p>setrecords</p>
 				</div>
 				{this.showArtistOptions()}
 			</header>

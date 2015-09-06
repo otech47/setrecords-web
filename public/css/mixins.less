@@ -29,6 +29,13 @@
     background-color:@color;
     color:@textColor;
 }
+.click-blue {
+    cursor:pointer;
+    .transition(0.1s, ease-in, color);
+    &:hover {
+        color: @setrecords-blue;
+    }
+}
 .blur {
     background-size: cover;
     left: -25px;
@@ -52,6 +59,12 @@
 }
 .right {
     justify-content: flex-end;
+}
+.center-main {
+    justify-content: center;
+}
+.center-cross {
+    align-self: center;
 }
 .box-shadow (@x, @y, @blur: 0px, @color) {
     -webkit-box-shadow: @x @y @blur @color;
@@ -178,6 +191,9 @@
 .flex-6x {
   .flex(6,1,auto)!important;
 }
+.flex-7x {
+  .flex(7,1,auto)!important;
+}
 .flex-lg {
   .flex(10,1,auto)!important;
 }
@@ -195,6 +211,9 @@
 }
 .flex-fixed-5x {
   .flex(5,1,0)!important;
+}
+.flex-fixed-7x {
+  .flex(7,1,0)!important;
 }
 .gradient(@origin, @stops){
     background: -webkit-linear-gradient(@origin, @stops) no-repeat;
@@ -246,7 +265,7 @@
 }
 .overlay {
     position:absolute;
-    width:100%;
+    width:86%;
     height:100%;
     z-index: 2;
     ~ * {
