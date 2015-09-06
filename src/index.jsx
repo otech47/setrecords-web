@@ -24,7 +24,7 @@ import Artists from './components/Artists';
 import Festivals from './components/Festivals';
 import Mixes from './components/Mixes';
 import Activities from './components/Activities';
-
+import DMCA from './components/DMCA';
 import SetTile from './components/SetTile';
 import EventTile from './components/EventTile';
 import TrackTile from './components/TrackTile';
@@ -32,7 +32,7 @@ import TrackTile from './components/TrackTile';
 import Header from './components/Header';
 import NavBar from './components/NavBar';
 import ViewContainer from './components/ViewContainer';
-import FooterSetrecords from './components/Footer-Setrecords';
+import FooterSetrecords from './components/FooterSetrecords';
 
 import ContentView from './components/ContentView';
 
