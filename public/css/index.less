@@ -53,12 +53,6 @@ header {
     }
 }
 
-footer {
-    width: 100vw;
-    height: 5vh;
-    background-color: @setrecords-light-black;
-}
-
 .nav-bar {
     height: 0.5 * @headerHeight;
     background-color: @setrecords-dark-gray;
@@ -214,66 +208,55 @@ button{
     position: relative;
     overflwo:hidden;
 }
-.footer{
-    display: flex;
-    justify-content: space-around;
-    align-item: baseline;
-   background-color: #313542;
-   z-index: 101;
-   width: 100%;
-   align-self: flex-end;
-   height: 6vh;
-   order: 0 ,3 ,4, 1;
-   font-family: @defaultFontStyle;
-    max-width: 100%;
-    width: auto\9;
- 
-  color: @setrecords-gray;
-    .socialLinks{
+
+footer{
+    height: 0.5 * @headerHeight;
+    align-items: center;
+    background-color: @setrecords-light-black;
+    z-index: 101;
+    font-family: @defaultFontStyle;
+    padding: 0 1% 0 1%;
+    flex-wrap: nowrap;
+
+    .company-links {
+        height: 100%;
+        align-items: center;
+        flex-wrap: nowrap;
+        a {
+            margin: 0 1vw 0 1vw;
+            text-decoration: none;
+            color: @setrecords-gray;
+            &:hover {
+                color: @setrecords-blue;
+            }
+        }
+        i {
+            margin: 0 1vw 0 1vw;
+            color: @setrecords-gray;
+        }
+    }
+
+    .social-links {
+        height: 100%;
+        align-items: center;
         justify-content: center;
-    }
-    .finalPosition{
-    
-        margin-left: 50px;
-        
-    }
-    .icons{
-        padding-right:50px;
-        i{
-            padding-left: 20px;
-        } 
-        a{
-             color: @setrecords-gray;
-            padding-left: 20px;
+        flex-wrap: nowrap;
+        a {
+            margin: 0 1vw 0 1vw;
+            color: @setrecords-gray;
+            &:hover {
+                color: @setrecords-blue;
+            }
         }
     }
-     .spacingIcons{
-         justify-content: center;
-        i{
-            padding-left: 20px;
-        } 
-        a{
-            padding-left: 20px;
+
+    .sponsorship-links {
+        height: 100%;
+        align-items: center;
+        justify-content: flex-end;
+        flex-wrap: nowrap;
+        a {
+            margin: 0 1vw 0 1vw;
         }
     }
-    .fa-copyright{
-         color: @setrecords-gray;
-    }
-    .click:hover{
-        color: white;
-    }
-    .click{
-        color: @setrecords-gray;
-    }
-    .iconContainer{
-       align-self: center;
-        .icons{
-            align-items: center;
-        }
-     }
-    
-    .sponsorships img{
-        width: 90%;
-        height: 90%;
-    }
-   }  
+}  
