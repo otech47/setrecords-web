@@ -95,7 +95,8 @@ footer {
 }
 
 .set-editor {
-    background-color: @setrecords-yellow;
+    background-color: @setrecords-light-gray;
+    font-family: @demiFontStyle;
 }
 
 .set-tile {
@@ -202,10 +203,12 @@ form{
 }
 button{
    width: 25.2em;
-    height: 3em;
+    height: 2.2em;
     background-color: #4183d7; 
     color:white;
     border-color: #4183d7; 
+
+
   
     
 }
@@ -214,6 +217,7 @@ button{
     position: relative;
     overflwo:hidden;
 }
+/*Footer */
 .footer{
     display: flex;
     justify-content: space-around;
@@ -227,8 +231,11 @@ button{
    font-family: @defaultFontStyle;
     max-width: 100%;
     width: auto\9;
- 
-  color: @setrecords-gray;
+    color: @setrecords-gray;
+
+    #about{
+        text-decoration: none;
+    }
     .socialLinks{
         justify-content: center;
     }
@@ -238,6 +245,7 @@ button{
         
     }
     .icons{
+        text-decoration: none;
         padding-right:50px;
         i{
             padding-left: 20px;
@@ -277,3 +285,146 @@ button{
         height: 90%;
     }
    }  
+.fa-facebook{color:white;}
+.fa-twitter{color:white;}
+.fa-instagram{color:white;}
+.fa-facebook:hover{color:@facebook-blue;}
+.fa-twitter:hover{color:@twitter-blue;}
+.fa-instagram:hover{color:@instagram-blue;}
+.set-editor{
+    z-index: 200;
+}
+/*Content Page*/
+
+.first{
+    
+    height: 80vh;
+    width: 80vh;
+}
+.second{
+    height:  80vh;
+    width:  80vh;
+}
+
+.revert{
+    justify-content:flex-end;
+}
+.apply-or-revert{
+    
+    justify-content: space-around;
+    align-items:center;
+    padding-left: 7%;
+    padding-right: 7%;
+}
+.edit-set-preview{
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 10%;
+
+}
+
+
+#apply{
+  width: 210px;
+    height: 60px;
+    background-color: #33b510; 
+    color:white;
+    border-color: #33b510;
+    font-family: @demiFontStyle; 
+    font-weight: bold;
+    padding: 0;
+    border: none;
+    font-size: 1.4rem;
+
+}
+#revert{
+     width: 210px;
+    height: 60px;
+    background-color: #ff4e4e; 
+    color:white;
+    border-color: #ff4e4e; 
+    font-family: @demiFontStyle;
+    font-weight: bold;
+    padding: 0;
+    border: none;
+    font-size: 1.8rem;
+    
+}
+.edit-set-name{
+    h1{
+        width: 100%;
+        font-size: 200%;
+    }      
+    padding-left: 8%;
+    font-weight: bold;
+    p{
+        margin:0;
+        
+        font-size: 130%;
+    }
+}
+.edit-set-track{
+
+    
+    padding-left: 8%;
+    font-weight: bold;
+    height: 62vh;
+
+   
+    p{
+        margin:0 ;
+        
+        font-size: 130%;
+    }
+    .trackiList-table{
+     margin-bottom: 15%;
+    }
+}
+
+
+  #addTrack{
+
+    height: 100%;
+    width: 22.6%;
+     
+     border: none;
+     color: white;
+     background-color: #33b510; 
+     font-family: @demiFontStyle;
+    border-radius:  40%;
+    }
+table, th, td {
+    color: white;
+    margin-top: 8%;
+    border: 4px solid #bdc3cc;
+
+}
+td{
+    i{
+        color: red;
+    }
+    background-color: #313542;
+    .deleteTrack{
+        border: 0;
+        background-color: #bdc3cc;
+         border: 5px solid #bdc3cc;
+    }
+}
+
+#change-set{
+    width: 240px;
+    height: 55px;
+    color: black;
+    background-color: #bdc3c7;
+    border-color:  #bdc3c7;
+    font-family: @demiFontStyle;
+    font-weight: bold;
+    padding: 0;
+    border: none;
+   
+}
+#linkTrack{
+  
+    font-size: 90%;
+
+}
