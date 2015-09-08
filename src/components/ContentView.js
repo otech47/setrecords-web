@@ -24,8 +24,8 @@ var ContentView = React.createClass({
 				<div className="flex-fixed-2x set-list">
 					{setTiles}
 				</div>
-				<div className="flex-fixed-7x set-editor">
-					this is the set editor
+				<div className="flex-fixed-7x  set-editor">
+					<SetEditor />
 				</div>
 			</div>
 		);
