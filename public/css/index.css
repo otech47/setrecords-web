@@ -393,11 +393,6 @@ header .header-artist h1 {
 header .header-artist p {
   margin: 0;
 }
-footer {
-  width: 100vw;
-  height: 5vh;
-  background-color: #313542;
-}
 .nav-bar {
   height: 5vh;
   background-color: #6c7a89;
@@ -536,69 +531,54 @@ button {
   position: relative;
   overflwo: hidden;
 }
-/*Footer */
-.footer {
-  display: flex;
-  justify-content: space-around;
-  align-item: baseline;
+footer {
+  height: 5vh;
+  align-items: center;
   background-color: #313542;
   z-index: 101;
-  width: 100%;
-  align-self: flex-end;
-  height: 6vh;
-  order: 0 ,3 ,4, 1;
   font-family: Avenir Regular;
-  max-width: 100%;
-  width: auto\9;
-  color: #bdc3c7;
+  padding: 0 1% 0 1%;
+  flex-wrap: nowrap;
 }
-.footer #about {
-  text-decoration: none;
-}
-.footer .socialLinks {
-  justify-content: center;
-}
-.footer .finalPosition {
-  margin-left: 50px;
-}
-.footer .icons {
-  text-decoration: none;
-  padding-right: 50px;
-}
-.footer .icons i {
-  padding-left: 20px;
-}
-.footer .icons a {
-  color: #bdc3c7;
-  padding-left: 20px;
-}
-.footer .spacingIcons {
-  justify-content: center;
-}
-.footer .spacingIcons i {
-  padding-left: 20px;
-}
-.footer .spacingIcons a {
-  padding-left: 20px;
-}
-.footer .fa-copyright {
-  color: #bdc3c7;
-}
-.footer .click:hover {
-  color: white;
-}
-.footer .click {
-  color: #bdc3c7;
-}
-.footer .iconContainer {
-  align-self: center;
-}
-.footer .iconContainer .icons {
+footer .company-links {
+  height: 100%;
   align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
 }
-.footer .sponsorships img {
-  width: 90%;
-  height: 90%;
+footer .company-links a {
+  margin: 0 1vw 0 1vw;
+  text-decoration: none;
+  color: #bdc3c7;
+}
+footer .company-links a:hover {
+  color: #22a7f0;
+}
+footer .company-links i {
+  margin: 0 1vw 0 1vw;
+  color: #bdc3c7;
+}
+footer .social-links {
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+footer .social-links a {
+  margin: 0 1vw 0 1vw;
+  color: #bdc3c7;
+}
+footer .social-links a:hover {
+  color: #22a7f0;
+}
+footer .sponsorship-links {
+  height: 100%;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+}
+footer .sponsorship-links a {
+  margin: 0 1vw 0 1vw;
 }
 .fa-facebook {
   color: white;
