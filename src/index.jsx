@@ -283,9 +283,9 @@ var App = React.createClass({
 
 var routes = (
 	<Route path='/' handler={App}>
-		<DefaultRoute name='content' handler={ContentView} />
-		<Route path='content' handler={ContentView} />
-		<Route name='metrics' path='metrics' handler={MetricsView} />
+		<DefaultRoute name='metrics' handler={MetricsView} />
+		<Route name='content' path='content' handler={ContentView} />
+		<Route path='metrics' handler={MetricsView} />
 		<Route name='account' path='account' handler={AccountView} />
 	</Route>
 );

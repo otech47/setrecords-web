@@ -6,13 +6,14 @@
 
 body {
     margin: 0;
+    overflow: hidden;
 }
 
 header {
     height: @headerHeight;
     background-color: @setrecords-light-black;
-    padding-left: 1%;
-    padding-right: 1%;
+    padding-left: 1.5%;
+    padding-right: 1.5%;
     color: @setrecords-white;
     justify-content: space-between;
     align-items: center;
@@ -83,13 +84,13 @@ header {
 }
 
 .set-list {
-    background-color: @setrecords-black;
+    background-color: @setrecords-light-gray;
     height: 100%;
     overflow: auto;
 }
 
 .set-editor {
-    background-color: @setrecords-yellow;
+    background-color: @setrecords-black;
 }
 
 .set-tile {
@@ -135,6 +136,120 @@ header {
             width:50%;
         }
 }
+
+.metrics-page {
+    background-color: @setrecords-black;
+    overflow: auto;
+    height: 100%;
+
+    .metrics-top {
+        height: 40%;
+        margin: 5vh 0 10vh 0;
+    }
+    .metrics-bottom {
+        height: 40%;
+        margin: 5vh 0 10vh 0;
+    }
+}
+
+.setmine-report {
+    border: 4px solid @setrecords-blue;
+    margin: 0 2.5vw 0 2.5vw;
+    color: @setrecords-blue;
+    font-size: @headerHeight * 0.5;
+    font-family: @defaultFontStyle;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+    .title {
+        align-items: center;
+        justify-content: left;
+        position: absolute;
+        background-color: @setrecords-black;
+        margin-left: 1vw;
+        padding-right: 1vw;
+        height: 18%;
+        top: -4vh;
+        img {
+            height: @headerHeight * 0.66;
+            margin: 0 1vw 0 1vw;
+        }
+        p {
+            line-height: @headerHeight * 0.5;
+            margin: auto;
+        }
+    }
+    .setmine-numbers {
+        align-self: center;
+        text-transform: uppercase;
+        font-size: @headerHeight * 0.2;
+        width: 100%;
+        * {
+            margin: 0 2.5%;
+        }
+        h1 {
+            font-size: @headerHeight * 0.6;
+        }
+    }
+
+}
+
+.revenue-report {
+    border: 4px solid @setrecords-green;
+    margin: 0 2.5vw 0 2.5vw;
+    color: @setrecords-green;
+    font-size: @headerHeight * 0.5;
+    font-family: @defaultFontStyle;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+    .title {
+        align-items: center;
+        justify-content: left;
+        position: absolute;
+        background-color: @setrecords-black;
+        margin-left: 1vw;
+        padding-right: 1vw;
+        height: 18%;
+        top: -4vh;
+        img {
+            height: @headerHeight * 0.66;
+            margin: 0 1vw 0 1vw;
+        }
+        p {
+            line-height: @headerHeight * 0.5;
+            margin: auto;
+        }
+    }
+}
+
+.social-report {
+    border: 4px solid @setrecords-yellow;
+    margin: 0 2.5vw 0 2.5vw;
+    color: @setrecords-yellow;
+    font-size: @headerHeight * 0.5;
+    font-family: @defaultFontStyle;
+    position: relative;
+    .title {
+        align-items: center;
+        justify-content: left;
+        position: absolute;
+        background-color: @setrecords-black;
+        margin-left: 1vw;
+        padding-right: 1vw;
+        height: 18%;
+        top: -4vh;
+        img {
+            height: @headerHeight * 0.66;
+            margin: 0 1vw 0 1vw;
+        }
+        p {
+            line-height: @headerHeight * 0.5;
+            margin: auto;
+        }
+    }
+}
+
 #introvid{
     positon: absolute;
     min-width: 100vw;
@@ -217,6 +332,7 @@ footer{
     font-family: @defaultFontStyle;
     padding: 0 1% 0 1%;
     flex-wrap: nowrap;
+    font-size: 0.2 * @headerHeight;
 
     .company-links {
         height: 100%;
