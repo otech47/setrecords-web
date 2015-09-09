@@ -1,6 +1,5 @@
 import React from 'react';
 import {Navigation, Link} from 'react-router';
-import constants from '../constants/constants';
 
 var NavBar = React.createClass({
 	mixins: [Navigation],
@@ -12,15 +11,15 @@ var NavBar = React.createClass({
 	},
 	render: function() {
 		return (
-			<div className="nav-bar flex-row">
-				<Link className="flex set-flex" to="content">
-					<div className="center">Content</div>
+			<div className="flex-fixed nav-bar flex-row">
+				<Link className="flex-fixed set-flex" to="content">
+					<div>Content</div>
 				</Link>
-				<Link className="flex set-flex" to="metrics">
-					<div className="center">Metrics</div>
+				<Link className="flex-fixed set-flex" to="metrics">
+					<div>Metrics</div>
 				</Link>
-				<Link className="flex set-flex" to="account">
-					<div className="center">Account</div>
+				<Link className="flex-fixed set-flex" to="account">
+					<div>Account</div>
 				</Link>
 			</div>
 		);

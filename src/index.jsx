@@ -260,9 +260,8 @@ var App = React.createClass({
 		var appState = this.state.appState;
 		//pass in appState and push to every component you want to access event dispatcher
 		return (
-			<div className="main-container">
+			<div className="main-container flex-column">
 				<Header appState={appState} push={push} />
-				<NavBar />
 				<ViewContainer appState={appState} push={push}
 					routeHandler={RouteHandler} />
 				<FooterSetrecords />

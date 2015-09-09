@@ -12,21 +12,9 @@ var ContentView = React.createClass({
 		this._attachStreams();
 	},
 	render: function() {
-		var artistData = this.props.appState.get("artistData");
-		var sets = artistData.sets;
-		var setTiles = [];
-		sets.map(function (set, index) {
-			setTiles.push(<SetTile set={set} key={set.id} />)
-		});
-
 		return (
-			<div className="content-page flex-row">
-				<div className="flex-fixed-2x set-list">
-					{setTiles}
-				</div>
-				<div className="flex-fixed-7x  set-editor">
-					<SetEditor />
-				</div>
+			<div className="content-page">
+				it's the content page!
 			</div>
 		);
 	}
