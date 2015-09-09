@@ -18,17 +18,19 @@ header {
     height: @headerHeight * 1.5;
     position: fixed;
     width: 100%;
+    z-index: 10;
     .header-main {
         width: 100%;
         background-color: @setrecords-light-black;
         color: @setrecords-white;
         justify-content: space-between;
+        z-index: 12;
         .logo {
             font-size: 2rem;
             align-items: center;
             font-family: @boldFontStyle;
             img {
-                height: 4rem;
+                width: 4rem;
                 margin: 0 1rem;
             }
         }
@@ -57,6 +59,7 @@ header {
         width: 100%;
         background-color: @setrecords-dark-gray;
         font-size: 1.5rem;
+        z-index: 11;
         a {
             text-decoration: none;
             color: @setrecords-black;
@@ -67,6 +70,7 @@ header {
             }
             &.active {
                 color: @setrecords-white;
+                border-bottom: 0.25rem solid @setrecords-blue;
             }
         }
     }
@@ -78,7 +82,7 @@ header {
 }
 
 .content-page {
-    height: 90vh;
+    min-height: 57rem;
 }
 
 .set-list {
@@ -137,117 +141,178 @@ header {
 }
 
 .metrics-page {
-    background-color: @setrecords-black;
-    overflow: auto;
-    height: 100%;
-
-    .metrics-top {
-        height: 40%;
-        margin: 5vh 0 10vh 0;
-    }
-    .metrics-bottom {
-        height: 40%;
-        margin: 5vh 0 10vh 0;
-    }
+    background-color: @setrecords-gray;
+    min-height: 57rem;
+    align-items: center;
 }
 
 .setmine-report {
-    border: 4px solid @setrecords-blue;
-    margin: 0 2.5vw 0 2.5vw;
-    color: @setrecords-blue;
-    font-size: @headerHeight * 0.5;
-    font-family: @defaultFontStyle;
-    height: 100%;
-    box-sizing: border-box;
+    background-color: @setrecords-blue;
+    width: 34rem;
+    height: 34rem;
+    margin: 4rem 0;
     position: relative;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 2.5rem;
     .title {
+        font-family: @demiFontStyle;
+        font-size: 1.5rem;
+        background-color: @setrecords-white;
+        color: @setrecords-blue;
         align-items: center;
-        justify-content: left;
         position: absolute;
-        background-color: @setrecords-black;
-        margin-left: 1vw;
-        padding-right: 1vw;
-        height: 18%;
-        top: -4vh;
+        height: 5rem;
+        top: -2.5rem;
+        left: 1rem;
+        padding-right: 1rem;
         img {
-            height: @headerHeight * 0.66;
-            margin: 0 1vw 0 1vw;
-        }
-        p {
-            line-height: @headerHeight * 0.5;
-            margin: auto;
+            width: 4rem;
+            margin: 0 1rem;
         }
     }
     .setmine-numbers {
-        align-self: center;
+        width: 34rem;
+        height: 6rem;
         text-transform: uppercase;
-        font-size: @headerHeight * 0.2;
-        width: 100%;
-        * {
-            margin: 0 2.5%;
+        .plays {
+            color: @setrecords-white;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+        .profileviews {
+            color: @setrecords-yellow;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+        .favorites {
+            color: @setrecords-green;
+            align-items: center;
+            flex-wrap: nowrap;
         }
         h1 {
-            font-size: @headerHeight * 0.6;
-        }
-    }
-
-}
-
-.revenue-report {
-    border: 4px solid @setrecords-green;
-    margin: 0 2.5vw 0 2.5vw;
-    color: @setrecords-green;
-    font-size: @headerHeight * 0.5;
-    font-family: @defaultFontStyle;
-    height: 100%;
-    box-sizing: border-box;
-    position: relative;
-    .title {
-        align-items: center;
-        justify-content: left;
-        position: absolute;
-        background-color: @setrecords-black;
-        margin-left: 1vw;
-        padding-right: 1vw;
-        height: 18%;
-        top: -4vh;
-        img {
-            height: @headerHeight * 0.66;
-            margin: 0 1vw 0 1vw;
+            font-size: 3rem;
+            margin: 0;
         }
         p {
-            line-height: @headerHeight * 0.5;
-            margin: auto;
+            margin: 0;
         }
+    }
+    .setmine-graph {
+        width: 28rem;
+        height: 16rem;
+        background-color: @setrecords-white;
+    }
+}
+
+.beacon-report {
+    background-color: @setrecords-green;
+    width: 34rem;
+    height: 34rem;
+    margin: 4rem 0;
+    position: relative;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 2.5rem;
+    .title {
+        font-family: @demiFontStyle;
+        font-size: 1.5rem;
+        background-color: @setrecords-white;
+        color: @setrecords-green;
+        align-items: center;
+        position: absolute;
+        height: 5rem;
+        top: -2.5rem;
+        left: 1rem;
+        padding-right: 1rem;
+        img {
+            width: 4rem;
+            margin: 0 1rem;
+        }
+    }
+    .beacon-numbers {
+        width: 34rem;
+        height: 6rem;
+        text-transform: uppercase;
+        .revenue {
+            color: @setrecords-white;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+        .unlockedsets {
+            color: @setrecords-yellow;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+        }
+        p {
+            margin: 0;
+        }
+    }
+    .beacon-graph {
+        width: 28rem;
+        height: 16rem;
+        background-color: @setrecords-white;
     }
 }
 
 .social-report {
-    border: 4px solid @setrecords-yellow;
-    margin: 0 2.5vw 0 2.5vw;
-    color: @setrecords-yellow;
-    font-size: @headerHeight * 0.5;
-    font-family: @defaultFontStyle;
+    background-color: @setrecords-purple;
+    width: 34rem;
+    height: 34rem;
+    margin: 4rem 0;
     position: relative;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 2.5rem;
+
     .title {
+        font-family: @demiFontStyle;
+        font-size: 1.5rem;
+        background-color: @setrecords-white;
+        color: @setrecords-purple;
         align-items: center;
-        justify-content: left;
         position: absolute;
-        background-color: @setrecords-black;
-        margin-left: 1vw;
-        padding-right: 1vw;
-        height: 18%;
-        top: -4vh;
+        height: 5rem;
+        top: -2.5rem;
+        left: 1rem;
+        padding-right: 1rem;
         img {
-            height: @headerHeight * 0.66;
-            margin: 0 1vw 0 1vw;
-        }
-        p {
-            line-height: @headerHeight * 0.5;
-            margin: auto;
+            width: 4rem;
+            margin: 0 1rem;
         }
     }
+    .metrics {
+        width: 100%;
+        height: 8rem;
+        color: @setrecords-white;
+        align-items: center;
+        justify-content: space-between;
+        text-transform: uppercase;
+        .flex-column {
+            align-items: center;
+        }
+        img {
+            height: 4rem;
+            width: 4rem;
+            margin: 0;
+        }
+        h1 {
+        font-size: 3rem;
+        margin: 0;
+        }
+        p {
+            margin: 0;
+        }
+    }
+    .divider {
+        .createDivider(90%, 0.25rem, @setrecords-white);
+    }
 }
+
 
 #introvid{
     positon: absolute;

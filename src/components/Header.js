@@ -1,6 +1,5 @@
 import React from 'react';
 import NavBar from './NavBar';
-import {Navigation, Link} from 'react-router';
 import constants from '../constants/constants';
 
 var Header = React.createClass({
