@@ -14,10 +14,15 @@ var MediaReport = React.createClass({
 				<img src="/public/images/media_icon.png" />
 				media
 			</div>
-			<div className="metrics flex-row">
+			<div className="metrics flex-row flex">
 				<div className="flex-column flex-fixed">
-					<img src="/public/images/twitter_icon.png" />
+					<img src="/public/images/soundcloud_icon.png" />
 					<h1>6.6M</h1>
+				</div>
+				<div className="flex-column flex-fixed">
+					<p>plays</p>
+					<h1>320k</h1>
+					<p>yesterday +50</p>
 				</div>
 				<div className="flex-column flex-fixed">
 					<p>new followers</p>
@@ -26,25 +31,18 @@ var MediaReport = React.createClass({
 				</div>
 			</div>
 			<div className="divider"></div>
-			<div className="metrics flex-row">
+			<div className="metrics flex-row flex">
 				<div className="flex-column flex-fixed">
-					<img src="/public/images/facebook-icon.png" />
+					<img src="/public/images/youtube_icon.png" />
 					<h1>66.6M</h1>
 				</div>
 				<div className="flex-column flex-fixed">
-					<p>new likes</p>
+					<p>plays</p>
 					<h1>320k</h1>
 					<p>yesterday +50</p>
 				</div>
-			</div>
-			<div className="divider"></div>
-			<div className="metrics flex-row">
 				<div className="flex-column flex-fixed">
-					<img src="/public/images/instagram_icon.png" />
-					<h1>6.6M</h1>
-				</div>
-				<div className="flex-column flex-fixed">
-					<p>new followers</p>
+					<p>new subscribers</p>
 					<h1>320k</h1>
 					<p>yesterday +50</p>
 				</div>

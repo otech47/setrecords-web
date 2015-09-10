@@ -50,7 +50,8 @@ var MetricsView = React.createClass({
 			<div className="metrics-page flex-column">
 				<SetmineReport metrics={metrics.setmine} />
 				<BeaconReport />
-				<SocialReport metrics={metrics.social} />				
+				<SocialReport metrics={metrics.social} />	
+				<MediaReport />			
 			</div>
 		);
 	}
