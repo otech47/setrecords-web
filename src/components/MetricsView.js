@@ -11,29 +11,33 @@ var MetricsView = React.createClass({
 	componentWillMount: function() {
 		//load setmine metrics from database
 		var push = this.props.push;
-		var requestUrl = 'http://setmine.com/api/v/7/artist/metrics/music/' 
-		+ this.props.appState.get("artistData").id 
+		var artistId = this.props.appState.get("artistData").id;
+		var setmineRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/setmine/' 
+		+ artistId
 		+'?cohortType=daily&limit=7';
+		var socialRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/social/' 
+		+ artistId;
 		
-		$.ajax({
-			type: "GET",
-			url: requestUrl,
-			success: function(res) {
-				push({
-					type: "SHALLOW_MERGE",
-					data: {
-						metrics: {
-							setmine: {
-								plays: res.payload.metrics.music.set_plays.overtime,
-								favorites: res.payload.metrics.music.set_favorites.overtime
-							}
-						}
+		var setmineMetrics;
+		var socialMetrics;
+
+		$.when(
+			$.get(setmineRequestUrl, function(res) {
+				setmineMetrics = res.payload.metrics.setmine;
+			}),
+			$.get(socialRequestUrl, function(res) {
+				socialMetrics = res.payload.metrics.social;
+			})
+		).then(function() {
+			push({
+				type: "SHALLOW_MERGE",
+				data: {
+					metrics: {
+						setmine: setmineMetrics,
+						social: socialMetrics
 					}
-				});
-			},
-			error: function(err) {
-				console.log(err);
-			}
+				}
+			});
 		});
 	},
 	_attachStream: function() {
@@ -46,8 +50,7 @@ var MetricsView = React.createClass({
 			<div className="metrics-page flex-column">
 				<SetmineReport metrics={metrics.setmine} />
 				<BeaconReport />
-				<SocialReport />
-				<MediaReport />
+				<SocialReport metrics={metrics.social} />				
 			</div>
 		);
 	}

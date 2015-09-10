@@ -207,9 +207,38 @@ var initialAppState = Immutable.Map({
 	},
 	'metrics': {
 		"setmine": {
-			'plays': [18, 23, 31, 14, 55, 6, 47],
-			'views': [4,21,33,4,15,26,47],
-			'favorites': [19,32,35,48,54,26,87]
+			'plays': {
+				overtime: [1,2,3],
+				overtime_cumulative: [3,4,5],
+				total: 32
+			},
+			'profileviews': {
+				overtime: [1,2,3],
+				overtime_cumulative: [3,4,5],
+				total: 32
+			},
+			'favorites': {
+				overtime: [1,2,3],
+				overtime_cumulative: [3,4,5],
+				total: 32
+			}
+		},
+		"social": {
+			'twitter': {
+				current: "1.1K",
+				last: "2.2K",
+				total: "3.3K"
+			},
+			'facebook': {
+				current: "1.1K",
+				last: "2.2K",
+				total: "3.3K"
+			},
+			'instagram': {
+				current: "1.1K",
+				last: "2.2K",
+				total: "3.3K"
+			}
 		},
 	}
 });
