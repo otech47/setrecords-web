@@ -7,7 +7,7 @@ var ViewContainer = React.createClass({
 		var Rh = this.props.routeHandler;
 
 		return (
-			<div className="view-container">
+			<div className="view-container flex">
 				<Rh appState={appState} push={push} />
 			</div>
 		);

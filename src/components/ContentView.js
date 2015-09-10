@@ -20,13 +20,24 @@ var ContentView = React.createClass({
 		});
 
 		return (
-			<div className="content-page flex-row">
-				<div className="flex-fixed-2x set-list">
-					{setTiles}
+			<div className="content-page flex-column">
+				<div className=" set-list flex">
+					<div className="moible-column flex-row  ">
+						<div className="addSet">
+							<i className="fa fa-plus"></i>
+							<p>ADD A SET</p>
+						</div>
+						<SetTile/>
+						<SetTile/>
+						<SetTile/>
+						<SetTile/>
+						<SetTile/>
+						<SetTile/>
+						<SetTile/>
+					</div>
+					
 				</div>
-				<div className="flex-fixed-7x  set-editor">
-					<SetEditor />
-				</div>
+			
 			</div>
 		);
 	}

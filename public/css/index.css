@@ -713,3 +713,54 @@ td .deleteTrack {
 #linkTrack {
   font-size: 90%;
 }
+.moible-column {
+  width: 100%;
+  height: 43.5%;
+}
+.moible-column p {
+  color: #ffffff;
+  font-family: Avenir Demi;
+}
+.moible-column .fa-plus {
+  font-size: 700%;
+  color: #ffffff;
+}
+.moible-column .addSet {
+  text-align: center;
+  width: 50%;
+  height: 79.8%;
+  background-color: #3498db;
+}
+.moible-column .set-tile {
+  height: 80%;
+  width: 43%;
+  margin: 0%;
+  padding-left: 0%;
+}
+.moible-column .set-info {
+  padding: 1vh;
+  width: 50%;
+}
+.moible-column .moible-set-info {
+  width: 100%;
+}
+.moible-column .tile-controls {
+  width: 116.4%;
+  background-color: rgba(49, 53, 66, 0.7);
+  font-size: 1rem;
+}
+.moible-column .tile-controls > .divider {
+  height: 1px;
+  width: 100%;
+  background-color: #bdc3c7;
+}
+.moible-column .tile-controls .flex-row .divider {
+  height: initial;
+  width: 1px;
+  background-color: #bdc3c7;
+}
+.moible-column .event-image {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
