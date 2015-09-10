@@ -8,28 +8,34 @@ var SetmineReport = React.createClass({
 		var _this = this;
 	},
 	render: function() {
+		var metrics = this.props.metrics;
+		var plays = metrics.plays;
+		var favorites = metrics.favorites;
+
 		return (
-		<div className="flex-fixed setmine-report set-flex">
-			<div className="flex-row title">
+		<div className="setmine-report flex-column">
+			<div className="title flex-row">
 				<img src="/public/images/setminelogo.png" />
-				<p>revenue</p>
+				setmine
 			</div>
-			<div className="flex-row setmine-numbers">
-				<div className="setmine-plays flex-fixed">
-					plays
-					<h1>3200</h1>
-					(yesterday + 9)
+			<div className="setmine-numbers flex-row">
+				<div className="plays flex-column flex-fixed">
+					<p>plays</p>
+					<h1>{plays[6].count}</h1>
+					<p>yesterday {(plays[6].count - plays[5].count >= 0) ? '+' : ''}{plays[6].count - plays[5].count}</p>
 				</div>
-				<div className="setmine-profileviews flex-fixed">
-					profile views
-					<h1>320</h1>
-					(yesterday + 9)
-				</div>
-				<div className="setmine-favorites flex-fixed">
-					favorites
+				<div className="profileviews flex-column flex-fixed">
+					<p>profile views</p>
 					<h1>32</h1>
-					(yesterday + 9)
+					<p>yesterday +3</p>
 				</div>
+				<div className="favorites flex-column flex-fixed">
+					<p>favorites</p>
+					<h1>{favorites[6].count}</h1>
+					<p>yesterday {(favorites[6].count - favorites[5].count >= 0) ? '+' : ''}{favorites[6].count - favorites[5].count}</p>
+				</div>
+			</div>
+			<div className="setmine-graph">
 			</div>
 		</div>
 		);

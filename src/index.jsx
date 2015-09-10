@@ -204,6 +204,13 @@ var initialAppState = Immutable.Map({
 			"soundcloud": "http://soundcloud.com/calvinharris",
 			"youtube": "https://www.youtube.com/CalvinHarrisVEVO"
 		}
+	},
+	'metrics': {
+		"setmine": {
+			'plays': [18, 23, 31, 14, 55, 6, 47],
+			'views': [4,21,33,4,15,26,47],
+			'favorites': [19,32,35,48,54,26,87]
+		},
 	}
 });
 
@@ -247,14 +254,6 @@ var App = React.createClass({
 			console.log('UPDATE', newState);
 			_this.setState({ appState: newState });
 		});
-	},
-	showUploadWizard: function() {
-		if (this.state.appState.get("wizardData").step > 0) {
-			return (<UploadWizardWrapper appState={this.state.appState} push={push} />);
-		}
-		else {
-			return "";
-		}
 	},
 	render: function() {
 		var appState = this.state.appState;

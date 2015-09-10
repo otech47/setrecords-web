@@ -312,6 +312,59 @@ header {
         .createDivider(90%, 0.25rem, @setrecords-white);
     }
 }
+.media-report {
+    background-color: @setrecords-red;
+    width: 34rem;
+    height: 34rem;
+    margin: 4rem 0;
+    position: relative;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 2.5rem;
+
+    .title {
+        font-family: @demiFontStyle;
+        font-size: 1.5rem;
+        background-color: @setrecords-white;
+        color: @setrecords-red;
+        align-items: center;
+        position: absolute;
+        height: 5rem;
+        top: -2.5rem;
+        left: 1rem;
+        padding-right: 1rem;
+        img {
+            width: 4rem;
+            margin: 0 1rem;
+        }
+    }
+    .metrics {
+        width: 100%;
+        height: 8rem;
+        color: @setrecords-white;
+        align-items: center;
+        justify-content: space-between;
+        text-transform: uppercase;
+        .flex-column {
+            align-items: center;
+        }
+        img {
+            height: 4rem;
+            width: 4rem;
+            margin: 0;
+        }
+        h1 {
+        font-size: 3rem;
+        margin: 0;
+        }
+        p {
+            margin: 0;
+        }
+    }
+    .divider {
+        .createDivider(90%, 0.25rem, @setrecords-white);
+    }
+}
 
 
 #introvid{

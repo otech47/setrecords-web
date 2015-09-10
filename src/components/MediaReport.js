@@ -1,6 +1,6 @@
 import React from 'react';
 
-var SocialReport = React.createClass({
+var MediaReport = React.createClass({
 	componentDidMount: function() {
 		this._attachStream();
 	},
@@ -9,10 +9,10 @@ var SocialReport = React.createClass({
 	},
 	render: function() {
 		return (
-		<div className="social-report flex-column">
+		<div className="media-report flex-column">
 			<div className="title flex-row">
-				<img src="/public/images/social_icon.png" />
-				social
+				<img src="/public/images/media_icon.png" />
+				media
 			</div>
 			<div className="metrics flex-row">
 				<div className="flex-column flex-fixed">
@@ -54,4 +54,4 @@ var SocialReport = React.createClass({
 	}
 });
 
-module.exports = SocialReport;									
+module.exports = MediaReport;									
