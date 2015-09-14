@@ -1,7 +1,7 @@
 import React from 'react/addons';
 import SetEditor from './SetEditor';
 import SetTile from './SetTile';
-
+import MoibleSetEditor from './MoibleSetEditor'
 
 var ContentView = React.createClass({
 	displayName: 'ContentView',
@@ -11,6 +11,7 @@ var ContentView = React.createClass({
 	componentDidMount: function() {
 		this._attachStreams();
 	},
+
 	render: function() {
 		var artistData = this.props.appState.get("artistData");
 		var sets = artistData.sets;
@@ -24,8 +25,14 @@ var ContentView = React.createClass({
 				<div className=" set-list flex">
 					<div className="moible-column flex-row  ">
 						<div className="addSet">
+							<a>	
+								<i className="fa fa-plus"></i>
+								<p>ADD A SET</p>
+							</a>
+						</div>
+						<div className="addSong">
 							<i className="fa fa-plus"></i>
-							<p>ADD A SET</p>
+							<p>ADD A SONG</p>
 						</div>
 						<SetTile/>
 						<SetTile/>

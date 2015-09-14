@@ -6,6 +6,7 @@
 
 body {
     margin: 0;
+
 }
 
 header {
@@ -75,15 +76,17 @@ header {
 
 .view-container {
     background-color: @setrecords-purple;
-    height: 80vh;
+   margin-top: @headerHeight * 1.5;
+
 }
 
 .content-page {
     height: 100%;
+
 }
 
 .set-list {
-    background-color: @setrecords-black;
+    background-color: @setrecords-light-gray;
     height: 100%;
     overflow: auto;
 }
@@ -220,6 +223,7 @@ footer{
     font-family: @defaultFontStyle;
     padding: 0 1% 0 1%;
     flex-wrap: nowrap;
+
 
     .company-links {
         height: 100%;
@@ -411,44 +415,62 @@ td{
 
 
 .moible-column{
+
+    justify-content: space-around;
+    padding-top:3%;
     width: 100%;
-    height: 43.5%;
+    height: 40%;
+    margin: auto; 
+    border: @setrecords-black 2px;
 
     p{
         color: @setrecords-white;
         font-family: @demiFontStyle;
     }
    .fa-plus {
-  
     font-size: 700%;
     color: @setrecords-white;
    } 
-
    .addSet{
-
+    text-decoration: none;
+    margin-bottom: 20px;
     text-align: center;
-    width: 50%;
-    height:79.8%;
-
+    width: 47%;
+    height:70.8%;
+    background-color: #3498db;
+    p{
+        padding-bottom: 20%;
+        }
+   }
+    .addSong{
     
-     background-color: #3498db;
+    text-align: center;
+    width: 47%;
+    height:70.8%;
+    background-color: #9b59b6;
+        p{
+            
+        }
+
    }
    .set-tile {
-    height: 80%;
-    width: 43%;
+    border: 10px @setrecords-black ;
+    height: 70.8%;
+    width: 40%;
     margin: 0%;
-
     padding-left: 0%;
+    margin-bottom: 20px;
 }
     .set-info {
-            padding: 1vh;
+           padding: 1vh;
             width:50%;
         }
     .moible-set-info{
         width: 100%;
     }
     .tile-controls {
-            width: 116.4%;
+          font-family: @demiFontStyle;
+            width: 117.7%;
             background-color: fade(@set-darker-gray, 70%);
             font-size: 1rem;
             >.divider {
@@ -462,8 +484,114 @@ td{
             height: 100%;
             width: 100%;
             position: absolute;
-        }
-       
+        } 
 }
 
+.moible-set-editor{
+
+ 
+    background-color: @setrecords-white;
+    flex-wrap: wrap;
+    overflow: auto;
+
+    .edit-set-preview{
+        
+        margin-left: 6%;
+      img{
+        width: 65%;
+        height: 140%;
+      }
+     #change-set{
+        width: 65%;
+        height: 55px;
+        color: @setrecords-light-black;
+        background-color: #bdc3c7;
+        border-color:  #bdc3c7;
+        font-family: @demiFontStyle;
+        font-size: 100%;
+        padding: 0;
+        border: none;
+        }
+    }
+
+    .edit-set-name{
+        h1{
+            width: 100%;
+            font-size: 200%;
+            margin: 0;
+            margin-top: 2%;
+        
+        }      
+        padding-left: 8%;
+        font-weight: bold;
+
+        p{
+          
+            
+            font-size: 130%;
+        }
+        .fa-pencil{
+            margin-left:2%;
+            font-size: 50%;
+             color: @setrecords-dark-gray;
+        }
+        #moible-edit-name{
+        margin-bottom: 4%;    
+        font-size: 50%;
+        margin-left: 4%;
+        color: @setrecords-dark-gray;
+        }
+    }
+    .edit-set-track{
+
+        
+        padding-left: 8%;
+        font-weight: bold;
+        height: 62vh;
+
+       
+        p{
+            margin:0 ;
+            
+            font-size: 130%;
+        }
+        .trackiList-table{
+         margin-bottom: 15%;
+        }
+    }
+
+    .trackAdd{
+        padding-top: 20px;
+    }
+      #addTrack{
+    
+        padding-top: 1%;
+        padding-bottom: 1%;
+        padding: 1%;
+        width: 20%;
+         border: none;
+         color: white;
+         background-color: #33b510; 
+         font-family: @demiFontStyle;
+        border-radius:  40%;
+        }
+    table, th, td {
+        color: white;
+        margin-top: 8%;
+        border: 4px solid #bdc3cc;
+
+    }
+    td{
+        i{
+            color: red;
+        }
+        background-color: #313542;
+        .deleteTrack{
+            border: 0;
+            background-color: #bdc3cc;
+             border: 5px solid #bdc3cc;
+        }
+    }
+
+}
 

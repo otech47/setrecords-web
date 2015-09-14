@@ -19,7 +19,7 @@ import SearchResultsView from './components/SearchResultsView';
 
 import Favorites from './components/Favorites';
 import New from './components/New';
-
+import  MoibleSetEditor from './components/MoibleSetEditor';
 import Artists from './components/Artists';
 import Festivals from './components/Festivals';
 import Mixes from './components/Mixes';
@@ -283,7 +283,7 @@ var App = React.createClass({
 
 var routes = (
 	<Route path='/' handler={App}>
-		<DefaultRoute name='content' handler={ContentView} />
+		<DefaultRoute name='content' handler={MoibleSetEditor} />
 		<Route path='content' handler={ContentView} />
 		<Route name='metrics' path='metrics' handler={MetricsView} />
 		<Route name='account' path='account' handler={AccountView} />

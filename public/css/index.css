@@ -414,13 +414,13 @@ header .header-artist p {
 }
 .view-container {
   background-color: #a74cab;
-  height: 80vh;
+  margin-top: 15vh;
 }
 .content-page {
   height: 100%;
 }
 .set-list {
-  background-color: #2b2b2b;
+  background-color: #dadfe1;
   height: 100%;
   overflow: auto;
 }
@@ -714,8 +714,12 @@ td .deleteTrack {
   font-size: 90%;
 }
 .moible-column {
+  justify-content: space-around;
+  padding-top: 3%;
   width: 100%;
-  height: 43.5%;
+  height: 40%;
+  margin: auto;
+  border: #2b2b2b 2px;
 }
 .moible-column p {
   color: #ffffff;
@@ -726,16 +730,29 @@ td .deleteTrack {
   color: #ffffff;
 }
 .moible-column .addSet {
+  text-decoration: none;
+  margin-bottom: 20px;
   text-align: center;
-  width: 50%;
-  height: 79.8%;
+  width: 47%;
+  height: 70.8%;
   background-color: #3498db;
 }
+.moible-column .addSet p {
+  padding-bottom: 20%;
+}
+.moible-column .addSong {
+  text-align: center;
+  width: 47%;
+  height: 70.8%;
+  background-color: #9b59b6;
+}
 .moible-column .set-tile {
-  height: 80%;
-  width: 43%;
+  border: 10px #2b2b2b;
+  height: 70.8%;
+  width: 40%;
   margin: 0%;
   padding-left: 0%;
+  margin-bottom: 20px;
 }
 .moible-column .set-info {
   padding: 1vh;
@@ -745,7 +762,8 @@ td .deleteTrack {
   width: 100%;
 }
 .moible-column .tile-controls {
-  width: 116.4%;
+  font-family: Avenir Demi;
+  width: 117.7%;
   background-color: rgba(49, 53, 66, 0.7);
   font-size: 1rem;
 }
@@ -763,4 +781,95 @@ td .deleteTrack {
   height: 100%;
   width: 100%;
   position: absolute;
+}
+.moible-set-editor {
+  background-color: #ffffff;
+  flex-wrap: wrap;
+  overflow: auto;
+}
+.moible-set-editor .edit-set-preview {
+  margin-left: 6%;
+}
+.moible-set-editor .edit-set-preview img {
+  width: 65%;
+  height: 140%;
+}
+.moible-set-editor .edit-set-preview #change-set {
+  width: 65%;
+  height: 55px;
+  color: #313542;
+  background-color: #bdc3c7;
+  border-color: #bdc3c7;
+  font-family: Avenir Demi;
+  font-size: 100%;
+  padding: 0;
+  border: none;
+}
+.moible-set-editor .edit-set-name {
+  padding-left: 8%;
+  font-weight: bold;
+}
+.moible-set-editor .edit-set-name h1 {
+  width: 100%;
+  font-size: 200%;
+  margin: 0;
+  margin-top: 2%;
+}
+.moible-set-editor .edit-set-name p {
+  font-size: 130%;
+}
+.moible-set-editor .edit-set-name .fa-pencil {
+  margin-left: 2%;
+  font-size: 50%;
+  color: #6c7a89;
+}
+.moible-set-editor .edit-set-name #moible-edit-name {
+  margin-bottom: 4%;
+  font-size: 50%;
+  margin-left: 4%;
+  color: #6c7a89;
+}
+.moible-set-editor .edit-set-track {
+  padding-left: 8%;
+  font-weight: bold;
+  height: 62vh;
+}
+.moible-set-editor .edit-set-track p {
+  margin: 0 ;
+  font-size: 130%;
+}
+.moible-set-editor .edit-set-track .trackiList-table {
+  margin-bottom: 15%;
+}
+.moible-set-editor .trackAdd {
+  padding-top: 20px;
+}
+.moible-set-editor #addTrack {
+  padding-top: 1%;
+  padding-bottom: 1%;
+  padding: 1%;
+  width: 20%;
+  border: none;
+  color: white;
+  background-color: #33b510;
+  font-family: Avenir Demi;
+  border-radius: 40%;
+}
+.moible-set-editor table,
+.moible-set-editor th,
+.moible-set-editor td {
+  color: white;
+  margin-top: 8%;
+  border: 4px solid #bdc3cc;
+}
+.moible-set-editor td {
+  background-color: #313542;
+}
+.moible-set-editor td i {
+  color: red;
+}
+.moible-set-editor td .deleteTrack {
+  border: 0;
+  background-color: #bdc3cc;
+  border: 5px solid #bdc3cc;
 }
