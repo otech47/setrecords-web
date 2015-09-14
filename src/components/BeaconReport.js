@@ -17,12 +17,12 @@ var BeaconReport = React.createClass({
 				beacons
 			</div>
 			<div className="beacon-numbers flex-row">
-				<div className="revenue flex-column">
+				<div className="revenue flex-column flex-fixed">
 					<p>new revenue</p>
 					<h1>{suffixNum(metrics.revenue.current)}</h1>
 					<p>yesterday {suffixNum(metrics.revenue.last)}</p>
 				</div>
-				<div className="unlockedsets flex-column">
+				<div className="unlockedsets flex-column flex-fixed">
 					<p>sets unlocked</p>
 					<h1>{suffixNum(metrics.unlocks.current)}</h1>
 					<p>yesterday {suffixNum(metrics.unlocks.last)}</p>
