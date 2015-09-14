@@ -204,6 +204,13 @@ var initialAppState = Immutable.Map({
 			"soundcloud": "http://soundcloud.com/calvinharris",
 			"youtube": "https://www.youtube.com/CalvinHarrisVEVO"
 		}
+	},
+	'metrics': {
+		"setmine": {
+			'plays': [18, 23, 31, 14, 55, 6, 47],
+			'views': [4,21,33,4,15,26,47],
+			'favorites': [19,32,35,48,54,26,87]
+		},
 	}
 });
 
@@ -248,21 +255,12 @@ var App = React.createClass({
 			_this.setState({ appState: newState });
 		});
 	},
-	showUploadWizard: function() {
-		if (this.state.appState.get("wizardData").step > 0) {
-			return (<UploadWizardWrapper appState={this.state.appState} push={push} />);
-		}
-		else {
-			return "";
-		}
-	},
 	render: function() {
 		var appState = this.state.appState;
 		//pass in appState and push to every component you want to access event dispatcher
 		return (
 			<div className="main-container flex-column">
 				<Header appState={appState} push={push} />
-				<NavBar />
 				<ViewContainer appState={appState} push={push}
 					routeHandler={RouteHandler} />
 				<FooterSetrecords />
@@ -283,9 +281,15 @@ var App = React.createClass({
 
 var routes = (
 	<Route path='/' handler={App}>
+<<<<<<< HEAD
 		<DefaultRoute name='content' handler={MoibleSetEditor} />
 		<Route path='content' handler={ContentView} />
 		<Route name='metrics' path='metrics' handler={MetricsView} />
+=======
+		<DefaultRoute name='metrics' handler={MetricsView} />
+		<Route name='content' path='content' handler={ContentView} />
+		<Route path='metrics' handler={MetricsView} />
+>>>>>>> f7eb9659a4f67dc711165815f39f68b2c4e2b919
 		<Route name='account' path='account' handler={AccountView} />
 	</Route>
 );

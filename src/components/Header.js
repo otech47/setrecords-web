@@ -1,4 +1,5 @@
 import React from 'react';
+import NavBar from './NavBar';
 import constants from '../constants/constants';
 
 var Header = React.createClass({
@@ -12,8 +13,8 @@ var Header = React.createClass({
 		if (this.props.appState) {
 			var artistData = this.props.appState.get("artistData");
 			return (
-				<div className="header-artist flex-row">
-					<div className="flex-column">
+				<div className="artist flex-row">
+					<div className="options flex-column">
 						<h1>{artistData.artist}</h1>
 						<p>New Set | Logout</p>
 					</div>
@@ -26,12 +27,15 @@ var Header = React.createClass({
 	},
 	render: function() {
 		return (
-			<header className="flex-row">
-				<div className="logo flex-row">
-					<img src="/public/images/setrecords.png" />
-					<p>setrecords</p>
+			<header className="flex-column">
+				<div className="flex-fixed-2x header-main flex-row">
+					<div className="logo flex-row">
+						<img src="/public/images/setrecords.png" />
+						setrecords
+					</div>
+					{this.showArtistOptions()}
 				</div>
-				{this.showArtistOptions()}
+				<NavBar />
 			</header>
 		);
 	}

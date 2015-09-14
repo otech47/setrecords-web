@@ -13,14 +13,8 @@ var ContentView = React.createClass({
 	},
 
 	render: function() {
-		var artistData = this.props.appState.get("artistData");
-		var sets = artistData.sets;
-		var setTiles = [];
-		sets.map(function (set, index) {
-			setTiles.push(<SetTile set={set} key={set.id} />)
-		});
-
 		return (
+<<<<<<< HEAD
 			<div className="content-page flex-column">
 				<div className=" set-list flex">
 					<div className="moible-column flex-row  ">
@@ -45,6 +39,10 @@ var ContentView = React.createClass({
 					
 				</div>
 			
+=======
+			<div className="content-page">
+				it's the content page!
+>>>>>>> f7eb9659a4f67dc711165815f39f68b2c4e2b919
 			</div>
 		);
 	}
