@@ -8,10 +8,18 @@ var SetmineReport = React.createClass({
 		var _this = this;
 	},
 	render: function() {
+		var suffixNum = this.props.numberWithSuffix;
 		var metrics = this.props.metrics;
-		var playsOvertime = metrics.plays.overtime;
-		var profileviewsOvertime = metrics.profileviews.overtime;
-		var favoritesOvertime = metrics.favorites.overtime;
+
+		var current_plays = metrics.plays.current;
+		var last_plays = metrics.plays.last;
+
+		var current_views = metrics.views.current;
+		var last_views = metrics.views.last;
+
+		var current_favorites = metrics.favorites.current;
+		var last_favorites = metrics.favorites.last;
+
 
 		return (
 		<div className="setmine-report flex-column">
@@ -21,19 +29,19 @@ var SetmineReport = React.createClass({
 			</div>
 			<div className="setmine-numbers flex-row">
 				<div className="plays flex-column flex-fixed">
-					<p>plays</p>
-					<h1>{playsOvertime[playsOvertime.length - 1].count}</h1>
-					<p>yesterday {(playsOvertime[playsOvertime.length - 1].count - playsOvertime[playsOvertime.length - 2].count >= 0) ? '+' : ''}{playsOvertime[playsOvertime.length - 1].count - playsOvertime[playsOvertime.length - 2].count}</p>
+					<p>new plays</p>
+					<h1>{suffixNum(current_plays)}</h1>
+					<p>yesterday {suffixNum(last_plays)}</p>
 				</div>
 				<div className="profileviews flex-column flex-fixed">
 					<p>profile views</p>
-					<h1>{profileviewsOvertime[profileviewsOvertime.length - 1].count}</h1>
-					<p>yesterday {(profileviewsOvertime[profileviewsOvertime.length - 1].count - profileviewsOvertime[profileviewsOvertime.length - 2].count >= 0) ? '+' : ''}{profileviewsOvertime[profileviewsOvertime.length - 1].count - profileviewsOvertime[profileviewsOvertime.length - 2].count}</p>
+					<h1>{suffixNum(current_views)}</h1>
+					<p>yesterday {suffixNum(last_views)}</p>
 				</div>
 				<div className="favorites flex-column flex-fixed">
 					<p>favorites</p>
-					<h1>{favoritesOvertime[favoritesOvertime.length - 1].count}</h1>
-					<p>yesterday {(favoritesOvertime[favoritesOvertime.length - 1].count - favoritesOvertime[favoritesOvertime.length - 2].count >= 0) ? '+' : ''}{favoritesOvertime[favoritesOvertime.length - 1].count - favoritesOvertime[favoritesOvertime.length - 2].count}</p>
+					<h1>{suffixNum(current_favorites)}</h1>
+					<p>yesterday {suffixNum(last_favorites)}</p>
 				</div>
 			</div>
 			<div className="setmine-graph">

@@ -208,38 +208,75 @@ var initialAppState = Immutable.Map({
 	'metrics': {
 		"setmine": {
 			'plays': {
-				overtime: [1,2,3],
-				overtime_cumulative: [3,4,5],
-				total: 32
+				current: 1,
+				last: 2,
+				overtime: [1,2,3]
 			},
-			'profileviews': {
-				overtime: [1,2,3],
-				overtime_cumulative: [3,4,5],
-				total: 32
+			'views': {
+				current: 1,
+				last: 2,
+				overtime: [1,2,3]
 			},
 			'favorites': {
-				overtime: [1,2,3],
-				overtime_cumulative: [3,4,5],
-				total: 32
+				current: 1,
+				last: 2,
+				overtime: [1,2,3]
 			}
 		},
 		"social": {
 			'twitter': {
-				current: "1.1K",
-				last: "2.2K",
-				total: "3.3K"
+				current: 1.1,
+				last: 2.2,
+				overtime: [1,2,3]
 			},
 			'facebook': {
-				current: "1.1K",
-				last: "2.2K",
-				total: "3.3K"
+				current: 1.1,
+				last: 2.2,
+				overtime: [1,2,3]
 			},
 			'instagram': {
-				current: "1.1K",
-				last: "2.2K",
-				total: "3.3K"
+				current: 1.1,
+				last: 2.2,
+				overtime: [1,2,3]
 			}
 		},
+		"media": {
+			'soundcloud': {
+				followers: {
+					current: 1,
+					last: 2,
+					overtime: [1,2,3]
+				},
+				plays: {
+					current: 1,
+					last: 2,
+					overtime: [1,2,3]	
+				}
+			},
+			'youtube': {
+				followers: {
+					current: 1,
+					last: 2,
+					overtime: [1,2,3]
+				},
+				plays: {
+					current: 1,
+					last: 2,
+					overtime: [1,2,3]	
+				}
+			}
+		},
+		"beacons": {
+			'revenue': {
+				current: 0,
+				last: 0
+			},
+			'unlocks': {
+				current: 0,
+				last: 0
+			},
+			'overtime': [1,2,3]
+		}
 	}
 });
 

@@ -8,6 +8,8 @@ var BeaconReport = React.createClass({
 		var _this = this;
 	},
 	render: function() {
+		var suffixNum = this.props.numberWithSuffix;
+		var metrics = this.props.metrics;
 		return (
 		<div className="beacon-report flex-column">
 			<div className="title flex-row">
@@ -15,15 +17,15 @@ var BeaconReport = React.createClass({
 				beacons
 			</div>
 			<div className="beacon-numbers flex-row">
-				<div className="revenue flex-column flex-fixed">
-					<p>total revenue</p>
-					<h1>320k</h1>
-					<p>yesterday +50</p>
+				<div className="revenue flex-column">
+					<p>new revenue</p>
+					<h1>{suffixNum(metrics.revenue.current)}</h1>
+					<p>yesterday {suffixNum(metrics.revenue.last)}</p>
 				</div>
-				<div className="unlockedsets flex-column flex-fixed">
+				<div className="unlockedsets flex-column">
 					<p>sets unlocked</p>
-					<h1>32</h1>
-					<p>yesterday -9</p>
+					<h1>{suffixNum(metrics.unlocks.current)}</h1>
+					<p>yesterday {suffixNum(metrics.unlocks.last)}</p>
 				</div>
 			</div>
 			<div className="beacon-graph">
