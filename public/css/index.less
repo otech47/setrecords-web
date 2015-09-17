@@ -97,15 +97,15 @@ header {
 }
 
 .set-tile {
+    width: auto%;
+    height: auto%;
     position: relative;
-    height: 22%;
-    margin: 5% 0 5% 0;
-    padding: 0 7% 0 7%;
+    margin: auto;
 }
 
 .tile-info {
         color:white;
-        height: 100%;
+        height: 50%;
         width: 100%;
         .artist-image {
             height: 80%;
@@ -598,7 +598,27 @@ footer{
 
   #addTrack{
 
-    height: 100%;
+   border-top: 1px solid #2ebd59;
+   background: #2ebd59;
+   background: -webkit-gradient(linear, left top, left bottom, from(#2ebd59), to(#2ebd59));
+   background: -webkit-linear-gradient(top, #2ebd59, #2ebd59);
+   background: -moz-linear-gradient(top, #2ebd59, #2ebd59);
+   background: -ms-linear-gradient(top, #2ebd59, #2ebd59);
+   background: -o-linear-gradient(top, #2ebd59, #2ebd59);
+   padding: 5px 10px;
+   -webkit-border-radius: 8px;
+   -moz-border-radius: 8px;
+   border-radius: 8px;
+   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   box-shadow: rgba(0,0,0,1) 0 1px 0;
+   text-shadow: rgba(0,0,0,.4) 0 1px 0;
+   color: white;
+   font-size: 14px;
+   font-family: Georgia, serif;
+   text-decoration: none;
+   vertical-align: middle;
+   height: 100%;
     width: 22.6%;
      
      border: none;
@@ -606,7 +626,19 @@ footer{
      background-color: #33b510; 
      font-family: @demiFontStyle;
     border-radius:  40%;
-    }
+   }
+#addTrack:hover {
+   border-top-color: #287836;
+   background: #287836;
+   color: #ccc;
+   }
+#addTrack:active {
+   border-top-color: #2ebd59;
+   background: #2ebd59;
+   }
+
+    
+    
 table, th, td {
     color: white;
     margin-top: 8%;
@@ -645,94 +677,107 @@ td{
 
 
 .moible-column{
-
     justify-content: space-around;
     padding-top:3%;
     width: 100%;
     height: 40%;
-    margin: auto; 
-    border: @setrecords-black 2px;
+    margin-bottom: 5%;
 
-    p{
+    .addSet{
+        text-decoration: none;
+        background-color: @setrecords-purple;
+        text-align: center;
+        width: 43%;
+        height:80%;
         color: @setrecords-white;
-        font-family: @demiFontStyle;
-    }
-   .fa-plus {
-    font-size: 700%;
-    color: @setrecords-white;
-   } 
-   .addSet{
-    text-decoration: none;
-    margin-bottom: 20px;
-    text-align: center;
-    width: 47%;
-    height:70.8%;
-    background-color: #3498db;
-    p{
-        padding-bottom: 20%;
-        }
-   }
-    .addSong{
-    
-    text-align: center;
-    width: 47%;
-    height:70.8%;
-    background-color: #9b59b6;
-        p{
-            
-        }
+            i{
+               padding-top: 45px;
+            }
+            p{
+                font-size: 120%;
+            }
 
-   }
-   .set-tile {
-    border: 10px @setrecords-black ;
-    height: 70.8%;
-    width: 40%;
-    margin: 0%;
-    padding-left: 0%;
-    margin-bottom: 20px;
-}
-    .set-info {
-           padding: 1vh;
-            width:50%;
-        }
-    .moible-set-info{
-        width: 100%;
     }
-    .tile-controls {
-          font-family: @demiFontStyle;
-            width: 117.7%;
-            background-color: fade(@set-darker-gray, 70%);
-            font-size: 1rem;
-            >.divider {
-                .createDivider(100%, 1px, @set-gray);
+    .addSong{
+        text-decoration: none;
+        background-color: @setrecords-blue;
+        text-align: center;
+        width: 43%;
+        height:80%;
+        color: @setrecords-white;
+            i{
+               padding-top: 45px;
             }
-            .flex-row .divider {
-                .createDivider(1px, initial, @set-gray);
+            p{
+                font-size: 120%;
+            }
+
+    } 
+    .fa-plus{
+        font-size: 700%;
+        color: @setrecords-white;
+    }
+
+    .set-tile{
+       justify-content: flex-end;
+       width: 43%;
+       height: 180px;
+       margin-top: 3%;
+
+       .tile-info{
+         height: 180px;
+            .event-image{
+                height: 100%;
+                width: 100%;
+            }
+            .tile-controls {
+                height: 40%;
+                width: 100%;
+                margin-bottom: ;
+                aliign-items: flex-end;
+                background-color: fade(@setrecords-dark-gray, 70%);
+                font-size: 1rem;
+                >.divider {
+                 .createDivider(100%, 1px, @setrecords-gray);
+                }
             }
         }
-         .event-image {
-            height: 100%;
-            width: 100%;
-            position: absolute;
-        } 
+    }    
 }
 
 .moible-set-editor{
-
- 
-    background-color: @setrecords-white;
+    
+     background-color: @setrecords-white;
     flex-wrap: wrap;
     overflow: auto;
-
-    .edit-set-preview{
+    overflow: hidden;
+    .deleteSet{
         
-        margin-left: 6%;
+    }
+    #deleteSet{
+        margin-top: 2%;
+        margin-left: 7.5%;
+        background-color: @setrecords-black;
+        color: @setrecords-red;
+        border: @setrecords-black;
+        width: 40%;
+       
+
+        font-style: bold;
+        font-size: 110%;
+    }
+      
+    .edit-set-preview{
+
+        
       img{
-        width: 65%;
+        margin-left: 7.5%;
+        width: 63%;
         height: 140%;
       }
      #change-set{
-        width: 65%;
+         margin-left: 7.5%;
+        width: 63%;
         height: 55px;
         color: @setrecords-light-black;
         background-color: #bdc3c7;
@@ -752,7 +797,7 @@ td{
             margin-top: 2%;
         
         }      
-        padding-left: 8%;
+      
         font-weight: bold;
 
         p{
@@ -764,17 +809,19 @@ td{
             margin-left:2%;
             font-size: 50%;
              color: @setrecords-dark-gray;
+
         }
         #moible-edit-name{
-        margin-bottom: 4%;    
+          
         font-size: 50%;
         margin-left: 4%;
         color: @setrecords-dark-gray;
+
         }
     }
     .edit-set-track{
 
-        
+        margin-left: .8%;
         padding-left: 8%;
         font-weight: bold;
         height: 62vh;
@@ -786,6 +833,8 @@ td{
             font-size: 130%;
         }
         .trackiList-table{
+         width: 70%;   
+          
          margin-bottom: 15%;
         }
     }
@@ -794,15 +843,13 @@ td{
         padding-top: 20px;
     }
       #addTrack{
-    
-        padding-top: 1%;
-        padding-bottom: 1%;
-        padding: 1%;
+        font-size: 50%;
+        height: 140%;
         width: 20%;
-         border: none;
-         color: white;
-         background-color: #33b510; 
-         font-family: @demiFontStyle;
+        border: none;
+        color: white;
+        background-color: #33b510; 
+        font-family: @demiFontStyle;
         border-radius:  40%;
         }
     table, th, td {
@@ -816,12 +863,196 @@ td{
             color: red;
         }
         background-color: #313542;
+       .setDelete{ 
+         
         .deleteTrack{
+            
             border: 0;
             background-color: #bdc3cc;
              border: 5px solid #bdc3cc;
         }
+     }
     }
 
 }
+/*UPLAOD WIZARD CSS*/
+.fa-circle-o{
+    margin-left: 10px;
+}
+ .current-page{
+    text-align: center;
+    padding-left: 20px;
+ }
+ #current-page{
+    background-color: #313542;
+    border-radius: 100%;
+    text-align: center;
+ }
+ .step-tile{
+    width: 764px;
+    height: 506px;
+    background-color: #dadfe1;
+    border-radius: 10px;
+ }
+ .upload-set{
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: #6c7a89;
+    color: white;
+    text-align: center;
+    font-size: 1.5em;
+ }
+ .upload-directions{
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.5em;
+ }
+ .wizard-buttons{
+  height: 60px;
+  border-radius: 7%;
+  background-color: #313542;
+  color:#22a7f0;
+  border-color: #313542;  
+ }
+ .step{
+    margin-left: 25px;
+ }
+ .selection{
+       padding-bottom: 10%;
+        margin: 10px;
+        text-align: center;  
+ }
+ .wizard{
+    height: 560px;
+    width: 100%;
+    background-color: @setrecords-white;
+    justify-content: center;
+    align-items: center;
+ }
+ .wizard-input{
+    text-align: center;
 
+ }
+
+ .WizardStep1{
+       
+    .selection{
+        text-align: center;
+            
+        button{
+            width: 16%;
+            font-size: 1.5em;
+        }
+    }       
+ }
+
+ .WizardStep2{
+    
+    .selection{
+       padding-bottom: 10%;
+        margin: 10px;
+        text-align: center;
+            
+        button{
+            width: 25%;
+            font-size: 1.5em;
+        }
+    }
+ }
+
+ .WizardStep3{
+    .step{
+    margin-top: 15px;
+    margin-bottom: 15px;    
+    margin-left: 25px;
+    }
+    .upload-directions{
+        margin-bottom: 1px;
+   }
+
+   .selection{
+       padding-bottom: .1%;
+       button{
+            width: 20%;
+            font-size: 1.5em;
+        }
+        
+    }
+    .wizard-input{
+        width: 100%;
+    }
+    .input-page3{
+       width: 60%;
+       height: 30px;
+       margin-bottom: 8px;
+    }
+    .upload-directions{
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+}
+
+.WizardStep4{
+    .upload-directions {
+    margin-bottom: 0px;
+    height: 12%;
+  
+}
+    .wizard-buttons{
+  width: 30%;
+  height: 60px;
+  border-radius: 7%;
+  background-color: #313542;
+  color:#22a7f0;
+  border-color: #313542; 
+ }
+ .selection{
+       padding-bottom: 0%;
+        margin: 10px;
+        text-align: center;
+            
+        button{
+            width: 25%;
+            font-size: 1.5em;
+            
+        }
+    }
+.beacon{
+   margin-bottom: 10px;
+   justify-content: center;
+ }
+ #reward{
+    margin-left: 12px;
+    margin:10px;
+ }
+ .free{
+    justify-content: center;
+ }
+
+}
+
+.WizardStep5{
+    .upload-directions {
+    margin-bottom: 0px;
+    
+     }
+     select{
+        width: 60%;
+        height: 30px;
+        margin-bottom: 60px;
+     }
+    .beacon-location{
+        text-align: center;
+    }
+    .selection{
+       padding-bottom: 20px;
+            
+        button{
+            width: 18%;
+            font-size: 140%;
+
+            
+            
+        }
+    }
+}

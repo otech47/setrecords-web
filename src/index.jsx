@@ -45,6 +45,12 @@ import UploadWizardWrapper from './components/UploadWizardWrapper';
 import auth from './components/auth';
 import AccountView from './components/AccountView';
 
+import WizardStep1 from './components/WizardStep1';
+import WizardStep2 from './components/WizardStep2';
+import WizardStep3 from './components/WizardStep3';
+import WizardStep4 from './components/WizardStep4';
+import WizardStep5 from './components/WizardStep5';
+
 //subscribe in componentDidMount()
 //unsubscribe in componentWillUnmount()
 //call setState which pushes to event stream when receiving an event
@@ -347,15 +353,12 @@ var App = React.createClass({
 
 var routes = (
 	<Route path='/' handler={App}>
-<<<<<<< HEAD
-		<DefaultRoute name='content' handler={MoibleSetEditor} />
+
+		<DefaultRoute name='content' handler={WizardStep5} />
 		<Route path='content' handler={ContentView} />
 		<Route name='metrics' path='metrics' handler={MetricsView} />
-=======
-		<DefaultRoute name='metrics' handler={MetricsView} />
-		<Route name='content' path='content' handler={ContentView} />
-		<Route path='metrics' handler={MetricsView} />
->>>>>>> f7eb9659a4f67dc711165815f39f68b2c4e2b919
+
+		
 		<Route name='account' path='account' handler={AccountView} />
 	</Route>
 );

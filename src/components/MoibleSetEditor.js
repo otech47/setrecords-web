@@ -40,7 +40,7 @@ var MoibleSetEditor = React.createClass({
 						</div>
 						<table className="trackiList-table">
 							<tr>
-								<td>0:00</td>
+								web<td>0:00</td>
 								<td>Skrillex - Legend of Zelda</td>
 								<td><i className="fa fa-times deleteTrack"></i></td>
 							</tr>
@@ -70,6 +70,9 @@ var MoibleSetEditor = React.createClass({
 								<td><i className="fa fa-times deleteTrack"></i></td>
 							</tr>
 						</table>
+					</div>
+					<div className="setDelete">
+							<button id="deleteSet">DELETE SET</button>
 					</div>
 
 				
