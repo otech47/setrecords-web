@@ -1,4 +1,6 @@
 import React from 'react';
+import _ from 'underscore';
+var LineChart = require("react-chartjs").Line;
 
 var BeaconReport = React.createClass({
 	componentDidMount: function() {
@@ -10,6 +12,38 @@ var BeaconReport = React.createClass({
 	render: function() {
 		var suffixNum = this.props.numberWithSuffix;
 		var metrics = this.props.metrics;
+
+		var revenueTotal = metrics.revenue.current;
+		var revenueChange = revenueTotal - metrics.revenue.last;
+		var unlocksTotal = metrics.unlocks.current;
+		var unlocksChange = unlocksTotal - metrics.unlocks.last;
+
+		var labels = [];
+		var datasets = [];
+		for (var i = 0; i < metrics.revenue.overtime.length; i++) {
+			labels.push(metrics.revenue.overtime[i].date);
+		}
+		var colors = ['#ffffff', '#efc56d', '#40d18f'];
+		var counter = 0;
+		_.each(metrics, function(value, key) {
+			var points = _.map(value.overtime, function(entry) {
+				return entry.count;
+			});
+			datasets.push({
+				label: key,
+				data: points,
+				strokeColor: colors[counter],
+				pointColor: colors[counter]
+			});
+			counter++;
+		});
+		var chartData = {
+			labels: labels,
+			datasets: datasets
+		};
+		console.log("CHART DATA");
+		console.log(chartData);
+
 		return (
 		<div className="beacon-report flex-column">
 			<div className="title flex-row">
@@ -18,17 +52,18 @@ var BeaconReport = React.createClass({
 			</div>
 			<div className="beacon-numbers flex-row">
 				<div className="revenue flex-column flex-fixed">
-					<p>new revenue</p>
-					<h1>{suffixNum(metrics.revenue.current)}</h1>
-					<p>yesterday {suffixNum(metrics.revenue.last)}</p>
+					<p>total revenue</p>
+					<h1>{suffixNum(revenueTotal)}</h1>
+					<p>yesterday {revenueChange >= 0 ? '+':''}{suffixNum(revenueChange)}</p>
 				</div>
 				<div className="unlockedsets flex-column flex-fixed">
-					<p>sets unlocked</p>
-					<h1>{suffixNum(metrics.unlocks.current)}</h1>
-					<p>yesterday {suffixNum(metrics.unlocks.last)}</p>
+					<p>total unlocks</p>
+					<h1>{suffixNum(unlocksTotal)}</h1>
+					<p>yesterday {unlocksChange >= 0 ? '+':''}{suffixNum(unlocksChange)}</p>
 				</div>
 			</div>
 			<div className="beacon-graph">
+				<LineChart data={chartData} className="linechart" redraw />
 			</div>
 		</div>	
 		);

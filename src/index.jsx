@@ -269,13 +269,72 @@ var initialAppState = Immutable.Map({
 		"beacons": {
 			'revenue': {
 				current: 0,
-				last: 0
+				last: 0,
+				overtime: [
+				{
+					date: "4/5/1990",
+					count: 1
+				},
+				{
+					date: "4/6/1990",
+					count: 1
+				},
+				{
+					date: "4/7/1990",
+					count: 1
+				},
+				{
+					date: "4/8/1990",
+					count: 1
+				},
+				{
+					date: "4/9/1990",
+					count: 1
+				},
+				{
+					date: "4/10/1990",
+					count: 1
+				},
+				{
+					date: "4/11/1990",
+					count: 1
+				},
+				]
 			},
 			'unlocks': {
 				current: 0,
-				last: 0
-			},
-			'overtime': [1,2,3]
+				last: 0,
+				overtime: [
+				{
+					date: "4/5/1990",
+					count: 1
+				},
+				{
+					date: "4/6/1990",
+					count: 1
+				},
+				{
+					date: "4/7/1990",
+					count: 1
+				},
+				{
+					date: "4/8/1990",
+					count: 1
+				},
+				{
+					date: "4/9/1990",
+					count: 1
+				},
+				{
+					date: "4/10/1990",
+					count: 1
+				},
+				{
+					date: "4/11/1990",
+					count: 1
+				},
+				]
+			}
 		}
 	}
 });
@@ -347,7 +406,7 @@ var App = React.createClass({
 
 var routes = (
 	<Route path='/' handler={App}>
-		<DefaultRoute name='content' handler={MoibleSetEditor} />
+		<DefaultRoute name='content' handler={MetricsView} />
 		<Route path='content' handler={ContentView} />
 		<Route name='metrics' path='metrics' handler={MetricsView} />
 		<Route name='account' path='account' handler={AccountView} />

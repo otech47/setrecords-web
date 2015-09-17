@@ -58,7 +58,6 @@ var MetricsView = React.createClass({
 	},
 	numberWithSuffix : function(number) {
 		if (Math.abs(number) >= 1000) {
-			console.log(number);
 			var endings = ['', 'K', 'M', 'B', 'T'];
 			var count = 0;
 			while (Math.abs(number) > 1000.00) {
