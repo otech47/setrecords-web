@@ -581,7 +581,6 @@ header .nav-bar a.active {
   width: 34rem;
   height: 6rem;
   text-transform: uppercase;
-  justify-content: center;
 }
 .beacon-report .beacon-numbers .revenue {
   color: #ffffff;
