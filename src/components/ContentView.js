@@ -14,6 +14,7 @@ var ContentView = React.createClass({
 
 	render: function() {
 		return (
+
 			<div className="content-page flex-column">
 				<div className=" set-list flex">
 					<div className="moible-column flex-row  ">
@@ -34,9 +35,18 @@ var ContentView = React.createClass({
 						<SetTile/>
 						<SetTile/>
 						<SetTile/>
+						
+						
 					</div>
 				</div>
+
+			</div>	
+			
+
+			
+
 			</div>
+
 		);
 	}
 });
