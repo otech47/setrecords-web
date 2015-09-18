@@ -41,8 +41,11 @@ var BeaconReport = React.createClass({
 			labels: labels,
 			datasets: datasets
 		};
-		console.log("CHART DATA");
-		console.log(chartData);
+		var chartOptions = {
+			bezierCurve: false,
+			datasetFill: false,
+			legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+		};
 
 		return (
 		<div className="beacon-report flex-column">
@@ -53,8 +56,8 @@ var BeaconReport = React.createClass({
 			<div className="beacon-numbers flex-row">
 				<div className="revenue flex-column flex-fixed">
 					<p>total revenue</p>
-					<h1>{suffixNum(revenueTotal)}</h1>
-					<p>yesterday {revenueChange >= 0 ? '+':''}{suffixNum(revenueChange)}</p>
+					<h1>${suffixNum(revenueTotal)}</h1>
+					<p>yesterday {revenueChange >= 0 ? '+':''}${suffixNum(revenueChange.toFixed(2))}</p>
 				</div>
 				<div className="unlockedsets flex-column flex-fixed">
 					<p>total unlocks</p>
@@ -63,7 +66,7 @@ var BeaconReport = React.createClass({
 				</div>
 			</div>
 			<div className="beacon-graph">
-				<LineChart data={chartData} className="linechart" redraw />
+				<LineChart data={chartData} className="linechart" options={chartOptions} redraw />
 			</div>
 		</div>	
 		);

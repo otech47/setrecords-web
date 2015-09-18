@@ -412,23 +412,10 @@ var App = React.createClass({
 
 var routes = (
 	<Route path='/' handler={App}>
-<<<<<<< HEAD
-		<DefaultRoute name='content' handler={MetricsView} />
-=======
-<<<<<<< HEAD
-
-		<DefaultRoute name='content' handler={WizardStep5} />
+		<DefaultRoute name='metrics' handler={MetricsView} />
 		<Route path='content' handler={ContentView} />
-		<Route name='metrics' path='metrics' handler={MetricsView} />
-
-		
-=======
-		<DefaultRoute name='content' handler={MoibleSetEditor} />
->>>>>>> dd7bec08ef148de2248f8e3489f8d81f2bde593e
-		<Route path='content' handler={ContentView} />
-		<Route name='metrics' path='metrics' handler={MetricsView} />
->>>>>>> 512d978ce3a44771293854eb86dd0499dfbbc4b1
-		<Route name='account' path='account' handler={AccountView} />
+		<Route path='metrics' handler={MetricsView} />
+		<Route path='account' handler={AccountView} />
 	</Route>
 );
 
