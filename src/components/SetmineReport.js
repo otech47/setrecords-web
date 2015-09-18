@@ -17,55 +17,59 @@ var SetmineReport = React.createClass({
 		var _this = this;
 	},
 	toggleData: function(event) {
-		console.log(event.currentTarget);
 		var clicked = {};
 		clicked[event.currentTarget.id] = !this.state[event.currentTarget.id];
 		this.setState(clicked);
 	},
+	lineGraph: function() {
+		if (this.state.plays || this.state.views || this.state.favorites) {
+			var metrics = this.props.metrics;
+			var labels = [];
+			var datasets = [];
+			for (var i = 0; i < metrics.plays.overtime.length; i++) {
+				labels.push(metrics.plays.overtime[i].date);
+			}
+			var colors = ['#ffffff', '#efc56d', '#40d18f'];
+			var counter = 0;
+			var self = this;
+
+			_.each(metrics, function(value, key) {
+				if (self.state[key]) {
+					var points = _.map(value.overtime, function(entry) {
+						return entry.count;
+					});
+					datasets.push({
+						label: key,
+						data: points,
+						strokeColor: colors[counter],
+						pointColor: colors[counter]
+					});
+				}
+				counter++;
+			});
+			var chartData = {
+				labels: labels,
+				datasets: datasets
+			};
+			var chartOptions = {
+				bezierCurve: false,
+				datasetFill: false
+			};
+			return (<LineChart data={chartData} className="linechart" options={chartOptions} redraw />);
+		}
+		else {
+			return (<p className="not-found">Click a metric above to show its graph</p>);
+		}
+	},
 	render: function() {
 		var suffixNum = this.props.numberWithSuffix;
 		var metrics = this.props.metrics;
-
-		var labels = [];
-		var datasets = [];
-		for (var i = 0; i < metrics.plays.overtime.length; i++) {
-			labels.push(metrics.plays.overtime[i].date);
-		}
-		var colors = ['#ffffff', '#efc56d', '#40d18f'];
-		var counter = 0;
-		var self = this;
-
-		_.each(metrics, function(value, key) {
-			if (self.state[key]) {	
-				var points = _.map(value.overtime, function(entry) {
-					return entry.count;
-				});
-				datasets.push({
-					label: key,
-					data: points,
-					strokeColor: colors[counter],
-					pointColor: colors[counter]
-				});
-			}
-			counter++;
-		});
-		var chartData = {
-			labels: labels,
-			datasets: datasets
-		};
-		var chartOptions = {
-			bezierCurve: false,
-			datasetFill: false
-		};
-
 		var playsCurrent = metrics.plays.current;
 		var playsChange = metrics.plays.current - metrics.plays.last;
 		var viewsCurrent = metrics.views.current;
 		var viewsChange = metrics.views.current - metrics.views.last;
 		var favoritesCurrent = metrics.favorites.current;
-		var favoritesChange = metrics.favorites.current - metrics.favorites.last;
-
-		
+		var favoritesChange = metrics.favorites.current - metrics.favorites.last;	
 
 		return (
 		<div className="setmine-report flex-column">
@@ -91,7 +95,7 @@ var SetmineReport = React.createClass({
 				</div>
 			</div>
 			<div className="setmine-graph">
-				<LineChart data={chartData} className="linechart" options={chartOptions} redraw />
+				{this.lineGraph()}
 			</div>
 		</div>
 		);
