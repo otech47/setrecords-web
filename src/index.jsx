@@ -62,7 +62,7 @@ var initialAppState = Immutable.Map({
 		}
 	},
 	'artistData': {
-		"id": 40,
+		"id": 4026,
 		"artist": "Calvin Harris",
 		"bio": "No Biography Available",
 		"fb_link": "https://www.facebook.com/calvinharris",

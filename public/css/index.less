@@ -169,6 +169,26 @@ header {
         }
     }
 }
+.time-selector {
+        position: absolute;
+        right: 1rem;
+        z-index: 400;
+        color: @setrecords-black;
+        height: 2.5rem;
+        text-transform: uppercase;
+        font-size: 1rem;
+        align-items: center;
+        font-family: @defaultFontCondensed;
+        p {
+            margin: 0;
+        }
+        span {
+            margin: 0 0.5rem;
+        }
+        .active {
+            color: @setrecords-white;
+        }
+}
 .setmine-report-inner {
     width: 34rem;
     height: 26rem;
@@ -205,6 +225,7 @@ header {
     }
     p {
         margin: 0;
+        font-size: 1rem;
     }
 }
 .setmine-graph {

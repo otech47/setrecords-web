@@ -48,10 +48,14 @@ var MetricsView = React.createClass({
 		// });
 	},
 	getSetmineMetrics: function(params, callback) {
+		var cohortType = "";
+		if (params != 0) {
+			cohortType = "?cohortType=" + params;
+		}
 		var artistId = this.props.appState.get("artistData").id;
 		var push = this.props.push;
 		var setmineRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/setmine/' 
-		+ artistId;
+		+ artistId + cohortType;
 		var setmineMetrics;
 		$.get(setmineRequestUrl, function(res) {
 			setmineMetrics = res.setmine;
@@ -65,10 +69,14 @@ var MetricsView = React.createClass({
 		});
 	},
 	getBeaconMetrics: function(params, callback) {
+		var cohortType = "";
+		if (params != 0) {
+			cohortType = "?cohortType=" + params;
+		}
 		var artistId = this.props.appState.get("artistData").id;
 		var push = this.props.push;
 		var beaconRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/beacons/' 
-		+ artistId;
+		+ artistId + cohortType;
 		var beaconMetrics;
 		$.get(beaconRequestUrl, function(res) {
 			beaconMetrics = res.beacons;
