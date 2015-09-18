@@ -152,9 +152,6 @@ header {
     height: 34rem;
     margin: 4rem 0;
     position: relative;
-    justify-content: space-around;
-    align-items: center;
-    padding-top: 2.5rem;
     .title {
         font-family: @demiFontStyle;
         font-size: 1.5rem;
@@ -171,47 +168,55 @@ header {
             margin: 0 1rem;
         }
     }
-    .setmine-numbers {
-        width: 34rem;
-        height: 6rem;
-        text-transform: uppercase;
-        .plays {
-            color: @setrecords-white;
-            align-items: center;
-            flex-wrap: nowrap;
-        }
-        .profileviews {
-            color: @setrecords-yellow;
-            align-items: center;
-            flex-wrap: nowrap;
-        }
-        .favorites {
-            color: @setrecords-green;
-            align-items: center;
-            flex-wrap: nowrap;
-        }
-        .deactivated {
-            color: @setrecords-light-black;
-        }
-        h1 {
-            font-size: 3rem;
-            margin: 0;
-        }
-        p {
-            margin: 0;
-        }
+}
+.setmine-report-inner {
+    width: 34rem;
+    height: 26rem;
+    padding: 4rem 0;
+    position: relative;
+    justify-content: space-around;
+    align-items: center;
+}
+.setmine-numbers {
+    width: 34rem;
+    height: 6rem;
+    text-transform: uppercase;
+    .plays {
+        color: @setrecords-white;
+        align-items: center;
+        flex-wrap: nowrap;
     }
-    .setmine-graph {
-        width: 28rem;
-        height: 16rem;
-        display: flex;
-        .not-found {
-            align-self: center;
-            margin: auto;
-            color: @setrecords-white;
-            font-family: @defaultFontStyle;
-            font-size: 1.25rem;
-        }
+    .profileviews {
+        color: @setrecords-yellow;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+    .favorites {
+        color: @setrecords-green;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+    .deactivated {
+        color: @setrecords-light-black;
+    }
+    h1 {
+        font-size: 3rem;
+        margin: 0;
+    }
+    p {
+        margin: 0;
+    }
+}
+.setmine-graph {
+    width: 28rem;
+    height: 16rem;
+    display: flex;
+    justify-content: center;
+    .not-found {
+        margin: auto;
+        color: @setrecords-white;
+        font-family: @defaultFontStyle;
+        font-size: 1.25rem;
     }
 }
 
@@ -226,9 +231,6 @@ header {
     height: 34rem;
     margin: 4rem 0;
     position: relative;
-    justify-content: space-around;
-    align-items: center;
-    padding-top: 2.5rem;
     .title {
         font-family: @demiFontStyle;
         font-size: 1.5rem;
@@ -245,42 +247,50 @@ header {
             margin: 0 1rem;
         }
     }
-    .beacon-numbers {
-        width: 34rem;
-        height: 6rem;
-        text-transform: uppercase;
-        .revenue {
-            color: @setrecords-white;
-            align-items: center;
-            flex-wrap: nowrap;
-        }
-        .unlockedsets {
-            color: @setrecords-yellow;
-            align-items: center;
-            flex-wrap: nowrap;
-        }
-        .deactivated {
-            color: @setrecords-light-black;
-        }
-        h1 {
-            font-size: 3rem;
-            margin: 0;
-        }
-        p {
-            margin: 0;
-        }
+}
+.beacon-report-inner {
+    width: 34rem;
+    height: 26rem;
+    padding: 4rem 0;
+    position: relative;
+    justify-content: space-around;
+    align-items: center;
+}
+.beacon-numbers {
+    width: 34rem;
+    height: 6rem;
+    text-transform: uppercase;
+    .revenue {
+        color: @setrecords-white;
+        align-items: center;
+        flex-wrap: nowrap;
     }
-    .beacon-graph {
-        width: 28rem;
-        height: 16rem;
-        display: flex;
-        .not-found {
-            align-self: center;
-            margin: auto;
-            color: @setrecords-white;
-            font-family: @defaultFontStyle;
-            font-size: 1.25rem;
-        }
+    .unlockedsets {
+        color: @setrecords-yellow;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+    .deactivated {
+        color: @setrecords-light-black;
+    }
+    h1 {
+        font-size: 3rem;
+        margin: 0;
+    }
+    p {
+        margin: 0;
+    }
+}
+.beacon-graph {
+    width: 28rem;
+    height: 16rem;
+    display: flex;
+    justify-content: center;
+    .not-found {
+        margin: auto;
+        color: @setrecords-white;
+        font-family: @defaultFontStyle;
+        font-size: 1.25rem;
     }
 }
 
@@ -290,9 +300,6 @@ header {
     height: 34rem;
     margin: 4rem 0;
     position: relative;
-    justify-content: space-around;
-    align-items: center;
-    padding-top: 2.5rem;
 
     .title {
         font-family: @demiFontStyle;
@@ -310,31 +317,39 @@ header {
             margin: 0 1rem;
         }
     }
-    .metrics {
-        width: 100%;
-        height: 8rem;
-        color: @setrecords-white;
-        align-items: center;
-        justify-content: space-between;
-        text-transform: uppercase;
-        .flex-column {
-            align-items: center;
-        }
-        img {
-            height: 4rem;
-            width: 4rem;
-            margin: 0;
-        }
-        h1 {
-        font-size: 3rem;
-        margin: 0;
-        }
-        p {
-            margin: 0;
-        }
-    }
+}
+.social-report-inner {
+    width: 34rem;
+    height: 30rem;
+    padding-top: 4rem;
+    position: relative;
+    justify-content: space-around;
+    align-items: center;
     .divider {
         .createDivider(90%, 0.25rem, @setrecords-white);
+    }
+}
+.social-metrics {
+    width: 100%;
+    height: 8rem;
+    color: @setrecords-white;
+    align-items: center;
+    justify-content: space-between;
+    text-transform: uppercase;
+    .flex-column {
+        align-items: center;
+    }
+    img {
+        height: 4rem;
+        width: 4rem;
+        margin: 0;
+    }
+    h1 {
+    font-size: 3rem;
+    margin: 0;
+    }
+    p {
+        margin: 0;
     }
 }
 .media-report {

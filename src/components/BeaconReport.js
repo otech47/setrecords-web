@@ -1,16 +1,26 @@
 import React from 'react';
 import _ from 'underscore';
 var LineChart = require("react-chartjs").Line;
+var Loader = require("react-loader");
 
 var BeaconReport = React.createClass({
 	getInitialState: function() {
 		return {
 			revenue: true,
-			unlocks: true
+			unlocks: true,
+			loaded: false
 		}
 	},
 	componentDidMount: function() {
 		this._attachStream();
+	},
+	componentWillMount: function() {
+		var self = this;
+		this.props.getBeaconMetrics(0, function() {
+			self.setState({
+				loaded: true
+			});
+		});
 	},
 	_attachStream: function() {
 		var _this = this;
@@ -21,7 +31,7 @@ var BeaconReport = React.createClass({
 		this.setState(clicked);
 	},
 	lineGraph: function() {
-		if (this.state.revenue || this.state.unlocks) {
+		if ((this.state.revenue || this.state.unlocks) && this.state.loaded) {
 			var metrics = this.props.metrics;
 			var labels = [];
 			var datasets = [];
@@ -70,26 +80,30 @@ var BeaconReport = React.createClass({
 		var unlocksChange = unlocksTotal - metrics.unlocks.last;
 
 		return (
-		<div className="beacon-report flex-column">
+		<div className="beacon-report">
 			<div className="title flex-row">
 				<img src="/public/images/beacon_icon.png" />
 				beacons
 			</div>
-			<div className="beacon-numbers flex-row">
-				<div className={"revenue flex-column flex-fixed " + (this.state.revenue ? "":"deactivated")} id="revenue" onClick={this.toggleData}>
-					<p>total revenue</p>
-					<h1>${suffixNum(revenueTotal)}</h1>
-					<p>yesterday {revenueChange >= 0 ? '+':''}${suffixNum(revenueChange.toFixed(2))}</p>
+			<Loader loaded={this.state.loaded}>
+				<div className="beacon-report-inner flex-column">
+					<div className="beacon-numbers flex-row">
+						<div className={"revenue flex-column flex-fixed " + (this.state.revenue ? "":"deactivated")} id="revenue" onClick={this.toggleData}>
+							<p>total revenue</p>
+							<h1>${suffixNum(revenueTotal)}</h1>
+							<p>yesterday {revenueChange >= 0 ? '+':''}${suffixNum(revenueChange.toFixed(2))}</p>
+						</div>
+						<div className={"unlockedsets flex-column flex-fixed " + (this.state.unlocks ? "":"deactivated")} id="unlocks" onClick={this.toggleData}>
+							<p>total unlocks</p>
+							<h1>{suffixNum(unlocksTotal)}</h1>
+							<p>yesterday {unlocksChange >= 0 ? '+':''}{suffixNum(unlocksChange)}</p>
+						</div>
+					</div>
+					<div className="beacon-graph">
+						{this.lineGraph()}
+					</div>
 				</div>
-				<div className={"unlockedsets flex-column flex-fixed " + (this.state.unlocks ? "":"deactivated")} id="unlocks" onClick={this.toggleData}>
-					<p>total unlocks</p>
-					<h1>{suffixNum(unlocksTotal)}</h1>
-					<p>yesterday {unlocksChange >= 0 ? '+':''}{suffixNum(unlocksChange)}</p>
-				</div>
-			</div>
-			<div className="beacon-graph">
-				{this.lineGraph()}
-			</div>
+			</Loader>
 		</div>	
 		);
 	}

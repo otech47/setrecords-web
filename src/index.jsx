@@ -211,24 +211,137 @@ var initialAppState = Immutable.Map({
 			"youtube": "https://www.youtube.com/CalvinHarrisVEVO"
 		}
 	},
-	'metrics': {
-		"setmine": {
-			'plays': {
+	'setmine_metrics': {
+		'plays': {
 				current: 1,
 				last: 2,
 				overtime: [1,2,3]
 			},
-			'views': {
+		'views': {
+			current: 1,
+			last: 2,
+			overtime: [1,2,3]
+		},
+		'favorites': {
+			current: 1,
+			last: 2,
+			overtime: [1,2,3]
+		}
+	},
+	"beacon_metrics": {
+		'revenue': {
+			current: 0,
+			last: 0,
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
+			},
+			{
+				date: "4/6/1990",
+				count: 1
+			},
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
+		},
+		'unlocks': {
+			current: 0,
+			last: 0,
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
+			},
+			{
+				date: "4/6/1990",
+				count: 1
+			},
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
+		}
+	},
+	"social_metrics": {
+		'twitter': {
+			current: 1.1,
+			last: 2.2,
+			overtime: [1,2,3]
+		},
+		'facebook': {
+			current: 1.1,
+			last: 2.2,
+			overtime: [1,2,3]
+		},
+		'instagram': {
+			current: 1.1,
+			last: 2.2,
+			overtime: [1,2,3]
+		}
+	},
+	"media_metrics": {
+		'soundcloud': {
+			followers: {
 				current: 1,
 				last: 2,
 				overtime: [1,2,3]
 			},
-			'favorites': {
+			plays: {
 				current: 1,
 				last: 2,
-				overtime: [1,2,3]
+				overtime: [1,2,3]	
 			}
 		},
+		'youtube': {
+			followers: {
+				current: 1,
+				last: 2,
+				overtime: [1,2,3]
+			},
+			plays: {
+				current: 1,
+				last: 2,
+				overtime: [1,2,3]	
+			}
+		}
+	},
+	'metrics': {
 		"social": {
 			'twitter': {
 				current: 1.1,
@@ -270,76 +383,6 @@ var initialAppState = Immutable.Map({
 					last: 2,
 					overtime: [1,2,3]	
 				}
-			}
-		},
-		"beacons": {
-			'revenue': {
-				current: 0,
-				last: 0,
-				overtime: [
-				{
-					date: "4/5/1990",
-					count: 1
-				},
-				{
-					date: "4/6/1990",
-					count: 1
-				},
-				{
-					date: "4/7/1990",
-					count: 1
-				},
-				{
-					date: "4/8/1990",
-					count: 1
-				},
-				{
-					date: "4/9/1990",
-					count: 1
-				},
-				{
-					date: "4/10/1990",
-					count: 1
-				},
-				{
-					date: "4/11/1990",
-					count: 1
-				},
-				]
-			},
-			'unlocks': {
-				current: 0,
-				last: 0,
-				overtime: [
-				{
-					date: "4/5/1990",
-					count: 1
-				},
-				{
-					date: "4/6/1990",
-					count: 1
-				},
-				{
-					date: "4/7/1990",
-					count: 1
-				},
-				{
-					date: "4/8/1990",
-					count: 1
-				},
-				{
-					date: "4/9/1990",
-					count: 1
-				},
-				{
-					date: "4/10/1990",
-					count: 1
-				},
-				{
-					date: "4/11/1990",
-					count: 1
-				},
-				]
 			}
 		}
 	}
