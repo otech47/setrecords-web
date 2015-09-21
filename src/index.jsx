@@ -62,7 +62,7 @@ var initialAppState = Immutable.Map({
 		}
 	},
 	'artistData': {
-		"id": 4026,
+		"id": 40,
 		"artist": "Calvin Harris",
 		"bio": "No Biography Available",
 		"fb_link": "https://www.facebook.com/calvinharris",
@@ -213,20 +213,247 @@ var initialAppState = Immutable.Map({
 	},
 	'setmine_metrics': {
 		'plays': {
-				current: 1,
-				last: 2,
-				overtime: [1,2,3]
+			current: 1,
+			last: 2,
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
+			},
+			{
+				date: "4/6/1990",
+				count: 1
+			},
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
 			},
 		'views': {
 			current: 1,
 			last: 2,
-			overtime: [1,2,3]
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
+			},
+			{
+				date: "4/6/1990",
+				count: 1
+			},
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
 		},
 		'favorites': {
 			current: 1,
 			last: 2,
-			overtime: [1,2,3]
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
+			},
+			{
+				date: "4/6/1990",
+				count: 1
+			},
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
 		}
+	},
+	'soundcloud_metrics': {
+		'plays': {
+			current: 1,
+			last: 2,
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
+			},
+			{
+				date: "4/6/1990",
+				count: 1
+			},
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
+			},
+		'followers': {
+			current: 1,
+			last: 2,
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
+			},
+			{
+				date: "4/6/1990",
+				count: 1
+			},
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
+		},
+	},
+	'youtube_metrics': {
+		'plays': {
+			current: 1,
+			last: 2,
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
+			},
+			{
+				date: "4/6/1990",
+				count: 1
+			},
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
+			},
+		'followers': {
+			current: 1,
+			last: 2,
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
+			},
+			{
+				date: "4/6/1990",
+				count: 1
+			},
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
+		},
 	},
 	"beacon_metrics": {
 		'revenue': {
@@ -314,77 +541,6 @@ var initialAppState = Immutable.Map({
 			last: 2.2,
 			overtime: [1,2,3]
 		}
-	},
-	"media_metrics": {
-		'soundcloud': {
-			followers: {
-				current: 1,
-				last: 2,
-				overtime: [1,2,3]
-			},
-			plays: {
-				current: 1,
-				last: 2,
-				overtime: [1,2,3]	
-			}
-		},
-		'youtube': {
-			followers: {
-				current: 1,
-				last: 2,
-				overtime: [1,2,3]
-			},
-			plays: {
-				current: 1,
-				last: 2,
-				overtime: [1,2,3]	
-			}
-		}
-	},
-	'metrics': {
-		"social": {
-			'twitter': {
-				current: 1.1,
-				last: 2.2,
-				overtime: [1,2,3]
-			},
-			'facebook': {
-				current: 1.1,
-				last: 2.2,
-				overtime: [1,2,3]
-			},
-			'instagram': {
-				current: 1.1,
-				last: 2.2,
-				overtime: [1,2,3]
-			}
-		},
-		"media": {
-			'soundcloud': {
-				followers: {
-					current: 1,
-					last: 2,
-					overtime: [1,2,3]
-				},
-				plays: {
-					current: 1,
-					last: 2,
-					overtime: [1,2,3]	
-				}
-			},
-			'youtube': {
-				followers: {
-					current: 1,
-					last: 2,
-					overtime: [1,2,3]
-				},
-				plays: {
-					current: 1,
-					last: 2,
-					overtime: [1,2,3]	
-				}
-			}
-		}
 	}
 });
 
@@ -421,6 +577,27 @@ var App = React.createClass({
 	},
 	componentDidMount: function() {
 		this._attachStreams(); //global event handler
+		this.getArtistData();
+	},
+	getArtistData: function() {
+		var artistId = this.state.appState.get("artistData").id;
+		var requestUrl = "http://localhost:3000/api/v/7/artist/" + artistId;
+		var self = this;
+		console.log("requesting artist data...");
+		$.ajax({
+			type: "GET",
+			url: requestUrl,
+			success: function(res) {
+				console.log('artist data received. pushing to app state...');
+				push({
+					type: "SHALLOW_MERGE",
+					data: {
+						artistData:	res.payload.artist
+					}
+				});
+				console.log("artist data loaded.");
+			}
+		});
 	},
 	_attachStreams: function() {
 		var _this = this;

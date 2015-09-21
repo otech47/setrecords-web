@@ -4,12 +4,11 @@ var LineChart = require("react-chartjs").Line;
 var Loader = require("react-loader");
 var moment = require("moment");
 
-var SetmineReport = React.createClass({
+var SoundcloudReport = React.createClass({
 	getInitialState: function() {
 		return {
 			plays: true,
-			views: true,
-			favorites: true,
+			followers: true,
 			loaded: false,
 			cohort: 'daily'
 		}
@@ -19,7 +18,7 @@ var SetmineReport = React.createClass({
 	},
 	componentWillMount: function() { 
 		var self = this;
-		this.props.getSetmineMetrics(this.state.cohort, function() {
+		this.props.getSoundcloudMetrics(this.state.cohort, function() {
 			self.setState({
 				loaded: true
 			});
@@ -41,7 +40,7 @@ var SetmineReport = React.createClass({
 				loaded: false,
 				cohort: cohortType
 			}, function() {
-				this.props.getSetmineMetrics(this.state.cohort, function() {
+				this.props.getSoundcloudMetrics(this.state.cohort, function() {
 					self.setState({
 						loaded: true
 					});
@@ -50,7 +49,7 @@ var SetmineReport = React.createClass({
 		}
 	},
 	lineGraph: function() {
-		if ((this.state.plays || this.state.views || this.state.favorites) && this.state.loaded) {
+		if ((this.state.plays || this.state.followers) && this.state.loaded) {
 			var dateGrouping;
 			var dateFormat;
 			switch (this.state.cohort) {
@@ -70,8 +69,8 @@ var SetmineReport = React.createClass({
 			var metrics = this.props.metrics;
 			var labels = [];
 			var datasets = [];
-			for (var i = 0; i < metrics.plays.overtime.length; i++) {
-				labels.push(moment(metrics.plays.overtime[i].date, dateGrouping).format(dateFormat));
+			for (var i = 0; i < metrics.followers.overtime.length; i++) {
+				labels.push(moment(metrics.followers.overtime[i].date, dateGrouping).format(dateFormat));
 			}
 			var colors = ['#ffffff', '#efc56d', '#40d18f'];
 			var counter = 0;
@@ -115,10 +114,8 @@ var SetmineReport = React.createClass({
 		var metrics = this.props.metrics;
 		var playsCurrent = metrics.plays.current;
 		var playsChange = metrics.plays.current - metrics.plays.last;
-		var viewsCurrent = metrics.views.current;
-		var viewsChange = metrics.views.current - metrics.views.last;
-		var favoritesCurrent = metrics.favorites.current;
-		var favoritesChange = metrics.favorites.current - metrics.favorites.last;
+		var followersCurrent = metrics.followers.current;
+		var followersChange = metrics.followers.current - metrics.followers.last;
 		var previousCohort;
 		switch (this.state.cohort) {
 			case "daily":
@@ -133,10 +130,10 @@ var SetmineReport = React.createClass({
 		}	
 
 		return (
-		<div className="setmine-report">
+		<div className="soundcloud-report">
 			<div className="title flex-row">
-				<img src="/public/images/setminelogo.png" />
-				setmine
+				<img src="/public/images/soundcloud_icon.png" />
+				soundcloud
 			</div>
 			<div className="time-selector flex-row">
 				<p onClick={this.changePeriod} className={this.state.cohort == "daily" ? "active":""} name="daily">daily</p>
@@ -146,25 +143,20 @@ var SetmineReport = React.createClass({
 				<p onClick={this.changePeriod} className={this.state.cohort == "monthly" ? "active":""} name="monthly">monthly</p>
 			</div>
 			<Loader loaded={this.state.loaded}>
-				<div className="setmine-report-inner flex-column">
-					<div className="setmine-numbers flex-row">
+				<div className="soundcloud-report-inner flex-column">
+					<div className="soundcloud-numbers flex-row">
 						<div className={"plays flex-column flex-fixed " + (this.state.plays ? "":"deactivated")} id="plays" onClick={this.toggleData}>
 							<p>total plays</p>
 							<h1>{suffixNum(playsCurrent)}</h1>
 							<p>{previousCohort} {playsChange >= 0 ? '+':''}{suffixNum(playsChange)}</p>
 						</div>
-						<div className={"profileviews flex-column flex-fixed " + (this.state.views ? "":"deactivated")} id="views" onClick={this.toggleData}>
-							<p>total views</p>
-							<h1>{suffixNum(viewsCurrent)}</h1>
-							<p>{previousCohort} {viewsChange >= 0 ? '+':''}{suffixNum(viewsChange)}</p>
-						</div>
-						<div className={"favorites flex-column flex-fixed " + (this.state.favorites ? "":"deactivated")} id="favorites" onClick={this.toggleData}>
-							<p>total favorites</p>
-							<h1>{suffixNum(favoritesCurrent)}</h1>
-							<p>{previousCohort} {favoritesChange >= 0 ? '+':''}{suffixNum(favoritesChange)}</p>
+						<div className={"followers flex-column flex-fixed " + (this.state.followers ? "":"deactivated")} id="followers" onClick={this.toggleData}>
+							<p>total followers</p>
+							<h1>{suffixNum(followersCurrent)}</h1>
+							<p>{previousCohort} {followersChange >= 0 ? '+':''}{suffixNum(followersChange)}</p>
 						</div>
 					</div>
-					<div className="setmine-graph">
+					<div className="soundcloud-graph">
 						{this.lineGraph()}
 					</div>
 				</div>
@@ -174,4 +166,4 @@ var SetmineReport = React.createClass({
 	}
 });
 
-module.exports = SetmineReport;					
+module.exports = SoundcloudReport;					

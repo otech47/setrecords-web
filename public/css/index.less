@@ -49,6 +49,7 @@ header {
             }
             img {
                 height: 4rem;
+                width: 4rem;
                 border-radius: 50%;
                 margin: 0 1rem;
                 border: 0.4rem solid @setrecords-blue;
@@ -163,6 +164,7 @@ header {
         top: -2.5rem;
         left: 1rem;
         padding-right: 1rem;
+        cursor: default;
         img {
             width: 4rem;
             margin: 0 1rem;
@@ -172,52 +174,69 @@ header {
 .time-selector {
         position: absolute;
         right: 1rem;
-        z-index: 400;
+        z-index: 9;
         color: @setrecords-black;
         height: 2.5rem;
         text-transform: uppercase;
         font-size: 1rem;
         align-items: center;
         font-family: @defaultFontCondensed;
+        cursor: pointer;
         p {
             margin: 0;
+        }
+        p:hover {
+            color: @setrecords-purple;
+        }
+        p.active {
+            color: @setrecords-white;
         }
         span {
             margin: 0 0.5rem;
         }
-        .active {
-            color: @setrecords-white;
-        }
 }
 .setmine-report-inner {
     width: 34rem;
-    height: 26rem;
-    padding: 4rem 0;
+    height: 28rem;
+    padding: 4rem 0 2rem 0;
     position: relative;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 }
 .setmine-numbers {
     width: 34rem;
-    height: 6rem;
+    height: 8rem;
     text-transform: uppercase;
     .plays {
         color: @setrecords-white;
         align-items: center;
+        justify-content: center;
         flex-wrap: nowrap;
+        margin: 0 0.75rem;
+        box-shadow: inset 0 0 0 1px #27496d,inset 0 5px 10px #193047;
+        cursor: pointer;
     }
     .profileviews {
         color: @setrecords-yellow;
         align-items: center;
+        justify-content: center;
         flex-wrap: nowrap;
+        margin: 0 0.75rem;
+        box-shadow: inset 0 0 0 1px #27496d,inset 0 5px 10px #193047;
+        cursor: pointer;
     }
     .favorites {
         color: @setrecords-green;
         align-items: center;
+        justify-content: center;
         flex-wrap: nowrap;
+        margin: 0 0.75rem;
+        box-shadow: inset 0 0 0 1px #27496d,inset 0 5px 10px #193047;
+        cursor: pointer;
     }
     .deactivated {
         color: @setrecords-light-black;
+        box-shadow: inset 0 0 0 1px #27496d;
     }
     h1 {
         font-size: 3rem;
@@ -229,6 +248,165 @@ header {
     }
 }
 .setmine-graph {
+    width: 28rem;
+    height: 16rem;
+    display: flex;
+    justify-content: center;
+    .not-found {
+        margin: auto;
+        color: @setrecords-white;
+        font-family: @defaultFontStyle;
+        font-size: 1.25rem;
+    }
+}
+
+.soundcloud-report {
+    background-color: @setrecords-red;
+    width: 34rem;
+    height: 34rem;
+    margin: 4rem 0;
+    position: relative;
+    .title {
+        font-family: @demiFontStyle;
+        font-size: 1.5rem;
+        background-color: @setrecords-white;
+        color: @setrecords-red;
+        align-items: center;
+        position: absolute;
+        height: 5rem;
+        top: -2.5rem;
+        left: 1rem;
+        padding-right: 1rem;
+        cursor: default;
+        img {
+            width: 4rem;
+            margin: 0 1rem;
+        }
+    }
+}
+.soundcloud-report-inner {
+    width: 34rem;
+    height: 28rem;
+    padding: 4rem 0 2rem 0;
+    position: relative;
+    justify-content: space-between;
+    align-items: center;
+}
+.soundcloud-numbers {
+    width: 34rem;
+    height: 8rem;
+    text-transform: uppercase;
+    .plays {
+        color: @setrecords-white;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: nowrap;
+        margin: 0 0.75rem;
+        box-shadow: inset 0 0 0 1px #27496d,inset 0 5px 10px #193047;
+        cursor: pointer;
+    }
+    .followers {
+        color: @setrecords-yellow;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: nowrap;
+        margin: 0 0.75rem;
+        box-shadow: inset 0 0 0 1px #27496d,inset 0 5px 10px #193047;
+        cursor: pointer;
+    }
+    .deactivated {
+        color: @setrecords-light-black;
+        box-shadow: inset 0 0 0 1px #27496d;
+    }
+    h1 {
+        font-size: 3rem;
+        margin: 0;
+    }
+    p {
+        margin: 0;
+        font-size: 1rem;
+    }
+}
+.soundcloud-graph {
+    width: 28rem;
+    height: 16rem;
+    display: flex;
+    justify-content: center;
+    .not-found {
+        margin: auto;
+        color: @setrecords-white;
+        font-family: @defaultFontStyle;
+        font-size: 1.25rem;
+    }
+}
+.youtube-report {
+    background-color: @setrecords-red;
+    width: 34rem;
+    height: 34rem;
+    margin: 4rem 0;
+    position: relative;
+    .title {
+        font-family: @demiFontStyle;
+        font-size: 1.5rem;
+        background-color: @setrecords-white;
+        color: @setrecords-red;
+        align-items: center;
+        position: absolute;
+        height: 5rem;
+        top: -2.5rem;
+        left: 1rem;
+        padding-right: 1rem;
+        cursor: default;
+        img {
+            width: 4rem;
+            margin: 0 1rem;
+        }
+    }
+}
+.youtube-report-inner {
+    width: 34rem;
+    height: 28rem;
+    padding: 4rem 0 2rem 0;
+    position: relative;
+    justify-content: space-between;
+    align-items: center;
+}
+.youtube-numbers {
+    width: 34rem;
+    height: 8rem;
+    text-transform: uppercase;
+    .plays {
+        color: @setrecords-white;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: nowrap;
+        margin: 0 0.75rem;
+        box-shadow: inset 0 0 0 1px #27496d,inset 0 5px 10px #193047;
+        cursor: pointer;
+    }
+    .followers {
+        color: @setrecords-yellow;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: nowrap;
+        margin: 0 0.75rem;
+        box-shadow: inset 0 0 0 1px #27496d,inset 0 5px 10px #193047;
+        cursor: pointer;
+    }
+    .deactivated {
+        color: @setrecords-light-black;
+        box-shadow: inset 0 0 0 1px #27496d;
+    }
+    h1 {
+        font-size: 3rem;
+        margin: 0;
+    }
+    p {
+        margin: 0;
+        font-size: 1rem;
+    }
+}
+.youtube-graph {
     width: 28rem;
     height: 16rem;
     display: flex;
@@ -263,6 +441,7 @@ header {
         top: -2.5rem;
         left: 1rem;
         padding-right: 1rem;
+        cursor: default;
         img {
             width: 4rem;
             margin: 0 1rem;
@@ -271,28 +450,37 @@ header {
 }
 .beacon-report-inner {
     width: 34rem;
-    height: 26rem;
-    padding: 4rem 0;
+    height: 28rem;
+    padding: 4rem 0 2rem 0;
     position: relative;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 }
 .beacon-numbers {
     width: 34rem;
-    height: 6rem;
+    height: 8rem;
     text-transform: uppercase;
     .revenue {
         color: @setrecords-white;
         align-items: center;
+        justify-content: center;
         flex-wrap: nowrap;
+        margin: 0 0.75rem;
+        box-shadow: inset 0 0 0 1px #27496d,inset 0 5px 10px #193047;
+        cursor: pointer;
     }
     .unlockedsets {
         color: @setrecords-yellow;
         align-items: center;
+        justify-content: center;
         flex-wrap: nowrap;
+        margin: 0 0.75rem;
+        box-shadow: inset 0 0 0 1px #27496d,inset 0 5px 10px #193047;
+        cursor: pointer;
     }
     .deactivated {
         color: @setrecords-light-black;
+        box-shadow: inset 0 0 0 1px #27496d;
     }
     h1 {
         font-size: 3rem;
