@@ -4,11 +4,11 @@ var LineChart = require("react-chartjs").Line;
 var Loader = require("react-loader");
 var moment = require("moment");
 
-var BeaconReport = React.createClass({
+var SoundcloudReport = React.createClass({
 	getInitialState: function() {
 		return {
-			revenue: true,
-			unlocks: true,
+			plays: true,
+			followers: true,
 			loaded: false,
 			cohort: 'daily'
 		}
@@ -16,9 +16,9 @@ var BeaconReport = React.createClass({
 	componentDidMount: function() {
 		this._attachStream();
 	},
-	componentWillMount: function() {
+	componentWillMount: function() { 
 		var self = this;
-		this.props.getBeaconMetrics(this.state.cohort, function() {
+		this.props.getSoundcloudMetrics(this.state.cohort, function() {
 			self.setState({
 				loaded: true
 			});
@@ -40,7 +40,7 @@ var BeaconReport = React.createClass({
 				loaded: false,
 				cohort: cohortType
 			}, function() {
-				this.props.getBeaconMetrics(this.state.cohort, function() {
+				this.props.getSoundcloudMetrics(this.state.cohort, function() {
 					self.setState({
 						loaded: true
 					});
@@ -49,7 +49,7 @@ var BeaconReport = React.createClass({
 		}
 	},
 	lineGraph: function() {
-		if ((this.state.revenue || this.state.unlocks) && this.state.loaded) {
+		if ((this.state.plays || this.state.followers) && this.state.loaded) {
 			var dateGrouping;
 			var dateFormat;
 			switch (this.state.cohort) {
@@ -69,8 +69,8 @@ var BeaconReport = React.createClass({
 			var metrics = this.props.metrics;
 			var labels = [];
 			var datasets = [];
-			for (var i = 0; i < metrics.revenue.overtime.length; i++) {
-				labels.push(moment(metrics.revenue.overtime[i].date, dateGrouping).format(dateFormat));
+			for (var i = 0; i < metrics.followers.overtime.length; i++) {
+				labels.push(moment(metrics.followers.overtime[i].date, dateGrouping).format(dateFormat));
 			}
 			var colors = ['#ffffff', '#efc56d', '#40d18f'];
 			var counter = 0;
@@ -112,12 +112,10 @@ var BeaconReport = React.createClass({
 	render: function() {
 		var suffixNum = this.props.numberWithSuffix;
 		var metrics = this.props.metrics;
-
-		var revenueTotal = metrics.revenue.current;
-		var revenueChange = revenueTotal - metrics.revenue.last;
-		var unlocksTotal = metrics.unlocks.current;
-		var unlocksChange = unlocksTotal - metrics.unlocks.last;
-
+		var playsCurrent = metrics.plays.current;
+		var playsChange = metrics.plays.current - metrics.plays.last;
+		var followersCurrent = metrics.followers.current;
+		var followersChange = metrics.followers.current - metrics.followers.last;
 		var previousCohort;
 		switch (this.state.cohort) {
 			case "daily":
@@ -132,10 +130,10 @@ var BeaconReport = React.createClass({
 		}	
 
 		return (
-		<div className="beacon-report">
+		<div className="soundcloud-report">
 			<div className="title flex-row">
-				<img src="/public/images/beacon_icon.png" />
-				beacons
+				<img src="/public/images/soundcloud_icon.png" />
+				soundcloud
 			</div>
 			<div className="time-selector flex-row">
 				<p onClick={this.changePeriod} className={this.state.cohort == "daily" ? "active":""} name="daily">daily</p>
@@ -145,27 +143,27 @@ var BeaconReport = React.createClass({
 				<p onClick={this.changePeriod} className={this.state.cohort == "monthly" ? "active":""} name="monthly">monthly</p>
 			</div>
 			<Loader loaded={this.state.loaded}>
-				<div className="beacon-report-inner flex-column">
-					<div className="beacon-numbers flex-row">
-						<div className={"revenue flex-column flex-fixed " + (this.state.revenue ? "":"deactivated")} id="revenue" onClick={this.toggleData}>
-							<p>total revenue</p>
-							<h1>${suffixNum(revenueTotal)}</h1>
-							<p>{previousCohort} {revenueChange >= 0 ? '+':''}${suffixNum(revenueChange.toFixed(2))}</p>
+				<div className="soundcloud-report-inner flex-column">
+					<div className="soundcloud-numbers flex-row">
+						<div className={"plays flex-column flex-fixed " + (this.state.plays ? "":"deactivated")} id="plays" onClick={this.toggleData}>
+							<p>total plays</p>
+							<h1>{suffixNum(playsCurrent)}</h1>
+							<p>{previousCohort} {playsChange >= 0 ? '+':''}{suffixNum(playsChange)}</p>
 						</div>
-						<div className={"unlockedsets flex-column flex-fixed " + (this.state.unlocks ? "":"deactivated")} id="unlocks" onClick={this.toggleData}>
-							<p>total unlocks</p>
-							<h1>{suffixNum(unlocksTotal)}</h1>
-							<p>{previousCohort} {unlocksChange >= 0 ? '+':''}{suffixNum(unlocksChange)}</p>
+						<div className={"followers flex-column flex-fixed " + (this.state.followers ? "":"deactivated")} id="followers" onClick={this.toggleData}>
+							<p>total followers</p>
+							<h1>{suffixNum(followersCurrent)}</h1>
+							<p>{previousCohort} {followersChange >= 0 ? '+':''}{suffixNum(followersChange)}</p>
 						</div>
 					</div>
-					<div className="beacon-graph">
+					<div className="soundcloud-graph">
 						{this.lineGraph()}
 					</div>
 				</div>
 			</Loader>
-		</div>	
+		</div>
 		);
 	}
 });
 
-module.exports = BeaconReport;									
+module.exports = SoundcloudReport;					

@@ -217,77 +217,335 @@ var initialAppState = Immutable.Map({
 			"youtube": "https://www.youtube.com/CalvinHarrisVEVO"
 		}
 	},
-	'metrics': {
-		"setmine": {
-			'plays': {
-				current: 1,
-				last: 2,
-				overtime: [1,2,3]
+	'setmine_metrics': {
+		'plays': {
+			current: 1,
+			last: 2,
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
 			},
-			'views': {
-				current: 1,
-				last: 2,
-				overtime: [1,2,3]
+			{
+				date: "4/6/1990",
+				count: 1
 			},
-			'favorites': {
-				current: 1,
-				last: 2,
-				overtime: [1,2,3]
-			}
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
+			},
+		'views': {
+			current: 1,
+			last: 2,
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
+			},
+			{
+				date: "4/6/1990",
+				count: 1
+			},
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
 		},
-		"social": {
-			'twitter': {
-				current: 1.1,
-				last: 2.2,
-				overtime: [1,2,3]
+		'favorites': {
+			current: 1,
+			last: 2,
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
 			},
-			'facebook': {
-				current: 1.1,
-				last: 2.2,
-				overtime: [1,2,3]
+			{
+				date: "4/6/1990",
+				count: 1
 			},
-			'instagram': {
-				current: 1.1,
-				last: 2.2,
-				overtime: [1,2,3]
-			}
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
+		}
+	},
+	'soundcloud_metrics': {
+		'plays': {
+			current: 1,
+			last: 2,
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
+			},
+			{
+				date: "4/6/1990",
+				count: 1
+			},
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
+			},
+		'followers': {
+			current: 1,
+			last: 2,
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
+			},
+			{
+				date: "4/6/1990",
+				count: 1
+			},
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
 		},
-		"media": {
-			'soundcloud': {
-				followers: {
-					current: 1,
-					last: 2,
-					overtime: [1,2,3]
-				},
-				plays: {
-					current: 1,
-					last: 2,
-					overtime: [1,2,3]	
-				}
+	},
+	'youtube_metrics': {
+		'plays': {
+			current: 1,
+			last: 2,
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
 			},
-			'youtube': {
-				followers: {
-					current: 1,
-					last: 2,
-					overtime: [1,2,3]
-				},
-				plays: {
-					current: 1,
-					last: 2,
-					overtime: [1,2,3]	
-				}
-			}
+			{
+				date: "4/6/1990",
+				count: 1
+			},
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
+			},
+		'followers': {
+			current: 1,
+			last: 2,
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
+			},
+			{
+				date: "4/6/1990",
+				count: 1
+			},
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
 		},
-		"beacons": {
-			'revenue': {
-				current: 0,
-				last: 0
+	},
+	"beacon_metrics": {
+		'revenue': {
+			current: 0,
+			last: 0,
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
 			},
-			'unlocks': {
-				current: 0,
-				last: 0
+			{
+				date: "4/6/1990",
+				count: 1
 			},
-			'overtime': [1,2,3]
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
+		},
+		'unlocks': {
+			current: 0,
+			last: 0,
+			overtime: [
+			{
+				date: "4/5/1990",
+				count: 1
+			},
+			{
+				date: "4/6/1990",
+				count: 1
+			},
+			{
+				date: "4/7/1990",
+				count: 1
+			},
+			{
+				date: "4/8/1990",
+				count: 1
+			},
+			{
+				date: "4/9/1990",
+				count: 1
+			},
+			{
+				date: "4/10/1990",
+				count: 1
+			},
+			{
+				date: "4/11/1990",
+				count: 1
+			},
+			]
+		}
+	},
+	"social_metrics": {
+		'twitter': {
+			current: 1.1,
+			last: 2.2,
+			overtime: [1,2,3]
+		},
+		'facebook': {
+			current: 1.1,
+			last: 2.2,
+			overtime: [1,2,3]
+		},
+		'instagram': {
+			current: 1.1,
+			last: 2.2,
+			overtime: [1,2,3]
 		}
 	}
 });
@@ -325,6 +583,24 @@ var App = React.createClass({
 	},
 	componentDidMount: function() {
 		this._attachStreams(); //global event handler
+		this.getArtistData();
+	},
+	getArtistData: function() {
+		var artistId = this.state.appState.get("artistData").id;
+		var requestUrl = "http://localhost:3000/api/v/7/artist/" + artistId;
+		var self = this;
+		$.ajax({
+			type: "GET",
+			url: requestUrl,
+			success: function(res) {
+				push({
+					type: "SHALLOW_MERGE",
+					data: {
+						artistData:	res.payload.artist
+					}
+				});
+			}
+		});
 	},
 	_attachStreams: function() {
 		var _this = this;
@@ -360,14 +636,10 @@ var App = React.createClass({
 var routes = (
 	<Route path='/' handler={App}>
 
-
-		
-
-		<DefaultRoute name='content' handler={SettingPage} />
+		<DefaultRoute name='metrics' handler={MetricsView} />
 		<Route path='content' handler={ContentView} />
-		<Route name='metrics' path='metrics' handler={MetricsView} />
-
-		<Route name='account' path='account' handler={AccountView} />
+		<Route path='metrics' handler={MetricsView} />
+		<Route path='account' handler={AccountView} />
 	</Route>
 );
 

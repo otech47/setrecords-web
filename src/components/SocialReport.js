@@ -1,8 +1,22 @@
 import React from 'react';
+var Loader = require("react-loader");
 
 var SocialReport = React.createClass({
+	getInitialState: function() {
+		return ({
+			loaded: false
+		});
+	},
 	componentDidMount: function() {
 		this._attachStream();
+	},
+	componentWillMount: function() {
+		var self = this;
+		this.props.getSocialMetrics(0, function() {
+			self.setState({
+				loaded: true
+			});
+		});
 	},
 	_attachStream: function() {
 		var _this = this;
@@ -27,46 +41,50 @@ var SocialReport = React.createClass({
 		var instagram_last = instagramMetrics.last;
 
 		return (
-		<div className="social-report flex-column">
+		<div className="social-report">
 			<div className="title flex-row">
 				<img src="/public/images/social_icon.png" />
 				social
 			</div>
-			<div className="metrics flex-row">
-				<div className="flex-column flex-fixed">
-					<img src="/public/images/twitter_icon.png" />
-					<h1>{suffixNum(twitter_total)}</h1>
+			<Loader loaded={this.state.loaded}>
+				<div className="social-report-inner flex-column">
+					<div className="social-metrics flex-row">
+						<div className="flex-column flex-fixed">
+							<img src="/public/images/twitter_icon.png" />
+							<h1>{suffixNum(twitter_total)}</h1>
+						</div>
+						<div className="flex-column flex-fixed">
+							<p>new followers</p>
+							<h1>{suffixNum(twitter_current)}</h1>
+							<p>yesterday {suffixNum(twitter_last)}</p>
+						</div>
+					</div>
+					<div className="divider"></div>
+					<div className="social-metrics flex-row">
+						<div className="flex-column flex-fixed">
+							<img src="/public/images/facebook-icon.png" />
+							<h1>{suffixNum(facebook_total)}</h1>
+						</div>
+						<div className="flex-column flex-fixed">
+							<p>new likes</p>
+							<h1>{suffixNum(facebook_current)}</h1>
+							<p>yesterday {suffixNum(facebook_last)}</p>
+						</div>
+					</div>
+					<div className="divider"></div>
+					<div className="social-metrics flex-row">
+						<div className="flex-column flex-fixed">
+							<img src="/public/images/instagram_icon.png" />
+							<h1>{suffixNum(instagram_total)}</h1>
+						</div>
+						<div className="flex-column flex-fixed">
+							<p>new followers</p>
+							<h1>{suffixNum(instagram_current)}</h1>
+							<p>yesterday {suffixNum(instagram_last)}</p>
+						</div>
+					</div>
 				</div>
-				<div className="flex-column flex-fixed">
-					<p>new followers</p>
-					<h1>{suffixNum(twitter_current)}</h1>
-					<p>yesterday {suffixNum(twitter_last)}</p>
-				</div>
-			</div>
-			<div className="divider"></div>
-			<div className="metrics flex-row">
-				<div className="flex-column flex-fixed">
-					<img src="/public/images/facebook-icon.png" />
-					<h1>{suffixNum(facebook_total)}</h1>
-				</div>
-				<div className="flex-column flex-fixed">
-					<p>new likes</p>
-					<h1>{suffixNum(facebook_current)}</h1>
-					<p>yesterday {suffixNum(facebook_last)}</p>
-				</div>
-			</div>
-			<div className="divider"></div>
-			<div className="metrics flex-row">
-				<div className="flex-column flex-fixed">
-					<img src="/public/images/instagram_icon.png" />
-					<h1>{suffixNum(instagram_total)}</h1>
-				</div>
-				<div className="flex-column flex-fixed">
-					<p>new followers</p>
-					<h1>{suffixNum(instagram_current)}</h1>
-					<p>yesterday {suffixNum(instagram_last)}</p>
-				</div>
-			</div>
+			</Loader>
 		</div>
 		);
 	}
