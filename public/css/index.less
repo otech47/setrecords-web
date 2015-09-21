@@ -744,12 +744,32 @@ td{
     }    
 }
 
+ .SVC{
+        button{
+        font-size: 100%;
+        background-color: @setrecords-light-black;
+        text-align: center;
+        width: 100%;
+        height: 50px;
+        border-color: @setrecords-white;
+        }       
+        #save{
+            color: @spotify-green;
+        }
+         #undo{
+            color: @set-yellow;
+        }
+         #cancel{
+            color:@set-red;
+        }
+    }
 .moible-set-editor{
-    
+    z-index: 50;
      background-color: @setrecords-white;
     flex-wrap: wrap;
     overflow: auto;
-    overflow: hidden;
+    
+   
     .deleteSet{
         
     }
@@ -823,7 +843,7 @@ td{
         margin-left: .8%;
         padding-left: 8%;
         font-weight: bold;
-        height: 62vh;
+        height: 420px;
 
        
         p{
@@ -862,8 +882,7 @@ td{
             color: red;
         }
         background-color: #313542;
-       .setDelete{ 
-         
+
         .deleteTrack{
             
             border: 0;
@@ -871,6 +890,9 @@ td{
              border: 5px solid #bdc3cc;
         }
      }
+     .setDelete{ 
+          height: 80px;
+          margin: 20px;
     }
 
 }
@@ -879,12 +901,13 @@ td{
     margin-left: 10px;
 }
  .current-page{
+     margin: 0 20px;
     text-align: center;
-    padding-left: 20px;
+   
  }
  #current-page{
     background-color: #313542;
-    border-radius: 100%;
+    border-radius: 80%;
     text-align: center;
  }
  .step-tile{
@@ -911,7 +934,9 @@ td{
   border-radius: 7%;
   background-color: #313542;
   color:#22a7f0;
-  border-color: #313542;  
+  border: none;
+  box-shadow: 0px 5px 6px #909394; 
+
  }
  .step{
     margin-left: 25px;
@@ -939,6 +964,7 @@ td{
         text-align: center;
             
         button{
+            margin: 0 20px;
             width: 16%;
             font-size: 1.5em;
         }
@@ -1027,6 +1053,10 @@ td{
  .free{
     justify-content: center;
  }
+ #immediately{
+ 
+ }
+
 
 }
 
@@ -1055,3 +1085,104 @@ td{
         }
     }
 }
+
+.SetstoryLandingPage{
+    width: 100%;
+    height: 100%;
+    
+
+
+    .mainLandingPage{
+        background-image: url("/public/images/MainLoginPage.png");
+    
+        width: 1582px;
+        height: 599px;
+       
+    }
+    .brady{
+       
+        
+        .drake{
+       justify-content: center;
+       align-item: center;
+        width: %;
+        height: %;
+        img{
+             width: 200px;
+            height: 180px;
+          
+        }
+    }
+    }
+    .cartman{
+      
+    }
+    #setstoy-landing{
+        z-index: -100;
+    }
+
+    .hub{
+        color: white;
+       margin-left: 50px;
+        font-size: 300%;
+        p{
+            margin: 0;
+        }    
+    }
+    .fa-apple{
+         margin: 0 20px;
+        font-size: 600%;
+    }
+    .fa-android{
+        padding-left: 50px;
+         margin: 0 20px;
+        font-size: 600%;
+
+    }
+    .setstory-apps{
+        color: white;
+        margin-right: 100px;
+        justify-content: flex-end;
+
+    }
+ 
+
+     /*Bottom Landing Page*/   
+    .secondLanding{
+
+        background-image: url("/public/images/Setstory-boss.png");
+         width: 1582px;
+        height: 599px;
+    .boss{
+        width: 791px;
+        height: 599px;
+   
+        color: white;
+
+        h1{
+            font-size: 58px;
+            margin: 10px;
+        }
+        p{
+            margin: 0;
+            font-size: 35px;
+            height: 90px;
+            width: 100%;
+        
+           
+        }
+
+    }
+    .ghost{
+      
+        width: 791px;
+        height: 599px;
+    }
+}
+}
+
+.SettingPage{
+    width: 100%;
+    height: 100%;
+}
+

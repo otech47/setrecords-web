@@ -1,4 +1,8 @@
 import React from 'react';
+import WizardStep1 from './WizardStep1';
+import WizardStep2 from './WizardStep2';
+import WizardStep3 from './WizardStep3';
+import WizardStep4 from './WizardStep4';
 
 var WizardStep5 = React.createClass({
 	componentDidMount: function() {
@@ -26,11 +30,11 @@ var WizardStep5 = React.createClass({
 							<option value="1Hotel">1Hotel</option>
 							<option value="Oscars">Oscars House</option>
 							<option value="Jesus's">Jesus House</option>
-							<option value="Scarlett's">Scarlett</option>
+							<option value="Scarlett's">Scarletts</option>
 						</select>
 					</div>
 					<div className=" selection ">
-						<button  className="wizard-buttons" >Finish</button>
+						<button href="" className="wizard-buttons" >Finish</button>
 
 					</div>
 					<div className="current-page">

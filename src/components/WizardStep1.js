@@ -1,4 +1,9 @@
 import React from 'react';
+import WizardStep2 from './WizardStep2';
+import WizardStep3 from './WizardStep3';
+import WizardStep4 from './WizardStep4';
+import WizardStep5 from './WizardStep5';
+
 
 var WizardStep1 = React.createClass({
 	componentDidMount: function() {

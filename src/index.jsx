@@ -20,6 +20,8 @@ import SearchResultsView from './components/SearchResultsView';
 import Favorites from './components/Favorites';
 import New from './components/New';
 import  MoibleSetEditor from './components/MoibleSetEditor';
+import SetEditor from './components/SetEditor';
+import SettingPage from './components/SettingPage';
 import Artists from './components/Artists';
 import Festivals from './components/Festivals';
 import Mixes from './components/Mixes';
@@ -50,6 +52,10 @@ import WizardStep2 from './components/WizardStep2';
 import WizardStep3 from './components/WizardStep3';
 import WizardStep4 from './components/WizardStep4';
 import WizardStep5 from './components/WizardStep5';
+
+
+/*SetsotryLanidng*/
+import SetstoryLandingPage  from './components/SetstoryLandingPage';
 
 //subscribe in componentDidMount()
 //unsubscribe in componentWillUnmount()
@@ -353,18 +359,14 @@ var App = React.createClass({
 
 var routes = (
 	<Route path='/' handler={App}>
-<<<<<<< HEAD
 
-		<DefaultRoute name='content' handler={WizardStep5} />
-		<Route path='content' handler={ContentView} />
-		<Route name='metrics' path='metrics' handler={MetricsView} />
 
 		
-=======
-		<DefaultRoute name='content' handler={MoibleSetEditor} />
+
+		<DefaultRoute name='content' handler={SettingPage} />
 		<Route path='content' handler={ContentView} />
 		<Route name='metrics' path='metrics' handler={MetricsView} />
->>>>>>> 512d978ce3a44771293854eb86dd0499dfbbc4b1
+
 		<Route name='account' path='account' handler={AccountView} />
 	</Route>
 );

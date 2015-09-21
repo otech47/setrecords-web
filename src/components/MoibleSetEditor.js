@@ -12,7 +12,18 @@ var MoibleSetEditor = React.createClass({
 		return (
 			<div className="moible-set-editor flex-column">
 
-				
+					<div className="flex-row SVC ">
+						<div  className="flex-fixed  ">
+							<button  id="save">Save</button>
+						</div>
+						<div   className="flex-fixed ">
+							<button id="undo">Revert</button>
+						</div>
+						<div   className="flex-fixed ">
+							<button id="cancel">Cancel</button>
+						</div>
+						
+					</div>				
 					<div className="edit-set-name ">
 
 						<h1 id="edit-set-name">TomorrowWorld 2013
@@ -71,6 +82,7 @@ var MoibleSetEditor = React.createClass({
 							</tr>
 						</table>
 					</div>
+
 					<div className="setDelete">
 							<button id="deleteSet">DELETE SET</button>
 					</div>

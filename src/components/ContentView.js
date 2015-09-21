@@ -45,7 +45,6 @@ var ContentView = React.createClass({
 
 			
 
-			</div>
 
 		);
 	}
