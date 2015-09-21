@@ -583,19 +583,16 @@ var App = React.createClass({
 		var artistId = this.state.appState.get("artistData").id;
 		var requestUrl = "http://localhost:3000/api/v/7/artist/" + artistId;
 		var self = this;
-		console.log("requesting artist data...");
 		$.ajax({
 			type: "GET",
 			url: requestUrl,
 			success: function(res) {
-				console.log('artist data received. pushing to app state...');
 				push({
 					type: "SHALLOW_MERGE",
 					data: {
 						artistData:	res.payload.artist
 					}
 				});
-				console.log("artist data loaded.");
 			}
 		});
 	},
