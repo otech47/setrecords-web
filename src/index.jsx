@@ -19,7 +19,7 @@ import SearchResultsView from './components/SearchResultsView';
 
 import Favorites from './components/Favorites';
 import New from './components/New';
-import  MoibleSetEditor from './components/MoibleSetEditor';
+import MobileSetEditor from './components/MobileSetEditor';
 import SetEditor from './components/SetEditor';
 import SettingPage from './components/SettingPage';
 import Artists from './components/Artists';
@@ -68,7 +68,7 @@ var initialAppState = Immutable.Map({
 		}
 	},
 	'artistData': {
-		"id": 40,
+		"id": 4026,
 		"artist": "Calvin Harris",
 		"bio": "No Biography Available",
 		"fb_link": "https://www.facebook.com/calvinharris",
@@ -635,11 +635,9 @@ var App = React.createClass({
 
 var routes = (
 	<Route path='/' handler={App}>
-
 		<DefaultRoute name='metrics' handler={MetricsView} />
 		<Route path='content' handler={ContentView} />
 		<Route path='metrics' handler={MetricsView} />
-		<Route path='account' handler={AccountView} />
 	</Route>
 );
 

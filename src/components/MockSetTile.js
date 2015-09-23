@@ -3,7 +3,7 @@ var Router = require('react-router')
 var Route = Router.Route;
 var constants = require('../constants/constants');
 
-var SetTile = React.createClass({
+var MockSetTile = React.createClass({
 	editSet: function() {
 		if (this.props.setClick) {
 			this.props.setClick(this.props.setData);
@@ -15,9 +15,10 @@ var SetTile = React.createClass({
 		if (setData.is_radiomix && setData.episode) {
 			backgroundImageURL = setData.episode_imageURL;
 		}
+		var episodeImage = this.props.episodeImage;
 		return (
 		<button className="set-tile" onClick={this.editSet} >
-			<img className="event-image" src={constants.S3_ROOT_FOR_IMAGES+backgroundImageURL} />
+			<img className="event-image" src={(episodeImage.length > 0 ? episodeImage[0].preview : constants.S3_ROOT_FOR_IMAGES+backgroundImageURL)} />
 			<img className="artist-image" src={constants.S3_ROOT_FOR_IMAGES+setData.artistimageURL} />
 		    <div className="flex-column tile-controls">
 	            <div className="flex-column flex-2x set-info">
@@ -39,4 +40,4 @@ var SetTile = React.createClass({
 	}
 });
 
-module.exports = SetTile;
+module.exports = MockSetTile;

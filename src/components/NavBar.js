@@ -18,9 +18,6 @@ var NavBar = React.createClass({
 				<Link className="flex-fixed set-flex" to="metrics">
 					<div>Metrics</div>
 				</Link>
-				<Link className="flex-fixed set-flex" to="/account">
-					<div>Account</div>
-				</Link>
 			</div>
 		);
 	}
