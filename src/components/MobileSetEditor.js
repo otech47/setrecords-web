@@ -2,6 +2,8 @@ import React from 'react/addons';
 var moment = require("moment");
 import MockSetTile from './MockSetTile';
 var Dropzone = require("react-dropzone");
+import _ from 'underscore';
+import async from 'async';
 
 var MobileSetEditor = React.createClass({
 	getInitialState: function() {
@@ -36,31 +38,40 @@ var MobileSetEditor = React.createClass({
 				],
 				"model_type": "set"
 			},
-			episode_image: [],
-			pendingChanges: false
+			tile_image: [],
+			changes: false
 		}
 	},
-	_attachStreams: function() {
-		var _this = this;
-	},
-	componentDidMount: function() {
-		this._attachStreams();
-	},
 	componentWillMount: function() {
+		var setCopy = _.clone(this.props.set);
 		this.setState({
-			pendingSet: this.props.set,
+			pendingSet: setCopy
 		});
 	},
-	uploadEpisodeImage: function(callback) {
-		var file = this.state.episode_image[0];
+	newImage: function(callback) {
+		// console.log("New tile image pending:")
+		// console.log(this.state.tile_image);
+		async.waterfall([this.registerTileImage, this.updateTileImageDatabase],
+			function(err, results) {
+				if (err) {
+					// console.log("Error occurred while updating image. ", err);
+					callback(err);
+				} else {
+					// console.log("Tile image updated.");
+					callback(null);
+				}
+		});
+	},
+	registerTileImage: function(callback) {
+		var file = this.state.tile_image[0];
 		var self = this;
-		console.log("Requesting encoding from AWS...");
+		// console.log("Requesting encoding from AWS...");
 		$.ajax({
 			type: "GET",
 			url: "http://localhost:3000/aws/configureAWS?filename=" + encodeURIComponent(file.name),
 			contentType: "application/json",
 			success: function(response) {
-				console.log("Encoding successful.");
+				// console.log("Encoding successful.");
 				AWS.config.update(response.settings);
 				var encodedFilename = response.encoded;
 				var filesize = file.size;
@@ -77,26 +88,29 @@ var MobileSetEditor = React.createClass({
 				upload.on("httpUploadProgress", function(event) {
 					var percentage = (event.loaded / filesize) * 100;
 					var percent = parseInt(percentage).toString() + "%";
-					console.log("Uploading image: " + percent);
+					// console.log("Uploading image: " + percent);
 				});
 
-				console.log("Uploading file to S3...");
+				// console.log("Uploading file to S3...");
 				upload.send(function(err, data) {
 					if (err) {
-						console.log("An error occurred.");
-						console.log(err);
+						// console.log("An error occurred uploading the file to S3.");
 						callback(err);
 					} else {
-						console.log("Upload successful. File located at: " + data.Location);
-						self.updateEpisodeImageDatabase(response.encoded, callback);
+						// console.log("Upload successful. File located at: " + data.Location);
+						callback(null, response.encoded);
 					}
 				});
+			},
+			error: function(err) {
+				// console.log("There was an error encoding the file.");
+				callback(err);
 			}
 		});
 	},
-	updateEpisodeImageDatabase: function(imageURL, callback) {
-		console.log("Adding episode image to databases...");
-		var requestURL = "http://localhost:3000/api/v/7/setrecords/episodes/image/" + this.state.pendingSet.id;
+	updateTileImageDatabase: function(imageURL, callback) {
+		// console.log("Adding tile image to databases...");
+		var requestURL = "http://localhost:3000/api/v/7/setrecords/mix/image/" + this.props.set.id;
 		$.ajax({
 			type: "POST",
 			url: requestURL,
@@ -104,76 +118,149 @@ var MobileSetEditor = React.createClass({
 				image_url: imageURL
 			},
 			success: function(res) {
-				console.log("Image successfully added.")
+				// console.log("Image successfully added to database.")
 				callback(null);
+			},
+			error: function(err) {
+				// console.log("An error occurred when updating the database.");
+				callback(err);
+			}
+		});
+	},
+	newTitle: function(callback) {
+		// console.log("New set title pending.");
+		// console.log(this.state.pendingSet.event);
+		var requestURL = "http://localhost:3000/api/v/7/setrecords/mix/title/" + this.props.set.id;
+		var newTitle = this.state.pendingSet.event;
+		$.ajax({
+			type: "POST",
+			url: requestURL,
+			data: {
+				event: newTitle
+			},
+			success: function(res) {
+				// console.log("Set title updated on database.");
+				callback(null);
+			},
+			error: function(err) {
+				// console.log("An error occurred when adding new title to database.", err);
+				callback(err);
 			}
 		});
 	},
 	applyChanges: function() {
-		if (this.state.pendingChanges) {
-			console.log("Pending changes found.");
-			var setInfo = {};
+		if (this.state.changes) {
+			// console.log("Pending changes found.");
+			var changeFunctions = [];
 			var pendingSet = this.state.pendingSet;
 			var self = this;
-			setInfo["pendingSet"] = pendingSet;
-
-			if (this.state.episode_image.length > 0) {
-				console.log("New episode image pending:")
-				console.log(this.state.episode_image);
-				this.uploadEpisodeImage(function(err) {
-					if (err) {
-						console.log("Error occurred.", err);
-						console.log("Closing window...");
-						self.props.close();
-					} else {
-						console.log("Episode image for this mix updated.");
-						console.log("Closing window...");
-						self.props.close();
-					}
-				});
-			} else {
-				this.props.close();
+			if (this.state.tile_image.length > 0) {
+				changeFunctions.push(this.newImage);
+				// console.log("Changes to do");
+				// console.log(changeFunctions);
 			}
+			if (this.state.pendingSet.event != this.props.set.event) {
+				changeFunctions.push(this.newTitle);
+				// console.log("Changes to do");
+				// console.log(changeFunctions);
+			}
+
+			// console.log("Applying changes...");
+			async.parallel(changeFunctions, function(err, results) {
+				if (err) {
+					// console.log("There was an error when applying changes to this set.");
+					// console.log(err);
+					// console.log("Closing window...");
+					self.props.close(true);
+				} else {
+					// console.log("All changes applied successfully.");
+					// console.log("Closing window...");
+					self.props.close(true);
+				}
+			});
+
 		} else {
-			console.log("No pending changes. Closing window...");
-			this.props.close();
+			// console.log("No pending changes. Closing window...");
+			this.props.close(false);
 		}
 	},
 	revertChanges: function() {
+		var self = this;
+		// console.log("Reverting...");
+		var setCopy = _.clone(this.props.set);
 		this.setState({
-			pendingSet: this.props.set,
-			episode_image: [],
-			pendingChanges: false
+			pendingSet: setCopy,
+			tile_image: [],
+			changes: false
 		});
 	},
 	cancelChanges: function() {
 		var self = this;
+		var setCopy = _.clone(this.props.set);
+		// console.log("Clicked cancel. Reverting...")
 		this.setState({
-			pendingSet: this.props.set,
-			episode_image: [],
-			pendingChanges: false
+			pendingSet: setCopy,
+			tile_image: [],
+			changes: false
 		}, function() {
-			self.props.close();
+			// console.log("Closing...");
+			self.props.close(false);
+		});
+	},
+	changeTitleText: function(event) {
+		var pendingSet = this.state.pendingSet;
+		pendingSet["event"] = event.target.value;
+		this.setState({
+			pendingSet: pendingSet,
+			changes: true
 		});
 	},
 	onDrop: function(file) {
 		this.setState({
-			episode_image: file,
-			pendingChanges: true
+			tile_image: file,
+			changes: true
 		});
 	},
 	showEditImage: function() {
-		if (this.state.pendingSet.is_radiomix) {
+		if (this.props.set.is_radiomix) {
 			return (
 				<div className="set-tile-preview">
-			    	<MockSetTile setData={this.state.pendingSet} episodeImage={this.state.episode_image} multiple="false" />
-			    	<Dropzone onDrop={this.onDrop} className="upload-image set-flex">
-			    		<p>Click or drag file here to upload new episode image</p>
+			    	<MockSetTile setData={this.state.pendingSet} episodeImage={this.state.tile_image} />
+			    	<Dropzone onDrop={this.onDrop} className="upload-image set-flex"  multiple={false}>
+			    		<p>Click or drag file here to upload new {this.state.pendingSet.episode ? "episode":"mix"} image</p>
 			    	</Dropzone>
 			    </div>
 			);
 		}
 		else {
+			return "";
+		}
+	},
+	showSetTitle: function() {
+		var pendingSet = this.state.pendingSet;
+		if (this.props.set.is_radiomix) {
+			return (
+				<div className="edit-set-name flex-row">
+					<input type="text" value={pendingSet.event} onChange={this.changeTitleText} />
+				</div>
+			);
+		} else {
+			return (
+				<div className="edit-set-name flex-row">
+					<span className="event-title">{pendingSet.event}</span>
+				</div>
+			);
+		}
+	},
+	showEpisodeName: function() {
+		var pendingSet = this.state.pendingSet;
+		if (this.props.set.episode) {
+			return (
+				<div className="edit-episode-name flex-row">
+					<span className="episode-name">Episode: {pendingSet.episode}</span>
+				</div>
+			);
+		} else {
 			return "";
 		}
 	},
@@ -191,11 +278,9 @@ var MobileSetEditor = React.createClass({
 					<button className="flex-fixed cancel set-flex" onClick={this.cancelChanges}>
 						Cancel
 					</button>					
-				</div>				
-				<div className="edit-set-name flex-row">
-					<span className="event-title">{pendingSet.event}</span>
-					<span className="edit-button">edit<i className="fa fa-pencil"></i></span>
 				</div>
+				{this.showSetTitle()}				
+				{this.showEpisodeName()}
 				<p className="uploaded-date">Uploaded: {moment(pendingSet.datetime).format("M[/]D[/]YYYY")}</p>
 
 		    	{this.showEditImage()}

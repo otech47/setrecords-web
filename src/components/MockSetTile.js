@@ -4,11 +4,6 @@ var Route = Router.Route;
 var constants = require('../constants/constants');
 
 var MockSetTile = React.createClass({
-	editSet: function() {
-		if (this.props.setClick) {
-			this.props.setClick(this.props.setData);
-		}
-	},
 	render: function() {
 		var setData = this.props.setData;
 		var backgroundImageURL = setData.main_eventimageURL;
@@ -17,13 +12,12 @@ var MockSetTile = React.createClass({
 		}
 		var episodeImage = this.props.episodeImage;
 		return (
-		<button className="set-tile" onClick={this.editSet} >
+		<button className="set-tile" >
 			<img className="event-image" src={(episodeImage.length > 0 ? episodeImage[0].preview : constants.S3_ROOT_FOR_IMAGES+backgroundImageURL)} />
-			<img className="artist-image" src={constants.S3_ROOT_FOR_IMAGES+setData.artistimageURL} />
 		    <div className="flex-column tile-controls">
 	            <div className="flex-column flex-2x set-info">
 	                <div>{setData.artist}</div>
-	                <div>{setData.event}</div>
+	                <div>{setData.event}{(setData.episode && setData.episode.length > 0) ? " - " + setData.episode : ""}</div>
 	            </div>
 	            <div className="divider"></div>
 		        <div className="flex-row flex set-stats">

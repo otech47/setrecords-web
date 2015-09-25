@@ -5,9 +5,7 @@ var constants = require('../constants/constants');
 
 var SetTile = React.createClass({
 	editSet: function() {
-		if (this.props.setClick) {
-			this.props.setClick(this.props.setData);
-		}
+		this.props.setClick(this.props.setData);
 	},
 	render: function() {
 		var setData = this.props.setData;
@@ -18,11 +16,10 @@ var SetTile = React.createClass({
 		return (
 		<button className="set-tile" onClick={this.editSet} >
 			<img className="event-image" src={constants.S3_ROOT_FOR_IMAGES+backgroundImageURL} />
-			<img className="artist-image" src={constants.S3_ROOT_FOR_IMAGES+setData.artistimageURL} />
 		    <div className="flex-column tile-controls">
 	            <div className="flex-column flex-2x set-info">
 	                <div>{setData.artist}</div>
-	                <div>{setData.event}</div>
+	                <div>{setData.event}{(setData.episode && setData.episode.length > 0) ? " - " + setData.episode : ""}</div>
 	            </div>
 	            <div className="divider"></div>
 		        <div className="flex-row flex set-stats">

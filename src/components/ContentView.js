@@ -1,8 +1,8 @@
 import React from 'react/addons';
 import MobileSetEditor from './MobileSetEditor';
 import SetTile from './SetTile';
+import SetList from './SetList';
 import _ from 'underscore';
-var Loader = require("react-loader");
 
 var ContentView = React.createClass({
 	displayName: 'ContentView',
@@ -42,35 +42,46 @@ var ContentView = React.createClass({
 			}
 		}
 	},
-	_attachStreams: function() {
-		var _this = this;
-	},
 	componentWillMount: function() {
-		var artistId = this.props.appState.get("artistData").id;
+		this.updateSets();
+	},
+	updateSets: function() {
+		// here's where we make sure that we have all the current set data
+		var requestURL = "http://localhost:3000/api/v/7/setrecords/artist/sets/" + this.props.appState.get("artistData").id;
 		var push = this.props.push;
-		var requestUrl = "http://localhost:3000/api/v/7/artist/" + artistId;
-		console.log(requestUrl);
 		var self = this;
 		$.ajax({
 			type: "GET",
-			url: requestUrl,
+			url: requestURL,
 			success: function(res) {
-				console.log(res);
+				// console.log("Successfully got current sets.");
 				push({
 					type: "SHALLOW_MERGE",
 					data: {
-						artistData:	res.payload.artist
+						sets: res.payload.sets
 					}
 				});
-			self.setState({
-				loaded: true
-			});
+				self.setState({
+					loaded: true
+				});
+			},
+			error: function(err) {
+				// console.log("There was an error retrieving current sets from the server.");
+				// console.log(err);
 			}
 		});
 	},
-	setEditor: function() {
+	editorOrList: function() {
 		if (this.state.editor) {
 			return (<MobileSetEditor set={this.state.currentSet} close={this.closeSetEditor} push={this.props.push} />);
+		} else {
+			var appState = this.props.appState;
+			var sets = appState.get("sets");
+			var self = this;
+			var setTiles = _.map(sets, function(set) {
+				return (<SetTile key={set.id} setData={set} setClick={self.openSetEditor} />);
+			});
+			return (<SetList isLoaded={this.state.loaded} tiles={setTiles} push={this.props.push} />);
 		}
 	},
 	openSetEditor: function(setData) {
@@ -79,34 +90,23 @@ var ContentView = React.createClass({
 			currentSet: setData
 		});
 	},
-	closeSetEditor: function() {
-		this.setState({
-			editor: false
-		});
+	closeSetEditor: function(changed) {
+		var self = this;
+		if (changed) {
+			this.setState({
+				editor: false,
+				loaded: false
+			}, self.updateSets());
+		} else {
+			this.setState({
+				editor: false,
+			});
+		}
 	},
 	render: function() {
-		var appState = this.props.appState;
-		var sets = appState.get("artistData").sets;
-		var self = this;
-		var setTiles = _.map(sets, function(set) {
-			return (<SetTile key={set.id} setData={set} setClick={self.openSetEditor} />);
-		});
 		return (
 			<div className="content-page flex-column">
-				{this.setEditor()}
-				<Loader loaded={this.state.loaded}>
-					<div className={"mobile-column flex-row " + (this.state.editor ? "hidden":"")} >
-						<button className="addSet flex-column">
-							<i className="fa fa-plus"></i>
-							<p>add a set</p>
-						</button>
-						<button className="addSong flex-column">
-							<i className="fa fa-plus"></i>
-							<p>add a track</p>
-						</button>
-						{setTiles}						
-					</div>
-				</Loader>
+				{this.editorOrList()}
 			</div>
 		);
 	}

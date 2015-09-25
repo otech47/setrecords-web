@@ -116,6 +116,7 @@ header {
         }
     }
 }
+
 .time-selector {
         position: absolute;
         right: 1rem;
@@ -798,7 +799,7 @@ td{
     .artist-image {
         height: 4rem;
         width: 4rem;
-        top: 8rem;
+        top: 7rem;
         position: absolute;
         border-radius: 50%;
         border: solid 0.25rem @set-blue;
@@ -820,8 +821,7 @@ td{
         }
         .set-info {
             justify-content: space-around;
-            align-items: flex-end;
-            padding-right: 1rem;
+            align-items: center;
         }
         .set-stats {
             align-items: stretch;
@@ -891,8 +891,23 @@ td{
             font-family: @defaultFontCondensed;
         }
     }
+    .edit-episode-name {
+        align-items: center;
+        flex-wrap: nowrap;
+        .episode-name {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        .edit-button {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            margin: 0 0 0 1rem;
+            color: @setrecords-dark-gray;
+            font-family: @defaultFontCondensed;
+        }
+    }
     .uploaded-date {
-        margin: 0;
+        margin: 1rem 0;
         font-size: 1.5rem;
     }
     .set-tile-preview {
@@ -922,8 +937,6 @@ td{
             }
         }
     }
-    
-
 }
 
 // .WizardStep4{
