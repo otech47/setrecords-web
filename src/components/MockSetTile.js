@@ -7,7 +7,7 @@ var MockSetTile = React.createClass({
 	render: function() {
 		var setData = this.props.setData;
 		var backgroundImageURL = setData.main_eventimageURL;
-		if (setData.is_radiomix && setData.episode) {
+		if (setData.is_radiomix && setData.episode_imageURL) {
 			backgroundImageURL = setData.episode_imageURL;
 		}
 		var episodeImage = this.props.episodeImage;

@@ -73,7 +73,7 @@ var ContentView = React.createClass({
 	},
 	editorOrList: function() {
 		if (this.state.editor) {
-			return (<MobileSetEditor set={this.state.currentSet} close={this.closeSetEditor} push={this.props.push} />);
+			return (<MobileSetEditor set={this.state.currentSet} close={this.closeSetEditor} push={this.props.push} appState={this.props.appState} />);
 		} else {
 			var appState = this.props.appState;
 			var sets = appState.get("sets");
