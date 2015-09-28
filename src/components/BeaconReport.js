@@ -9,23 +9,9 @@ var BeaconReport = React.createClass({
 		return {
 			revenue: true,
 			unlocks: true,
-			loaded: false,
+			loaded: true,
 			cohort: 'daily'
 		}
-	},
-	componentDidMount: function() {
-		this._attachStream();
-	},
-	componentWillMount: function() {
-		var self = this;
-		this.props.getBeaconMetrics(this.state.cohort, function() {
-			self.setState({
-				loaded: true
-			});
-		});
-	},
-	_attachStream: function() {
-		var _this = this;
 	},
 	toggleData: function(event) {
 		var clicked = {};
@@ -36,15 +22,26 @@ var BeaconReport = React.createClass({
 		if (this.state.loaded && ($(event.currentTarget).attr("name") != this.state.cohort)) {
 			var cohortType = $(event.currentTarget).attr("name");
 			var self = this;
+			var push = this.props.push;
 			this.setState({
 				loaded: false,
 				cohort: cohortType
 			}, function() {
-				this.props.getBeaconMetrics(this.state.cohort, function() {
-					self.setState({
-						loaded: true
-					});
-				});
+				self.props.updateBeacons(function(err, metrics) {
+					if (err) {
+						console.log("An error occurred while loading Beacon metrics.");
+					} else {
+						push({
+							type: 'SHALLOW_MERGE',
+							data: {
+								beacon_metrics: metrics
+							}
+						});
+						self.setState({
+							loaded: true
+						});
+					}
+				}, self.state.cohort);
 			});
 		}
 	},
@@ -110,8 +107,7 @@ var BeaconReport = React.createClass({
 		}
 	},
 	render: function() {
-		var suffixNum = this.props.numberWithSuffix;
-		var metrics = this.props.metrics;
+		var {numberWithSuffix, metrics, ...other} = this.props;
 
 		var revenueTotal = metrics.revenue.current;
 		var revenueChange = revenueTotal - metrics.revenue.last;
@@ -149,13 +145,13 @@ var BeaconReport = React.createClass({
 					<div className="beacon-numbers flex-row">
 						<div className={"revenue flex-column flex-fixed " + (this.state.revenue ? "":"deactivated")} id="revenue" onClick={this.toggleData}>
 							<p>total revenue</p>
-							<h1>${suffixNum(revenueTotal)}</h1>
-							<p>{previousCohort} {revenueChange >= 0 ? '+':''}${suffixNum(revenueChange.toFixed(2))}</p>
+							<h1>${numberWithSuffix(revenueTotal)}</h1>
+							<p>{previousCohort} {revenueChange >= 0 ? '+':''}${numberWithSuffix(revenueChange.toFixed(2))}</p>
 						</div>
 						<div className={"unlockedsets flex-column flex-fixed " + (this.state.unlocks ? "":"deactivated")} id="unlocks" onClick={this.toggleData}>
 							<p>total unlocks</p>
-							<h1>{suffixNum(unlocksTotal)}</h1>
-							<p>{previousCohort} {unlocksChange >= 0 ? '+':''}{suffixNum(unlocksChange)}</p>
+							<h1>{numberWithSuffix(unlocksTotal)}</h1>
+							<p>{previousCohort} {unlocksChange >= 0 ? '+':''}{numberWithSuffix(unlocksChange)}</p>
 						</div>
 					</div>
 					<div className="beacon-graph">

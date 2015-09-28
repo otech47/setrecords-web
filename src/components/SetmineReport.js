@@ -10,23 +10,9 @@ var SetmineReport = React.createClass({
 			plays: true,
 			views: true,
 			favorites: true,
-			loaded: false,
+			loaded: true,
 			cohort: 'daily'
 		}
-	},
-	componentDidMount: function() {
-		this._attachStream();
-	},
-	componentWillMount: function() { 
-		var self = this;
-		this.props.getSetmineMetrics(this.state.cohort, function() {
-			self.setState({
-				loaded: true
-			});
-		});
-	},
-	_attachStream: function() {
-		var _this = this;
 	},
 	toggleData: function(event) {
 		var clicked = {};
@@ -37,15 +23,26 @@ var SetmineReport = React.createClass({
 		if (this.state.loaded && ($(event.currentTarget).attr("name") != this.state.cohort)) {
 			var cohortType = $(event.currentTarget).attr("name");
 			var self = this;
+			var push = this.props.push;
 			this.setState({
 				loaded: false,
 				cohort: cohortType
 			}, function() {
-				this.props.getSetmineMetrics(this.state.cohort, function() {
-					self.setState({
-						loaded: true
-					});
-				});
+				self.props.updateSetmine(function(err, metrics) {
+					if (err) {
+						console.log("An error occurred while loading setmine metrics.");
+					} else {
+						push({
+							type: 'SHALLOW_MERGE',
+							data: {
+								setmine_metrics: metrics
+							}
+						});
+						self.setState({
+							loaded: true
+						});
+					}
+				}, self.state.cohort);
 			});
 		}
 	},
@@ -111,8 +108,7 @@ var SetmineReport = React.createClass({
 		}
 	},
 	render: function() {
-		var suffixNum = this.props.numberWithSuffix;
-		var metrics = this.props.metrics;
+		var {numberWithSuffix, metrics, ...other} = this.props;
 		var playsCurrent = metrics.plays.current;
 		var playsChange = metrics.plays.current - metrics.plays.last;
 		var viewsCurrent = metrics.views.current;
@@ -150,18 +146,18 @@ var SetmineReport = React.createClass({
 					<div className="setmine-numbers flex-row">
 						<div className={"plays flex-column flex-fixed " + (this.state.plays ? "":"deactivated")} id="plays" onClick={this.toggleData}>
 							<p>total plays</p>
-							<h1>{suffixNum(playsCurrent)}</h1>
-							<p>{previousCohort} {playsChange >= 0 ? '+':''}{suffixNum(playsChange)}</p>
+							<h1>{numberWithSuffix(playsCurrent)}</h1>
+							<p>{previousCohort} {playsChange >= 0 ? '+':''}{numberWithSuffix(playsChange)}</p>
 						</div>
 						<div className={"profileviews flex-column flex-fixed " + (this.state.views ? "":"deactivated")} id="views" onClick={this.toggleData}>
 							<p>total views</p>
-							<h1>{suffixNum(viewsCurrent)}</h1>
-							<p>{previousCohort} {viewsChange >= 0 ? '+':''}{suffixNum(viewsChange)}</p>
+							<h1>{numberWithSuffix(viewsCurrent)}</h1>
+							<p>{previousCohort} {viewsChange >= 0 ? '+':''}{numberWithSuffix(viewsChange)}</p>
 						</div>
 						<div className={"favorites flex-column flex-fixed " + (this.state.favorites ? "":"deactivated")} id="favorites" onClick={this.toggleData}>
 							<p>total favorites</p>
-							<h1>{suffixNum(favoritesCurrent)}</h1>
-							<p>{previousCohort} {favoritesChange >= 0 ? '+':''}{suffixNum(favoritesChange)}</p>
+							<h1>{numberWithSuffix(favoritesCurrent)}</h1>
+							<p>{previousCohort} {favoritesChange >= 0 ? '+':''}{numberWithSuffix(favoritesChange)}</p>
 						</div>
 					</div>
 					<div className="setmine-graph">

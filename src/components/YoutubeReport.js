@@ -9,23 +9,9 @@ var YoutubeReport = React.createClass({
 		return {
 			plays: true,
 			followers: true,
-			loaded: false,
+			loaded: true,
 			cohort: 'daily'
 		}
-	},
-	componentDidMount: function() {
-		this._attachStream();
-	},
-	componentWillMount: function() { 
-		var self = this;
-		this.props.getYoutubeMetrics(this.state.cohort, function() {
-			self.setState({
-				loaded: true
-			});
-		});
-	},
-	_attachStream: function() {
-		var _this = this;
 	},
 	toggleData: function(event) {
 		var clicked = {};
@@ -36,15 +22,26 @@ var YoutubeReport = React.createClass({
 		if (this.state.loaded && ($(event.currentTarget).attr("name") != this.state.cohort)) {
 			var cohortType = $(event.currentTarget).attr("name");
 			var self = this;
+			var push = this.props.push;
 			this.setState({
 				loaded: false,
 				cohort: cohortType
 			}, function() {
-				this.props.getYoutubeMetrics(this.state.cohort, function() {
-					self.setState({
-						loaded: true
-					});
-				});
+				self.props.updateYoutube(function(err, metrics) {
+					if (err) {
+						console.log("An error occurred while loading youtube metrics.");
+					} else {
+						push({
+							type: 'SHALLOW_MERGE',
+							data: {
+								youtube_metrics: metrics
+							}
+						});
+						self.setState({
+							loaded: true
+						});
+					}
+				}, self.state.cohort);
 			});
 		}
 	},

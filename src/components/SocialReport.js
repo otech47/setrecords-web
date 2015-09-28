@@ -4,26 +4,11 @@ var Loader = require("react-loader");
 var SocialReport = React.createClass({
 	getInitialState: function() {
 		return ({
-			loaded: false
+			loaded: true
 		});
-	},
-	componentDidMount: function() {
-		this._attachStream();
-	},
-	componentWillMount: function() {
-		var self = this;
-		this.props.getSocialMetrics(0, function() {
-			self.setState({
-				loaded: true
-			});
-		});
-	},
-	_attachStream: function() {
-		var _this = this;
 	},
 	render: function() {
-		var suffixNum = this.props.numberWithSuffix;
-		var metrics = this.props.metrics;
+		var {numberWithSuffix, metrics, ...other} = this.props;
 
 		var twitterMetrics = metrics.twitter;
 		var twitter_total = twitterMetrics.overtime[0].followers;
@@ -51,36 +36,36 @@ var SocialReport = React.createClass({
 					<div className="social-metrics flex-row">
 						<div className="flex-column flex-fixed">
 							<img src="/public/images/twitter_icon.png" />
-							<h1>{suffixNum(twitter_total)}</h1>
+							<h1>{numberWithSuffix(twitter_total)}</h1>
 						</div>
 						<div className="flex-column flex-fixed">
 							<p>new followers</p>
-							<h1>{suffixNum(twitter_current)}</h1>
-							<p>yesterday {suffixNum(twitter_last)}</p>
+							<h1>{numberWithSuffix(twitter_current)}</h1>
+							<p>yesterday {numberWithSuffix(twitter_last)}</p>
 						</div>
 					</div>
 					<div className="divider"></div>
 					<div className="social-metrics flex-row">
 						<div className="flex-column flex-fixed">
 							<img src="/public/images/facebook-icon.png" />
-							<h1>{suffixNum(facebook_total)}</h1>
+							<h1>{numberWithSuffix(facebook_total)}</h1>
 						</div>
 						<div className="flex-column flex-fixed">
 							<p>new likes</p>
-							<h1>{suffixNum(facebook_current)}</h1>
-							<p>yesterday {suffixNum(facebook_last)}</p>
+							<h1>{numberWithSuffix(facebook_current)}</h1>
+							<p>yesterday {numberWithSuffix(facebook_last)}</p>
 						</div>
 					</div>
 					<div className="divider"></div>
 					<div className="social-metrics flex-row">
 						<div className="flex-column flex-fixed">
 							<img src="/public/images/instagram_icon.png" />
-							<h1>{suffixNum(instagram_total)}</h1>
+							<h1>{numberWithSuffix(instagram_total)}</h1>
 						</div>
 						<div className="flex-column flex-fixed">
 							<p>new followers</p>
-							<h1>{suffixNum(instagram_current)}</h1>
-							<p>yesterday {suffixNum(instagram_last)}</p>
+							<h1>{numberWithSuffix(instagram_current)}</h1>
+							<p>yesterday {numberWithSuffix(instagram_last)}</p>
 						</div>
 					</div>
 				</div>

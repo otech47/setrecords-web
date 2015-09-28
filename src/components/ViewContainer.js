@@ -1,14 +1,14 @@
 import React from 'react';
+import SettingsEditor from './SettingsEditor';
 
 var ViewContainer = React.createClass({
 	render: function() {
-		var appState = this.props.appState;
-		var push = this.props.push;
-		var Rh = this.props.routeHandler;
+		var {routeHandler, ...other} = this.props;
+		var Rh = routeHandler;
 
 		return (
 			<div className="view-container flex">
-				<Rh appState={appState} push={push} />
+				<Rh {...other} />}
 			</div>
 		);
 	}

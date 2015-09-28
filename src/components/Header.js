@@ -3,15 +3,9 @@ import NavBar from './NavBar';
 import constants from '../constants/constants';
 
 var Header = React.createClass({
-	componentDidMount: function() {
-		this._attachStream();
-	},
-	_attachStream: function() {
-		var _this = this;
-	},
 	showArtistOptions: function () {
 		if (this.props.appState) {
-			var artistData = this.props.appState.get("artistData");
+			var artistData = this.props.appState.get("artist_data");
 			return (
 				<div className="artist flex-row">
 					<div className="options flex-column">

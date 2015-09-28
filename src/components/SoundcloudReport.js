@@ -9,23 +9,9 @@ var SoundcloudReport = React.createClass({
 		return {
 			plays: true,
 			followers: true,
-			loaded: false,
+			loaded: true,
 			cohort: 'daily'
 		}
-	},
-	componentDidMount: function() {
-		this._attachStream();
-	},
-	componentWillMount: function() { 
-		var self = this;
-		this.props.getSoundcloudMetrics(this.state.cohort, function() {
-			self.setState({
-				loaded: true
-			});
-		});
-	},
-	_attachStream: function() {
-		var _this = this;
 	},
 	toggleData: function(event) {
 		var clicked = {};
@@ -36,15 +22,26 @@ var SoundcloudReport = React.createClass({
 		if (this.state.loaded && ($(event.currentTarget).attr("name") != this.state.cohort)) {
 			var cohortType = $(event.currentTarget).attr("name");
 			var self = this;
+			var push = this.props.push;
 			this.setState({
 				loaded: false,
 				cohort: cohortType
 			}, function() {
-				this.props.getSoundcloudMetrics(this.state.cohort, function() {
-					self.setState({
-						loaded: true
-					});
-				});
+				self.props.updateSoundcloud(function(err, metrics) {
+					if (err) {
+						console.log("An error occurred while loading soundcloud metrics.");
+					} else {
+						push({
+							type: 'SHALLOW_MERGE',
+							data: {
+								soundcloud_metrics: metrics
+							}
+						});
+						self.setState({
+							loaded: true
+						});
+					}
+				}, self.state.cohort);
 			});
 		}
 	},
@@ -110,8 +107,7 @@ var SoundcloudReport = React.createClass({
 		}
 	},
 	render: function() {
-		var suffixNum = this.props.numberWithSuffix;
-		var metrics = this.props.metrics;
+		var {numberWithSuffix, metrics, ...other} = this.props;
 		var playsCurrent = metrics.plays.current;
 		var playsChange = metrics.plays.current - metrics.plays.last;
 		var followersCurrent = metrics.followers.current;
@@ -147,13 +143,13 @@ var SoundcloudReport = React.createClass({
 					<div className="soundcloud-numbers flex-row">
 						<div className={"plays flex-column flex-fixed " + (this.state.plays ? "":"deactivated")} id="plays" onClick={this.toggleData}>
 							<p>total plays</p>
-							<h1>{suffixNum(playsCurrent)}</h1>
-							<p>{previousCohort} {playsChange >= 0 ? '+':''}{suffixNum(playsChange)}</p>
+							<h1>{numberWithSuffix(playsCurrent)}</h1>
+							<p>{previousCohort} {playsChange >= 0 ? '+':''}{numberWithSuffix(playsChange)}</p>
 						</div>
 						<div className={"followers flex-column flex-fixed " + (this.state.followers ? "":"deactivated")} id="followers" onClick={this.toggleData}>
 							<p>total followers</p>
-							<h1>{suffixNum(followersCurrent)}</h1>
-							<p>{previousCohort} {followersChange >= 0 ? '+':''}{suffixNum(followersChange)}</p>
+							<h1>{numberWithSuffix(followersCurrent)}</h1>
+							<p>{previousCohort} {followersChange >= 0 ? '+':''}{numberWithSuffix(followersChange)}</p>
 						</div>
 					</div>
 					<div className="soundcloud-graph">

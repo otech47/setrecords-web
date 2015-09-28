@@ -7,17 +7,16 @@ import async from 'async';
 var Loader = require("react-loader");
 import Tracklist from './Tracklist';
 
-var MobileSetEditor = React.createClass({
+var SettingsEditor = React.createClass({
 	getInitialState: function() {
-		var setCopy = this.props.cloneObject(this.props.set);
-		setCopy["tracklistURL"] = null;
-		setCopy["tile_image"] = [];
-		setCopy["changes"] = false;
-		setCopy["busy"] = false;
-		setCopy["applying"] = false;
-		setCopy["success"] = false;
-		setCopy["failure"] = false;
-		return setCopy;
+		var settingsCopy = this.cloneObject(this.props.originalSettings);
+		settingsCopy["tile_image"] = [];
+		settingsCopy["changes"] = false;
+		settingsCopy["busy"] = false;
+		settingsCopy["applying"] = false;
+		settingsCopy["success"] = false;
+		settingsCopy["failure"] = false;
+		return settingsCopy;
 	},
 	render: function() {
 		return (
@@ -34,17 +33,64 @@ var MobileSetEditor = React.createClass({
 						Cancel
 					</button>					
 				</div>
-				{this.showSetName()}				
-				{this.showEpisodeName()}
-				<p className="uploaded-date">Uploaded: {moment(this.props.set.datetime).format("M[/]D[/]YYYY")}</p>
-		    	{this.showEditImage()}
-		    	<Tracklist tracks={this.state.tracklist} listURL={this.state.tracklistURL} changeTrack={this.changeTrack} addTrack={this.addTrack} loadTracksFromURL={this.loadTracksFromURL} deleteTrack={this.deleteTrack} changeTracklistURL={this.changeTracklistURL} />
+				<div className="flex-row PasswordChange">
+					<div className="flex-columnn flex-fixed">
+						<div className="Artist-name">
+							<h1>Drake</h1>
+							<p>Joined: 8/27/2014</p>
+						</div>
+						<div>
+							<p>New Password</p>
+							<label htmlFor="New Password"/>
+							<input className="newPassword" type="text" placeholder="New Password"/>
+						</div>
+						<div>
+							<p>Confirm New Password</p>
+							<label htmlFor="Confirm New Password"/>
+							<input className="confirmPassword" type="text" placeholder="Confirm New Password"/>
+						</div>
+					</div>
+					
+					<div className="flex-columnn settingImage flex-fixed">
+						<div className="edit-set-preview">
+		    				<img  id ="settingImage"src="./public/images/settile.png" ></img>
+		    				<button id="change-set">Change Profile Image</button>
+		    			</div>
+					</div>
+				</div>
+				<div className=" socialmedia flex-columnn">
+						<div>
+							<p>website *</p>
+							<label htmlFor="  "/>
+							<input className="" type="text" placeholder="  "/>
+						</div>
+						<div>
+							<p> soundclooud link</p>
+							<label htmlFor="  "/>
+							<input className="" type="text" placeholder="  "/>
+						</div>
+						<div>
+							<p>youtube link *</p>
+							<label htmlFor="  "/>
+							<input className="" type="text" placeholder="  "/>
+						</div>
+						<div>
+							<p>twitter link</p>
+							<label htmlFor="  "/>
+							<input className="" type="text" placeholder="  "/>
+						</div>
+						<div>
+							<p>facebook link</p>
+							<label htmlFor="  "/>
+							<input className="" type="text" placeholder="  "/>
+						</div>						
+				</div>
 			</div>
 		);
 	},
 
-	addTrack: function() {
-		var artistName = this.props.appState.get("artist_data").artist;
+	addTrack: function(event) {
+		var artistName = this.props.appState.get("artistData").artist;
 		var tracklist = this.state.tracklist;
 		var tracklistLength = _.size(tracklist);
 		if (tracklistLength > 0) {
@@ -52,7 +98,7 @@ var MobileSetEditor = React.createClass({
 		} else {
 			var nextStartTime = "00:00";
 		}
-		var newTracklist = this.props.cloneObject(tracklist);
+		var newTracklist = this.cloneObject(tracklist);
 		newTracklist[tracklistLength] = {
 			"track_id": -1,
 			"start_time": nextStartTime,
@@ -72,7 +118,7 @@ var MobileSetEditor = React.createClass({
 		});
 	},
 	changeTrack: function(fieldName, newVal, trackIndex) {
-		var clonedTracklist = this.props.cloneObject(this.state.tracklist);
+		var clonedTracklist = this.cloneObject(this.state.tracklist);
 		clonedTracklist[trackIndex][fieldName] = newVal;
 
 		this.setState({
@@ -94,7 +140,7 @@ var MobileSetEditor = React.createClass({
 		});
 	},
 	deleteTrack: function(trackIndex) {
-		var clonedTracklist = this.props.cloneObject(this.state.tracklist);
+		var clonedTracklist = this.cloneObject(this.state.tracklist);
 		var counter = 0;
 		var updatedTracklist = {};
 		_.each(clonedTracklist, function(value, key) {
@@ -110,6 +156,7 @@ var MobileSetEditor = React.createClass({
 		});
 	},
 	pullTracks: function(callback) {
+		var self = this;
 		var tracklistURL = this.state.tracklistURL;
 		if (tracklistURL == null) {
 			callback(null);
@@ -140,7 +187,7 @@ var MobileSetEditor = React.createClass({
 			if (tracks == null) {
 				alert("Please enter a valid 1001 tracklists URL.");
 			} else {
-				var clonedTracks = this.props.cloneObject(tracks);
+				var clonedTracks = self.cloneObject(tracks);
 				self.setState({
 					tracklist: clonedTracks,
 					changes: true
@@ -283,7 +330,7 @@ var MobileSetEditor = React.createClass({
 			return "";
 		}
 	},
-	showSetName: function() {
+	showArtistName: function() {
 		var pendingSet = this.state;
 		if (this.props.set.is_radiomix) {
 			return (
@@ -302,6 +349,7 @@ var MobileSetEditor = React.createClass({
 	},
 	registerImageS3: function(callback) {
 		var file = this.state.tile_image[0];
+		var self = this;
 		// console.log("Requesting encoding from AWS...");
 		$.ajax({
 			type: "GET",
@@ -366,22 +414,23 @@ var MobileSetEditor = React.createClass({
 	},
 
 	applyChanges: function() {
-		var pendingSet = this.state;
+		var pendingSettings = this.state;
+		var self = this;
 
-		if (pendingSet.changes) {
+		if (pendingSettings.changes) {
 			console.log("Pending changes found.");
 			var changeFunctions = [];
-			if (pendingSet.tile_image.length > 0) {
+			if (pendingSettings.tile_image.length > 0) {
 				changeFunctions.push(this.newImage);
 			}
-			if (pendingSet.event != this.props.set.event) {
+			if (pendingSettings.event != this.props.set.event) {
 				changeFunctions.push(this.newTitle);
 			}
-			if (pendingSet.episode != this.props.set.episode) {
+			if (pendingSettings.episode != this.props.set.episode) {
 				changeFunctions.push(this.newEpisodeTitle);
 			}
 			// console.log("Comparing tracklists to determine a change...");
-			var originalTracklist = this.props.cloneObject(this.props.set.tracklist);
+			var originalTracklist = this.cloneObject(this.props.set.tracklist);
 			var pendingTracklist = this.state.tracklist;
 			// console.log("PENDING");
 			// console.log(pendingTracklist);
@@ -398,7 +447,6 @@ var MobileSetEditor = React.createClass({
 			console.log("Changes to do");
 			console.log(changeFunctions);
 			console.log("Applying changes...");
-			var self = this;
 			this.setState({
 				busy: true,
 				applying: true
@@ -436,7 +484,7 @@ var MobileSetEditor = React.createClass({
 	},
 	revertChanges: function() {
 		// console.log("Reverting...");
-		var setCopy = this.props.cloneObject(this.props.set);
+		var setCopy = this.cloneObject(this.props.set);
 		setCopy["tracklistURL"] = null;
 		setCopy["tile_image"] = [];
 		setCopy["changes"] = false;
@@ -449,6 +497,18 @@ var MobileSetEditor = React.createClass({
 	cancelChanges: function() {
 		this.props.close(false);
 	},
+	cloneObject: function(obj) {
+		var clonedObject = {};
+		var self = this;
+		_.each(obj, function(value, key) {
+			if (typeof value == 'object') {
+				clonedObject[key] = self.cloneObject(value);
+			} else {
+				clonedObject[key] = value;
+			}
+		});
+		return clonedObject;
+	}
 });
 
-module.exports = MobileSetEditor;
+module.exports = SettingsEditor;

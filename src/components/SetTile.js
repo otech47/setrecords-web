@@ -1,11 +1,9 @@
 var React = require('react');
-var Router = require('react-router')
-var Route = Router.Route;
 var constants = require('../constants/constants');
 
 var SetTile = React.createClass({
-	editSet: function() {
-		this.props.setClick(this.props.setData);
+	tileClick: function() {
+		this.props.updateWorkingSet(this.props.setData);
 	},
 	render: function() {
 		var setData = this.props.setData;
@@ -14,7 +12,7 @@ var SetTile = React.createClass({
 			backgroundImageURL = setData.episode_imageURL;
 		}
 		return (
-		<button className="set-tile" onClick={this.editSet} >
+		<button className="set-tile" onClick={this.tileClick} >
 			<img className="event-image" src={constants.S3_ROOT_FOR_IMAGES+backgroundImageURL} />
 		    <div className="flex-column tile-controls">
 	            <div className="flex-column flex-2x set-info">
