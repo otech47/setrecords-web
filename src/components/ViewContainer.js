@@ -8,7 +8,7 @@ var ViewContainer = React.createClass({
 
 		return (
 			<div className="view-container flex">
-				<Rh {...other} />}
+				<Rh {...other} />
 			</div>
 		);
 	}

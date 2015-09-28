@@ -6,7 +6,7 @@ import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-route
 
 import GlobalEventHandler from './services/globalEventHandler';
 import MobileSetEditor from './components/MobileSetEditor';
-import SettingPage from './components/SettingPage';
+import SettingsEditor from './components/SettingsEditor';
 import DMCA from './components/DMCA';
 import SetTile from './components/SetTile';
 import Header from './components/Header';
@@ -94,7 +94,7 @@ var initialAppState = Immutable.Map({
 		"model_type": "set"
 	},
 	'artist_data': {
-		"id": 4026,
+		"id": 4191,
 		"artist": "Calvin Harris",
 		"fb_link": "https://www.facebook.com/calvinharris",
 		"twitter_link": "https://twitter.com/CalvinHarris",
