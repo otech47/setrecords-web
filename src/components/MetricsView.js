@@ -1,4 +1,6 @@
 import React from 'react';
+var Loader = require("react-loader");
+
 import SetmineReport from './SetmineReport';
 import BeaconReport from './BeaconReport';
 import SocialReport from './SocialReport';
@@ -17,13 +19,15 @@ var MetricsView = React.createClass({
 		var youtubeMetrics = appState.get("youtube_metrics");
 
 		return (
-			<div className="metrics-page flex-column">
-				<SetmineReport metrics={setmineMetrics} {...other} />
-				<BeaconReport metrics={beaconMetrics} {...other} />
-				<SocialReport metrics={socialMetrics} {...other} />	
-				<SoundcloudReport metrics={soundcloudMetrics} {...other} />
-				<YoutubeReport metrics={youtubeMetrics} {...other} />
-			</div>
+			<Loader loaded={appState.get('loaded')} >
+				<div className="metrics-page flex-column">
+					<SetmineReport metrics={setmineMetrics} {...other} />
+					<BeaconReport metrics={beaconMetrics} {...other} />
+					<SocialReport metrics={socialMetrics} {...other} />	
+					<SoundcloudReport metrics={soundcloudMetrics} {...other} />
+					<YoutubeReport metrics={youtubeMetrics} {...other} />
+				</div>
+			</Loader>
 		);
 	}
 });

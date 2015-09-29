@@ -46,6 +46,10 @@ header {
                 p {
                     margin: 0;
                 }
+                span:hover {
+                    cursor: pointer;
+                    color: @setrecords-blue;
+                }
             }
             img {
                 height: 4rem;
@@ -941,6 +945,82 @@ td{
         }
     }
 }
+.invisible {
+    visibility: hidden;
+}
+
+.mobile-settings-editor{
+    background-color: @setrecords-white;
+    margin-top: @headerHeight * 1.5;
+    min-height: 57rem;
+    align-items: flex-start;
+    padding: 2rem 3rem;
+    .warning {
+        color: @setrecords-red;
+    }
+    .approved {
+        color: @setrecords-green;
+    }
+
+    .apply-editor {
+        position: fixed;
+        width: 100%;
+        margin: 0;
+        height: @headerHeight * 0.5;
+        align-items: stretch;
+        top: @headerHeight;
+        z-index: 22;
+        left: 0;
+        * {
+            background-color: @setrecords-light-black;
+            border: none;
+            font-size: 1rem;
+        }
+        *:hover {
+            background-color: @setrecords-dark-gray;
+        }
+        .apply {
+            color: @setrecords-green;
+            justify-content: center;
+        }
+        .revert {
+            color: @setrecords-yellow;
+            justify-content: center;
+        }
+        .cancel {
+            color: @setrecords-red;
+            justify-content: center;
+        }
+    }
+    .artist-name {
+        font-size: 2.25rem;
+        font-family: @boldFontStyle;
+    }
+    .artist-image {
+        margin: 4rem 0;
+        img {
+            height: 24rem;
+            width: 24rem;
+            border-radius: 50%;
+            border: 1.5rem solid @setrecords-blue;
+            box-sizing: border-box;
+        }
+    }
+    .upload-image {
+        margin: 1rem 0 0 0;
+        height: 4rem;
+        width: 24rem;
+        font-size: 1rem;
+        border: 4px dotted @setrecords-purple;
+        font-family: @defaultFontStyle;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        p {
+            margin: 0;
+        }
+    }
+}
 
 .applying-changes-overlay {
     background-color: @setrecords-black;
@@ -957,66 +1037,66 @@ td{
     justify-content: center;
 }
 
-.SettingPage{
-    width: 100%;
-    height: 100%;
-    background-color: @setrecords-light-gray;
+// .SettingPage{
+//     width: 100%;
+//     height: 100%;
+//     background-color: @setrecords-light-gray;
 
-    input[type="text"], textarea {
-        background-color : #313542; 
-     }
+//     input[type="text"], textarea {
+//         background-color : #313542; 
+//      }
 
-    input, select, textarea{
-        color: @setrecords-white;
-    }
+//     input, select, textarea{
+//         color: @setrecords-white;
+//     }
 
-    .PasswordChange{
-        margin-left: 10px;
-        margin-bottom: 40px;
-        .Artist-name{
-             margin-bottom: 37px;
-        }
-        input{
-            margin-left: 1px;
-            width: 70%;
-            height: 40px;
-        }
+//     .PasswordChange{
+//         margin-left: 10px;
+//         margin-bottom: 40px;
+//         .Artist-name{
+//              margin-bottom: 37px;
+//         }
+//         input{
+//             margin-left: 1px;
+//             width: 70%;
+//             height: 40px;
+//         }
       
-        h1{
-            font-weight: bolder;
-            margin-top:20px;
-            margin-bottom: 0;
-            height: 20px;
-        }
+//         h1{
+//             font-weight: bolder;
+//             margin-top:20px;
+//             margin-bottom: 0;
+//             height: 20px;
+//         }
 
-        .settingImage{
-             box-shadow: none;
-             border: none;
-            #change-set {
-                width: 274px;
-            }
-            img{
-                margin-top: 30px;
-                width: 90%;
-                height: 200px;
-            }
-        }
-    }
+//         .settingImage{
+//              box-shadow: none;
+//              border: none;
+//             #change-set {
+//                 width: 274px;
+//             }
+//             img{
+//                 margin-top: 30px;
+//                 width: 90%;
+//                 height: 200px;
+//             }
+//         }
+//     }
     
-    .socialmedia{
-        margin-bottom: 20px;
+//     .socialmedia{
+//         margin-bottom: 20px;
         
-        p{
-              margin-left: 10px;
-        }
-        input{
-            margin-left: 10px;
-            margin-right: 10px;
-            width: 94%;
-            height: 40px;
-        }
-    }
-}
+//         p{
+//               margin-left: 10px;
+//         }
+//         input{
+//             margin-left: 10px;
+//             margin-right: 10px;
+//             width: 94%;
+//             height: 40px;
+//         }
+//     }
+// }
 
 // .WizardStep4{
 //     .upload-directions {

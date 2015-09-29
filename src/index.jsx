@@ -28,413 +28,20 @@ var initialAppState = Immutable.Map({
 		'pendingData': {
 		}
 	},
-	'settings': false,
+	'settings_editor': false,
 	'set_editor': false,
 	'loaded': false,
-	"sets": [
-		{
-		"id": 2163,
-		"artist_id": [40],
-		"artist": "Calvin Harris",
-		"event": "Lollapalooza Chicago 2014",
-		"event_id": 125,
-		"episode": "",
-		"genre": "Progressive House",
-		"episode_imageURL": null,
-		"eventimageURL": "31005125a020c86fe8f16f00925338ea9604a0b5.jpg",
-		"main_eventimageURL": "8035464a1f8870cce06b320fbab09a73d4994b54.jpg",
-		"artistimageURL": "b7debba3662c51696aa361f98c923893.jpg",
-		"songURL": "850123b85fd2246c014fc6f9ce427708b72a97da.mp3",
-		"datetime": "2014-08-06T03:31:35.000Z",
-		"popularity": 7686,
-		"is_radiomix": 0,
-		"set_length": "48:49",
-		"tracklistURL": null,
-		"imageURL": "31005125a020c86fe8f16f00925338ea9604a0b5.jpg",
-		"artist_preview": [
-			{
-			"id": 40,
-			"artist": "Calvin Harris",
-			"imageURL": "b7debba3662c51696aa361f98c923893.jpg",
-			"set_count": 14,
-			"event_count": 5
-			}
-		],
-		"model_type": "set"
-		}
-	],
-	'working_set': {
-		"id": 2163,
-		"artist_id": [40],
-		"artist": "Calvin Harris",
-		"event": "Lollapalooza Chicago 2014",
-		"event_id": 125,
-		"episode": "",
-		"genre": "Progressive House",
-		"episode_imageURL": null,
-		"eventimageURL": "31005125a020c86fe8f16f00925338ea9604a0b5.jpg",
-		"main_eventimageURL": "8035464a1f8870cce06b320fbab09a73d4994b54.jpg",
-		"artistimageURL": "b7debba3662c51696aa361f98c923893.jpg",
-		"songURL": "850123b85fd2246c014fc6f9ce427708b72a97da.mp3",
-		"datetime": "2014-08-06T03:31:35.000Z",
-		"popularity": 7686,
-		"is_radiomix": 0,
-		"set_length": "48:49",
-		"tracklistURL": null,
-		"imageURL": "31005125a020c86fe8f16f00925338ea9604a0b5.jpg",
-		"artist_preview": [
-			{
-			"id": 40,
-			"artist": "Calvin Harris",
-			"imageURL": "b7debba3662c51696aa361f98c923893.jpg",
-			"set_count": 14,
-			"event_count": 5
-			}
-		],
-		"model_type": "set"
-	},
+	"sets": [],
+	'working_set': {},
 	'artist_data': {
-		"id": 4191,
-		"artist": "Calvin Harris",
-		"fb_link": "https://www.facebook.com/calvinharris",
-		"twitter_link": "https://twitter.com/CalvinHarris",
-		"web_link": "https://www.google.com/",
-		"instagram_link": "http://instagram.com/calvinharris",
-		"soundcloud_link": "http://soundcloud.com/calvinharris",
-		"youtube_link": "https://www.youtube.com/CalvinHarrisVEVO",
-		"imageURL": "b7debba3662c51696aa361f98c923893.jpg",
+		"id": 4026,
+		"artist": "Calvin Harris"
 	},
-	'setmine_metrics': {
-		'plays': {
-			current: 1,
-			last: 2,
-			overtime: [
-			{
-				date: "4/5/1990",
-				count: 1
-			},
-			{
-				date: "4/6/1990",
-				count: 1
-			},
-			{
-				date: "4/7/1990",
-				count: 1
-			},
-			{
-				date: "4/8/1990",
-				count: 1
-			},
-			{
-				date: "4/9/1990",
-				count: 1
-			},
-			{
-				date: "4/10/1990",
-				count: 1
-			},
-			{
-				date: "4/11/1990",
-				count: 1
-			},
-			]
-			},
-		'views': {
-			current: 1,
-			last: 2,
-			overtime: [
-			{
-				date: "4/5/1990",
-				count: 1
-			},
-			{
-				date: "4/6/1990",
-				count: 1
-			},
-			{
-				date: "4/7/1990",
-				count: 1
-			},
-			{
-				date: "4/8/1990",
-				count: 1
-			},
-			{
-				date: "4/9/1990",
-				count: 1
-			},
-			{
-				date: "4/10/1990",
-				count: 1
-			},
-			{
-				date: "4/11/1990",
-				count: 1
-			},
-			]
-		},
-		'favorites': {
-			current: 1,
-			last: 2,
-			overtime: [
-			{
-				date: "4/5/1990",
-				count: 1
-			},
-			{
-				date: "4/6/1990",
-				count: 1
-			},
-			{
-				date: "4/7/1990",
-				count: 1
-			},
-			{
-				date: "4/8/1990",
-				count: 1
-			},
-			{
-				date: "4/9/1990",
-				count: 1
-			},
-			{
-				date: "4/10/1990",
-				count: 1
-			},
-			{
-				date: "4/11/1990",
-				count: 1
-			},
-			]
-		}
-	},
-	'soundcloud_metrics': {
-		'plays': {
-			current: 1,
-			last: 2,
-			overtime: [
-			{
-				date: "4/5/1990",
-				count: 1
-			},
-			{
-				date: "4/6/1990",
-				count: 1
-			},
-			{
-				date: "4/7/1990",
-				count: 1
-			},
-			{
-				date: "4/8/1990",
-				count: 1
-			},
-			{
-				date: "4/9/1990",
-				count: 1
-			},
-			{
-				date: "4/10/1990",
-				count: 1
-			},
-			{
-				date: "4/11/1990",
-				count: 1
-			},
-			]
-			},
-		'followers': {
-			current: 1,
-			last: 2,
-			overtime: [
-			{
-				date: "4/5/1990",
-				count: 1
-			},
-			{
-				date: "4/6/1990",
-				count: 1
-			},
-			{
-				date: "4/7/1990",
-				count: 1
-			},
-			{
-				date: "4/8/1990",
-				count: 1
-			},
-			{
-				date: "4/9/1990",
-				count: 1
-			},
-			{
-				date: "4/10/1990",
-				count: 1
-			},
-			{
-				date: "4/11/1990",
-				count: 1
-			},
-			]
-		},
-	},
-	'youtube_metrics': {
-		'plays': {
-			current: 1,
-			last: 2,
-			overtime: [
-			{
-				date: "4/5/1990",
-				count: 1
-			},
-			{
-				date: "4/6/1990",
-				count: 1
-			},
-			{
-				date: "4/7/1990",
-				count: 1
-			},
-			{
-				date: "4/8/1990",
-				count: 1
-			},
-			{
-				date: "4/9/1990",
-				count: 1
-			},
-			{
-				date: "4/10/1990",
-				count: 1
-			},
-			{
-				date: "4/11/1990",
-				count: 1
-			},
-			]
-			},
-		'followers': {
-			current: 1,
-			last: 2,
-			overtime: [
-			{
-				date: "4/5/1990",
-				count: 1
-			},
-			{
-				date: "4/6/1990",
-				count: 1
-			},
-			{
-				date: "4/7/1990",
-				count: 1
-			},
-			{
-				date: "4/8/1990",
-				count: 1
-			},
-			{
-				date: "4/9/1990",
-				count: 1
-			},
-			{
-				date: "4/10/1990",
-				count: 1
-			},
-			{
-				date: "4/11/1990",
-				count: 1
-			},
-			]
-		},
-	},
-	"beacon_metrics": {
-		'revenue': {
-			current: 0,
-			last: 0,
-			overtime: [
-			{
-				date: "4/5/1990",
-				count: 1
-			},
-			{
-				date: "4/6/1990",
-				count: 1
-			},
-			{
-				date: "4/7/1990",
-				count: 1
-			},
-			{
-				date: "4/8/1990",
-				count: 1
-			},
-			{
-				date: "4/9/1990",
-				count: 1
-			},
-			{
-				date: "4/10/1990",
-				count: 1
-			},
-			{
-				date: "4/11/1990",
-				count: 1
-			},
-			]
-		},
-		'unlocks': {
-			current: 0,
-			last: 0,
-			overtime: [
-			{
-				date: "4/5/1990",
-				count: 1
-			},
-			{
-				date: "4/6/1990",
-				count: 1
-			},
-			{
-				date: "4/7/1990",
-				count: 1
-			},
-			{
-				date: "4/8/1990",
-				count: 1
-			},
-			{
-				date: "4/9/1990",
-				count: 1
-			},
-			{
-				date: "4/10/1990",
-				count: 1
-			},
-			{
-				date: "4/11/1990",
-				count: 1
-			},
-			]
-		}
-	},
-	"social_metrics": {
-		'twitter': {
-			current: 1.1,
-			last: 2.2,
-			overtime: [1,2,3]
-		},
-		'facebook': {
-			current: 1.1,
-			last: 2.2,
-			overtime: [1,2,3]
-		},
-		'instagram': {
-			current: 1.1,
-			last: 2.2,
-			overtime: [1,2,3]
-		}
-	}
+	'setmine_metrics': {},
+	'soundcloud_metrics': {},
+	'youtube_metrics': {},
+	"beacon_metrics": {},
+	"social_metrics": {}
 });
 
 var evtHandler = GlobalEventHandler(initialAppState);
@@ -495,7 +102,7 @@ var App = React.createClass({
 		var appState = this.state.appState;
 		return (
 			<div className="main-container flex-column">
-				<Header appState={appState} />
+				<Header appState={appState} openSettingsEditor={this.openSettingsEditor} closeSettingsEditor={this.closeSettingsEditor} />
 				{this.showView(appState)}
 				<FooterSetrecords />
 			</div>
@@ -533,25 +140,72 @@ var App = React.createClass({
 			});
 		}
 	},
+	closeSettingsEditor: function(isChanged) {
+		console.log("Settings editor would have been closed!");
+		if (isChanged) {
+			push({
+				type: 'SHALLOW_MERGE',
+				data: {
+					loaded: false
+				}
+			});
+			this.updateArtist(function(err, settings) {
+				if (err) {
+					console.log('An error occurred.', err);
+				} else {
+					push({
+						type: 'SHALLOW_MERGE',
+						data: {
+							artist_data: settings,
+							settings_editor: false,
+							loaded: true
+						}
+					});
+				}
+			});
+		} else {
+			push({
+				type: 'SHALLOW_MERGE',
+				data: {
+					settings_editor: false
+				}
+			})
+		}
+	},
+	openSettingsEditor: function() {
+		console.log("Settings editor would have been opened!");
+		push({
+			type: 'SHALLOW_MERGE',
+			data: {
+				settings_editor: true,
+				set_editor: false
+			}
+		});
+	},
 	showView: function(appState) {
 		var updateFunctions = {updateArtist: this.updateArtist, updateSetmine: this.updateSetmine, updateSocial: this.updateSocial, updateBeacons: this.updateBeacons, updateYoutube: this.updateYoutube, updateSoundcloud: this.updateSoundcloud, updateSets: this.updateSets};
 		if (appState.get('set_editor')) {
 			return (
 				<MobileSetEditor set={appState.get('working_set')} close={this.closeSetEditor} appState={appState} {...UtilityFunctions} />
 			);
+		} else if (appState.get('settings_editor')) {
+			return (
+				<SettingsEditor settings={appState.get('artist_data')} close={this.closeSettingsEditor} appState={appState} {...UtilityFunctions} />
+			);
 		} else {
 			return (
-				<ViewContainer appState={appState} {...updateFunctions} {...UtilityFunctions} push={push} routeHandler={RouteHandler} updateWorkingSet={this.updateWorkingSet} loaded={appState.get('loaded')} />
+				<ViewContainer appState={appState} {...updateFunctions} {...UtilityFunctions} push={push} routeHandler={RouteHandler} openSetEditor={this.openSetEditor} loaded={appState.get('loaded')} />
 			);
 		}
 	},
-	updateWorkingSet: function(set) {
+	openSetEditor: function(set) {
 		var clonedSet = this.cloneObject(set);
 		push({
 			type: 'SHALLOW_MERGE',
 			data: {
 				working_set: clonedSet,
-				set_editor: true
+				set_editor: true,
+				settings_editor: false
 			}
 		});
 	}

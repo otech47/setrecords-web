@@ -1,16 +1,17 @@
 import React from 'react/addons';
-var moment = require("moment");
-import MockSetTile from './MockSetTile';
 var Dropzone = require("react-dropzone");
 import _ from 'underscore';
 import async from 'async';
 var Loader = require("react-loader");
-import Tracklist from './Tracklist';
+var constants = require('../constants/constants');
 
 var SettingsEditor = React.createClass({
 	getInitialState: function() {
-		var settingsCopy = this.cloneObject(this.props.originalSettings);
-		settingsCopy["tile_image"] = [];
+		var settingsCopy = this.props.cloneObject(this.props.settings);
+		settingsCopy["artist_image"] = [];
+		settingsCopy["new_pass"] = null;
+		settingsCopy["confirm_pass"] = null;
+		settingsCopy["password_match"] = false;
 		settingsCopy["changes"] = false;
 		settingsCopy["busy"] = false;
 		settingsCopy["applying"] = false;
@@ -19,8 +20,10 @@ var SettingsEditor = React.createClass({
 		return settingsCopy;
 	},
 	render: function() {
+		var originalSettings = this.props.settings;
+		var pendingSettings = this.state;
 		return (
-			<div className="mobile-set-editor flex-column">
+			<div className="mobile-settings-editor flex-column">
 				{this.showApplyingStatus()}
 				<div className="flex-row apply-editor">
 					<button className="flex-fixed apply set-flex" onClick={this.applyChanges}>
@@ -33,192 +36,81 @@ var SettingsEditor = React.createClass({
 						Cancel
 					</button>					
 				</div>
-				<div className="flex-row PasswordChange">
-					<div className="flex-columnn flex-fixed">
-						<div className="Artist-name">
-							<h1>Drake</h1>
-							<p>Joined: 8/27/2014</p>
-						</div>
-						<div>
-							<p>New Password</p>
-							<label htmlFor="New Password"/>
-							<input className="newPassword" type="text" placeholder="New Password"/>
-						</div>
-						<div>
-							<p>Confirm New Password</p>
-							<label htmlFor="Confirm New Password"/>
-							<input className="confirmPassword" type="text" placeholder="Confirm New Password"/>
-						</div>
+				<div className="artist-name flex-row">
+					{originalSettings.artist}
+				</div>
+				<div className="artist-image">
+	    			<img src={pendingSettings.artist_image.length > 0 ? pendingSettings.artist_image[0].preview : constants.S3_ROOT_FOR_IMAGES + originalSettings.imageURL} />
+	    				<Dropzone onDrop={this.onDrop} className="upload-image set-flex" multiple={false}>
+	    					<p>Click or drag file here to upload new artist image.</p>
+	    				</Dropzone>
+				</div>
+				<div className="flex-column password-change">
+					<div>
+						<p>New Password</p>
+						<input name="new_pass" value={pendingSettings.new_pass} type="text" onChange={this.changePassField} />
 					</div>
-					
-					<div className="flex-columnn settingImage flex-fixed">
-						<div className="edit-set-preview">
-		    				<img  id ="settingImage"src="./public/images/settile.png" ></img>
-		    				<button id="change-set">Change Profile Image</button>
-		    			</div>
+					<div>
+						<p>Confirm New Password<i className={pendingSettings.password_match ? "fa fa-check approved" : "fa fa-times warning"}></i></p>
+						<p className={pendingSettings.password_match ? "invisible" : "warning"} >Passwords must match.</p>
+						<input type="text" name="confirm_pass" value={pendingSettings.confirm_pass} onChange={this.changePassField} />
 					</div>
 				</div>
-				<div className=" socialmedia flex-columnn">
-						<div>
-							<p>website *</p>
-							<label htmlFor="  "/>
-							<input className="" type="text" placeholder="  "/>
-						</div>
-						<div>
-							<p> soundclooud link</p>
-							<label htmlFor="  "/>
-							<input className="" type="text" placeholder="  "/>
-						</div>
-						<div>
-							<p>youtube link *</p>
-							<label htmlFor="  "/>
-							<input className="" type="text" placeholder="  "/>
-						</div>
-						<div>
-							<p>twitter link</p>
-							<label htmlFor="  "/>
-							<input className="" type="text" placeholder="  "/>
-						</div>
-						<div>
-							<p>facebook link</p>
-							<label htmlFor="  "/>
-							<input className="" type="text" placeholder="  "/>
-						</div>						
+				<div className="artist-links flex-column">
+					<div>
+						<p>Website Link</p>
+						<input name="web_link" type="text" value={pendingSettings.web_link} onChange={this.changeLinkField}  />
+					</div>
+					<div>
+						<p>Soundcloud Link</p>
+						<input name="soundcloud_link" type="text" value={pendingSettings.soundcloud_link} onChange={this.changeLinkField} />
+					</div>
+					<div>
+						<p>Youtube Link</p>
+						<input name="youtube_link" type="text" value={pendingSettings.youtube_link} onChange={this.changeLinkField} />
+					</div>
+					<div>
+						<p>Twitter Link</p>
+						<input name="twitter_link" type="text" value={pendingSettings.twitter_link} onChange={this.changeLinkField} />
+					</div>
+					<div>
+						<p>Facebook Link</p>
+						<input name="fb_link" type="text" value={pendingSettings.fb_link} onChange={this.changeLinkField} />
+					</div>						
+					<div>
+						<p>Instagram Link</p>
+						<input name="instagram_link" type="text" value={pendingSettings.instagram_link} onChange={this.changeLinkField} />
+					</div>
 				</div>
 			</div>
 		);
 	},
-
-	addTrack: function(event) {
-		var artistName = this.props.appState.get("artistData").artist;
-		var tracklist = this.state.tracklist;
-		var tracklistLength = _.size(tracklist);
-		if (tracklistLength > 0) {
-			var nextStartTime = moment(tracklist[tracklistLength - 1].start_time, "mm:ss").add(1, "seconds").format("mm:ss");
-		} else {
-			var nextStartTime = "00:00";
-		}
-		var newTracklist = this.cloneObject(tracklist);
-		newTracklist[tracklistLength] = {
-			"track_id": -1,
-			"start_time": nextStartTime,
-			"artist": artistName,
-			"song": "untitled"
-		};
-		this.setState({
-			tracklist: newTracklist,
-			changes: true,
-			tracklistURL: null
-		});
-	},
-	changeTitleText: function(event) {
-		this.setState({
-			event: event.target.value,
-			changes: true
-		});
-	},
-	changeTrack: function(fieldName, newVal, trackIndex) {
-		var clonedTracklist = this.cloneObject(this.state.tracklist);
-		clonedTracklist[trackIndex][fieldName] = newVal;
-
-		this.setState({
-			tracklist: clonedTracklist,
-			changes: true,
-			tracklistURL: null
-		});
-	},
-	changeTracklistURL: function(event) {
-		this.setState({
-			tracklistURL: event.target.value,
-			changes: true
-		});
-	},
-	changeEpisodeText: function(event) {
-		this.setState({
-			episode: event.target.value,
-			changes: true
-		});
-	},
-	deleteTrack: function(trackIndex) {
-		var clonedTracklist = this.cloneObject(this.state.tracklist);
-		var counter = 0;
-		var updatedTracklist = {};
-		_.each(clonedTracklist, function(value, key) {
-			if (key != trackIndex) {
-				updatedTracklist[counter] = value;
-				counter++;
-			}
-		});
-		this.setState({
-			tracklist: updatedTracklist,
-			changes: true,
-			tracklistURL: null
-		});
-	},
-	pullTracks: function(callback) {
+	changePassField: function(event) {
 		var self = this;
-		var tracklistURL = this.state.tracklistURL;
-		if (tracklistURL == null) {
-			callback(null);
-		} else {
-			var requestURL = "http://localhost:3000/api/v/7/setrecords/set/tracklist/";
-			$.ajax({
-				type: "GET",
-				url: requestURL,
-				data: {
-					tracklist_url: tracklistURL
-				},
-				success: function(res) {
-					if (res.status == "failure") {
-						callback(null);
-					} else {
-						callback(res.payload.set_tracklist);
-					}
-				},
-				error: function(err) {
-					callback(null);
-				}
+		var field = event.target.name;
+		var newState = {};
+		newState[field] = event.target.value;
+		newState["changes"] = true;
+		this.setState(newState, function() {
+			var passwordsMatch = false;
+			if ((self.state.confirm_pass == self.state.new_pass) && self.state.new_pass.length > 0) {
+			passwordsMatch = true;
+			}
+			self.setState({
+				password_match: passwordsMatch
 			});
-		}
-	},
-	loadTracksFromURL: function(event) {
-		var self = this;
-		this.pullTracks(function(tracks) {
-			if (tracks == null) {
-				alert("Please enter a valid 1001 tracklists URL.");
-			} else {
-				var clonedTracks = self.cloneObject(tracks);
-				self.setState({
-					tracklist: clonedTracks,
-					changes: true
-				});
-			}
 		});
 	},
-	newEpisodeTitle: function(callback) {
-		// console.log("New episode title pending.");
-		// console.log(this.state.episode);
-		var requestURL = "http://localhost:3000/api/v/7/setrecords/mix/episode/" + this.state.episode_id;
-		var pendingEpisode = this.state.episode;
-		$.ajax({
-			type: "POST",
-			url: requestURL,
-			data: {
-				episode: pendingEpisode
-			},
-			success: function(res) {
-				// console.log("Episode title updated on database.");
-				callback(null);
-			},
-			error: function(err) {
-				// console.log("An error occurred when updating episode title on database.");
-				callback(err);
-			}
-		});
-	},	
+	changeLinkField: function(event) {
+		var field = event.target.name;
+		var newState = {};
+		newState[field] = event.target.value;
+		newState["changes"] = true;
+		this.setState(newState);
+	},
 	newImage: function(callback) {
 		// console.log("New tile image pending:")
-		// console.log(this.state.tile_image);
+		// console.log(this.state.artist_image);
 		async.waterfall([this.registerImageS3, this.updateImageDatabase],
 			function(err, results) {
 				if (err) {
@@ -230,45 +122,44 @@ var SettingsEditor = React.createClass({
 				}
 		});
 	},
-	newTitle: function(callback) {
-		// console.log("New set title pending.");
-		// console.log(this.state.event);
-		var requestURL = "http://localhost:3000/api/v/7/setrecords/mix/title/" + this.props.set.id;
-		var pendingTitle = this.state.event;
+	newLinks: function(callback) {
+		var pendingSettings = this.state;
+		var requestURL = "http://localhost:3000/api/v/7/setrecords/artist/links/" + this.props.settings.id;
+		var links = {
+			fb_link: pendingSettings.fb_link,
+			twitter_link: pendingSettings.twitter_link,
+			instagram_link: pendingSettings.instagram_link,
+			soundcloud_link: pendingSettings.soundcloud_link,
+			youtube_link: pendingSettings.youtube_link,
+			web_link: pendingSettings.web_link
+		};
 		$.ajax({
 			type: "POST",
 			url: requestURL,
 			data: {
-				event: pendingTitle
+				links: links
 			},
 			success: function(res) {
-				// console.log("Set title updated on database.");
 				callback(null);
 			},
 			error: function(err) {
-				// console.log("An error occurred when updating title on database.", err);
 				callback(err);
 			}
 		});
 	},
-	newTracks: function(callback) {
-		// console.log("New tracks pending.");
-		// console.log(this.state.tracklist);
-		var pendingTracklist = this.state.tracklist;
-		var requestURL = "http://localhost:3000/api/v/7/setrecords/mix/tracklist/" + this.props.set.id;
+	newPassword: function(callback) {
+		var pendingPassword = this.state.confirm_pass;
+		var requestURL = "http://localhost:3000/api/v/7/setrecords/artist/password/" + this.props.settings.id;
 		$.ajax({
 			type: "POST",
 			url: requestURL,
 			data: {
-				tracklist: pendingTracklist
+				password: pendingPassword
 			},
 			success: function(res) {
-				// console.log("Tracks updated on database.");
-				// console.log(res);
 				callback(null);
 			},
 			error: function(err) {
-				// console.log("An error occurred when updating tracks on the database.", err);
 				callback(err);
 			}
 		});
@@ -276,10 +167,13 @@ var SettingsEditor = React.createClass({
 	onDrop: function(file) {
 		if (file[0].type == "image/png" || file[0].type == "image/jpeg" || file[0].type == "image/gif") {
 			this.setState({
-				tile_image: file,
+				artist_image: file,
 				changes: true
 			});
 		} else {
+			this.setState({
+				artist_image: []
+			});
 			alert("Please upload a png, jpeg, or gif image.");
 		}
 	},
@@ -302,53 +196,8 @@ var SettingsEditor = React.createClass({
 			);
 		}
 	},
-	showEditImage: function() {
-		if (this.props.set.is_radiomix) {
-			return (
-				<div className="set-tile-preview">
-			    	<MockSetTile setData={this.state} episodeImage={this.state.tile_image} />
-			    	<Dropzone onDrop={this.onDrop} className="upload-image set-flex"  multiple={false}>
-			    		<p>Click or drag file here to upload new {this.state.episode ? "episode":"mix"} image</p>
-			    	</Dropzone>
-			    </div>
-			);
-		}
-		else {
-			return "";
-		}
-	},
-	showEpisodeName: function() {
-		var pendingSet = this.state;
-		if (this.props.set.episode) {
-			return (
-				<div className="edit-episode-name flex-row">
-					Episode Title
-					<input type="text" value={pendingSet.episode} onChange={this.changeEpisodeText} />
-				</div>
-			);
-		} else {
-			return "";
-		}
-	},
-	showArtistName: function() {
-		var pendingSet = this.state;
-		if (this.props.set.is_radiomix) {
-			return (
-				<div className="edit-set-name flex-row">
-					{pendingSet.is_radiomix ? "Mix" : "Event"} Title
-					<input type="text" value={pendingSet.event} onChange={this.changeTitleText} />
-				</div>
-			);
-		} else {
-			return (
-				<div className="edit-set-name flex-row">
-					<span className="event-title">{pendingSet.event}</span>
-				</div>
-			);
-		}
-	},
 	registerImageS3: function(callback) {
-		var file = this.state.tile_image[0];
+		var file = this.state.artist_image[0];
 		var self = this;
 		// console.log("Requesting encoding from AWS...");
 		$.ajax({
@@ -395,7 +244,7 @@ var SettingsEditor = React.createClass({
 	},
 	updateImageDatabase: function(imageURL, callback) {
 		// console.log("Adding image to databases...");
-		var requestURL = "http://localhost:3000/api/v/7/setrecords/mix/image/" + this.props.set.id;
+		var requestURL = "http://localhost:3000/api/v/7/setrecords/artist/image/" + this.props.settings.id;
 		$.ajax({
 			type: "POST",
 			url: requestURL,
@@ -415,35 +264,27 @@ var SettingsEditor = React.createClass({
 
 	applyChanges: function() {
 		var pendingSettings = this.state;
+		var originalSettings = this.props.settings;
 		var self = this;
 
 		if (pendingSettings.changes) {
 			console.log("Pending changes found.");
 			var changeFunctions = [];
-			if (pendingSettings.tile_image.length > 0) {
+			if (pendingSettings.artist_image.length > 0) {
 				changeFunctions.push(this.newImage);
 			}
-			if (pendingSettings.event != this.props.set.event) {
-				changeFunctions.push(this.newTitle);
+			if (pendingSettings.password_match) {
+				changeFunctions.push(this.newPassword);
 			}
-			if (pendingSettings.episode != this.props.set.episode) {
-				changeFunctions.push(this.newEpisodeTitle);
+			if (pendingSettings.fb_link != originalSettings.fb_link
+				|| pendingSettings.twitter_link != originalSettings.twitter_link
+				|| pendingSettings.web_link != originalSettings.web_link
+				|| pendingSettings.instagram_link != originalSettings.instagram_link
+				|| pendingSettings.soundcloud_link != originalSettings.soundcloud_link
+				|| pendingSettings.youtube_link != originalSettings.youtube_link) {
+				changeFunctions.push(this.newLinks);
 			}
-			// console.log("Comparing tracklists to determine a change...");
-			var originalTracklist = this.cloneObject(this.props.set.tracklist);
-			var pendingTracklist = this.state.tracklist;
-			// console.log("PENDING");
-			// console.log(pendingTracklist);
-			// console.log("ORIGINAL");
-			// console.log(originalTracklist);
-			var tracklistChanged = !(_.isEqual(pendingTracklist, originalTracklist));
 
-			// console.log("Change?");
-			// console.log(tracklistChanged);
-
-			if (tracklistChanged) {
-				changeFunctions.push(this.newTracks);
-			}
 			console.log("Changes to do");
 			console.log(changeFunctions);
 			console.log("Applying changes...");
@@ -484,30 +325,20 @@ var SettingsEditor = React.createClass({
 	},
 	revertChanges: function() {
 		// console.log("Reverting...");
-		var setCopy = this.cloneObject(this.props.set);
-		setCopy["tracklistURL"] = null;
-		setCopy["tile_image"] = [];
-		setCopy["changes"] = false;
-		setCopy["busy"] = false;
-		setCopy["applying"] = false;
-		setCopy["success"] = false;
-		setCopy["failure"] = false;
-		this.replaceState(setCopy);
+		var settingsCopy = this.props.cloneObject(this.props.settings);
+		settingsCopy["artist_image"] = [];
+		settingsCopy["new_pass"] = null;
+		settingsCopy["confirm_pass"] = null;
+		settingsCopy["password_match"] = false;
+		settingsCopy["changes"] = false;
+		settingsCopy["busy"] = false;
+		settingsCopy["applying"] = false;
+		settingsCopy["success"] = false;
+		settingsCopy["failure"] = false;
+		this.replaceState(settingsCopy);
 	},
 	cancelChanges: function() {
 		this.props.close(false);
-	},
-	cloneObject: function(obj) {
-		var clonedObject = {};
-		var self = this;
-		_.each(obj, function(value, key) {
-			if (typeof value == 'object') {
-				clonedObject[key] = self.cloneObject(value);
-			} else {
-				clonedObject[key] = value;
-			}
-		});
-		return clonedObject;
 	}
 });
 

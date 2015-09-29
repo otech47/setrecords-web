@@ -3,7 +3,7 @@ var constants = require('../constants/constants');
 
 var SetTile = React.createClass({
 	tileClick: function() {
-		this.props.updateWorkingSet(this.props.setData);
+		this.props.openSetEditor(this.props.setData);
 	},
 	render: function() {
 		var setData = this.props.setData;

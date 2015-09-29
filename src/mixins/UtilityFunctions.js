@@ -5,7 +5,9 @@ var UtilityFunctions = {
 		var self = this;
 		var clonedObject = {};
 		_.each(obj, function(value, key) {
-			if (typeof value == 'object') {
+			if (value == null) {
+				return null;
+			} else if (typeof value == 'object') {
 				clonedObject[key] = self.cloneObject(value);
 			} else {
 				clonedObject[key] = value;
