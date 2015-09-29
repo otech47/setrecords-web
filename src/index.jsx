@@ -3,7 +3,6 @@ import Immutable from 'immutable';
 import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 
-
 import GlobalEventHandler from './services/globalEventHandler';
 import MobileSetEditor from './components/MobileSetEditor';
 import SettingsEditor from './components/SettingsEditor';
@@ -15,7 +14,6 @@ import ViewContainer from './components/ViewContainer';
 import FooterSetrecords from './components/FooterSetrecords';
 import ContentView from './components/ContentView';
 import MetricsView from './components/MetricsView';
-import AccountView from './components/AccountView';
 import _ from 'underscore';
 import async from 'async';
 
