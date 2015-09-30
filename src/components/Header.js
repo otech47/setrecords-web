@@ -24,7 +24,7 @@ var Header = React.createClass({
 				<div className="artist flex-row">
 					<div className="options flex-column">
 						<h1>{artistData.artist}</h1>
-						<p>New Set | <span onClick={this.toggleSettingsEditor}>Settings</span> | Logout</p>
+						<p><span onClick={this.props.openUploadSetWizard} >New Set</span> | <span onClick={this.toggleSettingsEditor}>Settings</span> | Logout</p>
 					</div>
 					<img src={constants.S3_ROOT_FOR_IMAGES + artistData.imageURL} />
 				</div>

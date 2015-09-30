@@ -16,18 +16,15 @@ import ContentView from './components/ContentView';
 import MetricsView from './components/MetricsView';
 import _ from 'underscore';
 import async from 'async';
+import UploadWizardWrapper from './components/UploadWizardWrapper';
 
 import UpdateFunctions from './mixins/UpdateFunctions';
 import UtilityFunctions from './mixins/UtilityFunctions';
 
 var initialAppState = Immutable.Map({
-	'wizardData': {
-		'step': 0,
-		'pendingData': {
-		}
-	},
 	'settings_editor': false,
 	'set_editor': false,
+	'upload_set_wizard': false,
 	'loaded': false,
 	"sets": [],
 	'working_set': {},
@@ -100,7 +97,7 @@ var App = React.createClass({
 		var appState = this.state.appState;
 		return (
 			<div className="main-container flex-column">
-				<Header appState={appState} openSettingsEditor={this.openSettingsEditor} closeSettingsEditor={this.closeSettingsEditor} />
+				<Header appState={appState} openSettingsEditor={this.openSettingsEditor} closeSettingsEditor={this.closeSettingsEditor} openUploadSetWizard={this.openUploadSetWizard} />
 				{this.showView(appState)}
 				<FooterSetrecords />
 			</div>
@@ -176,6 +173,7 @@ var App = React.createClass({
 			type: 'SHALLOW_MERGE',
 			data: {
 				settings_editor: true,
+				upload_set_wizard: false,
 				set_editor: false
 			}
 		});
@@ -190,10 +188,57 @@ var App = React.createClass({
 			return (
 				<SettingsEditor settings={appState.get('artist_data')} close={this.closeSettingsEditor} appState={appState} {...UtilityFunctions} />
 			);
+		} else if (appState.get('upload_set_wizard')) {
+			return (
+				<UploadWizardWrapper appState={appState} {...UtilityFunctions} />
+			);
 		} else {
 			return (
-				<ViewContainer appState={appState} {...updateFunctions} {...UtilityFunctions} push={push} routeHandler={RouteHandler} openSetEditor={this.openSetEditor} loaded={appState.get('loaded')} />
+				<ViewContainer appState={appState} {...updateFunctions} {...UtilityFunctions} push={push} routeHandler={RouteHandler} openSetEditor={this.openSetEditor} openUploadSetWizard={this.openUploadSetWizard} loaded={appState.get('loaded')} />
 			);
+		}
+	},
+	openUploadSetWizard: function() {
+		console.log("opening upload set wizard...");
+		push({
+			type: 'SHALLOW_MERGE',
+			data: {
+				set_editor: false,
+				settings_editor: false,
+				upload_set_wizard: true
+			}
+		});
+	},
+	closeUploadSetWizard: function(isChanged) {
+		console.log("closing upload set wizard");
+		if (isChanged) {
+			push({
+				type: 'SHALLOW_MERGE',
+				data: {
+					loaded: false
+				}
+			});
+			this.updateSets(function(err, sets) {
+				if (err) {
+					console.log('An error occurred.', err);
+				} else {
+					push({
+						type: 'SHALLOW_MERGE',
+						data: {
+							sets: sets,
+							upload_set_wizard: false,
+							loaded: true
+						}
+					});
+				}
+			});
+		} else {
+			push({
+				type: 'SHALLOW_MERGE',
+				data: {
+					upload_set_wizard: false
+				}
+			});
 		}
 	},
 	openSetEditor: function(set) {
@@ -203,7 +248,8 @@ var App = React.createClass({
 			data: {
 				working_set: clonedSet,
 				set_editor: true,
-				settings_editor: false
+				settings_editor: false,
+				upload_set_wizard: false
 			}
 		});
 	}

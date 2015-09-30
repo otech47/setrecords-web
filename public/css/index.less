@@ -945,8 +945,138 @@ td{
         }
     }
 }
+
+.upload-set-wizard {
+    background-color: @setrecords-white;
+    margin-top: @headerHeight * 1.5;
+    min-height: 57rem;
+    padding: 2rem 3rem;
+
+    .wizard-banner {
+        background-color: @setrecords-light-black;
+        font-size: 2rem;
+        color: @setrecords-white;
+        font-family: @boldFontStyle;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        width: 100%;
+        margin: 0;
+        height: @headerHeight * 0.5;
+        top: @headerHeight;
+        z-index: 22;
+        left: 0;
+        p {
+            margin: 0;
+        }
+    }
+    .step-counter {
+        font-size: 2rem;
+        font-family: @defaultFontStyle;
+        color: @setrecords-black;
+        margin: 0;
+    }
+    .back-arrow {
+        font-size: 1rem;
+        text-transform: uppercase;
+        margin: 0.5rem 0;
+    }
+    .wizard-body {
+        margin: 1rem 0;
+        
+        .step-info {
+            font-size: 1.5rem;
+        }
+        .wizard-step {
+            align-items: center;
+        }
+        .step-button {
+            font-size: 1.5rem;
+            background-color: @setrecords-light-black;
+            color: @setrecords-blue;
+            height: 4.5rem;
+            width: 8rem;
+        }
+        .step-button-text {
+            width: 100%;
+            height: 4.5rem;
+            align-items: center;
+        }
+    }
+
+    .edit-set-name{
+        align-items: center;
+        font-family: @boldFontStyle;
+        flex-wrap: nowrap;
+        .event-title {
+            font-size: 2.25rem;
+            margin: 0;
+        }
+        .edit-button {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            margin: 0 0 0 1rem;
+            color: @setrecords-dark-gray;
+            font-family: @defaultFontCondensed;
+        }
+    }
+    .edit-episode-name {
+        align-items: center;
+        flex-wrap: nowrap;
+        .episode-name {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        .edit-button {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            margin: 0 0 0 1rem;
+            color: @setrecords-dark-gray;
+            font-family: @defaultFontCondensed;
+        }
+    }
+    .uploaded-date {
+        margin: 1rem 0;
+        font-size: 1.5rem;
+    }
+    .set-tile-preview {
+        margin: 4rem 0;
+        .set-tile {
+            height: 25rem;
+            width: 25rem;
+            margin: 0;
+            .artist-image {
+                top: 12rem;
+                height: 5rem;
+                width: 5rem;
+            }
+        }
+        .upload-image {
+            margin: 1rem 0 0 0;
+            height: 4rem;
+            width: 25rem;
+            font-size: 1rem;
+            border: 4px dotted @setrecords-purple;
+            font-family: @defaultFontStyle;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            p {
+                margin: 0;
+            }
+        }
+    }
+}
+
 .invisible {
     visibility: hidden;
+}
+
+.warning {
+    color: @setrecords-red !important;
+}
+.approved {
+    color: @setrecords-green !important;
 }
 
 .mobile-settings-editor{
@@ -955,12 +1085,6 @@ td{
     min-height: 57rem;
     align-items: flex-start;
     padding: 2rem 3rem;
-    .warning {
-        color: @setrecords-red;
-    }
-    .approved {
-        color: @setrecords-green;
-    }
 
     .apply-editor {
         position: fixed;

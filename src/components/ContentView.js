@@ -5,7 +5,7 @@ var Loader = require("react-loader");
 
 var ContentView = React.createClass({
 	render: function() {
-		var {appState, loaded, ...other} = this.props;
+		var {appState, loaded, openUploadSetWizard, ...other} = this.props;
 		var sets = appState.get('sets');
 		var setTiles = _.map(sets, function(set) {
 			return (<SetTile key={set.id} setData={set} {...other} />);
@@ -14,7 +14,7 @@ var ContentView = React.createClass({
 			<Loader loaded={loaded}>
 				<div className='content-page flex-column'>
 					<div className='mobile-column flex-row'>
-						<button className='addSet flex-column'>
+						<button className='addSet flex-column' onClick={openUploadSetWizard}>
 							<i className='fa fa-plus'></i>
 							<p>add a set</p>
 						</button>
