@@ -1,6 +1,5 @@
 import React from 'react';
 import WizardStepWrapper from './WizardStepWrapper';
-import ProgressBubble from './ProgressBubble';
 import WizardStep1 from './WizardStep1';
 import WizardStep2 from './WizardStep2';
 
@@ -61,7 +60,7 @@ var UploadWizardWrapper = React.createClass({
 			break;
 
 			case 2:
-			return (<WizardStep2 stepForward={this.stepForward} />);
+			return (<WizardStep2 stepForward={this.stepForward} cloneObject={this.props.cloneObject} />);
 			break;
 
 			default:

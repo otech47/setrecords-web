@@ -1,44 +1,67 @@
 import React from 'react';
-import WizardStep1 from './WizardStep1';
-import WizardStep3 from './WizardStep3';
-import WizardStep4 from './WizardStep4';
-import WizardStep5 from './WizardStep5';
+var Dropzone = require('react-dropzone');
+import _ from 'underscore';
 
 var WizardStep2 = React.createClass({
-	componentDidMount: function() {
-		this._attachStream();
-	},
-	_attachStream: function() {
-		var _this = this;
+	getInitialState: function() {
+		return {
+			files: []
+		};
 	},
 	render: function() {
 		return (
-			<div className="WizardStep2 wizard set-flex">
-				<div className="flex-column step-tile">
-					<div className="upload-set flex-fixed-1x">
-						<h1>Upload Set</h1>
-					</div>
-					<div className="flex-fixed-1x" >
-						<h1 className="step">    Step 2 of 5</h1>
-					</div>
-					<div className="upload-directions">
-						<p>Choose a set to upload.(mp3 preferred)</p>
-					</div>
-					<div className=" selection ">
-						<button  className="wizard-buttons" >Choose File</button>
-
-					</div>
-					<div className="current-page">
-						<i className="fa fa-circle-o"></i>
-						<i id="current-page" className="fa fa-circle-o"></i>
-						<i className="fa fa-circle-o"></i>
-						<i className="fa fa-circle-o"></i>
-						<i className="fa fa-circle-o"></i>
-					</div>
-				</div>
-
+			<div className="flex-column wizard-step">
+				<Dropzone onDrop={this.onDrop} multiple={true}>
+					Drop files here!
+				</Dropzone>
+				<button onClick={this.sendFiles}>Click to send</button>
 			</div>
 		);
+	},
+
+	onDrop: function(files) {
+		var newFiles = this.state.files;
+		_.each(files, function(file) {
+			newFiles.push(file);
+		});
+
+		this.setState({
+			files: newFiles
+		}, function() {
+			console.log(this.state.files);
+		});
+	},
+	sendFiles: function(event) {
+		console.log("Adding files to form data...");
+		var formData = new FormData();
+		_.each(this.state.files, function(file) {
+			formData.append('files[]', file, file.name);
+		});
+
+		console.log("Complete.");
+		console.log("Sending to server...");
+		var requestURL = "http://localhost:3000/api/v/7/setrecords/upload/files";
+		$.ajax({
+			type: 'POST',
+			url: requestURL,
+			data: {
+				package: formData
+			},
+			success: function(res) {
+				console.log("Success. Result:");
+				console.log(res);
+			},
+			error: function(err) {
+				console.log("An error occurred:");
+				console.log(err);
+			}
+		});
+
+		console.log("Deleting existing files...");
+		this.setState({
+			files: []
+		});
+		console.log("Done.");
 	}
 });
 
