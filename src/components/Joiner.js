@@ -3,7 +3,7 @@ var Dropzone = require('react-dropzone');
 import _ from 'underscore';
 import async from 'async';
 
-var WizardStep2 = React.createClass({
+var Joiner = React.createClass({
 	getInitialState: function() {
 		return {
 			files: []
@@ -201,4 +201,4 @@ var WizardStep2 = React.createClass({
 	}
 });
 
-module.exports = WizardStep2;
+module.exports = Joiner;
