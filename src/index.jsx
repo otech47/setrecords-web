@@ -196,7 +196,7 @@ var App = React.createClass({
 			);
 		} else if (appState.get('upload_set_wizard')) {
 			return (
-				<UploadWizardWrapper mixes={appState.get('mixes')} genres={appState.get('genres')} events={appState.get('events')} {...UtilityFunctions} />
+				<UploadWizardWrapper mixes={appState.get('mixes')} genres={appState.get('genres')} events={appState.get('events')} {...UtilityFunctions} appState={appState} {...UtilityFunctions} />
 			);
 		} else {
 			return (

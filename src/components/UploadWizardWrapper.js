@@ -1,5 +1,6 @@
 var React = require('react/addons');
 import _ from 'underscore';
+var moment = require("moment");
 import WizardStepWrapper from './WizardStepWrapper';
 import WizardStep1 from './WizardStep1';
 import WizardStep2 from './WizardStep2';
@@ -12,15 +13,6 @@ import WizardStepConfirmation from './WizardStepConfirmation';
 var UploadWizardWrapper = React.createClass({
 	mixins: [React.addons.LinkedStateMixin],
 	getInitialState: function() {
-		var genres = _.map(this.props.genres, function(genre, index) {
-			return (<option value={genre} key={index} />);
-		});
-		var events = _.map(this.props.events, function(event, index) {
-			return (<option value={event} key={index}/>);
-		});
-		var mixes = _.map(this.props.mixes, function(mix, index) {
-			return (<option value={mix} key={index}/>);
-		});
 		return {
 			type: null,
 			release: null,
@@ -30,18 +22,17 @@ var UploadWizardWrapper = React.createClass({
 			mix_name: null,
 			episode_name: null,
 			genre: null,
-			genres: genres,
-			mixes: mixes,
-			events: events,
 			audio_object: null,
 			current_track: null,
 			is_playing: false,
 			soundcloud: false,
-			songs: []
+			songs: [],
+			image: null,
+			tracklist: [],
+			tracklist_url : null
 		}
 	},
 	render: function() {
-		console.log(this.state);
 		return (
 		<div className='upload-set-wizard flex-column'>
 			<div className='wizard-banner set-flex'>
@@ -92,7 +83,7 @@ var UploadWizardWrapper = React.createClass({
 
 			case 3:
 			return (
-				<WizardStep3 linkState={this.linkState} type={this.state.type} genres={this.state.genres} events={this.state.events} mixes={this.state.mixes} stepForward={this.stepForward} />
+				<WizardStep3 linkState={this.linkState} type={this.state.type} genres={this.props.genres} events={this.props.events} mixes={this.props.mixes} stepForward={this.stepForward} image={this.state.image} addImage={this.addImage} tracklist={this.state.tracklist} changeTrack={this.changeTrack} addTrack={this.addTrack} loadTracksFromURL={this.loadTracksFromURL} deleteTrack={this.deleteTrack} changeTracklistURL={this.changeTracklistURL} tracklistUrl={this.state.tracklistUrl}  />
 			);
 			break;
 
@@ -115,7 +106,7 @@ var UploadWizardWrapper = React.createClass({
 
 			case 6:
 			return (
-				<WizardStepConfirmation setData={this.state} />
+				<WizardStepConfirmation setData={this.state} uploadSet={this.uploadSet} />
 			);
 
 			default:
@@ -138,6 +129,15 @@ var UploadWizardWrapper = React.createClass({
 	},
 	uploadSet: function() {
 		console.log("Uploading set...lol");
+	},
+	addImage: function(file) {
+		if (file[0].type == "image/png" || file[0].type == "image/jpeg" || file[0].type == "image/gif") {
+			this.setState({
+				image: file[0].preview
+			});
+		} else {
+			alert("Please upload a png, jpeg, or gif image.");
+		}
 	},
 	addSong: function(songs) {
 		var newSongs = React.addons.update(this.state.songs, {$push: songs});
@@ -192,6 +192,96 @@ var UploadWizardWrapper = React.createClass({
 		React.findDOMNode(this.refs.wizardPlayer).pause();
 		this.setState({
 			is_playing: false
+		});
+	},
+
+	addTrack: function() {
+		var artistName = this.props.appState.get("artist_data").artist;
+		var tracklist = this.state.tracklist;
+		var tracklistLength = _.size(tracklist);
+		if (tracklistLength > 0) {
+			var nextStartTime = moment(tracklist[tracklistLength - 1].start_time, "mm:ss").add(1, "seconds").format("mm:ss");
+		} else {
+			var nextStartTime = "00:00";
+		}
+		var newTracklist = this.props.cloneObject(tracklist);
+		newTracklist[tracklistLength] = {
+			"track_id": -1,
+			"start_time": nextStartTime,
+			"artist": artistName,
+			"song": "untitled"
+		};
+		this.setState({
+			tracklist: newTracklist,
+			tracklist_url: null
+		});
+	},
+	changeTrack: function(fieldName, newVal, trackIndex) {
+		var clonedTracklist = this.props.cloneObject(this.state.tracklist);
+		clonedTracklist[trackIndex][fieldName] = newVal;
+
+		this.setState({
+			tracklist: clonedTracklist,
+			tracklist_url: null
+		});
+	},
+	changeTracklistURL: function(event) {
+		this.setState({
+			tracklist_url: event.target.value
+		});
+	},
+	deleteTrack: function(trackIndex) {
+		var clonedTracklist = this.props.cloneObject(this.state.tracklist);
+		var counter = 0;
+		var updatedTracklist = {};
+		_.each(clonedTracklist, function(value, key) {
+			if (key != trackIndex) {
+				updatedTracklist[counter] = value;
+				counter++;
+			}
+		});
+		this.setState({
+			tracklist: updatedTracklist,
+			tracklist_url: null
+		});
+	},
+	pullTracks: function(callback) {
+		var tracklistURL = this.state.tracklist_url;
+		if (tracklistURL == null) {
+			callback(null);
+		} else {
+			var requestURL = "http://localhost:3000/api/v/7/setrecords/set/tracklist/";
+			$.ajax({
+				type: "GET",
+				url: requestURL,
+				data: {
+					tracklist_url: tracklistURL
+				},
+				success: function(res) {
+					if (res.status == "failure") {
+						callback(null);
+					} else {
+						callback(res.payload.set_tracklist);
+					}
+				},
+				error: function(err) {
+					callback(null);
+				}
+			});
+		}
+	},
+	loadTracksFromURL: function(event) {
+		var self = this;
+		this.pullTracks(function(tracks) {
+			if (tracks == null) {
+				alert("Please enter a valid 1001 tracklists URL.");
+			} else {
+				var clonedTracks = this.props.cloneObject(tracks);
+				self.setState({
+					tracklist: clonedTracks,
+					changes: true
+				});
+			}
 		});
 	}
 });

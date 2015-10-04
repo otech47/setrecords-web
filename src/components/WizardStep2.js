@@ -11,7 +11,7 @@ var WizardStep2 = React.createClass({
 		this.props.donePlaying();
 	},
 	render: function() {
-		var {songs, addSong, stepForward, ...other} = this.props;
+		var {songs, addSong, ...other} = this.props;
 		var previews = _.map(songs, function(song, index) {
 			return (
 				<PreviewPlayer name={song.name} {...other} key={index} index={index} />
@@ -26,7 +26,7 @@ var WizardStep2 = React.createClass({
 					<button className="step-button" onClick={this.addFiles}>
 						Add a file
 					</button>
-					<button className={'step-button' + (songs.length > 0 ? '':' disabled')} disabled={songs.length > 0 ? false: true} onClick={stepForward}>
+					<button className={'step-button' + (songs.length > 0 ? '':' disabled')} disabled={songs.length > 0 ? false: true} onClick={this.submitStep}>
 						Continue
 					</button>
 				</div>
@@ -35,6 +35,11 @@ var WizardStep2 = React.createClass({
 				</div>
 			</div>
 		);
+	},
+
+	submitStep: function(event) {
+		var submission = {};
+		this.props.stepForward(submission);
 	},
 
 	addFiles: function(event) {

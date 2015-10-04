@@ -1339,6 +1339,11 @@ td .deleteTrack {
   padding: 0.5rem 0.5rem;
   color: #2b2b2b;
 }
+.upload-set-wizard .wizard-body .wizard-step .image-preview {
+  height: 16rem;
+  width: 16rem;
+  border: 0.25rem solid #3698db;
+}
 .upload-set-wizard .wizard-body .wizard-step .step-buttons {
   align-items: center;
   justify-content: center;

@@ -11,11 +11,16 @@ var WizardStep5Free = React.createClass({
 						<p>Soundcloud</p>
 					</div>
 				</div>
-				<button className='step-button' onClick={this.props.stepForward}>
+				<button className='step-button' onClick={this.submitStep}>
 					Continue
 				</button>
 			</div>
 		);
+	},
+
+	submitStep: function(event) {
+		var submission = {};
+		this.props.stepForward(submission);
 	}
 });
 
