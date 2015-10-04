@@ -32,6 +32,9 @@ var initialAppState = Immutable.Map({
 		"id": 4026,
 		"artist": "Calvin Harris"
 	},
+	'genres': [],
+	'events': [],
+	'mixes': [],
 	'setmine_metrics': {},
 	'soundcloud_metrics': {},
 	'youtube_metrics': {},
@@ -66,7 +69,7 @@ var App = React.createClass({
 	},
 	componentDidMount: function() {
 		this._attachStreams(); //global event handler
-		async.parallel([this.updateArtist, this.updateSets, this.updateSetmine, this.updateSoundcloud, this.updateYoutube, this.updateBeacons, this.updateSocial], function(err, results) {
+		async.parallel([this.updateArtist, this.updateSets, this.updateSetmine, this.updateSoundcloud, this.updateYoutube, this.updateBeacons, this.updateSocial, this.updateMisc], function(err, results) {
 			if (err) {
 				console.log('There was an error loading artist and set data.');
 			} else {
@@ -80,6 +83,9 @@ var App = React.createClass({
 						youtube_metrics: results[4],
 						beacon_metrics: results[5],
 						social_metrics: results[6],
+						mixes: results[7].mixes,
+						genres: results[7].genres,
+						events: results[7].events,
 						loaded: true
 					}
 				});
@@ -190,7 +196,7 @@ var App = React.createClass({
 			);
 		} else if (appState.get('upload_set_wizard')) {
 			return (
-				<UploadWizardWrapper appState={appState} {...UtilityFunctions} />
+				<UploadWizardWrapper mixes={appState.get('mixes')} genres={appState.get('genres')} events={appState.get('events')} {...UtilityFunctions} />
 			);
 		} else {
 			return (

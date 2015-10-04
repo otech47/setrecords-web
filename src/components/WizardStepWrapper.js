@@ -3,7 +3,6 @@ import WizardStep1 from './WizardStep1';
 import WizardStep2 from './WizardStep2';
 import WizardStep3 from './WizardStep3';
 import WizardStep4 from './WizardStep4';
-import WizardStep5 from './WizardStep5';
 
 var WizardStepWrapper = React.createClass({
 	componentDidMount: function() {

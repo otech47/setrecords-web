@@ -989,6 +989,7 @@ td{
     }
     .wizard-body {
         margin: 1rem 0;
+        color: @setrecords-black;
 
         .wizard-step {
             align-items: center;
@@ -1023,12 +1024,37 @@ td{
                 * {
                     border: none;
                     padding: 0.5rem 0.5rem;
+                    color: @setrecords-black;
                 }
             }
 
             .step-buttons {
                 align-items: center;
                 justify-content: center;
+            }
+
+            .outlet-button {
+                width: 10rem;
+                height: 10rem;
+                text-transform: uppercase;
+                background-color: @setrecords-gray;
+                color: @setrecords-white;
+                align-items: center;
+                justify-content: center;
+                flex-wrap: nowrap;
+                box-shadow: inset 0 0 0 1px #27496d,inset 0 5px 10px #193047;
+                cursor: pointer;
+                i {
+                    font-size: 5rem;
+                }
+                p {
+                    font-size: 1rem;
+                    margin: 0;
+                }
+            }
+            .deactivated {
+                color: @setrecords-light-black;
+                box-shadow: inset 0 0 0 1px #27496d;
             }
 
             .step-button {
@@ -1052,13 +1078,8 @@ td{
                 width: 24rem;
                 align-items: center;
                 p {
-                    color: @setrecords-white !important;
+                    color: @setrecords-white;
                 }
-            }
-
-            p {
-                margin: 0;
-                color: @setrecords-black;
             }
         }
     }

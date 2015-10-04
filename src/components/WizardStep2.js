@@ -6,8 +6,12 @@ import PreviewPlayer from './PreviewPlayer';
 
 
 var WizardStep2 = React.createClass({
+	componentWillUnmount: function() {
+		URL.revokeObjectURL(this.props.audioObject);
+		this.props.donePlaying();
+	},
 	render: function() {
-		var {songs, addSong, ...other} = this.props;
+		var {songs, addSong, stepForward, ...other} = this.props;
 		var previews = _.map(songs, function(song, index) {
 			return (
 				<PreviewPlayer name={song.name} {...other} key={index} index={index} />
@@ -22,7 +26,7 @@ var WizardStep2 = React.createClass({
 					<button className="step-button" onClick={this.addFiles}>
 						Add a file
 					</button>
-					<button className={'step-button' + (songs.length > 0 ? '':' disabled')} disabled={songs.length > 0 ? false: true} onClick={this.submitStep}>
+					<button className={'step-button' + (songs.length > 0 ? '':' disabled')} disabled={songs.length > 0 ? false: true} onClick={stepForward}>
 						Continue
 					</button>
 				</div>
@@ -35,16 +39,6 @@ var WizardStep2 = React.createClass({
 
 	addFiles: function(event) {
 		this.refs.dropzone.open();
-	},
-	submitStep: function(event) {
-		URL.revokeObjectURL(this.props.audioObject);
-		var submission = {};
-		submission['current_track'] = null;
-		submission['audio_object'] = null;
-		submission['is_playing'] = false;
-		submission['current_step'] = 3;
-		submission['2'] = true;
-		this.props.stepForward(submission);
 	}
 });
 

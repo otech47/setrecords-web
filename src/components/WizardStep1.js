@@ -1,4 +1,4 @@
-import React from 'react';
+var React = require('react/addons');
 
 var WizardStep1 = React.createClass({
 	render: function() {
@@ -28,8 +28,6 @@ var WizardStep1 = React.createClass({
 	submitStep: function(event) {
 		var submission = {};
 		submission['type'] = event.currentTarget.name;
-		submission['current_step'] = 2;
-		submission['1'] = true;
 		this.props.stepForward(submission);
 	},
 });

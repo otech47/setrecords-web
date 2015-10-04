@@ -1,60 +1,54 @@
-import React from 'react';
-import WizardStep1 from './WizardStep1';
-import WizardStep2 from './WizardStep2';
-import WizardStep4 from './WizardStep4';
-import WizardStep5 from './WizardStep5';
+var React = require('react/addons');
+import _ from 'underscore';
+import async from 'async';
+import ReactDatalist from 'react-datalist';
 
 var WizardStep3 = React.createClass({
-	componentDidMount: function() {
-		this._attachStream();
-	},
-	_attachStream: function() {
-		var _this = this;
-	},
 	render: function() {
+		var {genres, linkState, stepForward, ...other} = this.props;
 		return (
-			<div className="WizardStep3 wizard set-flex">
-				<div className="flex-column step-tile">
-					<div className="upload-set flex-fixed-1x">
-						<h1>Upload Set</h1>
-					</div>
-					<div className="flex-fixed-1x" >
-						<h1 className="step">    Step 3 of 5</h1>
-					</div>
-
-					<div className="upload-directions">
-						<p>Enter your set's informatiom</p>
-					</div>
-					<div className="wizard-input">
-						<div >
-							<label htmlFor="Mix Name"/>
-							<input className="input-page3" type="text" placeholder="Mix Name"/>
-						</div >
-						<div >
-							<label htmlFor="Genre"/>
-							<input className="input-page3" type="text" placeholder="Genre"/>
-						</div>
-						<div >
-							<label htmlFor="Episode (optional)"/>
-							<input className="input-page3" type="text" placeholder="Episode (optional)"/>
-						</div>
-					</div>	
-
-					<div className=" selection ">
-						<button  className="wizard-buttons" >Continue</button>
-
-					</div>
-					<div className="current-page">
-						<i className="fa fa-circle-o"></i>
-						<i className="fa fa-circle-o"></i>
-						<i  id="current-page" className="fa fa-circle-o"></i>
-						<i className="fa fa-circle-o"></i>
-						<i className="fa fa-circle-o"></i>
-					</div>
-				</div>
-
+			<div className="flex-column wizard-step">
+				<p className='step-info set-flex'>Enter your set's information.</p>
+				{this.showFields()}
+				<input type='text' valueLink={linkState('genre')} placeholder='genre' list='genres'/>
+				<datalist id='genres'>
+					{genres}
+				</datalist>
+				<button className={'step-button'} onClick={stepForward}>
+					Continue
+				</button>
 			</div>
 		);
+	},
+
+	showFields: function() {
+		if (this.props.type == 'festival') {
+			return (
+				<div>
+					<input type='text' valueLink={this.props.linkState('event_name')} placeholder='event name' list='events' />
+					<datalist id='events'>
+						{this.props.events}
+					</datalist>
+				</div>
+			);
+		} else if (this.props.type == 'mix') {
+			return (
+			<div>
+				<input type='text' valueLink={this.props.linkState('mix_name')} placeholder='mix name' list='mixes' />
+				<datalist id='mixes'>
+					{this.props.mixes}
+				</datalist>
+				<br />
+				<input type='text' valueLink={this.props.linkState('episode_name')} placeholder='episode (optional)'/>
+			</div>
+			);
+		} else {
+			return (
+				<div>
+					<input type='text' valueLink={this.props.linkState('album_name')} placeholder='album name'/>
+				</div>
+			);
+		}
 	}
 });
 

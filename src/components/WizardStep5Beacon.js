@@ -1,10 +1,6 @@
 import React from 'react';
-import WizardStep1 from './WizardStep1';
-import WizardStep2 from './WizardStep2';
-import WizardStep3 from './WizardStep3';
-import WizardStep4 from './WizardStep4';
 
-var WizardStep5 = React.createClass({
+var WizardStep5Beacon = React.createClass({
 	componentDidMount: function() {
 		this._attachStream();
 	},
@@ -13,7 +9,7 @@ var WizardStep5 = React.createClass({
 	},
 	render: function() {
 		return (
-			<div className="WizardStep5 wizard set-flex">
+			<div className="wizard set-flex">
 				<div className="flex-column step-tile">
 					<div className="upload-set flex-fixed-1x">
 						<h1>Upload Set</h1>
@@ -51,4 +47,4 @@ var WizardStep5 = React.createClass({
 	}
 });
 
-module.exports = WizardStep5;
+module.exports = WizardStep5Beacon;
