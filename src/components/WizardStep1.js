@@ -27,7 +27,7 @@ var WizardStep1 = React.createClass({
 
 	submitStep: function(event) {
 		var submission = {};
-		submission['type'] = event.currentTarget.name;
+		submission['set_type'] = event.currentTarget.name;
 		this.props.stepForward(submission);
 	},
 });

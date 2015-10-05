@@ -30,6 +30,18 @@ var UtilityFunctions = {
 		} else {
 			return number;
 		}
+	},
+	secondsToMinutes: function(seconds) {
+		var minutes = 0;
+		while (seconds > 60) {
+			seconds -= 60;
+			minutes++;
+		}
+		if (seconds < 10) {
+			return minutes + ':0' + seconds.toFixed();
+		} else {
+			return minutes + ':' + seconds.toFixed();
+		}
 	}
 };
 module.exports = UtilityFunctions;

@@ -1,49 +1,122 @@
 var React = require('react/addons');
 import _ from 'underscore';
 var moment = require("moment");
-import WizardStepWrapper from './WizardStepWrapper';
 import WizardStep1 from './WizardStep1';
 import WizardStep2 from './WizardStep2';
 import WizardStep3 from './WizardStep3';
 import WizardStep4 from './WizardStep4';
-import WizardStep5Beacon from './WizardStep5Beacon';
-import WizardStep5Free from './WizardStep5Free';
+import WizardStep5 from './WizardStep5';
+import WizardStep6Beacon from './WizardStep6Beacon';
+import WizardStep6Free from './WizardStep6Free';
 import WizardStepConfirmation from './WizardStepConfirmation';
+var constants = require('../constants/constants');
 
 var UploadWizardWrapper = React.createClass({
 	mixins: [React.addons.LinkedStateMixin],
 	getInitialState: function() {
 		return {
-			type: null,
-			release: null,
 			current_step: 1,
-			event_name: null,
-			album_name: null,
-			mix_name: null,
-			episode_name: null,
-			genre: null,
-			audio_object: null,
-			current_track: null,
-			is_playing: false,
-			soundcloud: false,
+			set_type: null,
 			songs: [],
-			image: null,
+			artist: this.props.appState.get('artist_data').artist,
 			tracklist: [],
-			tracklist_url : null
-		}
+			tracklist_url : null,
+			name: null,
+			episode: null,
+			genre: null,
+			image: [],
+			release_type: null,
+			outlets: [],
+			set_length: 0,
+			pending_song: null,
+			temp_url: null
+		};
+	},
+	componentDidMount: function() {
+		var counter = React.findDOMNode(this.refs.counter);
+		counter.onloadedmetadata = (function(e) {
+			var duration = counter.duration;
+			var processedSong = {};
+			processedSong.file = this.state.pending_song;
+			processedSong.duration = duration;
+			URL.revokeObjectURL(this.state.temp_url);
+			this.setState({
+				pending_song: null,
+				temp_url: null,
+				songs: React.addons.update(this.state.songs, {$push: [processedSong]})
+			});
+		}).bind(this);
 	},
 	render: function() {
+		var linkState = this.linkState;
+		var stepForward = this.stepForward;
+
+		var stepComponent;
+		switch(this.state.current_step) {
+			case 1:
+			stepComponent = (<WizardStep1 stepForward={stepForward} />);
+			break;
+
+			case 2:
+			var songFunctions = {};
+			songFunctions.addSong = this.addSong;
+			songFunctions.removeSong = this.removeSong;
+
+			stepComponent = (<WizardStep2 songs={this.state.songs} stepForward={stepForward} {...songFunctions} />);
+			break;
+
+			case 3:
+			var tracklistFunctions = {};
+			tracklistFunctions.addTrack = this.addTrack;
+			tracklistFunctions.removeTrack = this.removeTrack;
+			tracklistFunctions.loadTracksFromUrl = this.loadTracksFromUrl;
+			tracklistFunctions.changeTrack = this.changeTrack;
+
+			stepComponent = (<WizardStep3 stepForward={stepForward} linkState={linkState} {...tracklistFunctions} tracklist={this.state.tracklist} />);
+			break;
+
+			case 4:
+			var dbInfo = {};
+			dbInfo.events = this.props.events;
+			dbInfo.mixes = this.props.mixes;
+			dbInfo.genres = this.props.genres;
+
+			stepComponent = (<WizardStep4 stepForward={stepForward} linkState={linkState} image={this.state.image} setLength={this.state.set_length} type={this.state.set_type} addImage={this.addImage} {...dbInfo} />);
+			break;
+
+			case 5:
+			stepComponent = (<WizardStep5 />);
+			break;
+
+			case 6:
+			if (this.state.release_type == 'beacon') {
+				stepComponent = (<WizardStep6Beacon />);
+			} else {
+				stepComponent = (<WizardStep6Free />)
+			}
+			break;
+
+			case 7:
+			stepComponent = (<WizardStepConfirmation />);
+			break;
+
+			default:
+			break;
+		};
+
 		return (
 		<div className='upload-set-wizard flex-column'>
+			<audio ref='counter' preload='metadata' src={this.state.temp_url}>
+			</audio>
 			<div className='wizard-banner set-flex'>
 				<p>Upload a Set</p>
 			</div>
-			<p className='step-counter'>{this.state.current_step < 6 ? 'Step ' + this.state.current_step + ' of 5' : 'Confirmation'}</p>
+			<p className='step-counter'>{this.state.current_step < 7 ? 'Step ' + this.state.current_step + ' of 6' : 'Confirmation'}</p>
 			<div className={'back-arrow' + (this.state.current_step > 1 ? '':' invisible')} onClick={this.stepBackward}>
 				<i className='fa fa-chevron-left'></i> back
 			</div>
 			<div className='flex wizard-body'>
-				{this.showWizardStep()}
+				{stepComponent}
 			</div>
 		</div>
 		);
@@ -65,134 +138,35 @@ var UploadWizardWrapper = React.createClass({
 			current_step: previousStep
 		});
 	},
-	showWizardStep: function() {
-		switch(this.state.current_step) {
-			case 1:
-			return (<WizardStep1 stepForward={this.stepForward}/>);
-			break;
-
-			case 2:
-			return (
-				<div>
-					<audio ref='wizardPlayer' src={this.state.audio_object} onended={this.donePlaying}>
-					</audio>
-					<WizardStep2 stepForward={this.stepForward}  songs={this.state.songs} currentTrack={this.state.current_track} play={this.play} pause={this.pause} isPlaying={this.state.is_playing} audioObject={this.state.audio_object} addSong={this.addSong} removeSong={this.removeSong} donePlaying={this.donePlaying} />
-				</div>
-				);
-			break;
-
-			case 3:
-			return (
-				<WizardStep3 linkState={this.linkState} type={this.state.type} genres={this.props.genres} events={this.props.events} mixes={this.props.mixes} stepForward={this.stepForward} image={this.state.image} addImage={this.addImage} tracklist={this.state.tracklist} changeTrack={this.changeTrack} addTrack={this.addTrack} loadTracksFromURL={this.loadTracksFromURL} deleteTrack={this.deleteTrack} changeTracklistURL={this.changeTracklistURL} tracklistUrl={this.state.tracklistUrl}  />
-			);
-			break;
-
-			case 4:
-			return (
-				<WizardStep4 stepForward={this.stepForward} />
-			);
-
-			case 5:
-			if (this.state.release == 'beacon') {
-				return (
-					<WizardStep5Beacon stepForward={this.stepForward} />
-				);
-			} else {
-				return (
-					<WizardStep5Free stepForward={this.stepForward} soundcloud={this.state.soundcloud} toggleSoundcloud={this.toggleSoundcloud} />
-				);
-			}
-			break;
-
-			case 6:
-			return (
-				<WizardStepConfirmation setData={this.state} uploadSet={this.uploadSet} />
-			);
-
-			default:
-			break;
-		}
-	},
 
 	toggleSoundcloud: function() {
 		this.setState({
 			soundcloud: !this.state.soundcloud
 		});
 	},
-
-	donePlaying: function() {
-		this.setState({
-			is_playing: false,
-			current_track: null,
-			audio_object: null
-		});
-	},
 	uploadSet: function() {
 		console.log("Uploading set...lol");
+	},
+	addSong: function(song) {
+		var tempUrl = URL.createObjectURL(song[0]);
+		this.setState({
+			temp_url: tempUrl,
+			pending_song: song
+		});
+	},
+	removeSong: function(index) {
+		this.setState({
+			songs: React.addons.update(this.state.songs, {$splice: [[index, 1]]})
+		});
 	},
 	addImage: function(file) {
 		if (file[0].type == "image/png" || file[0].type == "image/jpeg" || file[0].type == "image/gif") {
 			this.setState({
-				image: file[0].preview
+				image: file
 			});
 		} else {
 			alert("Please upload a png, jpeg, or gif image.");
 		}
-	},
-	addSong: function(songs) {
-		var newSongs = React.addons.update(this.state.songs, {$push: songs});
-		this.setState({
-			songs: newSongs
-		});
-	},
-	removeSong: function(songIndex) {
-		var newSongs = _.filter(this.state.songs, function(song, index) {
-			return songIndex != index;
-		});
-
-		if (songIndex == this.state.current_track) {
-			this.setState({
-				songs: newSongs,
-				current_track: null,
-				audio_object: null,
-				is_playing: false
-			});
-		} else {
-			var newCurrentTrack = newSongs.indexOf(this.state.songs[this.state.current_track]);
-			this.setState({
-				songs: newSongs,
-				current_track: newCurrentTrack
-			});
-		}
-	},
-	play: function(index) {
-		var self = this;
-		var player = React.findDOMNode(this.refs.wizardPlayer);
-		if (index == this.state.current_track) {
-			this.setState({
-				is_playing: true
-			}, function() {
-				player.play();
-			});
-		} else {
-			player.pause();
-			URL.revokeObjectURL(this.state.audio_object);
-			var newAudio = URL.createObjectURL(this.state.songs[index]);
-			this.setState({
-				audio_object: newAudio,
-				current_track: index,
-				is_playing: true
-			}, function() {
-				player.load();
-				player.play();
-			});
-		}
-	},
-	pause: function() {
-		React.findDOMNode(this.refs.wizardPlayer).pause();
-		this.setState({
-			is_playing: false
-		});
 	},
 
 	addTrack: function() {
@@ -204,58 +178,47 @@ var UploadWizardWrapper = React.createClass({
 		} else {
 			var nextStartTime = "00:00";
 		}
-		var newTracklist = this.props.cloneObject(tracklist);
-		newTracklist[tracklistLength] = {
-			"track_id": -1,
-			"start_time": nextStartTime,
-			"artist": artistName,
-			"song": "untitled"
+		var newTrack = {
+			'track_id': -1,
+			'start_time': nextStartTime,
+			'artist': artistName,
+			'song': 'untitled'
 		};
-		this.setState({
-			tracklist: newTracklist,
-			tracklist_url: null
-		});
-	},
-	changeTrack: function(fieldName, newVal, trackIndex) {
-		var clonedTracklist = this.props.cloneObject(this.state.tracklist);
-		clonedTracklist[trackIndex][fieldName] = newVal;
 
 		this.setState({
-			tracklist: clonedTracklist,
+			tracklist: React.addons.update(tracklist, {$push: [newTrack]}),
 			tracklist_url: null
 		});
 	},
-	changeTracklistURL: function(event) {
+	changeTrack: function(index, key, value) {
+		var innerUpdate = {};
+		innerUpdate[key] = {
+			$set: value
+		};
+		var updateObject = {};
+		updateObject[index] = innerUpdate;
 		this.setState({
-			tracklist_url: event.target.value
+			tracklist: React.addons.update(this.state.tracklist, updateObject),
+			tracklist_url: null
 		});
 	},
-	deleteTrack: function(trackIndex) {
-		var clonedTracklist = this.props.cloneObject(this.state.tracklist);
-		var counter = 0;
-		var updatedTracklist = {};
-		_.each(clonedTracklist, function(value, key) {
-			if (key != trackIndex) {
-				updatedTracklist[counter] = value;
-				counter++;
-			}
-		});
+	removeTrack: function(index) {
 		this.setState({
-			tracklist: updatedTracklist,
+			tracklist: React.addons.update(this.state.tracklist, {$splice: [[index, 1]]}),
 			tracklist_url: null
 		});
 	},
 	pullTracks: function(callback) {
-		var tracklistURL = this.state.tracklist_url;
-		if (tracklistURL == null) {
+		var tracklistUrl = this.state.tracklist_url;
+		if (tracklistUrl == null) {
 			callback(null);
 		} else {
-			var requestURL = "http://localhost:3000/api/v/7/setrecords/set/tracklist/";
+			var requestUrl = "http://localhost:3000/api/v/7/setrecords/set/tracklist/";
 			$.ajax({
 				type: "GET",
-				url: requestURL,
+				url: requestUrl,
 				data: {
-					tracklist_url: tracklistURL
+					tracklist_url: tracklistUrl
 				},
 				success: function(res) {
 					if (res.status == "failure") {
@@ -270,16 +233,14 @@ var UploadWizardWrapper = React.createClass({
 			});
 		}
 	},
-	loadTracksFromURL: function(event) {
+	loadTracksFromUrl: function(event) {
 		var self = this;
 		this.pullTracks(function(tracks) {
 			if (tracks == null) {
 				alert("Please enter a valid 1001 tracklists URL.");
 			} else {
-				var clonedTracks = this.props.cloneObject(tracks);
 				self.setState({
-					tracklist: clonedTracks,
-					changes: true
+					tracklist: React.addons.update(self.state.tracklist, {$set: tracks})
 				});
 			}
 		});

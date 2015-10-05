@@ -1,4 +1,5 @@
 import React from 'react';
+import MockSetTile from './MockSetTile';
 
 var WizardStepConfirmation = React.createClass({
 	render: function() {

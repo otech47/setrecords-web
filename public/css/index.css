@@ -1394,68 +1394,6 @@ td .deleteTrack {
 .upload-set-wizard .wizard-body .wizard-step .preview-player p {
   color: #ffffff;
 }
-.upload-set-wizard .edit-set-name {
-  align-items: center;
-  font-family: Avenir Pro Bold;
-  flex-wrap: nowrap;
-}
-.upload-set-wizard .edit-set-name .event-title {
-  font-size: 2.25rem;
-  margin: 0;
-}
-.upload-set-wizard .edit-set-name .edit-button {
-  font-size: 1.5rem;
-  text-transform: uppercase;
-  margin: 0 0 0 1rem;
-  color: #969696;
-  font-family: Avenir Pro Condensed;
-}
-.upload-set-wizard .edit-episode-name {
-  align-items: center;
-  flex-wrap: nowrap;
-}
-.upload-set-wizard .edit-episode-name .episode-name {
-  font-size: 1.5rem;
-  margin: 0;
-}
-.upload-set-wizard .edit-episode-name .edit-button {
-  font-size: 1.5rem;
-  text-transform: uppercase;
-  margin: 0 0 0 1rem;
-  color: #969696;
-  font-family: Avenir Pro Condensed;
-}
-.upload-set-wizard .uploaded-date {
-  margin: 1rem 0;
-  font-size: 1.5rem;
-}
-.upload-set-wizard .set-tile-preview {
-  margin: 4rem 0;
-}
-.upload-set-wizard .set-tile-preview .set-tile {
-  height: 25rem;
-  width: 25rem;
-  margin: 0;
-}
-.upload-set-wizard .set-tile-preview .set-tile .artist-image {
-  top: 12rem;
-  height: 5rem;
-  width: 5rem;
-}
-.upload-set-wizard .set-tile-preview .upload-image {
-  margin: 1rem 0 0 0;
-  height: 4rem;
-  width: 25rem;
-  font-size: 1rem;
-  border: 4px dotted #673bb6;
-  font-family: Avenir Regular;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-}
-.upload-set-wizard .set-tile-preview .upload-image p {
-  margin: 0;
-}
 .invisible {
   visibility: hidden;
 }
