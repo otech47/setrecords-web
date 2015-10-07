@@ -208,7 +208,7 @@ var App = React.createClass({
 		});
 	}
 });
-
+/*NEVER CHANGE THHE ROUTE OR ELSE IT WILL GO KAPPOOOA AND SHIT THE BED*/
 var routes = (
 	<Route path='/' handler={App}>
 		<DefaultRoute name='content' handler={ContentView} />
