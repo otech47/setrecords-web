@@ -23,6 +23,7 @@ body {
     top: @headerHeight;
     z-index: 22;
     left: 0;
+    color: white;
        * {
             background-color: @setrecords-dark-gray;
             border: none;
@@ -32,7 +33,7 @@ body {
             border-bottom: 0.25rem solid #3698db;
         }
         .apply , .revert , .cancel {
-            color: @setrecords-black;
+            color: @setrecords-white;
             justify-content: center;
         }
 }
@@ -933,7 +934,7 @@ footer{
             box-sizing: border-box;
             background-color: @setrecords-dark-gray;
             p {
-                color: @setrecords-light-gray;
+                color: @setrecords-white;
                 margin: 0;
             }
         }
@@ -955,6 +956,9 @@ footer{
     }
 
     .edit-set-track{
+        h1{
+            margin: 10px;
+        }
 
         button{
            
@@ -964,6 +968,7 @@ footer{
         }
 
         .urlTracklist{
+            margin: 6px;
             color: @setrecords-blue;
             button{
                 color: white;
@@ -997,7 +1002,7 @@ footer{
             outline-color:@setrecords-light-black;
         }
         input, select, textarea{
-            color: black;
+            color: white;
             font-family:  Avenir Demi;
              text-align: center;
         }
@@ -1005,7 +1010,7 @@ footer{
             width: 70%;   
             margin-bottom: 15%;
             }
-    }
+}
 
     .trackAdd{
         padding-top: 20px;
@@ -1064,7 +1069,7 @@ footer{
             box-sizing: border-box;
             background-color: @setrecords-dark-gray;
             p {
-                color: @setrecords-light-gray;
+                color: @setrecords-white;
                 margin: 0;
             }
         }

@@ -373,6 +373,7 @@ body {
   top: 7rem;
   z-index: 22;
   left: 0;
+  color: white;
 }
 .apply-editor * {
   background-color: #969696;
@@ -385,7 +386,7 @@ body {
 .apply-editor .apply,
 .apply-editor .revert,
 .apply-editor .cancel {
-  color: #2b2b2b;
+  color: #ffffff;
   justify-content: center;
 }
 header {
@@ -1249,7 +1250,7 @@ footer .fa-instagram:hover {
   background-color: #969696;
 }
 .mobile-set-editor .set-tile-preview .upload-image p {
-  color: #e6e6e6;
+  color: #ffffff;
   margin: 0;
 }
 .mobile-set-editor table {
@@ -1265,12 +1266,16 @@ footer .fa-instagram:hover {
 .mobile-set-editor td i {
   color: red;
 }
+.mobile-set-editor .edit-set-track h1 {
+  margin: 10px;
+}
 .mobile-set-editor .edit-set-track button {
   width: 60px;
   height: 30px;
   font-family: Avenir Demi;
 }
 .mobile-set-editor .edit-set-track .urlTracklist {
+  margin: 6px;
   color: #3698db;
 }
 .mobile-set-editor .edit-set-track .urlTracklist button {
@@ -1309,7 +1314,7 @@ footer .fa-instagram:hover {
 .mobile-set-editor .edit-set-track input,
 .mobile-set-editor .edit-set-track select,
 .mobile-set-editor .edit-set-track textarea {
-  color: black;
+  color: white;
   font-family: Avenir Demi;
   text-align: center;
 }
@@ -1369,7 +1374,7 @@ footer .fa-instagram:hover {
   background-color: #969696;
 }
 .mobile-settings-editor .upload-image p {
-  color: #e6e6e6;
+  color: #ffffff;
   margin: 0;
 }
 .mobile-settings-editor .password-change input {
