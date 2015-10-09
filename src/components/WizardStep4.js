@@ -13,17 +13,38 @@ var WizardStep4 = React.createClass({
 		if (this.props.image) {
 			mockImage = this.props.image.preview;
 		}
+		var artists = this.props.originalArtist;
 		var showUploadButton = true;
 		var fieldComponents;
+		var featuredArtistComponent = '';
 		if (this.props.type == 'Album') {
 			fieldComponents = (
 				<input type='text' valueLink={linkState('name')} placeholder='Album Name' />
 			);
 		} else {
+			var featuredArtistFields = _.map(this.props.featuredArtists, (function(artist, index) {
+				return (
+					<tr key={index}>
+					<td>
+						<input type='text' value={artist} onChange={this.props.changeFeaturedArtist.bind(null, index)} />
+					</td>
+					<td>
+						<button onClick={this.props.removeFeaturedArtist.bind(null, index)}><i className='fa fa-times warning'></i></button>
+					</td>
+					</tr>);
+			}).bind(this));
+			if (this.props.featuredArtists.length > 0) {
+				featuredArtistComponent = (
+				<table>
+					<tbody>
+						{featuredArtistFields}
+					</tbody>
+				</table>
+				);
+			}
 			if (this.props.type == 'Live') {
 				var eventMatch = this.props.eventLookup[linkState('name').value];
 				if (eventMatch) {
-					console.log(eventMatch);
 					mockImage = constants.S3_ROOT_FOR_IMAGES + eventMatch.image_url;
 					showUploadButton = false;
 				}
@@ -43,18 +64,23 @@ var WizardStep4 = React.createClass({
 					{episodeField ? episodeField : ''}
 				</div>
 			);
+			if (this.props.featuredArtists.length > 0) {
+				artists += ' feat. ' + this.props.featuredArtists.join(', ');
+			}
 		}
+
 		return (
 			<div className="flex-column wizard-step">
 				<p className='step-info set-flex'>Enter your set information.</p>
 				<div className='flex-row'>
 					<div className='flex-column flex-fixed'>
-						<input type='text' valueLink={linkState('artist')} placeholder='Artists' />
+						Featured Artists <button onClick={this.props.addFeaturedArtist} className='step-button'>Add</button>
+						{featuredArtistComponent}
 						{fieldComponents}
 						<input type='text' valueLink={linkState('genre')} placeholder='Genre' list='genre-list' />
 					</div>
 					<div className='flex-column flex-fixed'>
-						<MockSetTileImproved image={mockImage} artist={linkState('artist').value} name={linkState('name').value} episode={this.props.type == 'Mix' ? linkState('episode').value : ''} setLength={this.props.setLength} popularity={0} />
+						<MockSetTileImproved image={mockImage} artist={artists} name={linkState('name').value} episode={this.props.type == 'Mix' ? linkState('episode').value : ''} setLength={this.props.setLength} popularity={0} />
 						<Dropzone ref='dropzone'
 								onDrop={this.props.addImage}
 								className='hidden'
@@ -91,7 +117,7 @@ var WizardStep4 = React.createClass({
 		}
 		if (linkState('name').value == 0) {
 			nameEmptyErr = true;
-			errors.push('Set title cannot be empty.');
+			errors.push('Name cannot be empty.');
 		}
 		if (this.props.genres.indexOf(linkState('genre').value) == -1) {
 			genreErr = true;

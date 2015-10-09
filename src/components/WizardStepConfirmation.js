@@ -3,15 +3,25 @@ import MockSetTileImproved from './MockSetTileImproved';
 
 var WizardStepConfirmation = React.createClass({
 	render: function() {
-		var setData = this.props;
-		var priceData;
-		if (setData.release_type == 'Beacon') {
+		var priceData = '';
+		if (this.props.release_type == 'Beacon') {
 			priceData = (
 				<tr>
 					<td><p>Price:</p></td>
-					<td><p>${setData.price}</p></td>
+					<td><p>${this.props.price}</p></td>
 				</tr>
 			);
+		}
+		var mockImage = null;
+		if (this.props.image) {
+			mockImage = this.props.image.preview;
+		}
+		if (this.props.match_url) {
+			mockImage = this.props.match_url;
+		}
+		var artists = this.props.originalArtist;
+		if (this.props.featured_artists.length > 0) {
+			artists += ' feat. ' + this.props.featured_artists.join(', ');
 		}
 		return (
 			<div className="flex-column wizard-step">
@@ -22,29 +32,29 @@ var WizardStepConfirmation = React.createClass({
 						<tbody>
 							<tr>
 								<td><p>Genre:</p></td>
-								<td><p>{setData.genre}</p></td>
+								<td><p>{this.props.genre}</p></td>
 							</tr>
 							<tr>
 								<td><p>Set Type:</p></td>
-								<td><p>{setData.set_type}</p></td>
+								<td><p>{this.props.set_type}</p></td>
 							</tr>
 							<tr>
 								<td><p>Release:</p></td>
-								<td><p>{setData.release_type}</p></td>
+								<td><p>{this.props.release_type}</p></td>
 							</tr>
 							{priceData}
 							<tr>
 								<td><p>Release Points:</p></td>
-								<td><p>{setData.outlets.join(', ')}</p></td>
+								<td><p>{this.props.outlets.join(', ')}</p></td>
 							</tr>
 						</tbody>
 						</table>
 					</div>
 					<div className='flex-column flex-fixed'>
-						<MockSetTileImproved {...this.props} matchImage={setData.match_url} />
+						<MockSetTileImproved image={mockImage} artist={artists} name={this.props.name} episode={this.props.set_type == 'Mix' ? this.props.episode : ''} setLength={this.props.set_length} popularity={0} />
 					</div>
 				</div>
-				<button className='step-button' onClick={setData.uploadSet}>
+				<button className='step-button' onClick={this.props.uploadSet}>
 					Upload
 				</button>
 			</div>

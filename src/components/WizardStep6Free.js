@@ -12,7 +12,7 @@ var WizardStep6Free = React.createClass({
 						<p>Soundcloud</p>
 					</div>
 				</div>
-				<button className='step-button' onClick={this.props.stepForward}>
+				<button className='step-button' onClick={this.props.stepForward.bind(null, {})}>
 					Finish
 				</button>
 			</div>

@@ -11,14 +11,13 @@ import WizardStep6Free from './WizardStep6Free';
 import WizardStepConfirmation from './WizardStepConfirmation';
 var constants = require('../constants/constants');
 import UtilityFunctions from '../mixins/UtilityFunctions';
-import ReactDatalist from './ReactDatalist';
 
 var UploadWizardWrapper = React.createClass({
 	mixins: [React.addons.LinkedStateMixin, UtilityFunctions],
 	getInitialState: function() {
 		var appState = this.props.appState;
 		return {
-			artist: this.props.originalArtist,
+			featured_artists: [],
 			current_step: 1,
 			set_type: null,
 			songs: [],
@@ -35,6 +34,38 @@ var UploadWizardWrapper = React.createClass({
 			temp_url: null,
 			track_id: -1
 		};
+	},
+	uploadSet: function() {
+		console.log('Beginning upload process...');
+		// var pendingSet = this.state;
+		// var packageFunctions = [
+		// 	this.packageAudio,
+		// 	this.packageImage,
+		// 	this.packageArtists,
+		// 	this.packageRelease,
+		// 	this.packageTitle
+		// ];
+		// async.parallel(packageFunctions, function(err, packages) {
+		// 	var setBundle = {
+		// 		audio: packages[0],
+		// 		image: packages[1],
+		// 		artists: packages[2],
+		// 		release: packages[3],
+		// 		name: packages[4],
+		// 		type: pendingSet.set_type,
+		// 		tracklist: pendingSet.tracklist,
+		// 		genre: pendingSet.genre,
+		//
+		// 	}
+		// 	var requestUrl = 'http://localhost:3000/api/v/7/setrecords/upload/set';
+		// 	$ajax({
+		// 		type: 'POST',
+		// 		url: requestUrl,
+		// 		data: {
+		//
+		// 		}
+		// 	})
+		// });
 	},
 	componentDidMount: function() {
 		var counter = React.findDOMNode(this.refs.counter);
@@ -83,6 +114,7 @@ var UploadWizardWrapper = React.createClass({
 
 			case 4:
 			stepComponent = (<WizardStep4 stepForward={this.stepForward}
+			originalArtist={this.props.originalArtist}
 			linkState={this.linkState}
 			type={this.state.set_type}
 			events={this.props.events}
@@ -91,7 +123,11 @@ var UploadWizardWrapper = React.createClass({
 			image={this.state.image}
 			setLength={this.state.set_length}
 			addImage={this.addImage}
-			eventLookup={this.props.eventLookup} />);
+			eventLookup={this.props.eventLookup}
+			featuredArtists={this.state.featured_artists}
+			addFeaturedArtist={this.addFeaturedArtist}
+			removeFeaturedArtist={this.removeFeaturedArtist}
+			changeFeaturedArtist={this.changeFeaturedArtist} />);
 			break;
 
 			case 5:
@@ -112,7 +148,7 @@ var UploadWizardWrapper = React.createClass({
 			break;
 
 			case 7:
-			stepComponent = (<WizardStepConfirmation {...this.state} uploadSet={this.uploadSet} />);
+			stepComponent = (<WizardStepConfirmation {...this.state} uploadSet={this.uploadSet} originalArtist={this.props.originalArtist} />);
 			break;
 
 			default:
@@ -135,6 +171,25 @@ var UploadWizardWrapper = React.createClass({
 			</div>
 		</div>
 		);
+	},
+	addFeaturedArtist: function() {
+		this.setState({
+			featured_artists: React.addons.update(this.state.featured_artists, {$push: ['']})
+		});
+	},
+	removeFeaturedArtist: function(index) {
+		this.setState({
+			featured_artists: React.addons.update(this.state.featured_artists, {$splice: [[index, 1]]})
+		});
+	},
+	changeFeaturedArtist: function(index, event) {
+		var updateObj = {};
+		updateObj[index] = {
+			$set: event.target.value
+		};
+		this.setState({
+			featured_artists: React.addons.update(this.state.featured_artists, updateObj)
+		});
 	},
 	changeTrack: function(index, key, val) {
 		var innerUpdate = {};
@@ -254,9 +309,6 @@ var UploadWizardWrapper = React.createClass({
 				outlets: React.addons.update(this.state.outlets, {$push: [outlet]})
 			});
 		}
-	},
-	uploadSet: function() {
-		console.log("Uploading set...lol");
 	},
 	addImage: function(file) {
 		if (file[0].type == "image/png" || file[0].type == "image/jpeg" || file[0].type == "image/gif") {
