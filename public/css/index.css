@@ -364,6 +364,31 @@ body {
   margin: 0;
   overflow: auto;
 }
+.apply-editor {
+  position: fixed;
+  width: 100%;
+  margin: 0;
+  height: 3.5rem;
+  align-items: stretch;
+  top: 7rem;
+  z-index: 22;
+  left: 0;
+  color: white;
+}
+.apply-editor * {
+  background-color: #969696;
+  border: none;
+  font-size: 1rem;
+}
+.apply-editor *:hover {
+  border-bottom: 0.25rem solid #3698db;
+}
+.apply-editor .apply,
+.apply-editor .revert,
+.apply-editor .cancel {
+  color: #ffffff;
+  justify-content: center;
+}
 header {
   height: 10.5rem;
   position: fixed;
@@ -1174,44 +1199,18 @@ td .deleteTrack {
 .mobile-set-editor {
   background-color: #ffffff;
   margin-top: 10.5rem;
+  margin-bottom: 3em;
   min-height: 57rem;
   align-items: flex-start;
   padding: 2rem 3rem;
-}
-.mobile-set-editor .apply-editor {
-  position: fixed;
-  width: 100%;
-  margin: 0;
-  height: 3.5rem;
-  align-items: stretch;
-  top: 7rem;
-  z-index: 22;
-  left: 0;
-}
-.mobile-set-editor .apply-editor * {
-  background-color: #333333;
-  border: none;
-  font-size: 1rem;
-}
-.mobile-set-editor .apply-editor *:hover {
-  background-color: #969696;
-}
-.mobile-set-editor .apply-editor .apply {
-  color: #40d18f;
-  justify-content: center;
-}
-.mobile-set-editor .apply-editor .revert {
-  color: #efc56d;
-  justify-content: center;
-}
-.mobile-set-editor .apply-editor .cancel {
-  color: #ff4e4e;
-  justify-content: center;
+  /*Track List Table*/
 }
 .mobile-set-editor .edit-set-name {
   align-items: center;
   font-family: Avenir Pro Bold;
   flex-wrap: nowrap;
+  font-size: 2.5em;
+  margin-right: 400px;
 }
 .mobile-set-editor .edit-set-name .event-title {
   font-size: 2.25rem;
@@ -1224,16 +1223,25 @@ td .deleteTrack {
   color: #969696;
   font-family: Avenir Pro Condensed;
 }
+.mobile-set-editor .edit-set-name input {
+  height: 35px;
+  align-items: center;
+  font-family: Avenir Pro Bold;
+  font-size: 26px;
+}
 .mobile-set-editor .edit-episode-name {
   align-items: center;
   flex-wrap: nowrap;
 }
+.mobile-set-editor .edit-episode-name .episode-name,
+.mobile-set-editor .edit-episode-name .edit-button,
+.mobile-set-editor .edit-episode-name .uploaded-date {
+  font-size: 1.5em;
+}
 .mobile-set-editor .edit-episode-name .episode-name {
-  font-size: 1.5rem;
   margin: 0;
 }
 .mobile-set-editor .edit-episode-name .edit-button {
-  font-size: 1.5rem;
   text-transform: uppercase;
   margin: 0 0 0 1rem;
   color: #969696;
@@ -1241,7 +1249,6 @@ td .deleteTrack {
 }
 .mobile-set-editor .uploaded-date {
   margin: 1rem 0;
-  font-size: 1.5rem;
 }
 .mobile-set-editor .set-tile-preview {
   margin: 4rem 0;
@@ -1261,14 +1268,94 @@ td .deleteTrack {
   height: 4rem;
   width: 25rem;
   font-size: 1rem;
-  border: 4px dotted #673bb6;
   font-family: Avenir Regular;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  background-color: #969696;
 }
 .mobile-set-editor .set-tile-preview .upload-image p {
+  color: #ffffff;
   margin: 0;
+}
+.mobile-set-editor table {
+  border-color: #969696;
+  text-align: center;
+  background-color: #969696;
+}
+.mobile-set-editor table,
+.mobile-set-editor th,
+.mobile-set-editor td {
+  margin-top: 8%;
+}
+.mobile-set-editor td i {
+  color: red;
+}
+.mobile-set-editor .edit-set-track h1 {
+  margin: 10px;
+}
+.mobile-set-editor .edit-set-track button {
+  width: 60px;
+  height: 30px;
+  font-family: Avenir Demi;
+}
+.mobile-set-editor .edit-set-track .urlTracklist {
+  margin: 6px;
+  color: #3698db;
+}
+.mobile-set-editor .edit-set-track .urlTracklist button {
+  color: white;
+  background-color: #3698db;
+  border-radius: 12px;
+  margin-left: 10px;
+}
+.mobile-set-editor .edit-set-track .urlTracklist input {
+  background-color: white;
+  border: 2px inset;
+}
+.mobile-set-editor .edit-set-track button {
+  background: transparent;
+  border: transparent;
+}
+.mobile-set-editor .edit-set-track button .fa-times {
+  font-size: 25px;
+}
+.mobile-set-editor .edit-set-track input,
+.mobile-set-editor .edit-set-track textarea,
+.mobile-set-editor .edit-set-track table,
+.mobile-set-editor .edit-set-track th,
+.mobile-set-editor .edit-set-track td {
+  background-color: #969696;
+}
+.mobile-set-editor .edit-set-track input {
+  border: none;
+  border-color: transparent;
+}
+.mobile-set-editor .edit-set-track input:focus,
+.mobile-set-editor .edit-set-track select:focus,
+.mobile-set-editor .edit-set-track textarea:focus {
+  outline-color: #333333;
+}
+.mobile-set-editor .edit-set-track input,
+.mobile-set-editor .edit-set-track select,
+.mobile-set-editor .edit-set-track textarea {
+  color: white;
+  font-family: Avenir Demi;
+  text-align: center;
+}
+.mobile-set-editor .edit-set-track .trackList-table {
+  width: 70%;
+  margin-bottom: 15%;
+}
+.mobile-set-editor .trackAdd {
+  padding-top: 20px;
+}
+.mobile-set-editor table,
+.mobile-set-editor th,
+.mobile-set-editor td {
+  margin-top: 8%;
+  border: none;
+  color: none;
 }
 .upload-set-wizard {
   background-color: #ffffff;
@@ -1446,7 +1533,7 @@ td .deleteTrack {
 .upload-set-wizard .wizard-body .wizard-step .preview-track p {
   color: #ffffff;
 }
-.invisible {
+polish .invisible {
   visibility: hidden;
 }
 .warning {
@@ -1461,36 +1548,6 @@ td .deleteTrack {
   min-height: 57rem;
   align-items: flex-start;
   padding: 2rem 3rem;
-}
-.mobile-settings-editor .apply-editor {
-  position: fixed;
-  width: 100%;
-  margin: 0;
-  height: 3.5rem;
-  align-items: stretch;
-  top: 7rem;
-  z-index: 22;
-  left: 0;
-}
-.mobile-settings-editor .apply-editor * {
-  background-color: #333333;
-  border: none;
-  font-size: 1rem;
-}
-.mobile-settings-editor .apply-editor *:hover {
-  background-color: #969696;
-}
-.mobile-settings-editor .apply-editor .apply {
-  color: #40d18f;
-  justify-content: center;
-}
-.mobile-settings-editor .apply-editor .revert {
-  color: #efc56d;
-  justify-content: center;
-}
-.mobile-settings-editor .apply-editor .cancel {
-  color: #ff4e4e;
-  justify-content: center;
 }
 .mobile-settings-editor .artist-name {
   font-size: 2.25rem;
@@ -1509,16 +1566,31 @@ td .deleteTrack {
 .mobile-settings-editor .upload-image {
   margin: 1rem 0 0 0;
   height: 4rem;
-  width: 24rem;
+  width: 25rem;
   font-size: 1rem;
-  border: 4px dotted #673bb6;
   font-family: Avenir Regular;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  background-color: #969696;
 }
 .mobile-settings-editor .upload-image p {
+  color: #ffffff;
   margin: 0;
+}
+.mobile-settings-editor .password-change input {
+  width: 130%;
+}
+.mobile-settings-editor input,
+.mobile-settings-editor select,
+.mobile-settings-editor textarea {
+  color: white;
+}
+.mobile-settings-editor input {
+  width: 520px;
+  height: 30px;
+  background-color: #333333;
+  border: transparent;
 }
 .applying-changes-overlay {
   background-color: #2b2b2b;
@@ -1533,5 +1605,15 @@ td .deleteTrack {
   font-family: Avenir Pro Bold;
   align-items: center;
   justify-content: center;
+}
+#addTrack {
+  font-size: 50%;
+  height: 30px;
+  width: 20%;
+  border: none;
+  color: white;
+  background-color: #33b510;
+  font-family: Avenir Demi;
+  border-radius: 12px;
 }
 /*UPLAOD WIZARD CSS*/

@@ -10,12 +10,12 @@ var Tracklist = React.createClass({
 		return (
 		<div className="edit-set-track flex-column">
 			<div>
-				<h1>Tracklist  <button id="addTrack" onClick={this.props.addTrack}> <i className="fa fa-plus"></i>  add track   
+				<h1 className="Tracktitle">Tracklist  <button id="addTrack" onClick={this.props.addTrack}> <i className="fa fa-plus"></i>  add track   
 				</button>
 				</h1>
 			</div>
-			<div>
-				<p>1001 tracklists URL (optional)<button onClick={this.props.loadTracksFromURL}>Load</button></p>
+			<div className="urlTracklist">
+				<p>1001 tracklists URL (optional)<button id="LoadURL" onClick={this.props.loadTracksFromURL}>Load</button></p>
 				<input type="text" value={tracklistURL} onChange={this.props.changeTracklistURL} />
 			</div>
 			{this.showTracks()}
@@ -33,8 +33,14 @@ var Tracklist = React.createClass({
 				);
 			});
 			return (
-			<table className="trackiList-table">
+			<table className="trackList-table">
 				<tbody>
+					<tr>
+						<th>Time MM:SS</th>
+						<th>Track Title</th>
+						<th>Artist</th>
+						<th>Delete</th>
+					</tr>
 					{trackRows}				
 				</tbody>
 			</table>
