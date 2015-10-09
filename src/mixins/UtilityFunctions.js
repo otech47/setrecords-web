@@ -42,6 +42,10 @@ var UtilityFunctions = {
 		} else {
 			return minutes + ':' + seconds.toFixed();
 		}
+	},
+	timeStringToSeconds: function(str) {
+		var timeArray = str.split(':');
+		return parseInt(timeArray[0]) * 60 + parseInt(timeArray[1]);
 	}
 };
 module.exports = UtilityFunctions;

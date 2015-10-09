@@ -1,28 +1,27 @@
-import React from 'react';
+var React = require('react/addons');
 import _ from 'underscore';
 
 var Track = React.createClass({
 	render: function() {
-		var removeTrack = this.props.removeTrack;
-		var linkField = this.linkField;
 		return (
 		<tr>
-			<td><input type="text" valueLink={linkField('start_time')} /></td>
-			<td><input type="text" valueLink={linkField('song')} /></td>
-			<td><input type="text" valueLink={linkField('artist')} /></td>
-			<td><button onClick={removeTrack}><i className="fa fa-times deleteTrack"></i></button></td>
+			<td>
+				<input type="text" name='start_time' value={this.props.startTime} onChange={this.changeTrack} />
+			</td>
+			<td>
+				<input type="text" name='song' value={this.props.song} onChange={this.changeTrack} />
+			</td>
+			<td>
+				<input type="text" name='artist' value={this.props.artist} onChange={this.changeTrack} />
+			</td>
+			<td>
+				<button onClick={this.props.removeTrack}><i className="fa fa-times deleteTrack"></i></button>
+			</td>
 		</tr>
 		);
 	},
-
-	linkField: function(key) {
-		var {changeTrack, track, index, ...other} = this.props;
-		return {
-			value: track[key],
-			requestChange: function(newValue) {
-				changeTrack(index, key, newValue);
-			}
-		};
+	changeTrack: function(event) {
+		this.props.changeTrack(this.props.index, event.target.name, event.target.value);
 	}
 });
 

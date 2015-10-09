@@ -4,6 +4,7 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 
 import GlobalEventHandler from './services/globalEventHandler';
+import ReactDatalist from './components/ReactDatalist';
 import MobileSetEditor from './components/MobileSetEditor';
 import SettingsEditor from './components/SettingsEditor';
 import DMCA from './components/DMCA';
@@ -73,6 +74,12 @@ var App = React.createClass({
 			if (err) {
 				console.log('There was an error loading artist and set data.');
 			} else {
+				var eventLookup = {};
+				var events = results[7].events;
+				for (var i = 0; i < events.length; i++) {
+					eventLookup[events[i].event] = events[i];
+				}
+
 				push({
 					type: 'SHALLOW_MERGE',
 					data: {
@@ -85,7 +92,9 @@ var App = React.createClass({
 						social_metrics: results[6],
 						mixes: results[7].mixes,
 						genres: results[7].genres,
-						events: results[7].events,
+						events: events,
+						event_lookup: eventLookup,
+						venues: results[7].venues,
 						loaded: true
 					}
 				});
@@ -196,7 +205,8 @@ var App = React.createClass({
 			);
 		} else if (appState.get('upload_set_wizard')) {
 			return (
-				<UploadWizardWrapper mixes={appState.get('mixes')} genres={appState.get('genres')} events={appState.get('events')} {...UtilityFunctions} appState={appState} {...UtilityFunctions} />
+				<UploadWizardWrapper originalArtist={appState.get('artist_data').artist} eventLookup={appState.get('event_lookup')} events={appState.get('events')} mixes={appState.get('mixes')} genres={appState.get('genres')}
+					venues={appState.get('venues')} />
 			);
 		} else {
 			return (
@@ -274,3 +284,7 @@ var bodyMount = document.getElementById('body-mount-point');
 Router.run(routes, Router.HashLocation, function(Root) {
 	React.render(<Root/>, bodyMount);
 });
+
+// <ReactDatalist key='event-datalist' options={appState.get('events')} objKey='event' listId='event-list' isArray={false} />
+// <ReactDatalist key='mix-datalist' options={appState.get('mixes')} objKey='mix' listId='mix-list' isArray={false} />
+// <ReactDatalist key='genre-datalist' options={appState.get('genres')} isArray={true} listId='genre-list' />

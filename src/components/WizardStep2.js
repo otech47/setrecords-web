@@ -1,133 +1,108 @@
 var React = require('react/addons');
 var Dropzone = require('react-dropzone');
-import _ from 'underscore';
 import PreviewPlayer from './PreviewPlayer';
-import UtilityFunctions from '../mixins/UtilityFunctions';
 
 var WizardStep2 = React.createClass({
-	mixins: [UtilityFunctions],
-	componentWillUnmount: function() {
-		if (this.state.audio_object) {
-			URL.revokeObjectURL(this.state.audio_object);
-		}
-	},
 	getInitialState: function() {
 		return {
-			is_playing: false,
+			current_audio: null,
 			current_track: null,
-			audio_object: null
+			is_playing: false
 		};
+	},
+	componentWillUnmount: function() {
+		if (this.state.current_audio) {
+			URL.revokeObjectURL(this.state.current_audio);
+		}
 	},
 	componentDidMount: function() {
 		var player = React.findDOMNode(this.refs.player);
-		player.onended = this.donePlaying;
+		player.onended = (function(e) {
+			this.setState({
+				current_audio: null,
+				current_track: null,
+				is_playing: false
+			});
+		}).bind(this);
 	},
 	render: function() {
-		var {songs, addSong, ...other} = this.props;
-		var play = this.play;
-		var pause = this.pause;
-		var isPlaying = this.state.is_playing;
-		var currentTrack = this.state.current_track;
-		var removeSong = this.removeSong;
-		var secondsToMinutes = this.secondsToMinutes;
-
-		var previews = _.map(songs, function(song, index) {
-			var duration = secondsToMinutes(song.duration);
-			return (
-				<PreviewPlayer name={song.file[0].name} play={play.bind(null, index)} pause={pause.bind(null, index)} duration={duration} removeSong={removeSong.bind(null, index)} isPlaying={isPlaying && (currentTrack == index)} key={index} />
-			);
-		});
 		return (
 			<div className="flex-column wizard-step">
-				<audio ref='player' src={this.state.audio_object}>
+				<audio ref='player' src={this.state.current_audio}>
 				</audio>
-				<p className='step-info set-flex'>Choose your files to upload. (mp3 only)</p>
+				<p className='step-info set-flex'>Choose your files to upload. (mp3/wav only)</p>
 				<p className='step-info set-flex'>Multiple files will be joined.</p>
 				<div className="flex-row step-buttons">
-					<Dropzone ref='dropzone' className="hidden" onDrop={addSong} multiple={false} />
-					<button className="step-button" onClick={this.addFiles}>
+					<Dropzone ref='dropzone' className="hidden" onDrop={this.props.addSongFile} multiple={false} />
+					<button className="step-button" onClick={this.browse}>
 						Add a file...
 					</button>
-					<button className={'step-button' + (songs.length > 0 ? '':' disabled')} disabled={songs.length > 0 ? false: true} onClick={this.submitStep}>
+					<button className='step-button' onClick={this.submitStep}>
 						Continue
 					</button>
 				</div>
-				<div className='flex-column preview-column'>
-					{previews}
-				</div>
+				<PreviewPlayer songs={this.props.songs} removeSong={this.removeSong}
+				isPlaying={this.state.is_playing} currentTrack={this.state.current_track}
+				play={this.play}
+				pause={this.pause} />
 			</div>
 		);
 	},
-
-	play: function(index) {
-		var player = React.findDOMNode(this.refs.player);
-		if (this.state.current_track == index) {
-			this.setState({
-				is_playing: true
-			}, function() {
-				player.play();
-			});
-		} else {
-			if (this.state.audio_object) {
-				URL.revokeObjectURL(this.state.audio_object);
-			}
-			var newAudio = URL.createObjectURL(this.props.songs[index].file[0]);
-			this.setState({
-				audio_object: newAudio,
-				is_playing: true,
-				current_track: index
-			}, function() {
-				player.load();
-				player.play();
-			});
-		}
+	browse: function(event) {
+		this.refs.dropzone.open();
 	},
-
-	donePlaying: function() {
-		URL.revokeObjectURL(this.state.audio_object);
-
-		this.setState({
-			audio_object: null,
-			current_track: null,
-			is_playing: false
-		});
-	},
-
 	removeSong: function(index) {
-		if (this.state.current_track == index) {
-			URL.revokeObjectURL(this.state.audio_object);
+		if (index == this.state.current_track) {
+			URL.revokeObjectURL(this.state.current_audio);
 			this.setState({
-				audio_object: null,
-				is_playing: false,
-				current_track: null
+				current_track: null,
+				current_audio: null,
+				is_playing: false
 			});
 		} else {
-			var newCurrent = (this.state.current_track < index ? this.state.current_track : this.state.current_track - 1);
+			var newCurrent = (index > this.state.current_track ? this.state.current_track : this.state.current_track - 1);
 			this.setState({
 				current_track: newCurrent
 			});
 		}
 		this.props.removeSong(index);
 	},
-	pause: function(index) {
+	play: function(index) {
 		var player = React.findDOMNode(this.refs.player);
-		player.pause();
+		if (index == this.state.current_track) {
+			this.setState({
+				is_playing: true
+			}, function() {
+				player.play();
+			});
+		} else {
+			if (this.state.current_audio) {
+				URL.revokeObjectURL(this.state.current_audio);
+			}
+			var newAudio = URL.createObjectURL(this.props.songs[index].file);
+			this.setState({
+				current_audio: newAudio,
+				is_playing: true,
+				current_track: index
+			}, function() {
+				player.play();
+			});
+		}
+	},
+	pause: function() {
+		var player = React.findDOMNode(this.refs.player);
 		this.setState({
 			is_playing: false
+		}, function() {
+			player.pause();
 		});
 	},
-
-	submitStep: function(event) {
-		var submission = {};
-		var setLength = _.reduce(this.props.songs, function(counter, song, index) {
-			return counter + song.duration;
-		}, 0);
-		submission['set_length'] = setLength;
-		this.props.stepForward(submission);
-	},
-
-	addFiles: function(event) {
-		this.refs.dropzone.open();
+	submitStep: function() {
+		if (this.props.songs.length > 0) {
+			this.props.stepForward();
+		} else {
+			alert('Please upload at least one mp3 or wav file to continue.');
+		}
 	}
 });
 

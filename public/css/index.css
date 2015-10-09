@@ -1044,6 +1044,9 @@ td .deleteTrack {
   background-color: #bdc3cc;
   border: 5px solid #bdc3cc;
 }
+.warning-border {
+  border: 0.125rem solid #ff4e4e;
+}
 #change-set {
   width: 240px;
   height: 55px;
@@ -1163,6 +1166,10 @@ td .deleteTrack {
 .set-tile .tile-controls .set-stats .set-length {
   align-items: center;
   justify-content: center;
+}
+#map {
+  height: 25rem;
+  width: 100%;
 }
 .mobile-set-editor {
   background-color: #ffffff;
@@ -1308,8 +1315,17 @@ td .deleteTrack {
 .upload-set-wizard .wizard-body .wizard-step {
   align-items: center;
 }
+.upload-set-wizard .wizard-body .wizard-step .map-window {
+  height: 15rem;
+  width: 15rem;
+  border: 0.25rem solid #3698db;
+  background-color: #40d18f;
+}
 .upload-set-wizard .wizard-body .wizard-step td {
   background-color: transparent;
+}
+.upload-set-wizard .wizard-body .wizard-step input:invalid {
+  border: 0.125rem solid #ff4e4e;
 }
 .upload-set-wizard .wizard-body .wizard-step .step-info {
   font-size: 1.5rem;
@@ -1343,6 +1359,38 @@ td .deleteTrack {
   height: 16rem;
   width: 16rem;
   border: 0.25rem solid #3698db;
+}
+.upload-set-wizard .wizard-body .wizard-step .venue-search {
+  height: 20rem;
+  width: 100%;
+  background-color: #333333;
+  flex-wrap: nowrap;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+.upload-set-wizard .wizard-body .wizard-step .venue-search .venue-listing {
+  width: 100%;
+  height: 4rem;
+  align-items: stretch;
+  background-color: #e6e6e6;
+  color: #ffffff;
+}
+.upload-set-wizard .wizard-body .wizard-step .venue-search .venue-listing h1 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+.upload-set-wizard .wizard-body .wizard-step .venue-search .venue-listing p {
+  font-size: 1rem;
+  margin: 0;
+}
+.upload-set-wizard .wizard-body .wizard-step .venue-search .venue-listing .venue-add {
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  background-color: #ffffff;
+}
+.upload-set-wizard .wizard-body .wizard-step .venue-search .venue-listing .venue-add i {
+  font-size: 1.5rem;
 }
 .upload-set-wizard .wizard-body .wizard-step .step-buttons {
   align-items: center;
@@ -1379,19 +1427,23 @@ td .deleteTrack {
   width: 8rem;
 }
 .upload-set-wizard .wizard-body .wizard-step .step-button:disabled {
-  background-color: #e6e6e6;
-  color: #cccccc;
+  background-color: #e6e6e6 !important;
+  color: #cccccc !important;
 }
 .upload-set-wizard .wizard-body .wizard-step .preview-column {
   justify-content: center;
 }
 .upload-set-wizard .wizard-body .wizard-step .preview-player {
+  width: 24rem;
+  align-items: stretch;
+}
+.upload-set-wizard .wizard-body .wizard-step .preview-track {
   background-color: #cccccc;
   height: 2rem;
   width: 24rem;
   align-items: center;
 }
-.upload-set-wizard .wizard-body .wizard-step .preview-player p {
+.upload-set-wizard .wizard-body .wizard-step .preview-track p {
   color: #ffffff;
 }
 .invisible {

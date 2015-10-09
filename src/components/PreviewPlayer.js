@@ -1,16 +1,27 @@
 var React = require('react/addons');
+import _ from 'underscore';
+import UtilityFunctions from '../mixins/UtilityFunctions';
+import PreviewTrack from './PreviewTrack';
 
 var PreviewPlayer = React.createClass({
+	mixins: [UtilityFunctions],
 	render: function() {
-		var {removeSong, isPlaying, play, pause, duration, ...other} = this.props;
+		var previewTracks = _.map(this.props.songs, (function(song, index) {
+			if (this.props.isPlaying && this.props.currentTrack == index) {
+				var isPlaying = true;
+			}
+			var duration = this.secondsToMinutes(song.duration);
+			return (<PreviewTrack
+				title={song.file.name}
+				duration={duration}
+				key={song.file.name + '_' + song.file.size + '_' + duration} isPlaying={isPlaying}
+				removeSong={this.props.removeSong.bind(null, index)} play={this.props.play.bind(null, index)}
+				pause={this.props.pause} />);
+		}).bind(this));
+
 		return (
-			<div className="preview-player flex-row">
-				<button onClick={removeSong}><i className='fa fa-times warning'></i></button>
-				<p className='flex'>{(this.props.name.length > 30 ? this.props.name.substring(0, 30) + '...' : this.props.name)}</p>
-				<p>{duration}</p>
-				<button onClick={(isPlaying ? pause : play)}>
-					<i className={'fa ' + (isPlaying ? 'fa-pause':'fa-play')}></i>
-				</button>
+			<div className="preview-player flex-column">
+				{previewTracks}
 			</div>
 		);
 	}

@@ -1,77 +1,53 @@
 import React from 'react';
-import MockSetTile from './MockSetTile';
+import MockSetTileImproved from './MockSetTileImproved';
 
 var WizardStepConfirmation = React.createClass({
 	render: function() {
-		var setData = this.props.setData;
+		var setData = this.props;
+		var priceData;
+		if (setData.release_type == 'Beacon') {
+			priceData = (
+				<tr>
+					<td><p>Price:</p></td>
+					<td><p>${setData.price}</p></td>
+				</tr>
+			);
+		}
 		return (
 			<div className="flex-column wizard-step">
 				<p className='step-info set-flex'>Confirm your set information is correct, then click Upload.</p>
-				<table className="step-button-text">
-				<tbody>
-					{this.showName()}
-					{this.showEpisode()}
-					<tr>
-						<td><p>Genre:</p></td>
-						<td><p>{setData.genre}</p></td>
-					</tr>
-					{this.showReleasePoints()}
-				</tbody>
-				</table>
-				<button className='step-button' onClick={this.props.uploadSet}>
+				<div className='flex-row'>
+					<div className='flex-column flex-fixed'>
+						<table className="step-button-text">
+						<tbody>
+							<tr>
+								<td><p>Genre:</p></td>
+								<td><p>{setData.genre}</p></td>
+							</tr>
+							<tr>
+								<td><p>Set Type:</p></td>
+								<td><p>{setData.set_type}</p></td>
+							</tr>
+							<tr>
+								<td><p>Release:</p></td>
+								<td><p>{setData.release_type}</p></td>
+							</tr>
+							{priceData}
+							<tr>
+								<td><p>Release Points:</p></td>
+								<td><p>{setData.outlets.join(', ')}</p></td>
+							</tr>
+						</tbody>
+						</table>
+					</div>
+					<div className='flex-column flex-fixed'>
+						<MockSetTileImproved {...this.props} matchImage={setData.match_url} />
+					</div>
+				</div>
+				<button className='step-button' onClick={setData.uploadSet}>
 					Upload
 				</button>
 			</div>
-		);
-	},
-
-	showName: function() {
-		var setData = this.props.setData;
-		if (setData.type == 'festival') {
-			return (
-				<tr>
-					<td><p>Event:</p></td>
-					<td><p>{setData.event_name}</p></td>
-				</tr>
-			);
-		} else if (setData.type == 'mix') {
-			return (
-				<tr>
-					<td><p>Mix:</p></td>
-					<td><p>{setData.mix_name}</p></td>
-				</tr>
-			);
-		} else {
-			return (
-				<tr>
-					<td><p>Album:</p></td>
-					<td><p>{setData.album_name}</p></td>
-				</tr>
-			);
-		}
-	},
-
-	showEpisode: function() {
-		var setData = this.props.setData;
-		if (setData.episode_name) {
-			return (
-				<tr>
-					<td><p>Episode:</p></td>
-					<td><p>{setData.episode_name}</p></td>
-				</tr>
-			);
-		} else {
-			return '';
-		}
-	},
-
-	showReleasePoints: function() {
-		var setData = this.props.setData;
-		return (
-			<tr>
-				<td><p>Release Points:</p></td>
-				<td><p>{'Setmine' + (setData.soundcloud ? ', Soundcloud': '')}</p></td>
-			</tr>
 		);
 	}
 });

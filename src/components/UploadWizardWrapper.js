@@ -10,94 +10,109 @@ import WizardStep6Beacon from './WizardStep6Beacon';
 import WizardStep6Free from './WizardStep6Free';
 import WizardStepConfirmation from './WizardStepConfirmation';
 var constants = require('../constants/constants');
+import UtilityFunctions from '../mixins/UtilityFunctions';
+import ReactDatalist from './ReactDatalist';
 
 var UploadWizardWrapper = React.createClass({
-	mixins: [React.addons.LinkedStateMixin],
+	mixins: [React.addons.LinkedStateMixin, UtilityFunctions],
 	getInitialState: function() {
+		var appState = this.props.appState;
 		return {
+			artist: this.props.originalArtist,
 			current_step: 1,
 			set_type: null,
 			songs: [],
-			artist: this.props.appState.get('artist_data').artist,
+			set_length: 0,
 			tracklist: [],
-			tracklist_url : null,
-			name: null,
-			episode: null,
-			genre: null,
-			image: [],
+			name: '',
+			episode: '',
+			genre: '',
+			image: null,
 			release_type: null,
 			outlets: [],
-			set_length: 0,
-			pending_song: null,
-			temp_url: null
+			price: '0.00',
+			pending_file: null,
+			temp_url: null,
+			track_id: -1
 		};
 	},
 	componentDidMount: function() {
 		var counter = React.findDOMNode(this.refs.counter);
 		counter.onloadedmetadata = (function(e) {
 			var duration = counter.duration;
+			var newSetLength = _.reduce(this.state.songs, function(counter, song) {
+				return counter + song.duration
+			}, duration);
 			var processedSong = {};
-			processedSong.file = this.state.pending_song;
+			processedSong.file = this.state.pending_file;
 			processedSong.duration = duration;
 			URL.revokeObjectURL(this.state.temp_url);
 			this.setState({
-				pending_song: null,
+				pending_file: null,
 				temp_url: null,
-				songs: React.addons.update(this.state.songs, {$push: [processedSong]})
+				songs: React.addons.update(this.state.songs, {$push: [processedSong]}),
+				set_length: newSetLength
 			});
 		}).bind(this);
 	},
 	render: function() {
-		var linkState = this.linkState;
-		var stepForward = this.stepForward;
-
 		var stepComponent;
+
 		switch(this.state.current_step) {
 			case 1:
-			stepComponent = (<WizardStep1 stepForward={stepForward} />);
+			stepComponent =
+			(<WizardStep1 stepForward={this.stepForward} />);
 			break;
 
 			case 2:
-			var songFunctions = {};
-			songFunctions.addSong = this.addSong;
-			songFunctions.removeSong = this.removeSong;
-
-			stepComponent = (<WizardStep2 songs={this.state.songs} stepForward={stepForward} {...songFunctions} />);
+			stepComponent =
+			(<WizardStep2 songs={this.state.songs}
+			stepForward={this.stepForward}
+			addSongFile={this.addSongFile}
+			removeSong={this.removeSongFile} />);
 			break;
 
 			case 3:
-			var tracklistFunctions = {};
-			tracklistFunctions.addTrack = this.addTrack;
-			tracklistFunctions.removeTrack = this.removeTrack;
-			tracklistFunctions.loadTracksFromUrl = this.loadTracksFromUrl;
-			tracklistFunctions.changeTrack = this.changeTrack;
-
-			stepComponent = (<WizardStep3 stepForward={stepForward} linkState={linkState} {...tracklistFunctions} tracklist={this.state.tracklist} />);
+			stepComponent = (<WizardStep3 stepForward={this.stepForward}
+			setLength={this.state.set_length}
+			tracklist={this.state.tracklist}
+			addTrack={this.addTrack}
+			removeTrack={this.removeTrack}
+			changeTrack={this.changeTrack} />);
 			break;
 
 			case 4:
-			var dbInfo = {};
-			dbInfo.events = this.props.events;
-			dbInfo.mixes = this.props.mixes;
-			dbInfo.genres = this.props.genres;
-
-			stepComponent = (<WizardStep4 stepForward={stepForward} linkState={linkState} image={this.state.image} setLength={this.state.set_length} type={this.state.set_type} addImage={this.addImage} {...dbInfo} />);
+			stepComponent = (<WizardStep4 stepForward={this.stepForward}
+			linkState={this.linkState}
+			type={this.state.set_type}
+			events={this.props.events}
+			mixes={this.props.mixes}
+			genres={this.props.genres}
+			image={this.state.image}
+			setLength={this.state.set_length}
+			addImage={this.addImage}
+			eventLookup={this.props.eventLookup} />);
 			break;
 
 			case 5:
-			stepComponent = (<WizardStep5 />);
+			stepComponent = (<WizardStep5 stepForward={this.stepForward} />);
 			break;
 
 			case 6:
-			if (this.state.release_type == 'beacon') {
-				stepComponent = (<WizardStep6Beacon />);
+			if (this.state.release_type == 'Beacon') {
+			stepComponent = (<WizardStep6Beacon	stepForward={this.stepForward}
+			linkState={this.linkState}
+			venues={this.props.venues}
+			toggleOutlet={this.toggleOutlet}
+			outlets={this.state.outlets} />);
 			} else {
-				stepComponent = (<WizardStep6Free />)
+				stepComponent = (<WizardStep6Free stepForward={this.stepForward}
+				outlets={this.state.outlets} toggleOutlet={this.toggleOutlet} />);
 			}
 			break;
 
 			case 7:
-			stepComponent = (<WizardStepConfirmation />);
+			stepComponent = (<WizardStepConfirmation {...this.state} uploadSet={this.uploadSet} />);
 			break;
 
 			default:
@@ -121,96 +136,40 @@ var UploadWizardWrapper = React.createClass({
 		</div>
 		);
 	},
-	stepForward: function(setData) {
-		var newData = {};
-		var nextStep = this.state.current_step + 1;
-		newData['current_step'] = nextStep;
-		if (setData != null) {
-			_.each(setData, function(value, key) {
-				newData[key] = value;
-			});
-		}
-		this.setState(newData);
-	},
-	stepBackward: function() {
-		var previousStep = this.state.current_step - 1;
-		this.setState({
-			current_step: previousStep
-		});
-	},
-
-	toggleSoundcloud: function() {
-		this.setState({
-			soundcloud: !this.state.soundcloud
-		});
-	},
-	uploadSet: function() {
-		console.log("Uploading set...lol");
-	},
-	addSong: function(song) {
-		var tempUrl = URL.createObjectURL(song[0]);
-		this.setState({
-			temp_url: tempUrl,
-			pending_song: song
-		});
-	},
-	removeSong: function(index) {
-		this.setState({
-			songs: React.addons.update(this.state.songs, {$splice: [[index, 1]]})
-		});
-	},
-	addImage: function(file) {
-		if (file[0].type == "image/png" || file[0].type == "image/jpeg" || file[0].type == "image/gif") {
-			this.setState({
-				image: file
-			});
-		} else {
-			alert("Please upload a png, jpeg, or gif image.");
-		}
-	},
-
-	addTrack: function() {
-		var artistName = this.props.appState.get("artist_data").artist;
-		var tracklist = this.state.tracklist;
-		var tracklistLength = _.size(tracklist);
-		if (tracklistLength > 0) {
-			var nextStartTime = moment(tracklist[tracklistLength - 1].start_time, "mm:ss").add(1, "seconds").format("mm:ss");
-		} else {
-			var nextStartTime = "00:00";
-		}
-		var newTrack = {
-			'track_id': -1,
-			'start_time': nextStartTime,
-			'artist': artistName,
-			'song': 'untitled'
-		};
-
-		this.setState({
-			tracklist: React.addons.update(tracklist, {$push: [newTrack]}),
-			tracklist_url: null
-		});
-	},
-	changeTrack: function(index, key, value) {
+	changeTrack: function(index, key, val) {
 		var innerUpdate = {};
 		innerUpdate[key] = {
-			$set: value
+			$set: val
 		};
-		var updateObject = {};
-		updateObject[index] = innerUpdate;
+		var outerUpdate = {};
+		outerUpdate[index] = innerUpdate;
 		this.setState({
-			tracklist: React.addons.update(this.state.tracklist, updateObject),
-			tracklist_url: null
+			tracklist: React.addons.update(this.state.tracklist, outerUpdate)
 		});
 	},
-	removeTrack: function(index) {
+	addTrack: function() {
+		var artist = this.props.originalArtist;
+		var tracklist = this.state.tracklist;
+		if (tracklist.length == 0) {
+			var nextStartTime = '00:00';
+		} else {
+			var lastStartTime = this.timeStringToSeconds(_.last(tracklist).start_time);
+			var nextStartTime = this.secondsToMinutes(lastStartTime + 1);
+		}
+		var newTrack = {
+			'track_id': this.state.track_id,
+			'start_time': nextStartTime,
+			'artist': artist,
+			'song': 'untitled'
+		};
 		this.setState({
-			tracklist: React.addons.update(this.state.tracklist, {$splice: [[index, 1]]}),
-			tracklist_url: null
+			tracklist: React.addons.update(tracklist, {$push: [newTrack]}),
+			track_id: this.state.track_id - 1
 		});
 	},
-	pullTracks: function(callback) {
-		var tracklistUrl = this.state.tracklist_url;
-		if (tracklistUrl == null) {
+	pullTracks: function(url, callback) {
+		var tracklistUrl = url;
+		if (tracklistUrl == null || tracklistUrl.length == 0) {
 			callback(null);
 		} else {
 			var requestUrl = "http://localhost:3000/api/v/7/setrecords/set/tracklist/";
@@ -233,17 +192,80 @@ var UploadWizardWrapper = React.createClass({
 			});
 		}
 	},
-	loadTracksFromUrl: function(event) {
+	loadTracksFromUrl: function(url) {
 		var self = this;
-		this.pullTracks(function(tracks) {
+		this.pullTracks(url, function(tracks) {
 			if (tracks == null) {
 				alert("Please enter a valid 1001 tracklists URL.");
 			} else {
+				var newTracklist = React.addons.update(self.state.tracklist, {$set: tracks});
 				self.setState({
-					tracklist: React.addons.update(self.state.tracklist, {$set: tracks})
+					tracklist: React.addons.update(self.state.tracklist,  {$set: tracks})
 				});
 			}
 		});
+	},
+	removeTrack: function(index) {
+		this.setState({
+			tracklist: React.addons.update(this.state.tracklist, {$splice: [[index, 1]]})
+		});
+	},
+	stepForward: function(setData) {
+		if (setData) {
+			var newData = React.addons.update(setData, {$merge: {current_step: this.state.current_step + 1}});
+		} else {
+			var newData = {
+				current_step: this.state.current_step + 1
+			};
+		}
+		this.setState(newData);
+	},
+	stepBackward: function() {
+		var newData = {
+			current_step: this.state.current_step - 1
+		};
+		this.setState(newData);
+	},
+	addSongFile: function(file) {
+		if (file[0].type == 'audio/mp3' || file[0].type == 'audio/mpeg' || file[0].type == 'audio/wav') {
+			var tempAudio = URL.createObjectURL(file[0]);
+			this.setState({
+				pending_file: file[0],
+				temp_url: tempAudio
+			});
+		} else {
+			alert('Only mp3 and wav files are supported.');
+		}
+	},
+	removeSongFile: function(index) {
+		this.setState({
+			songs: React.addons.update(this.state.songs, {$splice: [[index, 1]]})
+		});
+	},
+	toggleOutlet: function(outlet) {
+		var self = this;
+		var index = this.state.outlets.indexOf(outlet);
+		if (index >= 0) {
+			this.setState({
+				outlets: React.addons.update(this.state.outlets, {$splice: [[index, 1]]})
+			});
+		} else {
+			this.setState({
+				outlets: React.addons.update(this.state.outlets, {$push: [outlet]})
+			});
+		}
+	},
+	uploadSet: function() {
+		console.log("Uploading set...lol");
+	},
+	addImage: function(file) {
+		if (file[0].type == "image/png" || file[0].type == "image/jpeg" || file[0].type == "image/gif") {
+			this.setState({
+				image: file[0]
+			});
+		} else {
+			alert("Please upload a png, jpeg, or gif image.");
+		}
 	}
 });
 

@@ -1,27 +1,23 @@
 import React from 'react';
+import _ from 'underscore';
 
-var WizardStep5Free = React.createClass({
+var WizardStep6Free = React.createClass({
 	render: function() {
 		return (
 			<div className="flex-column wizard-step">
 				<p className='step-info set-flex'>Select any additional sites to release to, then click continue.</p>
 				<div className="flex-row step-buttons">
-					<div className={"outlet-button flex-column " + (this.props.soundcloud ? '':'deactivated')} onClick={this.props.toggleSoundcloud}>
+					<div className={"outlet-button flex-column " + (this.props.outlets.indexOf('Soundcloud') >= 0 ? '':'deactivated')} onClick={this.props.toggleOutlet.bind(null, 'Soundcloud')}>
 						<i className='fa fa-soundcloud' />
 						<p>Soundcloud</p>
 					</div>
 				</div>
-				<button className='step-button' onClick={this.submitStep}>
-					Continue
+				<button className='step-button' onClick={this.props.stepForward}>
+					Finish
 				</button>
 			</div>
 		);
-	},
-
-	submitStep: function(event) {
-		var submission = {};
-		this.props.stepForward(submission);
 	}
 });
 
-module.exports = WizardStep5Free;
+module.exports = WizardStep6Free;
