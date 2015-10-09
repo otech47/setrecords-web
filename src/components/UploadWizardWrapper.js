@@ -276,10 +276,14 @@ var UploadWizardWrapper = React.createClass({
 		this.setState(newData);
 	},
 	stepBackward: function() {
-		var newData = {
-			current_step: this.state.current_step - 1
-		};
-		this.setState(newData);
+		if (this.state.current_step > 1) {
+			var newData = {
+				current_step: this.state.current_step - 1
+			};
+			this.setState(newData);
+		} else {
+			console.log('Nice try, hacker.');
+		}
 	},
 	addSongFile: function(file) {
 		if (file[0].type == 'audio/mp3' || file[0].type == 'audio/mpeg' || file[0].type == 'audio/wav') {
