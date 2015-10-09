@@ -11,6 +11,8 @@ import WizardStep6Free from './WizardStep6Free';
 import WizardStepConfirmation from './WizardStepConfirmation';
 var constants = require('../constants/constants');
 import UtilityFunctions from '../mixins/UtilityFunctions';
+import Joiner from '../services/Joiner';
+import async from 'async';
 
 var UploadWizardWrapper = React.createClass({
 	mixins: [React.addons.LinkedStateMixin, UtilityFunctions],
@@ -32,40 +34,163 @@ var UploadWizardWrapper = React.createClass({
 			price: '0.00',
 			pending_file: null,
 			temp_url: null,
-			track_id: -1
+			track_id: -1,
+			upload_status: null
 		};
+	},
+	packageAudio: function(callback) {
+		console.log('Registering audio...');
+		async.waterfall([this.joinFiles, this.registerS3], function(err, audioUrl) {
+			if (err) {
+				console.log('An error occurred with packaging audio.');
+				console.log(err);
+				callback(err);
+			} else {
+				console.log('Audio registered on S3.');
+				console.log(audioUrl);
+				callback(null, audioUrl);
+			}
+		});
+	},
+	joinFiles: function(callback) {
+		var self = this;
+		if (this.state.songs.length > 1) {
+			console.log('More than one audio file detected. Running joiner...');
+			var toJoin = _.map(this.state.songs, function(song, index) {
+				return song.file;
+			});
+			Joiner.combineAudioFiles(toJoin, function(err, joinedBlob) {
+				if (err) {
+					callback(err);
+				}
+				console.log('Join successful.');
+				var newFilename = self.props.originalArtist + '_joined_' + self.state.songs[0].file.name;
+				var joinedFile = new File([joinedBlob], newFilename);
+				callback(null, joinedFile);
+			});
+		} else {
+			console.log('Only one file detected. No join needed.');
+			callback(null, this.state.songs[0].file);
+		}
+	},
+	registerS3: function(file, callback) {
+		$.ajax({
+			type: 'GET',
+			url: 'http://localhost:3000/aws/configureAWS?filename=' + encodeURIComponent(file.name),
+			contentType: 'application/json',
+			success: function(response) {
+				AWS.config.update(response.settings);
+				var encodedFilename = response.encoded;
+				var filesize = file.size;
+				var s3 = new AWS.S3();
+
+				s3.timeout = 50000;
+				var params = {
+					Bucket: 'stredm',
+					Key: 'namecheap/' + encodedFilename,
+					ContentType: file.type,
+					Body: file
+				};
+				var upload = s3.upload(params);
+				upload.on("httpUploadProgress", function(event) {
+					var percentage = (event.loaded / filesize) * 100;
+					var percent = parseInt(percentage).toString() + "%";
+					console.log('Uploading ' + file.type + ' file: ' + percent);
+				});
+
+				upload.send(function(err, data) {
+					if (err) {
+						callback(err);
+					} else {
+						callback(null, response.encoded);
+					}
+				});
+			},
+			error: function(err) {
+				callback(err);
+			}
+		});
+	},
+	packageImage: function(callback) {
+		if (this.state.match_url) {
+			console.log('Selected event already exists, so we can use that URL.');
+			callback(null, this.state.match_url);
+		} else {
+			console.log('Image is new and needs to be registered on S3.');
+			this.registerS3(this.state.image, function(err, imageUrl) {
+				if (err) {
+					console.log('An error occurred when uploading new image to S3.');
+					callback(err);
+				} else {
+					console.log('Image successfully registered on S3.');
+					callback(null, imageUrl);
+				}
+			});
+		}
+	},
+	packageRelease: function(callback) {
+		console.log('Creating release object...')
+		var self = this;
+		var releaseObj = {};
+		releaseObj['type'] = this.state.release_type;
+		if (this.state.release_type == 'Beacon') {
+			console.log('This is a beacon release. Packaging venue objects...');
+			releaseObj['price'] = this.state.price;
+			releaseObj['outlets'] = _.map(this.state.outlets, function(venue, index) {
+				return _.findWhere(self.props.venues, {venue: venue});
+			});
+			console.log('Release package done.');
+			callback(null, releaseObj);
+		} else {
+			console.log('This is a free release. Packaging site names...');
+			releaseObj['outlets'] = this.state.outlets;
+			console.log('Release package done.');
+			callback(null, releaseObj)
+		}
 	},
 	uploadSet: function() {
 		console.log('Beginning upload process...');
-		// var pendingSet = this.state;
-		// var packageFunctions = [
-		// 	this.packageAudio,
-		// 	this.packageImage,
-		// 	this.packageArtists,
-		// 	this.packageRelease,
-		// 	this.packageTitle
-		// ];
-		// async.parallel(packageFunctions, function(err, packages) {
-		// 	var setBundle = {
-		// 		audio: packages[0],
-		// 		image: packages[1],
-		// 		artists: packages[2],
-		// 		release: packages[3],
-		// 		name: packages[4],
-		// 		type: pendingSet.set_type,
-		// 		tracklist: pendingSet.tracklist,
-		// 		genre: pendingSet.genre,
-		//
-		// 	}
-		// 	var requestUrl = 'http://localhost:3000/api/v/7/setrecords/upload/set';
-		// 	$ajax({
-		// 		type: 'POST',
-		// 		url: requestUrl,
-		// 		data: {
-		//
-		// 		}
-		// 	})
-		// });
+		var pendingSet = this.state;
+		var artists = pendingSet.featured_artists.unshift(this.props.originalArtist);
+		var packageFunctions = [
+			this.packageAudio,
+			this.packageImage,
+			this.packageRelease,
+			this.packageTitle
+		];
+		async.parallel(packageFunctions, function(err, packages) {
+			var setBundle = {
+				audio_url: packages[0],
+				image_url: packages[1],
+				release: packages[2],
+				name: packages[3],
+				artists: artists,
+				type: pendingSet.set_type,
+				tracklist: pendingSet.tracklist,
+				genre: pendingSet.genre,
+			};
+			if (err) {
+				console.log(err);
+			} else {
+				console.log(packages);
+			}
+			// var requestUrl = 'http://localhost:3000/api/v/7/setrecords/upload/set';
+			// $ajax({
+			// 	type: 'POST',
+			// 	url: requestUrl,
+			// 	data: {
+			// 		set: setBundle
+			// 	},
+			// 	success: function(res) {
+			// 		console.log("Success.");
+			// 		console.log(res);
+			// 	},
+			// 	error: function(err) {
+			// 		console.log("An error occurred when adding set to database.");
+			// 		console.log(err);
+			// 	}
+			// });
+		});
 	},
 	componentDidMount: function() {
 		var counter = React.findDOMNode(this.refs.counter);
