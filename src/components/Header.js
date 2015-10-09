@@ -8,7 +8,7 @@ var Header = React.createClass({
 			<header className="flex-column">
 				<div className="flex-fixed-2x header-main flex-row">
 					<div className="logo flex-row">
-						<img src="/public/images/setrecords.png" />
+						<img src="/public/images/setrecords-logo-white.png" />
 						setrecords
 					</div>
 					{this.showArtistOptions()}

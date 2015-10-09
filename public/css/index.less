@@ -16,11 +16,36 @@ body {
     overflow: auto;
 }
 
+.apply-editor {
+    position: fixed;
+    width: 100%;
+    margin: 0;
+    height: @headerHeight * 0.5;
+    align-items: stretch;
+    top: @headerHeight;
+    z-index: 22;
+    left: 0;
+    color: white;
+       * {
+            background-color: @setrecords-dark-gray;
+            border: none;
+            font-size: 1rem;
+        }
+        *:hover {
+            border-bottom: 0.25rem solid #3698db;
+        }
+        .apply , .revert , .cancel {
+            color: @setrecords-white;
+            justify-content: center;
+        }
+}
+
 header {
     height: @headerHeight * 1.5;
     position: fixed;
     width: 100%;
     z-index: 21;
+
     .header-main {
         width: 100%;
         background-color: @setrecords-light-black;
@@ -699,14 +724,15 @@ footer{
             margin: 0 1vw 0 1vw;
         }
     }
-.fa-facebook{color:white;}
-.fa-twitter{color:white;}
-.fa-instagram{color:white;}
-.fa-facebook:hover{color:@facebook-blue;}
-.fa-twitter:hover{color:@twitter-blue;}
-.fa-instagram:hover{color:@instagram-blue;}
+    .fa-facebook{color:white;}
+    .fa-twitter{color:white;}
+    .fa-instagram{color:white;}
+    .fa-facebook:hover{color:@facebook-blue;}
+    .fa-twitter:hover{color:@twitter-blue;}
+    .fa-instagram:hover{color:@instagram-blue;}
 }
 /*Content Page*/
+
 
 
 table, th, td {
@@ -725,6 +751,11 @@ td{
          border: 5px solid #bdc3cc;
     }
 }
+
+    
+    
+
+
 
 .warning-border {
     border: 0.125rem solid @setrecords-red;
@@ -858,44 +889,19 @@ td{
 .mobile-set-editor{
     background-color: @setrecords-white;
     margin-top: @headerHeight * 1.5;
+    margin-bottom: 3em;
     min-height: 57rem;
     align-items: flex-start;
     padding: 2rem 3rem;
 
-    .apply-editor {
-        position: fixed;
-        width: 100%;
-        margin: 0;
-        height: @headerHeight * 0.5;
-        align-items: stretch;
-        top: @headerHeight;
-        z-index: 22;
-        left: 0;
-        * {
-            background-color: @setrecords-light-black;
-            border: none;
-            font-size: 1rem;
-        }
-        *:hover {
-            background-color: @setrecords-dark-gray;
-        }
-        .apply {
-            color: @setrecords-green;
-            justify-content: center;
-        }
-        .revert {
-            color: @setrecords-yellow;
-            justify-content: center;
-        }
-        .cancel {
-            color: @setrecords-red;
-            justify-content: center;
-        }
-    }
+
+    
     .edit-set-name{
         align-items: center;
         font-family: @boldFontStyle;
         flex-wrap: nowrap;
+        font-size: 2.5em;
+        margin-right: 400px;
         .event-title {
             font-size: 2.25rem;
             margin: 0;
@@ -907,16 +913,25 @@ td{
             color: @setrecords-dark-gray;
             font-family: @defaultFontCondensed;
         }
+        input{
+            height: 35px;
+            align-items: center;
+            font-family: Avenir Pro Bold;
+            font-size: 26px;
+
+        }
     }
     .edit-episode-name {
         align-items: center;
         flex-wrap: nowrap;
-        .episode-name {
-            font-size: 1.5rem;
+        .episode-name , .edit-button , .uploaded-date{
+            font-size: 1.5em;
+        }
+        .episode-name  {
             margin: 0;
         }
         .edit-button {
-            font-size: 1.5rem;
+            
             text-transform: uppercase;
             margin: 0 0 0 1rem;
             color: @setrecords-dark-gray;
@@ -925,7 +940,7 @@ td{
     }
     .uploaded-date {
         margin: 1rem 0;
-        font-size: 1.5rem;
+       
     }
     .set-tile-preview {
         margin: 4rem 0;
@@ -944,17 +959,102 @@ td{
             height: 4rem;
             width: 25rem;
             font-size: 1rem;
-            border: 4px dotted @setrecords-purple;
             font-family: @defaultFontStyle;
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
+            background-color: @setrecords-dark-gray;
             p {
+                color: @setrecords-white;
                 margin: 0;
             }
         }
     }
+    /*Track List Table*/
+    table{
+        border-color: @setrecords-dark-gray;
+        text-align: center;
+        background-color: @setrecords-dark-gray;
+    }
+    table, th, td {
+        margin-top: 8%;
+    }
+    
+    td{
+        i{
+            color: red;
+        }
+    }
+
+    .edit-set-track{
+        h1{
+            margin: 10px;
+        }
+
+        button{
+           
+            width: 60px;
+            height: 30px;
+            font-family: Avenir Demi;
+        }
+
+        .urlTracklist{
+            margin: 6px;
+            color: @setrecords-blue;
+            button{
+                color: white;
+                background-color: @setrecords-blue;
+                
+                border-radius: 12px;
+                 margin-left: 10px;
+            }
+            input{
+                background-color: white;
+                    border: 2px inset;
+
+            }
+        }
+        button{
+            background: transparent;
+            border: transparent;
+
+            .fa-times{
+                font-size: 25px;
+            }
+        }
+        input, textarea , table , th , td{
+            background-color: @setrecords-dark-gray;
+        }
+        input{
+            border: none;
+            border-color: transparent;
+        }
+        input:focus, select:focus, textarea:focus{
+            outline-color:@setrecords-light-black;
+        }
+        input, select, textarea{
+            color: white;
+            font-family:  Avenir Demi;
+             text-align: center;
+        }
+       .trackList-table{
+            width: 70%;   
+            margin-bottom: 15%;
+            }
 }
+
+    .trackAdd{
+        padding-top: 20px;
+    }
+         
+        table, th, td {
+            
+            margin-top: 8%;
+            border: none;
+            color: none;
+         }
+}
+
 
 .upload-set-wizard {
     background-color: @setrecords-white;
@@ -1226,36 +1326,7 @@ td{
     align-items: flex-start;
     padding: 2rem 3rem;
 
-    .apply-editor {
-        position: fixed;
-        width: 100%;
-        margin: 0;
-        height: @headerHeight * 0.5;
-        align-items: stretch;
-        top: @headerHeight;
-        z-index: 22;
-        left: 0;
-        * {
-            background-color: @setrecords-light-black;
-            border: none;
-            font-size: 1rem;
-        }
-        *:hover {
-            background-color: @setrecords-dark-gray;
-        }
-        .apply {
-            color: @setrecords-green;
-            justify-content: center;
-        }
-        .revert {
-            color: @setrecords-yellow;
-            justify-content: center;
-        }
-        .cancel {
-            color: @setrecords-red;
-            justify-content: center;
-        }
-    }
+   
     .artist-name {
         font-size: 2.25rem;
         font-family: @boldFontStyle;
@@ -1271,18 +1342,35 @@ td{
         }
     }
     .upload-image {
-        margin: 1rem 0 0 0;
-        height: 4rem;
-        width: 24rem;
-        font-size: 1rem;
-        border: 4px dotted @setrecords-purple;
-        font-family: @defaultFontStyle;
-        align-items: center;
-        justify-content: center;
-        box-sizing: border-box;
-        p {
-            margin: 0;
+            margin: 1rem 0 0 0;
+            height: 4rem;
+            width: 25rem;
+            font-size: 1rem;
+            font-family: @defaultFontStyle;
+
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            background-color: @setrecords-dark-gray;
+            p {
+                color: @setrecords-white;
+                margin: 0;
+            }
         }
+    .password-change{
+        input{
+            width: 130%;
+        }
+    }
+    input, select, textarea{
+            color: white; 
+    }           
+    input{
+        width: 520px;
+        height: 30px;
+        background-color: @setrecords-light-black;
+        border: transparent;
+
     }
 }
 
@@ -1300,6 +1388,18 @@ td{
     align-items: center;
     justify-content: center;
 }
+
+ #addTrack{
+        font-size: 50%;
+        height: 30px;
+        width: 20%;
+        border: none;
+        color: white;
+        background-color: #33b510; 
+        font-family: @demiFontStyle;
+        border-radius:  12px;
+        
+           }
 
 // .SettingPage{
 //     width: 100%;
@@ -1431,6 +1531,7 @@ td{
 //     }
 // }
 
+
 // .SetstoryLandingPage{
 //     width: 100%;
 //     height: 100%;
@@ -1525,6 +1626,7 @@ td{
 //     }
 // }
 // }
+
 
 // .SettingPage{
 //     width: 100%;
@@ -1650,6 +1752,7 @@ td{
 // }
 
 
+
 // .edit-set-track{
 
     //     margin-left: .8%;
@@ -1703,6 +1806,11 @@ td{
     //     }
     //  }
     //  .setDelete{
+
+
+    
+    //  .setDelete{ 
+
     //       height: 80px;
     //       margin: 20px;
     // }

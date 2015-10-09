@@ -288,9 +288,10 @@ var MobileSetEditor = React.createClass({
 		if (this.props.set.is_radiomix) {
 			return (
 				<div className="edit-set-name flex-row">
-					{pendingSet.is_radiomix ? "Mix" : "Event"} Title
-					<input type="text" value={pendingSet.event} onChange={this.changeTitleText} />
+					{pendingSet.is_radiomix ? "Mix" : "Event"} Title:
+					<input type="text" className="MixTitle" value={pendingSet.event} onChange={this.changeTitleText} />
 				</div>
+				
 			);
 		} else {
 			return (
