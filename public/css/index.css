@@ -1533,7 +1533,7 @@ td .deleteTrack {
 .upload-set-wizard .wizard-body .wizard-step .preview-track p {
   color: #ffffff;
 }
-polish .invisible {
+.invisible {
   visibility: hidden;
 }
 .warning {
