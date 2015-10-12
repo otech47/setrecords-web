@@ -117,7 +117,8 @@ var UploadWizardWrapper = React.createClass({
 					ContentType: file.type,
 					Body: file
 				};
-				var upload = s3.upload(params);
+				var options = {partSize: 10 * 1024 * 1024, queueSize: 2};
+				var upload = s3.upload(params, options);
 				upload.on("httpUploadProgress", function(event) {
 					var percentage = (event.loaded / filesize) * 100;
 					var percent = parseInt(percentage).toString() + "%";
@@ -141,7 +142,7 @@ var UploadWizardWrapper = React.createClass({
 		if (this.state.match_url) {
 			console.log('Selected event already exists, so we can use that URL.');
 			callback(null, this.state.match_url);
-		} else {
+		} else if (this.state.image != null) {
 			console.log('Image is new and needs to be registered on S3.');
 			this.registerS3(this.state.image, function(err, imageUrl) {
 				if (err) {
@@ -152,6 +153,10 @@ var UploadWizardWrapper = React.createClass({
 					callback(null, imageUrl);
 				}
 			});
+		} else {
+			console.log('No image has been uploaded. Will use the default URL.');
+			var defaultUrl = constants.DEFAULT_IMAGE;
+			callback(null, defaultUrl);
 		}
 	},
 	packageSetData: function(audioURL) {
@@ -256,12 +261,21 @@ var UploadWizardWrapper = React.createClass({
 							}
 						});
 					}
+					var tracklist = React.addons.update(pendingSet.tracklist, {$push: []});
+					if (tracklist.length == 0) {
+						tracklist.push({
+							'track_id': -1,
+							'start_time': '00:00',
+							'artist': self.props.originalArtist.artist,
+							'song': 'untitled'
+						});
+					}
 					var setBundle = {
 						set_data: setData,
 						event_data: eventData,
 						episode: pendingSet.episode,
 						artists: artists,
-						tracklist: pendingSet.tracklist
+						tracklist: tracklist
 					};
 					console.log('Bundle done:');
 					console.log(setBundle);
@@ -273,7 +287,7 @@ var UploadWizardWrapper = React.createClass({
 	},
 	updateDatabase: function(bundle) {
 		var self = this;
-		var requestUrl = 'http://localhost:3000/api/v/7/setrecords/upload';
+		var requestUrl = 'http://localhost:3000/api/v/7/setrecords/upload/set';
 		$.ajax({
 			type: 'POST',
 			url: requestUrl,

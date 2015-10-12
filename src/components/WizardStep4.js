@@ -68,13 +68,22 @@ var WizardStep4 = React.createClass({
 				artists += ' feat. ' + this.props.featuredArtists.join(', ');
 			}
 		}
+		var featuredArtistButton = '';
+		if (this.props.type != 'Album') {
+			featuredArtistButton = (
+				<div>
+					Featured Artists
+					<button onClick={this.props.addFeaturedArtist} className='step-button'>Add</button>
+				</div>
+			);
+		}
 
 		return (
 			<div className="flex-column wizard-step">
 				<p className='step-info set-flex'>Enter your set information.</p>
 				<div className='flex-row'>
 					<div className='flex-column flex-fixed'>
-						Featured Artists <button onClick={this.props.addFeaturedArtist} className='step-button'>Add</button>
+						{featuredArtistButton}
 						{featuredArtistComponent}
 						{fieldComponents}
 						<input type='text' valueLink={linkState('genre')} placeholder='Genre' list='genre-list' />
