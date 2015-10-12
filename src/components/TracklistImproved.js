@@ -6,6 +6,8 @@ import UtilityFunctions from '../mixins/UtilityFunctions';
 var TracklistImproved = React.createClass({
 	mixins: [UtilityFunctions],
 	render: function() {
+		var linkState = this.props.linkState;
+
 		var tracks = _.map(this.props.tracklist, (function(track, index) {
 			return (<TrackImproved key={track.track_id} removeTrack={this.props.removeTrack.bind(null, index)} startTime={track.start_time}
 			song={track.song}
@@ -36,7 +38,7 @@ var TracklistImproved = React.createClass({
 			</div>
 			<div>
 				<p>1001 tracklists URL (optional)<button onClick={this.loadTracksFromUrl}>Load</button></p>
-				<input ref='tracklistUrlField' type='text' placeholder='1001 tracklist link'/>
+				<input type='text' valueLink={linkState('tracklist_url')} placeholder='1001 tracklist link'/>
 			</div>
 			{trackComponents}
 		</div>
@@ -44,7 +46,7 @@ var TracklistImproved = React.createClass({
 	},
 
 	loadTracksFromUrl: function() {
-		this.props.loadTracksFromUrl(React.findDOMNode(this.refs.tracklistUrlField).value);
+		this.props.loadTracksFromUrl(this.props.linkState('tracklist_url').value);
 	}
 });
 

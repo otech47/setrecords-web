@@ -13,6 +13,7 @@ var WizardStep3 = React.createClass({
 				<p className='step-info set-flex'>(This step is optional and can be done at any time)</p>
 				<button className='step-button' onClick={this.submitStep}>Continue</button>
 				<TracklistImproved tracklist={this.props.tracklist}
+				linkState={this.props.linkState}
 				addTrack={this.props.addTrack}
 				removeTrack={this.props.removeTrack}
 				changeTrack={this.props.changeTrack}

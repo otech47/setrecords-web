@@ -26,7 +26,7 @@ var WizardStep4 = React.createClass({
 				return (
 					<tr key={index}>
 					<td>
-						<input type='text' value={artist} onChange={this.props.changeFeaturedArtist.bind(null, index)} />
+						<input type='text' list='artist-list' value={artist} onChange={this.props.changeFeaturedArtist.bind(null, index)} />
 					</td>
 					<td>
 						<button onClick={this.props.removeFeaturedArtist.bind(null, index)}><i className='fa fa-times warning'></i></button>
@@ -93,7 +93,8 @@ var WizardStep4 = React.createClass({
 						</button>
 						<ReactDatalist key='event-datalist' options={this.props.events} objKey='event' listId='event-list' isArray={false} />
 						<ReactDatalist key='mix-datalist' options={this.props.mixes} objKey='mix' listId='mix-list' isArray={false} />
-						<ReactDatalist key='genre-datalist' options={this.props.genres} isArray={true} listId='genre-list' />
+						<ReactDatalist key='artist-datalist' options={this.props.artists} isArray={false} objKey='artist' listId='artist-list' />
+						<ReactDatalist key='genre-datalist' options={this.props.genres} isArray={false} objKey='genre' listId='genre-list' />
 					</div>
 				</div>
 			</div>
@@ -119,7 +120,8 @@ var WizardStep4 = React.createClass({
 			nameEmptyErr = true;
 			errors.push('Name cannot be empty.');
 		}
-		if (this.props.genres.indexOf(linkState('genre').value) == -1) {
+		var genreMatch = _.findWhere(this.props.genres, {genre: linkState('genre').value});
+		if (!genreMatch) {
 			genreErr = true;
 			errors.push('Genre must be selected from dropdown.');
 		}
@@ -129,7 +131,7 @@ var WizardStep4 = React.createClass({
 			if (this.props.type == 'Live') {
 				var match = this.props.eventLookup[linkState('name').value];
 				if (match) {
-					submission['match_url'] = constants.S3_ROOT_FOR_IMAGES + match.image_url;
+					submission['match_url'] = match.image_url;
 				}
 			}
 			this.props.stepForward(submission);

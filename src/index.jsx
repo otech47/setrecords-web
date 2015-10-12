@@ -36,6 +36,7 @@ var initialAppState = Immutable.Map({
 	'genres': [],
 	'events': [],
 	'mixes': [],
+	'artists': [],
 	'setmine_metrics': {},
 	'soundcloud_metrics': {},
 	'youtube_metrics': {},
@@ -79,6 +80,11 @@ var App = React.createClass({
 				for (var i = 0; i < events.length; i++) {
 					eventLookup[events[i].event] = events[i];
 				}
+				var artistLookup = {};
+				var artists = results[7].artists;
+				for (var i = 0; i < artists.length; i++) {
+					artistLookup[artists[i].artist] = artists[i];
+				}
 
 				push({
 					type: 'SHALLOW_MERGE',
@@ -95,6 +101,8 @@ var App = React.createClass({
 						events: events,
 						event_lookup: eventLookup,
 						venues: results[7].venues,
+						artists: artists,
+						artist_lookup: artistLookup,
 						loaded: true
 					}
 				});
@@ -204,9 +212,16 @@ var App = React.createClass({
 				<SettingsEditor settings={appState.get('artist_data')} close={this.closeSettingsEditor} appState={appState} {...UtilityFunctions} />
 			);
 		} else if (appState.get('upload_set_wizard')) {
+			var originalArtist = {
+				id: appState.get('artist_data').id,
+				artist: appState.get('artist_data').artist
+			};
 			return (
-				<UploadWizardWrapper originalArtist={appState.get('artist_data').artist} eventLookup={appState.get('event_lookup')} events={appState.get('events')} mixes={appState.get('mixes')} genres={appState.get('genres')}
-					venues={appState.get('venues')} />
+				<UploadWizardWrapper originalArtist={originalArtist}
+				close={this.closeUploadSetWizard} eventLookup={appState.get('event_lookup')} events={appState.get('events')} mixes={appState.get('mixes')} genres={appState.get('genres')}
+				venues={appState.get('venues')}
+				artists={appState.get('artists')}
+				artistLookup={appState.get('artist_lookup')} />
 			);
 		} else {
 			return (

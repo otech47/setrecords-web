@@ -25,6 +25,7 @@ var UploadWizardWrapper = React.createClass({
 			songs: [],
 			set_length: 0,
 			tracklist: [],
+			tracklist_url: null,
 			name: '',
 			episode: '',
 			genre: '',
@@ -35,14 +36,19 @@ var UploadWizardWrapper = React.createClass({
 			pending_file: null,
 			temp_url: null,
 			track_id: -1,
-			upload_status: null
+			filesize: 0,
+			busy: false,
+			applying: false,
+			success: false,
+			failure: false,
+			joining: false
 		};
 	},
-	packageAudio: function(callback) {
+	registerAudio: function(callback) {
 		console.log('Registering audio...');
 		async.waterfall([this.joinFiles, this.registerS3], function(err, audioUrl) {
 			if (err) {
-				console.log('An error occurred with packaging audio.');
+				console.log('An error occurred with registering audio.');
 				console.log(err);
 				callback(err);
 			} else {
@@ -56,21 +62,41 @@ var UploadWizardWrapper = React.createClass({
 		var self = this;
 		if (this.state.songs.length > 1) {
 			console.log('More than one audio file detected. Running joiner...');
-			var toJoin = _.map(this.state.songs, function(song, index) {
-				return song.file;
-			});
-			Joiner.combineAudioFiles(toJoin, function(err, joinedBlob) {
-				if (err) {
-					callback(err);
-				}
-				console.log('Join successful.');
-				var newFilename = self.props.originalArtist + '_joined_' + self.state.songs[0].file.name;
-				var joinedFile = new File([joinedBlob], newFilename);
-				callback(null, joinedFile);
-			});
+			this.setState({
+				joining: true
+			}, function() {
+				var toJoin = _.map(self.state.songs, function(song, index) {
+					return song.file;
+				});
+				Joiner.combineAudioFiles(toJoin, function(err, joinedBlob) {
+					if (err) {
+						console.log('Join unsuccessful');
+						self.setState({
+							joining: false
+						}, function() {
+							callback(err);
+						});
+					} else {
+						console.log('Join successful.');
+						var newFilename = self.props.originalArtist.artist + '_joined_' + self.state.songs[0].file.name;
+						var joinedFile = new File([joinedBlob], newFilename);
+						self.setState({
+							filesize: joinedFile.size,
+							joining: false
+						}, function() {
+							callback(null, joinedFile);
+						});
+					}
+				});
+			})
 		} else {
 			console.log('Only one file detected. No join needed.');
-			callback(null, this.state.songs[0].file);
+			var self = this;
+			this.setState({
+				filesize: this.state.songs[0].file.size
+			}, function() {
+				callback(null, self.state.songs[0].file);
+			});
 		}
 	},
 	registerS3: function(file, callback) {
@@ -111,7 +137,7 @@ var UploadWizardWrapper = React.createClass({
 			}
 		});
 	},
-	packageImage: function(callback) {
+	registerImage: function(callback) {
 		if (this.state.match_url) {
 			console.log('Selected event already exists, so we can use that URL.');
 			callback(null, this.state.match_url);
@@ -119,7 +145,7 @@ var UploadWizardWrapper = React.createClass({
 			console.log('Image is new and needs to be registered on S3.');
 			this.registerS3(this.state.image, function(err, imageUrl) {
 				if (err) {
-					console.log('An error occurred when uploading new image to S3.');
+					console.log('An error occurred with registering image.');
 					callback(err);
 				} else {
 					console.log('Image successfully registered on S3.');
@@ -128,68 +154,169 @@ var UploadWizardWrapper = React.createClass({
 			});
 		}
 	},
-	packageRelease: function(callback) {
-		console.log('Creating release object...')
-		var self = this;
-		var releaseObj = {};
-		releaseObj['type'] = this.state.release_type;
+	packageSetData: function(audioURL) {
+		console.log('Packaging set data...');
+		var genreId = _.findWhere(this.props.genres, {genre: this.state.genre}).id;
+		var setLength = this.secondsToMinutes(this.state.set_length);
+		var paid = 0;
 		if (this.state.release_type == 'Beacon') {
-			console.log('This is a beacon release. Packaging venue objects...');
-			releaseObj['price'] = this.state.price;
-			releaseObj['outlets'] = _.map(this.state.outlets, function(venue, index) {
-				return _.findWhere(self.props.venues, {venue: venue});
-			});
-			console.log('Release package done.');
-			callback(null, releaseObj);
-		} else {
-			console.log('This is a free release. Packaging site names...');
-			releaseObj['outlets'] = this.state.outlets;
-			console.log('Release package done.');
-			callback(null, releaseObj)
+			paid = 1;
 		}
+		var setData = {
+			genre: genreId,
+			audio_url: audioURL,
+			tracklist_url: this.state.tracklist_url,
+			filesize: this.state.filesize,
+			set_length: setLength,
+			paid: paid
+		};
+		console.log('Set data packaged.');
+		return setData;
+	},
+	packageEventData: function(imageURL) {
+		console.log('Packaging event data...');
+		var exists = false;
+		var type;
+		var radioMix = false;
+		var matchedEvent = null;
+		switch (this.state.set_type) {
+			case 'Live':
+			if (this.state.match_url) {
+				exists = true;
+				matchedEvent = this.props.eventLookup[this.state.name];
+			}
+			type = 'festival';
+			break;
+
+			case 'Mix':
+			type = 'mix';
+			radioMix = true;
+			break;
+
+			case 'Album':
+			type = 'album';
+			break;
+
+			default:
+			break;
+		}
+		var eventData = {
+			does_exist: exists,
+			event: this.state.name,
+			is_radiomix: radioMix,
+			type: type,
+			image_url: imageURL,
+			matched_event: matchedEvent
+		};
+		console.log('Event data packaged.');
+		return eventData;
 	},
 	uploadSet: function() {
-		console.log('Beginning upload process...');
-		var pendingSet = this.state;
-		var artists = pendingSet.featured_artists.unshift(this.props.originalArtist);
-		var packageFunctions = [
-			this.packageAudio,
-			this.packageImage,
-			this.packageRelease,
-			this.packageTitle
-		];
-		async.parallel(packageFunctions, function(err, packages) {
-			var setBundle = {
-				audio_url: packages[0],
-				image_url: packages[1],
-				release: packages[2],
-				name: packages[3],
-				artists: artists,
-				type: pendingSet.set_type,
-				tracklist: pendingSet.tracklist,
-				genre: pendingSet.genre,
-			};
-			if (err) {
+		console.log('Beginning upload process.');
+		var self = this;
+		this.setState({
+			busy: true,
+			applying: true
+		}, function() {
+			var pendingSet = self.state;
+			var registerFunctions = [
+				self.registerAudio,
+				self.registerImage
+			];
+			console.log('Performing register functions...');
+			async.parallel(registerFunctions, function(err, registeredUrls) {
+				if (err) {
+					console.log('Error in registration functions:');
+					console.log(err);
+					self.setState({
+						failure: true,
+						applying: false
+					}, function() {
+						setTimeout(function() {
+							self.props.close(true);
+						}, 3000);
+					});
+				} else {
+					console.log('Registrations successful.');
+
+					console.log('Creating bundle...');
+					var setData = self.packageSetData(registeredUrls[0]);
+					var eventData = self.packageEventData(registeredUrls[1]);
+					var artists = [self.props.originalArtist];
+					if (self.state.set_type != 'Album') {
+						_.each(self.state.featured_artists, function(featuredArtist, index) {
+							var match = self.props.artistLookup[featuredArtist];
+							if (match) {
+								artists.push(match);
+							} else {
+								artists.push({
+									id: -1,
+									artist: featuredArtist
+								});
+							}
+						});
+					}
+					var setBundle = {
+						set_data: setData,
+						event_data: eventData,
+						episode: pendingSet.episode,
+						artists: artists,
+						tracklist: pendingSet.tracklist
+					};
+					console.log('Bundle done:');
+					console.log(setBundle);
+					console.log('Sending bundle to database...');
+					self.updateDatabase(setBundle);
+				}
+			});
+		});
+	},
+	updateDatabase: function(bundle) {
+		var self = this;
+		var requestUrl = 'http://localhost:3000/api/v/7/setrecords/upload';
+		$.ajax({
+			type: 'POST',
+			url: requestUrl,
+			data: {
+				bundle: bundle
+			},
+			success: function(res) {
+				if (res.status == 'failure') {
+					console.log('An error occurred when updating the database:');
+					console.log(res);
+					self.setState({
+						failure: true,
+						applying: false
+					}, function() {
+						setTimeout(function() {
+							self.props.close(true);
+						}, 3000);
+					});
+				} else {
+					console.log('Database update successful.');
+					console.log(res);
+					self.setState({
+						applying: false,
+						success: true
+					}, function() {
+						setTimeout(function() {
+							self.props.close(true);
+						}, 3000);
+					});
+				}
+			},
+			error: function(err) {
+				console.log('An error occurred when updating the database:');
 				console.log(err);
-			} else {
-				console.log(packages);
+				self.setState({
+					failure: true,
+					applying: false
+				}, function() {
+					setTimeout(function() {
+						self.props.close(true);
+					}, 3000);
+				});
 			}
-			// var requestUrl = 'http://localhost:3000/api/v/7/setrecords/upload/set';
-			// $ajax({
-			// 	type: 'POST',
-			// 	url: requestUrl,
-			// 	data: {
-			// 		set: setBundle
-			// 	},
-			// 	success: function(res) {
-			// 		console.log("Success.");
-			// 		console.log(res);
-			// 	},
-			// 	error: function(err) {
-			// 		console.log("An error occurred when adding set to database.");
-			// 		console.log(err);
-			// 	}
-			// });
 		});
 	},
 	componentDidMount: function() {
@@ -230,6 +357,7 @@ var UploadWizardWrapper = React.createClass({
 
 			case 3:
 			stepComponent = (<WizardStep3 stepForward={this.stepForward}
+			linkState={this.linkState}
 			setLength={this.state.set_length}
 			tracklist={this.state.tracklist}
 			addTrack={this.addTrack}
@@ -239,11 +367,12 @@ var UploadWizardWrapper = React.createClass({
 
 			case 4:
 			stepComponent = (<WizardStep4 stepForward={this.stepForward}
-			originalArtist={this.props.originalArtist}
+			originalArtist={this.props.originalArtist.artist}
 			linkState={this.linkState}
 			type={this.state.set_type}
 			events={this.props.events}
 			mixes={this.props.mixes}
+			artists={this.props.artists}
 			genres={this.props.genres}
 			image={this.state.image}
 			setLength={this.state.set_length}
@@ -273,7 +402,7 @@ var UploadWizardWrapper = React.createClass({
 			break;
 
 			case 7:
-			stepComponent = (<WizardStepConfirmation {...this.state} uploadSet={this.uploadSet} originalArtist={this.props.originalArtist} />);
+			stepComponent = (<WizardStepConfirmation {...this.state} uploadSet={this.uploadSet} originalArtist={this.props.originalArtist.artist} />);
 			break;
 
 			default:
@@ -282,6 +411,7 @@ var UploadWizardWrapper = React.createClass({
 
 		return (
 		<div className='upload-set-wizard flex-column'>
+			{this.showApplyingStatus()}
 			<audio ref='counter' preload='metadata' src={this.state.temp_url}>
 			</audio>
 			<div className='wizard-banner set-flex'>
@@ -296,6 +426,28 @@ var UploadWizardWrapper = React.createClass({
 			</div>
 		</div>
 		);
+	},
+	showApplyingStatus: function() {
+		if (this.state.busy) {
+			var statusMessage;
+			if (this.state.joining) {
+				statusMessage = 'Joining audio files. This may take a few minutes. Please do not close this window or refresh the page.';
+			} else if (this.state.success) {
+				statusMessage = 'Your changes have been applied.';
+			} else if (this.state.failure) {
+				statusMessage = 'There was an error applying your changes. Please try again.';
+			} else {
+				statusMessage = 'Applying changes...';
+			}
+
+			return (
+				<div className='applying-changes-overlay set-flex'>
+					{statusMessage}
+				</div>
+			)
+		} else {
+			return '';
+		}
 	},
 	addFeaturedArtist: function() {
 		this.setState({
@@ -328,7 +480,7 @@ var UploadWizardWrapper = React.createClass({
 		});
 	},
 	addTrack: function() {
-		var artist = this.props.originalArtist;
+		var artist = this.props.originalArtist.artist;
 		var tracklist = this.state.tracklist;
 		if (tracklist.length == 0) {
 			var nextStartTime = '00:00';
