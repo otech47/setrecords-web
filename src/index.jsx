@@ -75,6 +75,7 @@ var App = React.createClass({
 			if (err) {
 				console.log('There was an error loading artist and set data.');
 			} else {
+				console.log(results);
 				var eventLookup = {};
 				var events = results[7].events;
 				for (var i = 0; i < events.length; i++) {
@@ -224,6 +225,7 @@ var App = React.createClass({
 				artistLookup={appState.get('artist_lookup')} />
 			);
 		} else {
+			console.log('do we get here?');
 			return (
 				<ViewContainer appState={appState} {...updateFunctions} {...UtilityFunctions} push={push} routeHandler={RouteHandler} openSetEditor={this.openSetEditor} openUploadSetWizard={this.openUploadSetWizard} loaded={appState.get('loaded')} />
 			);
