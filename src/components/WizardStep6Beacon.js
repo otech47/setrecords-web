@@ -1,10 +1,9 @@
-var React = require('react/addons');
+var React = require('react');
 import _ from 'underscore';
 import BeaconMap from './BeaconMap';
 import VenueListing from './VenueListing';
 
 var WizardStep6 = React.createClass({
-	mixins: [React.addons.LinkedStateMixin],
 	getInitialState: function() {
 		return {
 			lat: 26.054792,

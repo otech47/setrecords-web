@@ -1,4 +1,4 @@
-import React from 'react/addons';
+import React from 'react';
 var moment = require("moment");
 import MockSetTile from './MockSetTile';
 var Dropzone = require("react-dropzone");
@@ -32,9 +32,9 @@ var MobileSetEditor = React.createClass({
 					</button>
 					<button className="flex-fixed cancel set-flex" onClick={this.cancelChanges}>
 						Cancel
-					</button>					
+					</button>
 				</div>
-				{this.showSetName()}				
+				{this.showSetName()}
 				{this.showEpisodeName()}
 				<p className="uploaded-date">Uploaded: {moment(this.props.set.datetime).format("M[/]D[/]YYYY")}</p>
 		    	{this.showEditImage()}
@@ -168,7 +168,7 @@ var MobileSetEditor = React.createClass({
 				callback(err);
 			}
 		});
-	},	
+	},
 	newImage: function(callback) {
 		// console.log("New tile image pending:")
 		// console.log(this.state.tile_image);
@@ -291,7 +291,7 @@ var MobileSetEditor = React.createClass({
 					{pendingSet.is_radiomix ? "Mix" : "Event"} Title:
 					<input type="text" className="MixTitle" value={pendingSet.event} onChange={this.changeTitleText} />
 				</div>
-				
+
 			);
 		} else {
 			return (
@@ -413,7 +413,7 @@ var MobileSetEditor = React.createClass({
 							applying: false
 						}, function() {
 							setTimeout(function() {
-								self.props.close(true);	
+								self.props.close(true);
 							}, 3000);
 						});
 					} else {
@@ -423,7 +423,7 @@ var MobileSetEditor = React.createClass({
 								success: true
 							}, function() {
 								setTimeout(function() {
-									self.props.close(true);	
+									self.props.close(true);
 								}, 3000);
 							});
 						}

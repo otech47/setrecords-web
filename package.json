@@ -1,5 +1,5 @@
 {
-  "name": "setmine-web",
+  "name": "setrecords-web",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -35,11 +35,10 @@
     "react-datalist": "^2.0.0",
     "react-dropzone": "^2.1.0",
     "react-gmaps": "^0.4.2",
-    "react-google-maps": "^3.0.0",
     "react-loader": "^1.4.0",
     "react-radio": "^1.0.6",
     "react-reorderable": "^0.1.10",
-    "react-router": "^0.13.3",
+    "react-router": "^1.0.0-rc1",
     "react-superagent": "^1.1.1",
     "rx": "^3.1.0",
     "sass-loader": "^2.0.1",
@@ -55,7 +54,7 @@
     "browserify": "^11.0.1",
     "flux": "^2.0.3",
     "gulp": "^3.9.0",
-    "react": "^0.13.3",
+    "react": ">=0.13.3",
     "react-tools": "^0.13.3",
     "reactify": "^1.1.1",
     "vinyl-source-stream": "^1.1.0",

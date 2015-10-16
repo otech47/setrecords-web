@@ -1,23 +1,19 @@
+import R from 'ramda';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Immutable from 'immutable';
-import Router from 'react-router';
-import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 
+import createBrowserHistory from 'history/lib/createBrowserHistory';
+import Router from 'react-router';
+import { IndexRoute, Link, Route, History, Redirect } from 'react-router';
 import GlobalEventHandler from './services/globalEventHandler';
-import ReactDatalist from './components/ReactDatalist';
 import MobileSetEditor from './components/MobileSetEditor';
-import SettingsEditor from './components/SettingsEditor';
-import DMCA from './components/DMCA';
-import SetTile from './components/SetTile';
 import Header from './components/Header';
-import NavBar from './components/NavBar';
-import ViewContainer from './components/ViewContainer';
 import FooterSetrecords from './components/FooterSetrecords';
 import ContentView from './components/ContentView';
 import MetricsView from './components/MetricsView';
 import _ from 'underscore';
 import async from 'async';
-import UploadWizardWrapper from './components/UploadWizardWrapper';
 
 import UpdateFunctions from './mixins/UpdateFunctions';
 import UtilityFunctions from './mixins/UtilityFunctions';
@@ -53,7 +49,7 @@ var PrintObject = React.createClass({
 	displayName: 'PrintObject',
 	render: function() {
 		var s = JSON.stringify(this.props.value, null, 2);
-		console.log('PO APP STATE', this.props.value);
+		// console.log('PO APP STATE', this.props.value);
 		return React.createElement('code', {
 			style: { fontSize: 10 },
 			onClick: lol
@@ -62,8 +58,7 @@ var PrintObject = React.createClass({
 });
 
 var App = React.createClass({
-	displayName: 'App container',
-	mixins: [UpdateFunctions, UtilityFunctions],
+	mixins: [UpdateFunctions],
 	getInitialState: function() {
 		return {
 			appState: initialAppState
@@ -71,61 +66,60 @@ var App = React.createClass({
 	},
 	componentDidMount: function() {
 		this._attachStreams(); //global event handler
-		async.parallel([this.updateArtist, this.updateSets, this.updateSetmine, this.updateSoundcloud, this.updateYoutube, this.updateBeacons, this.updateSocial, this.updateMisc], function(err, results) {
-			if (err) {
-				console.log('There was an error loading artist and set data.');
-			} else {
-				console.log(results);
-				var eventLookup = {};
-				var events = results[7].events;
-				for (var i = 0; i < events.length; i++) {
-					eventLookup[events[i].event] = events[i];
-				}
-				var artistLookup = {};
-				var artists = results[7].artists;
-				for (var i = 0; i < artists.length; i++) {
-					artistLookup[artists[i].artist] = artists[i];
-				}
-
-				push({
-					type: 'SHALLOW_MERGE',
-					data: {
-						artist_data: results[0],
-						sets: results[1],
-						setmine_metrics: results[2],
-						soundcloud_metrics: results[3],
-						youtube_metrics: results[4],
-						beacon_metrics: results[5],
-						social_metrics: results[6],
-						mixes: results[7].mixes,
-						genres: results[7].genres,
-						events: events,
-						event_lookup: eventLookup,
-						venues: results[7].venues,
-						artists: artists,
-						artist_lookup: artistLookup,
-						loaded: true
-					}
-				});
-			}
-		});
+		this.updateArtist();
 	},
 	_attachStreams: function() {
 		var _this = this;
 		evtHandler.floodGate.subscribe(newState => {
-			console.log('UPDATE', newState);
+			// console.log('UPDATE', newState);
 			_this.setState({ appState: newState });
 		});
 	},
 	render: function() {
+		console.log('app render');
 		var appState = this.state.appState;
 		return (
 			<div className="main-container flex-column">
 				<Header appState={appState} openSettingsEditor={this.openSettingsEditor} closeSettingsEditor={this.closeSettingsEditor} openUploadSetWizard={this.openUploadSetWizard} />
-				{this.showView(appState)}
+				{
+					React.cloneElement(this.props.children, {
+						push: push,
+						sets: appState.get('sets'),
+						loaded: appState.get('loaded'),
+						artistId: appState.get('artist_data').id
+					})
+				}
 				<FooterSetrecords />
 			</div>
 		);
+	},
+	updateArtist: function() {
+		// console.log("Updating artist info...");
+		var artistId = this.state.appState.get("artist_data").id;
+		var requestURL = "http://localhost:3000/api/v/7/setrecords/artist/info/" + artistId;
+		$.ajax({
+			type: "GET",
+			url: requestURL,
+			success: function(res) {
+				// console.log('Artist...');
+				if (res.status == 'failure') {
+					console.log("An error occurred getting artist data.");
+					console.log(res.payload.error);
+				} else {
+					push({
+						type: 'SHALLOW_MERGE',
+						data: {
+							artist_info: res.payload.artist_info,
+							loaded: true
+						}
+					});
+				}
+			}.bind(this),
+			error: function(err) {
+				console.log('An error occurred getting artist data.');
+				console.log(err);
+			}
+		});
 	},
 	closeSetEditor: function(isChanged) {
 		if (isChanged) {
@@ -138,7 +132,7 @@ var App = React.createClass({
 			});
 			this.updateSets(function(err, sets) {
 				if (err) {
-					console.log('An error occurred.', err);
+					// console.log('An error occurred.', err);
 				} else {
 					push({
 						type: 'SHALLOW_MERGE',
@@ -160,7 +154,7 @@ var App = React.createClass({
 		}
 	},
 	closeSettingsEditor: function(isChanged) {
-		console.log("Settings editor would have been closed!");
+		// console.log("Settings editor would have been closed!");
 		if (isChanged) {
 			push({
 				type: 'SHALLOW_MERGE',
@@ -170,7 +164,7 @@ var App = React.createClass({
 			});
 			this.updateArtist(function(err, settings) {
 				if (err) {
-					console.log('An error occurred.', err);
+					// console.log('An error occurred.', err);
 				} else {
 					push({
 						type: 'SHALLOW_MERGE',
@@ -192,7 +186,7 @@ var App = React.createClass({
 		}
 	},
 	openSettingsEditor: function() {
-		console.log("Settings editor would have been opened!");
+		// console.log("Settings editor would have been opened!");
 		push({
 			type: 'SHALLOW_MERGE',
 			data: {
@@ -202,7 +196,7 @@ var App = React.createClass({
 			}
 		});
 	},
-	showView: function(appState) {
+	/*showView: function(appState) {
 		var updateFunctions = {updateArtist: this.updateArtist, updateSetmine: this.updateSetmine, updateSocial: this.updateSocial, updateBeacons: this.updateBeacons, updateYoutube: this.updateYoutube, updateSoundcloud: this.updateSoundcloud, updateSets: this.updateSets};
 		if (appState.get('set_editor')) {
 			return (
@@ -225,14 +219,13 @@ var App = React.createClass({
 				artistLookup={appState.get('artist_lookup')} />
 			);
 		} else {
-			console.log('do we get here?');
 			return (
 				<ViewContainer appState={appState} {...updateFunctions} {...UtilityFunctions} push={push} routeHandler={RouteHandler} openSetEditor={this.openSetEditor} openUploadSetWizard={this.openUploadSetWizard} loaded={appState.get('loaded')} />
 			);
 		}
-	},
+	},*/
 	openUploadSetWizard: function() {
-		console.log("opening upload set wizard...");
+		// console.log("opening upload set wizard...");
 		push({
 			type: 'SHALLOW_MERGE',
 			data: {
@@ -243,7 +236,7 @@ var App = React.createClass({
 		});
 	},
 	closeUploadSetWizard: function(isChanged) {
-		console.log("closing upload set wizard");
+		// console.log("closing upload set wizard");
 		if (isChanged) {
 			push({
 				type: 'SHALLOW_MERGE',
@@ -253,7 +246,7 @@ var App = React.createClass({
 			});
 			this.updateSets(function(err, sets) {
 				if (err) {
-					console.log('An error occurred.', err);
+					// console.log('An error occurred.', err);
 				} else {
 					push({
 						type: 'SHALLOW_MERGE',
@@ -287,21 +280,21 @@ var App = React.createClass({
 		});
 	}
 });
-/*NEVER CHANGE THHE ROUTE OR ELSE IT WILL GO KAPPOOOA AND SHIT THE BED*/
-var routes = (
-	<Route path='/' handler={App}>
-		<DefaultRoute name='content' handler={ContentView} />
-		<Route path='content' handler={ContentView} />
-		<Route path='metrics' handler={MetricsView} />
-	</Route>
-);
 
-var bodyMount = document.getElementById('body-mount-point');
+var history = createBrowserHistory();
 
-Router.run(routes, Router.HashLocation, function(Root) {
-	React.render(<Root/>, bodyMount);
-});
-
-// <ReactDatalist key='event-datalist' options={appState.get('events')} objKey='event' listId='event-list' isArray={false} />
-// <ReactDatalist key='mix-datalist' options={appState.get('mixes')} objKey='mix' listId='mix-list' isArray={false} />
-// <ReactDatalist key='genre-datalist' options={appState.get('genres')} isArray={true} listId='genre-list' />
+ReactDOM.render(
+	<Router>
+		<Route path='/' component={App} >
+			<IndexRoute component={ContentView} />
+			<Route path='metrics/setmine' component={SetmineReport} />
+			<Route path='metrics/beacons' component={BeaconReport} />
+			<Route path='metrics/social' component={SocialReport} />
+			<Route path='metrics/soundcloud' component={SoundcloudReport} />
+			<Route path='metrics/youtube' component={YoutubeReport} />
+			<Route path='edit/:id' component={MobileSetEditor} />
+			<Route path='account' component={SettingsEditor} />
+			<Route path='upload' component={UploadWizardWrapper} />
+		</Route>
+	</Router>,
+	document.getElementById('body-mount-point'));

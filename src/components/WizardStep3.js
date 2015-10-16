@@ -1,4 +1,4 @@
-var React = require('react/addons');
+var React = require('react');
 import TracklistImproved from './TracklistImproved';
 import _ from 'underscore';
 var moment = require("moment");

@@ -1,4 +1,4 @@
-var React = require('react/addons');
+var React = require('react');
 
 var WizardStep5 = React.createClass({
 	render: function() {

@@ -1,4 +1,4 @@
-import React from 'react/addons';
+import React from 'react';
 var Loader = require("react-loader");
 
 var SetList = React.createClass({
@@ -14,7 +14,7 @@ var SetList = React.createClass({
 						<i className="fa fa-plus"></i>
 						<p>add a track</p>
 					</button>
-					{this.props.tiles}						
+					{this.props.tiles}
 				</div>
 			</Loader>
 		);

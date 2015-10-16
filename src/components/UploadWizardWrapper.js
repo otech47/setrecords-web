@@ -1,4 +1,5 @@
-var React = require('react/addons');
+var React = require('react');
+import update from 'react-addons-update';
 import _ from 'underscore';
 var moment = require("moment");
 import WizardStep1 from './WizardStep1';
@@ -577,7 +578,8 @@ var UploadWizardWrapper = React.createClass({
 		}
 	},
 	addSongFile: function(file) {
-		if (file[0].type == 'audio/mp3' || file[0].type == 'audio/mpeg' || file[0].type == 'audio/wav') {
+		console.log(file);
+		if (file[0].type == 'audio/mp3' || file[0].type == 'audio/mp4' || file[0].type == 'audio/x-m4a' || file[0].type == 'audio/mpeg' || file[0].type == 'audio/wav') {
 			var tempAudio = URL.createObjectURL(file[0]);
 			this.setState({
 				pending_file: file[0],

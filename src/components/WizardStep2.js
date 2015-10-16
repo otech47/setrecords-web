@@ -1,4 +1,4 @@
-var React = require('react/addons');
+var React = require('react');
 var Dropzone = require('react-dropzone');
 import PreviewPlayer from './PreviewPlayer';
 
