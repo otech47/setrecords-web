@@ -2,6 +2,8 @@ import React from 'react';
 import Immutable from 'immutable';
 import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
+import _ from 'underscore';
+import async from 'async';
 
 import GlobalEventHandler from './services/globalEventHandler';
 import ReactDatalist from './components/ReactDatalist';
@@ -12,12 +14,16 @@ import SetTile from './components/SetTile';
 import Header from './components/Header';
 import NavBar from './components/NavBar';
 import ViewContainer from './components/ViewContainer';
-import FooterSetrecords from './components/FooterSetrecords';
+import Footer from './components/Footer';
 import ContentView from './components/ContentView';
 import MetricsView from './components/MetricsView';
-import _ from 'underscore';
-import async from 'async';
 import UploadWizardWrapper from './components/UploadWizardWrapper';
+
+import BeaconReport from './components/BeaconReport';
+import SetmineReport from './components/SetmineReport';
+import SocialReport from './components/SocialReport';
+import SoundcloudReport from './components/SoundcloudReport';
+import YoutubeReport from './components/YoutubeReport';
 
 import UpdateFunctions from './mixins/UpdateFunctions';
 import UtilityFunctions from './mixins/UtilityFunctions';
@@ -48,27 +54,26 @@ var evtTypes = evtHandler.types;
 
 var push = evtHandler.push;
 
-var PrintObject = React.createClass({
-	displayName: 'PrintObject',
-	render: function() {
-		var s = JSON.stringify(this.props.value, null, 2);
-		console.log('PO APP STATE', this.props.value);
-		return React.createElement('code', {
-			style: { fontSize: 10 },
-			onClick: lol
-		}, s);
-	}
-});
-
 var App = React.createClass({
+
 	displayName: 'App container',
 	mixins: [UpdateFunctions, UtilityFunctions],
-	getInitialState: function() {
+
+	getInitialState() {
 		return {
 			appState: initialAppState
 		};
 	},
-	componentDidMount: function() {
+
+	_attachStreams() {
+		var _this = this;
+		evtHandler.floodGate.subscribe(newState => {
+			console.log('UPDATE', newState);
+			_this.setState({ appState: newState });
+		});
+	},
+
+	componentDidMount() {
 		this._attachStreams(); //global event handler
 		async.parallel([this.updateArtist, this.updateSets, this.updateSetmine, this.updateSoundcloud, this.updateYoutube, this.updateBeacons, this.updateSocial, this.updateMisc], function(err, results) {
 			if (err) {
@@ -101,24 +106,8 @@ var App = React.createClass({
 			}
 		});
 	},
-	_attachStreams: function() {
-		var _this = this;
-		evtHandler.floodGate.subscribe(newState => {
-			console.log('UPDATE', newState);
-			_this.setState({ appState: newState });
-		});
-	},
-	render: function() {
-		var appState = this.state.appState;
-		return (
-			<div className="main-container flex-column">
-				<Header appState={appState} openSettingsEditor={this.openSettingsEditor} closeSettingsEditor={this.closeSettingsEditor} openUploadSetWizard={this.openUploadSetWizard} />
-				{this.showView(appState)}
-				<FooterSetrecords />
-			</div>
-		);
-	},
-	closeSetEditor: function(isChanged) {
+
+	closeSetEditor(isChanged) {
 		if (isChanged) {
 			push({
 				type: 'SHALLOW_MERGE',
@@ -150,7 +139,8 @@ var App = React.createClass({
 			});
 		}
 	},
-	closeSettingsEditor: function(isChanged) {
+
+	closeSettingsEditor(isChanged) {
 		console.log("Settings editor would have been closed!");
 		if (isChanged) {
 			push({
@@ -182,50 +172,8 @@ var App = React.createClass({
 			})
 		}
 	},
-	openSettingsEditor: function() {
-		console.log("Settings editor would have been opened!");
-		push({
-			type: 'SHALLOW_MERGE',
-			data: {
-				settings_editor: true,
-				upload_set_wizard: false,
-				set_editor: false
-			}
-		});
-	},
-	showView: function(appState) {
-		var updateFunctions = {updateArtist: this.updateArtist, updateSetmine: this.updateSetmine, updateSocial: this.updateSocial, updateBeacons: this.updateBeacons, updateYoutube: this.updateYoutube, updateSoundcloud: this.updateSoundcloud, updateSets: this.updateSets};
-		if (appState.get('set_editor')) {
-			return (
-				<MobileSetEditor set={appState.get('working_set')} close={this.closeSetEditor} appState={appState} {...UtilityFunctions} />
-			);
-		} else if (appState.get('settings_editor')) {
-			return (
-				<SettingsEditor settings={appState.get('artist_data')} close={this.closeSettingsEditor} appState={appState} {...UtilityFunctions} />
-			);
-		} else if (appState.get('upload_set_wizard')) {
-			return (
-				<UploadWizardWrapper originalArtist={appState.get('artist_data').artist} eventLookup={appState.get('event_lookup')} events={appState.get('events')} mixes={appState.get('mixes')} genres={appState.get('genres')}
-					venues={appState.get('venues')} />
-			);
-		} else {
-			return (
-				<ViewContainer appState={appState} {...updateFunctions} {...UtilityFunctions} push={push} routeHandler={RouteHandler} openSetEditor={this.openSetEditor} openUploadSetWizard={this.openUploadSetWizard} loaded={appState.get('loaded')} />
-			);
-		}
-	},
-	openUploadSetWizard: function() {
-		console.log("opening upload set wizard...");
-		push({
-			type: 'SHALLOW_MERGE',
-			data: {
-				set_editor: false,
-				settings_editor: false,
-				upload_set_wizard: true
-			}
-		});
-	},
-	closeUploadSetWizard: function(isChanged) {
+
+	closeUploadSetWizard(isChanged) {
 		console.log("closing upload set wizard");
 		if (isChanged) {
 			push({
@@ -257,7 +205,20 @@ var App = React.createClass({
 			});
 		}
 	},
-	openSetEditor: function(set) {
+
+	openSettingsEditor() {
+		console.log("Settings editor would have been opened!");
+		push({
+			type: 'SHALLOW_MERGE',
+			data: {
+				settings_editor: true,
+				upload_set_wizard: false,
+				set_editor: false
+			}
+		});
+	},
+
+	openSetEditor(set) {
 		var clonedSet = this.cloneObject(set);
 		push({
 			type: 'SHALLOW_MERGE',
@@ -268,14 +229,76 @@ var App = React.createClass({
 				upload_set_wizard: false
 			}
 		});
+	},
+
+	openUploadSetWizard() {
+		console.log("opening upload set wizard...");
+		push({
+			type: 'SHALLOW_MERGE',
+			data: {
+				set_editor: false,
+				settings_editor: false,
+				upload_set_wizard: true
+			}
+		});
+	},
+
+	render() {
+		var appState = this.state.appState;
+		return (
+			<div className="main-container flex-column">
+				<Header appState={appState} openSettingsEditor={this.openSettingsEditor} closeSettingsEditor={this.closeSettingsEditor} openUploadSetWizard={this.openUploadSetWizard} />
+				<div className='flex-row view-container'>
+					<NavBar />
+					<RouteHandler appState={appState} push={push} loaded={appState.get('loaded')} {...UtilityFunctions} />
+				</div>
+				<Footer/>
+			</div>
+		);
+	},
+
+//TODO move into separate routes
+	showView(appState) {
+		var updateFunctions = {updateArtist: this.updateArtist, updateSetmine: this.updateSetmine, updateSocial: this.updateSocial, updateBeacons: this.updateBeacons, updateYoutube: this.updateYoutube, updateSoundcloud: this.updateSoundcloud, updateSets: this.updateSets};
+		if (appState.get('set_editor')) {
+			return (
+				<MobileSetEditor set={appState.get('working_set')} close={this.closeSetEditor} appState={appState} {...UtilityFunctions} />
+			);
+		} else if (appState.get('settings_editor')) {
+			return (
+				<SettingsEditor settings={appState.get('artist_data')} close={this.closeSettingsEditor} appState={appState} {...UtilityFunctions} />
+			);
+		} else if (appState.get('upload_set_wizard')) {
+			return (
+				<UploadWizardWrapper originalArtist={appState.get('artist_data').artist} eventLookup={appState.get('event_lookup')} events={appState.get('events')} mixes={appState.get('mixes')} genres={appState.get('genres')}
+					venues={appState.get('venues')} />
+			);
+		} else {
+			return (
+				<ViewContainer 
+					appState={appState} 
+					{...updateFunctions} 
+					{...UtilityFunctions} 
+					push={push} 
+					routeHandler={RouteHandler} 
+					openSetEditor={this.openSetEditor} 
+					openUploadSetWizard={this.openUploadSetWizard} 
+					loaded={appState.get('loaded')} />
+			);
+		}
 	}
+
 });
+
 /*NEVER CHANGE THHE ROUTE OR ELSE IT WILL GO KAPPOOOA AND SHIT THE BED*/
 var routes = (
 	<Route path='/' handler={App}>
 		<DefaultRoute name='content' handler={ContentView} />
-		<Route path='content' handler={ContentView} />
-		<Route path='metrics' handler={MetricsView} />
+		<Route path='metrics' handler={MetricsView}>
+			{/* individual metrics components go here */}
+		</Route>
+		<Route path='settings' handler={SettingsEditor} />
+		<Route path='edit/:id' handler={MobileSetEditor} />
 	</Route>
 );
 

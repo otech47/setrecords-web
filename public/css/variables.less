@@ -1,31 +1,25 @@
 @import "fonts.less";
 
-@defaultDuration:1s;
-@panel-transition-duration:0.2s;
-@defaultFontSize: 1rem;
-@setrecordsFontSize:1.5rem;
+@defaultDuration:0.2s;
 
-@pageHeight:90vh;
-@headerHeight: 7rem;
+@headerHeight: 10vh;
 @headerWidth:100vw;
-@playerHeight: 10vh;
+@pageHeight:@windowHeight - @headerHeight;
 @pageWidth:@windowWidth;
-@windowHeight:@headerHeight + @pageHeight;
+@footerHeight: 10vh;
+@sidebarWidth: 15vw;
 @setTileHeight:@pageHeight*.25;
 @trackTileHeight:@pageHeight*.25;
 @uEventTileHeight:@pageHeight*.25;
 
 @windowWidth:100vw;
+@windowHeight: 100vh;
 
-@boldFontStyle: Avenir Pro Bold;
-@demiFontStyle: Avenir Demi;
-@defaultFontStyle: Avenir Regular;
-@lightFontStyle: Avenir Light;
-
-@defaultFontCondensed: Avenir Pro Condensed;
-
-@small-padding: @pageHeight*.01;
-@medium-padding: @pageHeight*.02;
-@large-padding: @pageHeight*.03;
+//fonts
+@bold: Avenir Pro Bold;
+@demi: Avenir Demi;
+@regular: Avenir Regular;
+@light: Avenir Light;
+@condensed: Avenir Pro Condensed;
 
 @setmine-images: "http://d1wbxby8dwa4u.cloudfront.net/namecheap/";

@@ -1,8 +1,8 @@
 import React from 'react';
 import _ from 'underscore';
-var LineChart = require("react-chartjs").Line;
-var Loader = require("react-loader");
-var moment = require("moment");
+var LineChart = require('react-chartjs').Line;
+var Loader = require('react-loader');
+var moment = require('moment');
 
 var BeaconReport = React.createClass({
 	getInitialState: function() {
@@ -19,8 +19,8 @@ var BeaconReport = React.createClass({
 		this.setState(clicked);
 	},
 	changePeriod: function(event) {
-		if (this.state.loaded && ($(event.currentTarget).attr("name") != this.state.cohort)) {
-			var cohortType = $(event.currentTarget).attr("name");
+		if (this.state.loaded && ($(event.currentTarget).attr('name') != this.state.cohort)) {
+			var cohortType = $(event.currentTarget).attr('name');
 			var self = this;
 			var push = this.props.push;
 			this.setState({
@@ -29,7 +29,7 @@ var BeaconReport = React.createClass({
 			}, function() {
 				self.props.updateBeacons(function(err, metrics) {
 					if (err) {
-						console.log("An error occurred while loading Beacon metrics.");
+						console.log('An error occurred while loading Beacon metrics.');
 					} else {
 						push({
 							type: 'SHALLOW_MERGE',
@@ -50,17 +50,17 @@ var BeaconReport = React.createClass({
 			var dateGrouping;
 			var dateFormat;
 			switch (this.state.cohort) {
-				case "daily":
-				dateGrouping = "M[/]D[/]YYYY";
-				dateFormat = "M[/]D";
+				case 'daily':
+				dateGrouping = 'M[/]D[/]YYYY';
+				dateFormat = 'M[/]D';
 				break;
-				case "weekly":
-				dateGrouping = "w[/]YYYY";
-				dateFormat = "M[/]D";
+				case 'weekly':
+				dateGrouping = 'w[/]YYYY';
+				dateFormat = 'M[/]D';
 				break;
-				case "monthly":
-				dateGrouping = "M[/]YYYY";
-				dateFormat = "M[/]YY";
+				case 'monthly':
+				dateGrouping = 'M[/]YYYY';
+				dateFormat = 'M[/]YY';
 				break;
 			}
 			var metrics = this.props.metrics;
@@ -69,7 +69,7 @@ var BeaconReport = React.createClass({
 			for (var i = 0; i < metrics.revenue.overtime.length; i++) {
 				labels.push(moment(metrics.revenue.overtime[i].date, dateGrouping).format(dateFormat));
 			}
-			var colors = ['#ffffff', '#efc56d', '#40d18f'];
+			var colors = ['#9b59b6', '#22a7f0', '#ffffff'];
 			var counter = 0;
 			var self = this;
 
@@ -94,16 +94,16 @@ var BeaconReport = React.createClass({
 			var chartOptions = {
 				bezierCurve: false,
 				datasetFill: false,
-				scaleLineColor: "#2b2b2b",
+				scaleLineColor: '#313542',
 				scaleLineWidth: 2,
 				scaleFontSize: 16,
-				scaleFontColor: "#2b2b2b",
+				scaleFontColor: '#313542',
 				scaleShowGridLines: false
 			};
-			return (<LineChart data={chartData} className="linechart" options={chartOptions} redraw />);
+			return (<LineChart data={chartData} className='linechart' options={chartOptions} redraw />);
 		}
 		else {
-			return (<p className="not-found">Click a metric above to show its graph</p>);
+			return (<p className='not-found'>Click a metric above to show its graph</p>);
 		}
 	},
 	render: function() {
@@ -116,45 +116,47 @@ var BeaconReport = React.createClass({
 
 		var previousCohort;
 		switch (this.state.cohort) {
-			case "daily":
-			previousCohort = "yesterday";
+			case 'daily':
+			previousCohort = 'yesterday';
 			break;
-			case "weekly":
-			previousCohort = "last week";
+			case 'weekly':
+			previousCohort = 'last week';
 			break;
-			case "monthly":
-			previousCohort = "last month";
+			case 'monthly':
+			previousCohort = 'last month';
 			break;
 		}	
 
 		return (
-		<div className="beacon-report">
-			<div className="title flex-row">
-				<img src="/public/images/beacon_icon.png" />
+		<div className='metrics-panel' id='BeaconReport'>
+
+			<div className='title flex-row'>
+				<img src='/public/images/beacon_icon.png' />
 				beacons
 			</div>
-			<div className="time-selector flex-row">
-				<p onClick={this.changePeriod} className={this.state.cohort == "daily" ? "active":""} name="daily">daily</p>
-				<span>/</span>
-				<p onClick={this.changePeriod} className={this.state.cohort == "weekly" ? "active":""} name="weekly">weekly</p>
-				<span>/</span>
-				<p onClick={this.changePeriod} className={this.state.cohort == "monthly" ? "active":""} name="monthly">monthly</p>
+
+			<div className='time-selector flex-row'>
+				<p onClick={this.changePeriod} className={this.state.cohort == 'daily' ? 'active':''} name='daily'>day</p>
+				<p onClick={this.changePeriod} className={this.state.cohort == 'weekly' ? 'active':''} name='weekly'>week</p>
+				<p onClick={this.changePeriod} className={this.state.cohort == 'monthly' ? 'active':''} name='monthly'>month</p>
 			</div>
+
 			<Loader loaded={this.state.loaded}>
-				<div className="beacon-report-inner flex-column">
-					<div className="beacon-numbers flex-row">
-						<div className={"revenue flex-column flex-fixed " + (this.state.revenue ? "":"deactivated")} id="revenue" onClick={this.toggleData}>
-							<p>total revenue</p>
+				<div className='report-inner flex-column'>
+					<div className='numbers flex-row'>
+						<div className={'toggle revenue flex-column flex-fixed ' + (this.state.revenue ? '':'deactivated')} id='revenue' onClick={this.toggleData}>
 							<h1>${numberWithSuffix(revenueTotal)}</h1>
-							<p>{previousCohort} {revenueChange >= 0 ? '+':''}${numberWithSuffix(revenueChange.toFixed(2))}</p>
+							<p>total revenue</p>
+							<p className='hidden'>{previousCohort} {revenueChange >= 0 ? '+':''}${numberWithSuffix(revenueChange.toFixed(2))}</p>
 						</div>
-						<div className={"unlockedsets flex-column flex-fixed " + (this.state.unlocks ? "":"deactivated")} id="unlocks" onClick={this.toggleData}>
-							<p>total unlocks</p>
+						<div className={'toggle unlockedsets flex-column flex-fixed ' + (this.state.unlocks ? '':'deactivated')} id='unlocks' onClick={this.toggleData}>
 							<h1>{numberWithSuffix(unlocksTotal)}</h1>
-							<p>{previousCohort} {unlocksChange >= 0 ? '+':''}{numberWithSuffix(unlocksChange)}</p>
+							<p>unlocks</p>
+							<p className='hidden'>{previousCohort} {unlocksChange >= 0 ? '+':''}{numberWithSuffix(unlocksChange)}</p>
 						</div>
 					</div>
-					<div className="beacon-graph">
+
+					<div className='graph'>
 						{this.lineGraph()}
 					</div>
 				</div>

@@ -1,11 +1,11 @@
 import React from 'react';
 import _ from 'underscore';
-var LineChart = require("react-chartjs").Line;
-var Loader = require("react-loader");
-var moment = require("moment");
+var LineChart = require('react-chartjs').Line;
+var Loader = require('react-loader');
+var moment = require('moment');
 
 var SetmineReport = React.createClass({
-	getInitialState: function() {
+	getInitialState() {
 		return {
 			plays: true,
 			views: true,
@@ -14,14 +14,16 @@ var SetmineReport = React.createClass({
 			cohort: 'daily'
 		}
 	},
-	toggleData: function(event) {
+
+	toggleData(event) {
 		var clicked = {};
 		clicked[event.currentTarget.id] = !this.state[event.currentTarget.id];
 		this.setState(clicked);
 	},
-	changePeriod: function(event) {
-		if (this.state.loaded && ($(event.currentTarget).attr("name") != this.state.cohort)) {
-			var cohortType = $(event.currentTarget).attr("name");
+
+	changePeriod(event) {
+		if (this.state.loaded && ($(event.currentTarget).attr('name') != this.state.cohort)) {
+			var cohortType = $(event.currentTarget).attr('name');
 			var self = this;
 			var push = this.props.push;
 			this.setState({
@@ -30,7 +32,7 @@ var SetmineReport = React.createClass({
 			}, function() {
 				self.props.updateSetmine(function(err, metrics) {
 					if (err) {
-						console.log("An error occurred while loading setmine metrics.");
+						console.log('An error occurred while loading setmine metrics.');
 					} else {
 						push({
 							type: 'SHALLOW_MERGE',
@@ -46,23 +48,24 @@ var SetmineReport = React.createClass({
 			});
 		}
 	},
-	lineGraph: function() {
+
+	lineGraph() {
 		if ((this.state.plays || this.state.views || this.state.favorites) && this.state.loaded) {
 			var dateGrouping;
 			var dateFormat;
 			switch (this.state.cohort) {
-				case "daily":
-				dateGrouping = "M[/]D[/]YYYY";
-				dateFormat = "M[/]D";
-				break;
-				case "weekly":
-				dateGrouping = "w[/]YYYY";
-				dateFormat = "M[/]D";
-				break;
-				case "monthly":
-				dateGrouping = "M[/]YYYY";
-				dateFormat = "M[/]YY";
-				break;
+				case 'daily':
+					dateGrouping = 'M[/]D[/]YYYY';
+					dateFormat = 'M[/]D';
+					break;
+				case 'weekly':
+					dateGrouping = 'w[/]YYYY';
+					dateFormat = 'M[/]D';
+					break;
+				case 'monthly':
+					dateGrouping = 'M[/]YYYY';
+					dateFormat = 'M[/]YY';
+					break;
 			}
 			var metrics = this.props.metrics;
 			var labels = [];
@@ -70,7 +73,7 @@ var SetmineReport = React.createClass({
 			for (var i = 0; i < metrics.plays.overtime.length; i++) {
 				labels.push(moment(metrics.plays.overtime[i].date, dateGrouping).format(dateFormat));
 			}
-			var colors = ['#ffffff', '#efc56d', '#40d18f'];
+			var colors = ['#9b59b6', '#22a7f0', '#36d7b7'];
 			var counter = 0;
 			var self = this;
 
@@ -95,19 +98,20 @@ var SetmineReport = React.createClass({
 			var chartOptions = {
 				bezierCurve: false,
 				datasetFill: false,
-				scaleLineColor: "#2b2b2b",
+				scaleLineColor: '#313542',
 				scaleLineWidth: 2,
 				scaleFontSize: 16,
-				scaleFontColor: "#2b2b2b",
+				scaleFontColor: '#313542',
 				scaleShowGridLines: false
 			};
-			return (<LineChart data={chartData} className="linechart" options={chartOptions} redraw />);
+			return (<LineChart data={chartData} className='linechart' options={chartOptions} redraw />);
 		}
 		else {
-			return (<p className="not-found">Click a metric above to show its graph</p>);
+			return (<p className='not-found'>Click a metric above to show its graph</p>);
 		}
 	},
-	render: function() {
+
+	render() {
 		var {numberWithSuffix, metrics, ...other} = this.props;
 		var playsCurrent = metrics.plays.current;
 		var playsChange = metrics.plays.current - metrics.plays.last;
@@ -117,55 +121,63 @@ var SetmineReport = React.createClass({
 		var favoritesChange = metrics.favorites.current - metrics.favorites.last;
 		var previousCohort;
 		switch (this.state.cohort) {
-			case "daily":
-			previousCohort = "yesterday";
+			case 'daily':
+			previousCohort = 'yesterday';
 			break;
-			case "weekly":
-			previousCohort = "last week";
+			case 'weekly':
+			previousCohort = 'last week';
 			break;
-			case "monthly":
-			previousCohort = "last month";
+			case 'monthly':
+			previousCohort = 'last month';
 			break;
 		}	
 
 		return (
-		<div className="setmine-report">
-			<div className="title flex-row">
-				<img src="/public/images/setminelogo.png" />
-				setmine
-			</div>
-			<div className="time-selector flex-row">
-				<p onClick={this.changePeriod} className={this.state.cohort == "daily" ? "active":""} name="daily">daily</p>
-				<span>/</span>
-				<p onClick={this.changePeriod} className={this.state.cohort == "weekly" ? "active":""} name="weekly">weekly</p>
-				<span>/</span>
-				<p onClick={this.changePeriod} className={this.state.cohort == "monthly" ? "active":""} name="monthly">monthly</p>
-			</div>
-			<Loader loaded={this.state.loaded}>
-				<div className="setmine-report-inner flex-column">
-					<div className="setmine-numbers flex-row">
-						<div className={"plays flex-column flex-fixed " + (this.state.plays ? "":"deactivated")} id="plays" onClick={this.toggleData}>
-							<p>total plays</p>
-							<h1>{numberWithSuffix(playsCurrent)}</h1>
-							<p>{previousCohort} {playsChange >= 0 ? '+':''}{numberWithSuffix(playsChange)}</p>
-						</div>
-						<div className={"profileviews flex-column flex-fixed " + (this.state.views ? "":"deactivated")} id="views" onClick={this.toggleData}>
-							<p>total views</p>
-							<h1>{numberWithSuffix(viewsCurrent)}</h1>
-							<p>{previousCohort} {viewsChange >= 0 ? '+':''}{numberWithSuffix(viewsChange)}</p>
-						</div>
-						<div className={"favorites flex-column flex-fixed " + (this.state.favorites ? "":"deactivated")} id="favorites" onClick={this.toggleData}>
-							<p>total favorites</p>
-							<h1>{numberWithSuffix(favoritesCurrent)}</h1>
-							<p>{previousCohort} {favoritesChange >= 0 ? '+':''}{numberWithSuffix(favoritesChange)}</p>
-						</div>
-					</div>
-					<div className="setmine-graph">
-						{this.lineGraph()}
-					</div>
+			<div className='metrics-panel' id='SetmineReport'>
+
+				<div className='title flex-row'>
+					<img src='/public/images/setminelogo.png' />
+					setmine
 				</div>
-			</Loader>
-		</div>
+
+				<div className='time-selector flex-row'>
+					<p onClick={this.changePeriod} className={this.state.cohort == 'daily' ? 'active':''} name='daily'>
+						<span>day</span>
+					</p>
+					<p onClick={this.changePeriod} className={this.state.cohort == 'weekly' ? 'active':''} name='weekly'>
+						<span>week</span>
+					</p>
+					<p onClick={this.changePeriod} className={this.state.cohort == 'monthly' ? 'active':''} name='monthly'>
+						<span>month</span>
+					</p>
+				</div>
+
+				<Loader loaded={this.state.loaded}>
+					<div className='report-inner flex-column flex'>
+						<div className='numbers flex-row'>
+							<div className={'toggle click plays flex-column flex-fixed ' + (this.state.plays ? '':'deactivated')} id='plays' onClick={this.toggleData}>
+								<h1>{numberWithSuffix(playsCurrent)}</h1>
+								<p>plays</p>
+								<p className='hidden'>{previousCohort} {playsChange >= 0 ? '+':''}{numberWithSuffix(playsChange)}</p>
+							</div>
+							<div className={'toggle click profileviews flex-column flex-fixed ' + (this.state.views ? '':'deactivated')} id='views' onClick={this.toggleData}>
+								<h1>{numberWithSuffix(viewsCurrent)}</h1>
+								<p>views</p>
+								<p className='hidden'>{previousCohort} {viewsChange >= 0 ? '+':''}{numberWithSuffix(viewsChange)}</p>
+							</div>
+							<div className={'toggle click favorites flex-column flex-fixed ' + (this.state.favorites ? '':'deactivated')} id='favorites' onClick={this.toggleData}>
+								<h1>{numberWithSuffix(favoritesCurrent)}</h1>
+								<p>favorites</p>
+								<p className='hidden'>{previousCohort} {favoritesChange >= 0 ? '+':''}{numberWithSuffix(favoritesChange)}</p>
+							</div>
+						</div>
+
+						<div className='graph'>
+							{this.lineGraph()}
+						</div>
+					</div>
+				</Loader>
+			</div>
 		);
 	}
 });

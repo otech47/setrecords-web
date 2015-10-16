@@ -1,29 +1,43 @@
 import React from 'react/addons';
 import SetTile from './SetTile';
 import _ from 'underscore';
-var Loader = require("react-loader");
+var Loader = require('react-loader');
 
 var ContentView = React.createClass({
-	render: function() {
-		var {appState, loaded, openUploadSetWizard, ...other} = this.props;
-		var sets = appState.get('sets');
+	render() {
+		var sets = this.props.appState.get('sets');
+		var self = this;
+
 		var setTiles = _.map(sets, function(set) {
-			return (<SetTile key={set.id} setData={set} {...other} />);
+			var setName = set.event;
+			if(set.episode != null && set.episode.length > 0) {
+				var setName = set.event+' - '+set.episode	;
+			}
+
+			if (set.is_radiomix && set.episode) {
+				var imageURL = set.episode_imageURL;
+			} else {
+				var imageURL = set.main_eventimageURL;
+			}
+
+			var props = {
+				key: set.id,
+				setName: setName,
+				artist: set.artist,
+				imageURL: imageURL,
+				set_length: set.set_length,
+				popularity: set.popularity,
+				loaded: self.props.loaded,
+				openSetEditor: self.props.openSetEditor
+			};
+
+			return (<SetTile {...props} />);
 		});
+
 		return (
-			<Loader loaded={loaded}>
-				<div className='content-page flex-column'>
-					<div className='mobile-column flex-row'>
-						<button className='addSet flex-column' onClick={openUploadSetWizard}>
-							<i className='fa fa-plus'></i>
-							<p>add a set</p>
-						</button>
-						<button className="addSong flex-column">
-							<i className="fa fa-plus"></i>
-							<p>add a track</p>
-						</button>
-						{setTiles}
-					</div>
+			<Loader loaded={self.props.loaded}>
+				<div className='content-page flex-row'>
+					{setTiles}
 				</div>
 			</Loader>
 		);

@@ -33,7 +33,7 @@
     cursor:pointer;
     .transition(0.1s, ease-in, color);
     &:hover {
-        color: @setrecords-blue;
+        color: @blue;
     }
 }
 .blur {
@@ -92,6 +92,23 @@
 .buffer-lg {
     .flex(10,1,auto)!important;   
 }
+.card(@level: 1) {
+    & when (@level = 1) {
+        box-shadow: 0 1px 4px 0 rgba(49, 53, 66, 0.37);
+    }
+    & when (@level = 2) {
+        box-shadow: 0 6px 10px 0 rgba(49, 53, 66, 0.3), 0 2px 2px 0 rgba(49, 53, 66, 0.2);
+    }
+    & when (@level = 3) {
+        box-shadow: 0 13px 25px 0 rgba(49, 53, 66, 0.3), 0 11px 7px 0 rgba(0, 0, 0, 0.19);
+    }
+    & when (@level = 4) {
+        box-shadow: 0 20px 40px 0 rgba(49, 53, 66, 0.3), 0 14px 12px 0 rgba(49, 53, 66, 0.17);
+    }
+    & when (@level = 5) {
+        box-shadow: 0 27px 55px 0 rgba(49, 53, 66, 0.3), 0 17px 17px 0 rgba(49, 53, 66, 0.15);
+    }
+}
 .center {
     margin:auto;
 }
@@ -99,7 +116,7 @@
     cursor:pointer;
     .transition(0.1s, ease-in, color);
     &:hover {
-        color: @set-light-gray;
+        color: @light-gray;
     }
 }
 .createBlur(@image, @length) {
@@ -113,11 +130,18 @@
     width: @width;
     background-color: @color;
 }
-.createOverlay(@percentage, @color: #2b2b2b) {
-    color: white;
-    background-color: fade(@color, @percentage);
+.createOverlay(@opacity, @color: @dark-gray) {
+    z-index: 1;
+    &::before {
+        content: '';
+        opacity: @opacity;
+        background-color: @color;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        z-index: -1;
+    }
 }
-
 .large(@rules, @min-value: 1200px) {
     @media (min-width: @min-value) {@rules();}
 }
@@ -131,6 +155,13 @@
     background-color: fade(@color, @alpha);
 }
 .set-flex {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+.flex-container {
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
@@ -165,7 +196,7 @@
     flex: @flexGrow @flexShrink @flexBasis;
 }
 .flex-column {
-  .flexContainer(column, vertical, wrap);
+  .flexContainer(column, vertical, nowrap);
 }
 .flex-row {
   .flexContainer(row, horizontal, wrap);
@@ -225,26 +256,6 @@
 .hidden  {
     display:none!important;
 }
-/*
-.header  {
-    font-size:4rem;
-    font-weight: 400;
-    font-family: @defaultFontStyle;
-    letter-spacing: 0.5rem;
-}
-.header-medium {
-    font-size:3rem;
-    font-weight:400;
-    font-family: @defaultFontStyle;
-    letter-spacing: 0.2rem;
-}
-.header-small  {
-    font-size:1.5rem;
-    font-weight: 300;
-    font-family: @defaultFontStyle;
-    letter-spacing: 0.1rem;
-}
-*/
 .hidden-fade {
     opacity:0!important;
 }
@@ -260,31 +271,8 @@
       background-color: @color*@multiplier;
     }
 }
-.overlay-container {
-    position: relative;
-}
-.overlay {
-    position:absolute;
-    width:86%;
-    height:100%;
-    z-index: 2;
-    ~ * {
-        z-index: 3;
-    }
-    ~ img {
-        z-index: 1;
-    }
-}
 .scrollable {
     overflow-y:scroll!important;
-}
-.setrecords-panel {
-    border: solid 2px @setrecords-border;
-    background: @setrecords-panel-background;
-}
-.size-min(@width, @height) {
-    min-width: @width!important;
-    min-height: @height!important;
 }
 .size(@width, @height) {
     width: @width!important;
@@ -301,6 +289,6 @@
     -o-transform:      @value;
     transform:         @value;
 }
-.unflexContainer {
+.unflex-container {
     display: initial;
 }
