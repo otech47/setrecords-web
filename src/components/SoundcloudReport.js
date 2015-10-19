@@ -16,7 +16,7 @@ var SoundcloudReport = React.createClass({
 		}
 	},
 
-	componentWillMounte() {
+	componentWillMount() {
 		this.updateSoundcloud();
 	},
 
@@ -148,39 +148,39 @@ var SoundcloudReport = React.createClass({
 			case 'monthly':
 			previousCohort = 'last month';
 			break;
-		}	
+		}
+
+		console.log(metrics);
 
 		return (
-		<div className='metrics-panel' id='SoundcloudReport'>
-			<div className='title flex-row'>
-				<i className='fa fa-soundcloud'/>
-				soundcloud
-			</div>
-			<div className='time-selector flex-row'>
-				<p onClick={this.changePeriod} className={this.state.cohort == 'daily' ? 'active':''} name='daily'>daily</p>
-				<p onClick={this.changePeriod} className={this.state.cohort == 'weekly' ? 'active':''} name='weekly'>weekly</p>
-				<p onClick={this.changePeriod} className={this.state.cohort == 'monthly' ? 'active':''} name='monthly'>monthly</p>
-			</div>
-			<Loader loaded={this.state.loaded}>
-				<div className='report-inner flex-column flex'>
-					<div className='numbers flex-row'>
-						<div className={'toggle plays flex-column flex-fixed ' + (this.state.plays ? '':'deactivated')} id='plays' onClick={this.toggleData}>
-							<h1>{numberWithSuffix(playsCurrent)}</h1>
-							<p>plays</p>
-							<p className='hidden'>{previousCohort} {playsChange >= 0 ? '+':''}{numberWithSuffix(playsChange)}</p>
-						</div>
-						<div className={'toggle followers flex-column flex-fixed ' + (this.state.followers ? '':'deactivated')} id='followers' onClick={this.toggleData}>
-							<h1>{numberWithSuffix(followersCurrent)}</h1>
-							<p>followers</p>
-							<p className='hidden'>{previousCohort} {followersChange >= 0 ? '+':''}{numberWithSuffix(followersChange)}</p>
-						</div>
+			<div className='metrics-panel' id='SoundcloudReport'>
+				<div className='title flex-row'>
+					<i className='fa fa-soundcloud'/>
+					soundcloud
+				</div>
+				<div className='time-selector flex-row'>
+					<p onClick={this.changePeriod} className={this.state.cohort == 'daily' ? 'active':''} name='daily'>daily</p>
+					<p onClick={this.changePeriod} className={this.state.cohort == 'weekly' ? 'active':''} name='weekly'>weekly</p>
+					<p onClick={this.changePeriod} className={this.state.cohort == 'monthly' ? 'active':''} name='monthly'>monthly</p>
+				</div>
+				<div className='numbers flex-row'>
+					<div className={'toggle plays flex-column flex-fixed ' + (this.state.plays ? '':'deactivated')} id='plays' onClick={this.toggleData}>
+						<h1>{numberWithSuffix(playsCurrent)}</h1>
+						<p>plays</p>
+						<p className='hidden'>{previousCohort} {playsChange >= 0 ? '+':''}{numberWithSuffix(playsChange)}</p>
 					</div>
+					<div className={'toggle followers flex-column flex-fixed ' + (this.state.followers ? '':'deactivated')} id='followers' onClick={this.toggleData}>
+						<h1>{numberWithSuffix(followersCurrent)}</h1>
+						<p>followers</p>
+						<p className='hidden'>{previousCohort} {followersChange >= 0 ? '+':''}{numberWithSuffix(followersChange)}</p>
+					</div>
+				</div>
+				<Loader loaded={this.state.loaded}>
 					<div className='graph'>
 						{this.lineGraph()}
 					</div>
-				</div>
-			</Loader>
-		</div>
+				</Loader>
+			</div>
 		);
 	}
 });

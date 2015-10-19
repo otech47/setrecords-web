@@ -156,36 +156,30 @@ var BeaconReport = React.createClass({
 
 		return (
 		<div className='metrics-panel' id='BeaconReport'>
-
 			<div className='title flex-row'>
 				<img src='/public/images/beacon_icon.png' />
 				beacons
 			</div>
-
 			<div className='time-selector flex-row'>
 				<p onClick={this.changePeriod} className={this.state.cohort == 'daily' ? 'active':''} name='daily'>day</p>
 				<p onClick={this.changePeriod} className={this.state.cohort == 'weekly' ? 'active':''} name='weekly'>week</p>
 				<p onClick={this.changePeriod} className={this.state.cohort == 'monthly' ? 'active':''} name='monthly'>month</p>
 			</div>
-
+			<div className='numbers flex-row'>
+				<div className={'toggle revenue flex-column flex-fixed ' + (this.state.revenue ? '':'deactivated')} id='revenue' onClick={this.toggleData}>
+					<h1>${numberWithSuffix(revenueTotal)}</h1>
+					<p>total revenue</p>
+					<p className='hidden'>{previousCohort} {revenueChange >= 0 ? '+':''}${numberWithSuffix(revenueChange.toFixed(2))}</p>
+				</div>
+				<div className={'toggle unlockedsets flex-column flex-fixed ' + (this.state.unlocks ? '':'deactivated')} id='unlocks' onClick={this.toggleData}>
+					<h1>{numberWithSuffix(unlocksTotal)}</h1>
+					<p>unlocks</p>
+					<p className='hidden'>{previousCohort} {unlocksChange >= 0 ? '+':''}{numberWithSuffix(unlocksChange)}</p>
+				</div>
+			</div>
 			<Loader loaded={this.state.loaded}>
-				<div className='report-inner flex-column'>
-					<div className='numbers flex-row'>
-						<div className={'toggle revenue flex-column flex-fixed ' + (this.state.revenue ? '':'deactivated')} id='revenue' onClick={this.toggleData}>
-							<h1>${numberWithSuffix(revenueTotal)}</h1>
-							<p>total revenue</p>
-							<p className='hidden'>{previousCohort} {revenueChange >= 0 ? '+':''}${numberWithSuffix(revenueChange.toFixed(2))}</p>
-						</div>
-						<div className={'toggle unlockedsets flex-column flex-fixed ' + (this.state.unlocks ? '':'deactivated')} id='unlocks' onClick={this.toggleData}>
-							<h1>{numberWithSuffix(unlocksTotal)}</h1>
-							<p>unlocks</p>
-							<p className='hidden'>{previousCohort} {unlocksChange >= 0 ? '+':''}{numberWithSuffix(unlocksChange)}</p>
-						</div>
-					</div>
-
-					<div className='graph'>
-						{this.lineGraph()}
-					</div>
+				<div className='graph'>
+					{this.lineGraph()}
 				</div>
 			</Loader>
 		</div>	

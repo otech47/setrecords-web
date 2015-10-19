@@ -11,12 +11,12 @@ var Header = React.createClass({
 		var artistData = this.props.appState.get('artist_data');
 
 		return (
-			<header className='flex-column'>
-				<div className='flex-fixed-2x header-main flex-row'>
-					<div className='logo flex-row'>
-						<img src='/public/images/setrecords-logo-white.png' />
-						setrecords
-					</div>
+			<header className='flex-row'>
+				<div className='logo flex-row'>
+					<img src='/public/images/setrecords-logo-white.png' />
+					setrecords
+				</div>
+				<div className='header-main flex-row flex'>
 					<h1>{this.props.appState.get('header')}</h1>
 					<div className='buffer'/>
 					<div className='artist flex-row'>

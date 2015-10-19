@@ -1,11 +1,14 @@
 import React from 'react';
 import _ from 'underscore';
 var LineChart = require('react-chartjs').Line;
-var Loader = require('react-loader');
-var moment = require('moment');
+import Loader from 'react-loader';
+// var moment = require('moment');
+import moment from 'moment';
+import {numberWithSuffix} from '../mixins/UtilityFunctions';
+
 
 var YoutubeReport = React.createClass({
-	getInitialState: function() {
+	getInitialState() {
 		return {
 			plays: true,
 			followers: true,
@@ -13,57 +16,47 @@ var YoutubeReport = React.createClass({
 			cohort: 'daily'
 		}
 	},
-	toggleData: function(event) {
+
+	componentWillMount() {
+		this.updateYoutube();
+	},
+
+	toggleData(event) {
 		var clicked = {};
 		clicked[event.currentTarget.id] = !this.state[event.currentTarget.id];
 		this.setState(clicked);
 	},
-	changePeriod: function(event) {
+
+	changePeriod(event) {
 		if (this.state.loaded && ($(event.currentTarget).attr('name') != this.state.cohort)) {
 			var cohortType = $(event.currentTarget).attr('name');
-			var self = this;
-			var push = this.props.push;
+
 			this.setState({
 				loaded: false,
 				cohort: cohortType
-			}, function() {
-				self.props.updateYoutube(function(err, metrics) {
-					if (err) {
-						console.log('An error occurred while loading youtube metrics.');
-					} else {
-						push({
-							type: 'SHALLOW_MERGE',
-							data: {
-								youtube_metrics: metrics
-							}
-						});
-						self.setState({
-							loaded: true
-						});
-					}
-				}, self.state.cohort);
-			});
+			}, this.updateSetmine(this.state.cohort));
 		}
 	},
-	lineGraph: function() {
+
+	lineGraph() {
 		if ((this.state.plays || this.state.followers) && this.state.loaded) {
 			var dateGrouping;
 			var dateFormat;
 			switch (this.state.cohort) {
 				case 'daily':
-				dateGrouping = 'M[/]D[/]YYYY';
-				dateFormat = 'M[/]D';
-				break;
+					dateGrouping = 'M[/]D[/]YYYY';
+					dateFormat = 'M[/]D';
+					break;
 				case 'weekly':
-				dateGrouping = 'w[/]YYYY';
-				dateFormat = 'M[/]D';
-				break;
+					dateGrouping = 'w[/]YYYY';
+					dateFormat = 'M[/]D';
+					break;
 				case 'monthly':
-				dateGrouping = 'M[/]YYYY';
-				dateFormat = 'M[/]YY';
-				break;
+					dateGrouping = 'M[/]YYYY';
+					dateFormat = 'M[/]YY';
+					break;
 			}
-			var metrics = this.props.metrics;
+			var metrics = this.props.appState.get('youtube_metrics');
 			var labels = [];
 			var datasets = [];
 			for (var i = 0; i < metrics.followers.overtime.length; i++) {
@@ -106,57 +99,84 @@ var YoutubeReport = React.createClass({
 			return (<p className='not-found'>Click a metric above to show its graph</p>);
 		}
 	},
-	render: function() {
-		var suffixNum = this.props.numberWithSuffix;
-		var metrics = this.props.metrics;
+
+	updateYoutube(params) {
+		var cohortType = "";
+		if (params != null) {
+			cohortType = "?cohortType=" + params;
+		}
+		var artistId = this.props.appState.get("artist_data").id;
+		var youtubeRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/youtube/'
+		+ artistId + cohortType;
+		var youtubeMetrics;
+		var timezone = moment().utcOffset();
+		$.ajax({
+			type: 'GET',
+			url: youtubeRequestUrl,
+			data: {timezone: timezone}
+		})
+		.done((res) => {
+			this.props.push({
+				type: 'SHALLOW_MERGE',
+				data: {
+					youtube_metrics: res.youtube
+				}
+			});
+		})
+		.fail((err) => {
+			console.log(err);
+		});
+	},
+
+	render() {
+		var metrics = this.props.appState.get('youtube_metrics');
 		var playsCurrent = metrics.plays.current;
 		var playsChange = metrics.plays.current - metrics.plays.last;
 		var followersCurrent = metrics.followers.current;
 		var followersChange = metrics.followers.current - metrics.followers.last;
+
 		var previousCohort;
 		switch (this.state.cohort) {
 			case 'daily':
-			previousCohort = 'yesterday';
-			break;
+				previousCohort = 'yesterday';
+				break;
 			case 'weekly':
-			previousCohort = 'last week';
-			break;
+				previousCohort = 'last week';
+				break;
 			case 'monthly':
-			previousCohort = 'last month';
-			break;
+				previousCohort = 'last month';
+				break;
 		}	
 
 		return (
-		<div className='metrics-panel' id='YoutubeReport'>
-			<div className='title flex-row'>
-				<i className='fa fa-youtube'/>
-				youtube
-			</div>
-			<div className='time-selector flex-row'>
-				<p onClick={this.changePeriod} className={this.state.cohort == 'daily' ? 'active':''} name='daily'>daily</p>
-				<p onClick={this.changePeriod} className={this.state.cohort == 'weekly' ? 'active':''} name='weekly'>weekly</p>
-				<p onClick={this.changePeriod} className={this.state.cohort == 'monthly' ? 'active':''} name='monthly'>monthly</p>
-			</div>
-			<Loader loaded={this.state.loaded}>
-				<div className='report-inner flex-column'>
-					<div className='numbers flex-row'>
-						<div className={'toggle plays flex-column flex-fixed ' + (this.state.plays ? '':'deactivated')} id='plays' onClick={this.toggleData}>
-							<h1>{suffixNum(playsCurrent)}</h1>
-							<p>plays</p>
-							<p className='hidden'>{previousCohort} {playsChange >= 0 ? '+':''}{suffixNum(playsChange)}</p>
-						</div>
-						<div className={'toggle followers flex-column flex-fixed ' + (this.state.followers ? '':'deactivated')} id='followers' onClick={this.toggleData}>
-							<h1>{suffixNum(followersCurrent)}</h1>
-							<p>followers</p>
-							<p className='hidden'>{previousCohort} {followersChange >= 0 ? '+':''}{suffixNum(followersChange)}</p>
-						</div>
+			<div className='metrics-panel' id='YoutubeReport'>
+				<div className='title flex-row'>
+					<i className='fa fa-youtube'/>
+					youtube
+				</div>
+				<div className='time-selector flex-row'>
+					<p onClick={this.changePeriod} className={this.state.cohort == 'daily' ? 'active':''} name='daily'>daily</p>
+					<p onClick={this.changePeriod} className={this.state.cohort == 'weekly' ? 'active':''} name='weekly'>weekly</p>
+					<p onClick={this.changePeriod} className={this.state.cohort == 'monthly' ? 'active':''} name='monthly'>monthly</p>
+				</div>
+				<div className='numbers flex-row'>
+					<div className={'toggle plays flex-column flex-fixed ' + (this.state.plays ? '':'deactivated')} id='plays' onClick={this.toggleData}>
+						<h1>{numberWithSuffix(playsCurrent)}</h1>
+						<p>plays</p>
+						<p className='hidden'>{previousCohort} {playsChange >= 0 ? '+':''}{numberWithSuffix(playsChange)}</p>
 					</div>
+					<div className={'toggle followers flex-column flex-fixed ' + (this.state.followers ? '':'deactivated')} id='followers' onClick={this.toggleData}>
+						<h1>{numberWithSuffix(followersCurrent)}</h1>
+						<p>followers</p>
+						<p className='hidden'>{previousCohort} {followersChange >= 0 ? '+':''}{numberWithSuffix(followersChange)}</p>
+					</div>
+				</div>
+				<Loader loaded={this.state.loaded}>
 					<div className='graph'>
 						{this.lineGraph()}
 					</div>
-				</div>
-			</Loader>
-		</div>
+				</Loader>
+			</div>
 		);
 	}
 });

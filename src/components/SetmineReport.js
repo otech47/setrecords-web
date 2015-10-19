@@ -156,12 +156,10 @@ var SetmineReport = React.createClass({
 
 		return (
 			<div className='metrics-panel' id='SetmineReport'>
-
 				<div className='title flex-row'>
 					<img src='/public/images/setminelogo.png' />
 					setmine
 				</div>
-
 				<div className='time-selector flex-row'>
 					<p onClick={this.changePeriod} className={this.state.cohort == 'daily' ? 'active':''} name='daily'>
 						<span>day</span>
@@ -173,30 +171,26 @@ var SetmineReport = React.createClass({
 						<span>month</span>
 					</p>
 				</div>
-
+				<div className='numbers flex-row'>
+					<div className={'toggle click plays flex-column flex-fixed ' + (this.state.plays ? '':'deactivated')} id='plays' onClick={this.toggleData}>
+						<h1>{numberWithSuffix(playsCurrent)}</h1>
+						<p>plays</p>
+						<p className='hidden'>{previousCohort} {playsChange >= 0 ? '+':''}{numberWithSuffix(playsChange)}</p>
+					</div>
+					<div className={'toggle click profileviews flex-column flex-fixed ' + (this.state.views ? '':'deactivated')} id='views' onClick={this.toggleData}>
+						<h1>{numberWithSuffix(viewsCurrent)}</h1>
+						<p>views</p>
+						<p className='hidden'>{previousCohort} {viewsChange >= 0 ? '+':''}{numberWithSuffix(viewsChange)}</p>
+					</div>
+					<div className={'toggle click favorites flex-column flex-fixed ' + (this.state.favorites ? '':'deactivated')} id='favorites' onClick={this.toggleData}>
+						<h1>{numberWithSuffix(favoritesCurrent)}</h1>
+						<p>favorites</p>
+						<p className='hidden'>{previousCohort} {favoritesChange >= 0 ? '+':''}{numberWithSuffix(favoritesChange)}</p>
+					</div>
+				</div>
 				<Loader loaded={this.state.loaded}>
-					<div className='report-inner flex-column flex'>
-						<div className='numbers flex-row'>
-							<div className={'toggle click plays flex-column flex-fixed ' + (this.state.plays ? '':'deactivated')} id='plays' onClick={this.toggleData}>
-								<h1>{numberWithSuffix(playsCurrent)}</h1>
-								<p>plays</p>
-								<p className='hidden'>{previousCohort} {playsChange >= 0 ? '+':''}{numberWithSuffix(playsChange)}</p>
-							</div>
-							<div className={'toggle click profileviews flex-column flex-fixed ' + (this.state.views ? '':'deactivated')} id='views' onClick={this.toggleData}>
-								<h1>{numberWithSuffix(viewsCurrent)}</h1>
-								<p>views</p>
-								<p className='hidden'>{previousCohort} {viewsChange >= 0 ? '+':''}{numberWithSuffix(viewsChange)}</p>
-							</div>
-							<div className={'toggle click favorites flex-column flex-fixed ' + (this.state.favorites ? '':'deactivated')} id='favorites' onClick={this.toggleData}>
-								<h1>{numberWithSuffix(favoritesCurrent)}</h1>
-								<p>favorites</p>
-								<p className='hidden'>{previousCohort} {favoritesChange >= 0 ? '+':''}{numberWithSuffix(favoritesChange)}</p>
-							</div>
-						</div>
-
-						<div className='graph'>
-							{this.lineGraph()}
-						</div>
+					<div className='graph'>
+						{this.lineGraph()}
 					</div>
 				</Loader>
 			</div>

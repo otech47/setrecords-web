@@ -51,51 +51,48 @@ header {
 	position: fixed;
 	width: 100%;
 	z-index: 21;
-	.card(2);
-
+	.background(@white, @dark-gray);
+	justify-content: space-between;
 	.header-main {
-		width: 100%;
-		.background(@white, @dark-gray);
-		justify-content: space-between;
-		z-index: 22;
-		.logo {
-			.background(@dark-gray*1.25, @white);
-			font-size: 1.5rem;
-			align-items: center;
-			font-family: @regular;
-			letter-spacing: 0.1rem;
-			width: @sidebarWidth;
-			img {
-				width: 3rem;
-			}
-		}
-		> h1 {
+		.card(2);
+		h1 {
 			font-size: 1.5rem;
 			margin: auto 1rem;
 		}
-		.artist {
-			align-items: center;
-			.options {
-				align-items: flex-end;
-				justify-content: center;
-				h1 {
-					font-size: 2rem;
-					margin: 0.5rem 0;
-				}
-				p {
-					margin: 0;
-				}
-				span:hover {
-					cursor: pointer;
-					color: @blue;
-				}
+	}
+	.logo {
+		.background(@dark-gray*1.25, @white);
+		font-size: 1.5rem;
+		align-items: center;
+		font-family: @regular;
+		letter-spacing: 0.1rem;
+		width: @sidebarWidth;
+		img {
+			width: 3rem;
+		}
+	}
+	.artist {
+		align-items: center;
+		.options {
+			align-items: flex-end;
+			justify-content: center;
+			h1 {
+				font-size: 2rem;
+				margin: 0.5rem 0;
 			}
-			img {
-				.size(40px, 40px);
-				border-radius: 50%;
-				margin: 0 1rem;
-				border: solid 3px @blue;
+			p {
+				margin: 0;
 			}
+			span:hover {
+				cursor: pointer;
+				color: @blue;
+			}
+		}
+		img {
+			.size(40px, 40px);
+			border-radius: 50%;
+			margin: 0 1rem;
+			border: solid 3px @blue;
 		}
 	}
 }
@@ -175,6 +172,7 @@ header {
 		height: 5rem;
 		text-transform: uppercase;
 		background: @white;
+		margin-top: 5rem;
 		margin-left: 2rem;
 		cursor: pointer;
 		.card(1);
@@ -243,11 +241,6 @@ header {
 	color: @dark-gray;
 	font-family: @regular;
 	font-size: 1.25rem;
-}
-.report-inner {
-	margin-top: 5rem;
-	position: relative;
-	justify-content: space-between;
 }
 .time-selector {
 	.background(@white, @dark-gray);

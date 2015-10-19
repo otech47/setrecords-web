@@ -45,15 +45,15 @@ var initialAppState = Immutable.Map({
 	artists: [],
 	setmine_metrics: {
 		plays: {
-			current: [],
+			current: '',
 			overtime: []
 		},
 		views: {
-			current: [],
+			current: '',
 			overtime: []
 		},
 		favorites: {
-			current: [],
+			current: '',
 			overtime: []
 		}
 	},
@@ -69,34 +69,45 @@ var initialAppState = Immutable.Map({
 			overtime: []
 		}
 	},
-	youtube_metrics: {},
+	youtube_metrics: {
+		plays: {
+			current: '',
+			last: '',
+			overtime: []
+		},
+		followers: {
+			current: '',
+			last: '',
+			overtime: []
+		}
+	},
 	beacon_metrics: {
 		revenue: {
 			current: '',
 			last: '',
-			overtime: ''
+			overtime: []
 		},
 		unlocks: {
 			current: '',
 			last: '',
-			overtime: ''
+			overtime: []
 		}
 	},
 	social_metrics: {
 		twitter: {
 			current: '',
 			last: '',
-			overtime: ''
+			overtime: []
 		},
 		facebook: {
 			current: '',
 			last: '',
-			overtime: ''
+			overtime: []
 		},
 		instagram: {
 			current: '',
 			last: '',
-			overtime: ''
+			overtime: []
 		}
 	}
 });
