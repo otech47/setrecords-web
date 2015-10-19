@@ -161,9 +161,9 @@ header {
 }
 .metrics-panel {
 	background: @light-gray;
-	width: 60%;
-	height: 75vh;
-	margin: 5vw;
+	width: 75%;
+	height: 70vh;
+	margin: 5vw auto;
 	position: relative;
 	.card(2);
 	.loadedContent {
@@ -175,7 +175,7 @@ header {
 		height: 5rem;
 		text-transform: uppercase;
 		background: @white;
-		margin-left: 1rem;
+		margin-left: 2rem;
 		cursor: pointer;
 		.card(1);
 		.transition();
@@ -221,7 +221,7 @@ header {
 		position: absolute;
 		height: 5rem;
 		top: -2.5rem;
-		left: 1rem;
+		left: 2rem;
 		padding-right: 1rem;
 		cursor: default;
 		.card(2);
@@ -867,10 +867,11 @@ td{
 
 			.step-button {
 				font-size: 1.5rem;
-				background-color: @light-gray;
+				background-color: transparent;
+				border: solid 2px;
 				color: @blue;
-				height: 4rem;
-				width: 8rem;
+				height: 3rem;
+				width: 9rem;
 				&:disabled {
 					background-color: @light-gray !important;
 					color: @gray !important;

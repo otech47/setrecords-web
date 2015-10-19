@@ -109,7 +109,7 @@ var App = React.createClass({
 	_attachStreams() {
 		var _this = this;
 		evtHandler.floodGate.subscribe(newState => {
-			console.log('UPDATE', newState);
+			// console.log('UPDATE', newState);
 			_this.setState({ appState: newState });
 		});
 	},

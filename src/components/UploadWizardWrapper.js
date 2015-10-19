@@ -20,7 +20,6 @@ import async from 'async';
 var UploadWizardWrapper = React.createClass({
 	// mixins: [React.addons.LinkedStateMixin, UtilityFunctions],
 	getInitialState: function() {
-		var appState = this.props.appState;
 		return {
 			featured_artists: [],
 			current_step: 1,
@@ -47,6 +46,7 @@ var UploadWizardWrapper = React.createClass({
 			joining: false
 		};
 	},
+
 	registerAudio: function(callback) {
 		console.log('Registering audio...');
 		async.waterfall([this.joinFiles, this.registerS3], function(err, audioUrl) {

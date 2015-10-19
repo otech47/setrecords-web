@@ -125,6 +125,7 @@ var SetmineReport = React.createClass({
 	},
 
 	updateSetmine(params) {
+		var self = this;
 		var cohortType = '';
 		if(params != null) {
 			var cohortType = '?cohortType='+params;
