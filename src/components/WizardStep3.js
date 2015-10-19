@@ -1,4 +1,4 @@
-var React = require('react/addons');
+var React = require('react');
 import TracklistImproved from './TracklistImproved';
 import _ from 'underscore';
 var moment = require("moment");
@@ -13,6 +13,7 @@ var WizardStep3 = React.createClass({
 				<p className='step-info set-flex'>(This step is optional and can be done at any time)</p>
 				<button className='step-button' onClick={this.submitStep}>Continue</button>
 				<TracklistImproved tracklist={this.props.tracklist}
+				linkState={this.props.linkState}
 				addTrack={this.props.addTrack}
 				removeTrack={this.props.removeTrack}
 				changeTrack={this.props.changeTrack}

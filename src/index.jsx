@@ -1,16 +1,12 @@
+import R from 'ramda';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Immutable from 'immutable';
+import createBrowserHistory from 'history/lib/createBrowserHistory';
 import Router from 'react-router';
-import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
-import _ from 'underscore';
-import async from 'async';
-
+import { IndexRoute, Link, Route, History } from 'react-router';
 import GlobalEventHandler from './services/globalEventHandler';
-import ReactDatalist from './components/ReactDatalist';
 import MobileSetEditor from './components/MobileSetEditor';
-import SettingsEditor from './components/SettingsEditor';
-import DMCA from './components/DMCA';
-import SetTile from './components/SetTile';
 import Header from './components/Header';
 import NavBar from './components/NavBar';
 import ViewContainer from './components/ViewContainer';
@@ -18,9 +14,12 @@ import Footer from './components/Footer';
 import ContentView from './components/ContentView';
 import MetricsView from './components/MetricsView';
 import UploadWizardWrapper from './components/UploadWizardWrapper';
+import _ from 'underscore';
+import async from 'async';
 
 import BeaconReport from './components/BeaconReport';
 import SetmineReport from './components/SetmineReport';
+import SettingsEditor from './components/SettingsEditor';
 import SocialReport from './components/SocialReport';
 import SoundcloudReport from './components/SoundcloudReport';
 import YoutubeReport from './components/YoutubeReport';
@@ -29,29 +28,43 @@ import UpdateFunctions from './mixins/UpdateFunctions';
 import UtilityFunctions from './mixins/UtilityFunctions';
 
 var initialAppState = Immutable.Map({
-	'settings_editor': false,
-	'set_editor': false,
-	'upload_set_wizard': false,
-	'loaded': false,
-	"sets": [],
-	'working_set': {},
-	'artist_data': {
-		"id": 4026,
-		"artist": "Calvin Harris"
+	settings_editor: false,
+	set_editor: false,
+	upload_set_wizard: false,
+	loaded: false,
+	sets: [],
+	working_set: {},
+	artist_data: {
+		id: 4026,
+		artist: 'Nodex'
 	},
-	'genres': [],
-	'events': [],
-	'mixes': [],
-	'setmine_metrics': {},
-	'soundcloud_metrics': {},
-	'youtube_metrics': {},
-	"beacon_metrics": {},
-	"social_metrics": {}
+	header: 'Content',
+	genres: [],
+	events: [],
+	mixes: [],
+	artists: [],
+	setmine_metrics: {
+		plays: {
+			current: [],
+			overtime: []
+		},
+		views: {
+			current: [],
+			overtime: []
+		},
+		favorites: {
+			current: [],
+			overtime: []
+		}
+	},
+	soundcloud_metrics: {},
+	youtube_metrics: {},
+	beacon_metrics: {},
+	social_metrics: {}
 });
 
 var evtHandler = GlobalEventHandler(initialAppState);
 var evtTypes = evtHandler.types;
-
 var push = evtHandler.push;
 
 var App = React.createClass({
@@ -65,6 +78,34 @@ var App = React.createClass({
 		};
 	},
 
+	updateArtist() {
+		var artistId = this.state.appState.get("artist_data").id;
+		var requestURL = "http://localhost:3000/api/v/7/setrecords/artist/info/" + artistId;
+		$.ajax({
+			type: "GET",
+			url: requestURL,
+		})
+		.done(function(res) {
+			// console.log('Artist...');
+			if (res.status == 'failure') {
+				console.log("An error occurred getting artist data.");
+				console.log(res.payload.error);
+			} else {
+				push({
+					type: 'SHALLOW_MERGE',
+					data: {
+						artist_info: res.payload.artist_info,
+						loaded: true
+					}
+				});
+			}
+		}.bind(this))
+		.fail(function(err) {
+			console.log('An error occurred getting artist data.');
+			console.log(err);
+		}); 
+	},
+
 	_attachStreams() {
 		var _this = this;
 		evtHandler.floodGate.subscribe(newState => {
@@ -73,38 +114,9 @@ var App = React.createClass({
 		});
 	},
 
-	componentDidMount() {
+	componentWillMount() {
 		this._attachStreams(); //global event handler
-		async.parallel([this.updateArtist, this.updateSets, this.updateSetmine, this.updateSoundcloud, this.updateYoutube, this.updateBeacons, this.updateSocial, this.updateMisc], function(err, results) {
-			if (err) {
-				console.log('There was an error loading artist and set data.');
-			} else {
-				var eventLookup = {};
-				var events = results[7].events;
-				for (var i = 0; i < events.length; i++) {
-					eventLookup[events[i].event] = events[i];
-				}
-
-				push({
-					type: 'SHALLOW_MERGE',
-					data: {
-						artist_data: results[0],
-						sets: results[1],
-						setmine_metrics: results[2],
-						soundcloud_metrics: results[3],
-						youtube_metrics: results[4],
-						beacon_metrics: results[5],
-						social_metrics: results[6],
-						mixes: results[7].mixes,
-						genres: results[7].genres,
-						events: events,
-						event_lookup: eventLookup,
-						venues: results[7].venues,
-						loaded: true
-					}
-				});
-			}
-		});
+		this.updateArtist();
 	},
 
 	closeSetEditor(isChanged) {
@@ -118,7 +130,7 @@ var App = React.createClass({
 			});
 			this.updateSets(function(err, sets) {
 				if (err) {
-					console.log('An error occurred.', err);
+					// console.log('An error occurred.', err);
 				} else {
 					push({
 						type: 'SHALLOW_MERGE',
@@ -151,7 +163,7 @@ var App = React.createClass({
 			});
 			this.updateArtist(function(err, settings) {
 				if (err) {
-					console.log('An error occurred.', err);
+					// console.log('An error occurred.', err);
 				} else {
 					push({
 						type: 'SHALLOW_MERGE',
@@ -184,7 +196,7 @@ var App = React.createClass({
 			});
 			this.updateSets(function(err, sets) {
 				if (err) {
-					console.log('An error occurred.', err);
+					// console.log('An error occurred.', err);
 				} else {
 					push({
 						type: 'SHALLOW_MERGE',
@@ -250,64 +262,69 @@ var App = React.createClass({
 				<Header appState={appState} openSettingsEditor={this.openSettingsEditor} closeSettingsEditor={this.closeSettingsEditor} openUploadSetWizard={this.openUploadSetWizard} />
 				<div className='flex-row view-container'>
 					<NavBar />
-					<RouteHandler appState={appState} push={push} loaded={appState.get('loaded')} {...UtilityFunctions} />
+					{
+						React.cloneElement(this.props.children, {
+							appState: appState,
+							push: push
+						})
+					}
 				</div>
 				<Footer/>
 			</div>
 		);
-	},
-
-//TODO move into separate routes
-	showView(appState) {
-		var updateFunctions = {updateArtist: this.updateArtist, updateSetmine: this.updateSetmine, updateSocial: this.updateSocial, updateBeacons: this.updateBeacons, updateYoutube: this.updateYoutube, updateSoundcloud: this.updateSoundcloud, updateSets: this.updateSets};
-		if (appState.get('set_editor')) {
-			return (
-				<MobileSetEditor set={appState.get('working_set')} close={this.closeSetEditor} appState={appState} {...UtilityFunctions} />
-			);
-		} else if (appState.get('settings_editor')) {
-			return (
-				<SettingsEditor settings={appState.get('artist_data')} close={this.closeSettingsEditor} appState={appState} {...UtilityFunctions} />
-			);
-		} else if (appState.get('upload_set_wizard')) {
-			return (
-				<UploadWizardWrapper originalArtist={appState.get('artist_data').artist} eventLookup={appState.get('event_lookup')} events={appState.get('events')} mixes={appState.get('mixes')} genres={appState.get('genres')}
-					venues={appState.get('venues')} />
-			);
-		} else {
-			return (
-				<ViewContainer 
-					appState={appState} 
-					{...updateFunctions} 
-					{...UtilityFunctions} 
-					push={push} 
-					routeHandler={RouteHandler} 
-					openSetEditor={this.openSetEditor} 
-					openUploadSetWizard={this.openUploadSetWizard} 
-					loaded={appState.get('loaded')} />
-			);
-		}
 	}
 
+//TODO move into separate routes
+	// showView(appState) {
+	// 	var updateFunctions = {updateArtist: this.updateArtist, updateSetmine: this.updateSetmine, updateSocial: this.updateSocial, updateBeacons: this.updateBeacons, updateYoutube: this.updateYoutube, updateSoundcloud: this.updateSoundcloud, updateSets: this.updateSets};
+	// 	if (appState.get('set_editor')) {
+	// 		return (
+	// 			<MobileSetEditor set={appState.get('working_set')} close={this.closeSetEditor} appState={appState} {...UtilityFunctions} />
+	// 		);
+	// 	} else if (appState.get('settings_editor')) {
+	// 		return (
+	// 			<SettingsEditor settings={appState.get('artist_data')} close={this.closeSettingsEditor} appState={appState} {...UtilityFunctions} />
+	// 		);
+	// 	} else if (appState.get('upload_set_wizard')) {
+	// 		return (
+	// 			<UploadWizardWrapper originalArtist={appState.get('artist_data').artist} eventLookup={appState.get('event_lookup')} events={appState.get('events')} mixes={appState.get('mixes')} genres={appState.get('genres')}
+	// 				venues={appState.get('venues')} />
+	// 		);
+	// 	} else {
+	// 		return (
+	// 			<ViewContainer 
+	// 				appState={appState} 
+	// 				{...updateFunctions} 
+	// 				{...UtilityFunctions} 
+	// 				push={push} 
+	// 				routeHandler={RouteHandler} 
+	// 				openSetEditor={this.openSetEditor} 
+	// 				openUploadSetWizard={this.openUploadSetWizard} 
+	// 				loaded={appState.get('loaded')} />
+	// 		);
+	// 	}
+	// }
+
 });
 
-/*NEVER CHANGE THHE ROUTE OR ELSE IT WILL GO KAPPOOOA AND SHIT THE BED*/
-var routes = (
-	<Route path='/' handler={App}>
-		<DefaultRoute name='content' handler={ContentView} />
-		<Route path='metrics' handler={MetricsView}>
-			{/* individual metrics components go here */}
+var history = createBrowserHistory();
+
+ReactDOM.render(
+	<Router>
+		<Route path='/' component={App} >
+			<IndexRoute component={ContentView} />
+			<Route path='metrics' component={MetricsView}>
+				<Route path='setmine' component={SetmineReport} />
+				<Route path='beacons' component={BeaconReport} />
+				<Route path='social' component={SocialReport} />
+				<Route path='soundcloud' component={SoundcloudReport} />
+				<Route path='youtube' component={YoutubeReport} />
+			</Route>
+
+			<Route path='edit/:id' component={MobileSetEditor} />
+			<Route path='account' component={SettingsEditor} />
+			<Route path='upload' component={UploadWizardWrapper} />
+
 		</Route>
-		<Route path='settings' handler={SettingsEditor} />
-		<Route path='edit/:id' handler={MobileSetEditor} />
-	</Route>
-);
-
-var bodyMount = document.getElementById('body-mount-point');
-
-Router.run(routes, Router.HashLocation, function(Root) {
-	React.render(<Root/>, bodyMount);
-});
-
-// <ReactDatalist key='event-datalist' options={appState.get('events')} objKey='event' listId='event-list' isArray={false} />
-// <ReactDatalist key='mix-datalist' options={appState.get('mixes')} objKey='mix' listId='mix-list' isArray={false} />
-// <ReactDatalist key='genre-datalist' options={appState.get('genres')} isArray={true} listId='genre-list' />
+	</Router>,
+document.getElementById('body-mount-point'));

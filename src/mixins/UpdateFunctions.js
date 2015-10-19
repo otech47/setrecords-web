@@ -1,24 +1,6 @@
 var moment = require("moment");
 
 var UpdateFunctions = {
-	updateArtist: function(callback) {
-		// console.log("Updating artist info...");
-		var artistId = this.state.appState.get("artist_data").id;
-		var requestURL = "http://localhost:3000/api/v/7/setrecords/artist/info/" + artistId;
-		$.ajax({
-			type: "GET",
-			url: requestURL,
-			success: function(res) {
-				// console.log('Artist...');
-				if (res.status == 'failure') {
-					// console.log("An error occurred getting artist data.");
-					callback(res.payload.error);
-				} else {
-					callback(null, res.payload.artist_info);
-				}
-			}
-		});
-	},
 	updateSetmine: function(callback, params) {
 		// console.log("Updating setmine info...");
 		var cohortType = "";

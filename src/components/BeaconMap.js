@@ -1,4 +1,4 @@
-var React = require('react/addons');
+var React = require('react');
 import _ from 'underscore';
 var constants = require('../constants/constants');
 

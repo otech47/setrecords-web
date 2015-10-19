@@ -1,4 +1,4 @@
-var React = require('react/addons');
+var React = require('react');
 var Dropzone = require('react-dropzone');
 import PreviewPlayer from './PreviewPlayer';
 
@@ -98,10 +98,15 @@ var WizardStep2 = React.createClass({
 		});
 	},
 	submitStep: function() {
-		if (this.props.songs.length > 0) {
-			this.props.stepForward();
-		} else {
+		if (this.props.songs.length == 0) {
 			alert('Please upload at least one mp3 or wav file to continue.');
+		} else if (this.props.songs.length > 1) {
+			var confirm = window.confirm('You have uploaded more than one file. Joining them will take additional time. Is this ok?');
+			if (confirm == true) {
+				this.props.stepForward();
+			}
+		} else {
+			this.props.stepForward();
 		}
 	}
 });

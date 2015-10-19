@@ -1,50 +1,18 @@
-var React = require('react/addons');
-var Dropzone = require('react-dropzone');
 import _ from 'underscore';
 import async from 'async';
 
-var Joiner = React.createClass({
-	getInitialState: function() {
-		return {
-			files: []
-		};
-	},
-	render: function() {
-		return (
-			<div className="flex-column wizard-step">
-				<audio ref='player' autoplay controls>
-					<source ref='playerSource' src='' />
-				</audio>
-				<Dropzone onDrop={this.onDrop} multiple={true}>
-					Drop files here!
-				</Dropzone>
-				<button onClick={this.combineFiles}>Combine</button>
-			</div>
-		);
-	},
-
-	onDrop: function(file) {
-		var self = this;
-		var newFiles = React.addons.update(this.state.files, {$push: file});
-		this.setState({
-			files: newFiles
-		}, function() {
-			console.log(self.state);
-		});
-	},
-	combineFiles: function(event) {
-		console.log("Send files command issued.");
+var Joiner = {
+	combineAudioFiles: function(files, callback) {
 		console.log("Setting up audio context...");
 		var AudioContext = window.AudioContext || window.webkitAudioContext;
 		var context = new AudioContext();
-		var fileArray = this.state.files;
 		var finalBuffer;
 		var self = this;
-		
-		console.log("Beginning async forEachSeries for file array:");
-		console.log(fileArray);
 
-		async.forEachSeries(fileArray, function(file, callback) {
+		console.log("Beginning async decode for files:");
+		console.log(files);
+
+		async.forEachSeries(files, function(file, callback) {
 			console.log("File size: " + file.size);
 			var request = new XMLHttpRequest();
 
@@ -65,7 +33,7 @@ var Joiner = React.createClass({
 				URL.revokeObjectURL(audioUrl);
 				console.log("File loaded. Decoding...");
 				context.decodeAudioData(request.response, function(buffer) {
-					if (fileArray.indexOf(file) == 0) {
+					if (files.indexOf(file) == 0) {
 						console.log("This is the first file. Creating starting buffer...");
 						finalBuffer = buffer;
 					} else {
@@ -77,7 +45,6 @@ var Joiner = React.createClass({
 							channel.set(finalBuffer.getChannelData(i), 0);
 							channel.set(buffer.getChannelData(i), finalBuffer.length);
 						}
-						
 						finalBuffer = combinedBuffer;
 					}
 					callback(null);
@@ -88,8 +55,9 @@ var Joiner = React.createClass({
 			request.send();
 		}, function(err, results) {
 			if (err) {
-				console.log("There was an error.");
+				console.log("There was an error joining.");
 				console.log(err);
+				callback(err);
 			} else {
 				console.log("All buffers appended.");
 				var sampleRate = finalBuffer.sampleRate;
@@ -147,58 +115,12 @@ var Joiner = React.createClass({
 				if (mp3Finish.length > 0) {
 					mp3Data.push(mp3Finish);
 				}
-				console.log("Done.");
-
-				console.log("Let's try printing this mp3...");
-				console.debug(mp3Data);
 				console.log("Creating a blob...");
 				var blob = new Blob(mp3Data, {type: 'audio/mpeg'});
-				console.log(blob);
-				console.log(blob.size);
-				console.log(blob.type);
-				var blobUrl = (window.URL || window.webkitURL).createObjectURL(blob);
-				var link = window.document.createElement('a');
-				link.href = blobUrl;
-				link.download = 'joined.mp3';
-				var click = document.createEvent("Event");
-				click.initEvent("click", true, true);
-				link.dispatchEvent(click);
-				
-				console.log("Setting audio source to blob object...");
-				var source = React.findDOMNode(self.refs.playerSource);
-				source.setAttribute('src', blobUrl);
-				console.log("Here's what the source looks like now...");
-				console.log(source);
-				console.log("Attempting to play...");			
-				var audio = React.findDOMNode(self.refs.player);
-				audio.load();
-				audio.play();
-
-
-				// console.log("Adding finalBuffer to BufferSource...");
-				// var playSound = context.createBufferSource();
-				// playSound.buffer = finalBuffer;
-				// console.log("Connecting to destination...");
-				// playSound.connect(context.destination);
-				// console.log("Starting...");
-				// playSound.start(0);
-				// console.log("The length of this track is:");
-				// console.log(playSound.buffer.duration);
+				callback(null, blob);
 			}
 		});
-	},
-
-	appendBuffer: function(buffer1, buffer2, context) {
-
-		var numChannels = Math.min(buffer1.numberOfChannels, buffer2.numberOfChannels);
-		var combinedBuffer = context.createBuffer(numChannels, (buffer1.length + buffer2.length), buffer1.sampleRate);
-		for (var i = 0; i < numChannels; i++) {
-			var channel = combinedBuffer.getChannelData(i);
-			channel.set(buffer1.getChannelData(i), 0);
-			channel.set(buffer2.getChannelData(i), buffer1.length);
-		}
-		return combinedBuffer;
 	}
-});
+}
 
 module.exports = Joiner;

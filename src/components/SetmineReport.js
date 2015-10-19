@@ -1,8 +1,11 @@
 import React from 'react';
 import _ from 'underscore';
 var LineChart = require('react-chartjs').Line;
-var Loader = require('react-loader');
+import Loader from 'react-loader';
 var moment = require('moment');
+// import UtilityFunctions from '../mixins/UtilityFunctions';
+import {numberWithSuffix} from '../mixins/UtilityFunctions';
+import {updateSetmine} from '../mixins/UpdateFunctions';
 
 var SetmineReport = React.createClass({
 	getInitialState() {
@@ -13,6 +16,11 @@ var SetmineReport = React.createClass({
 			loaded: true,
 			cohort: 'daily'
 		}
+	},
+
+	componentWillMount: function() {
+		var self = this;
+		this.updateSetmine();
 	},
 
 	toggleData(event) {
@@ -26,26 +34,31 @@ var SetmineReport = React.createClass({
 			var cohortType = $(event.currentTarget).attr('name');
 			var self = this;
 			var push = this.props.push;
+
 			this.setState({
 				loaded: false,
 				cohort: cohortType
-			}, function() {
-				self.props.updateSetmine(function(err, metrics) {
-					if (err) {
-						console.log('An error occurred while loading setmine metrics.');
-					} else {
-						push({
-							type: 'SHALLOW_MERGE',
-							data: {
-								setmine_metrics: metrics
-							}
-						});
-						self.setState({
-							loaded: true
-						});
-					}
-				}, self.state.cohort);
-			});
+			}, self.updateSetmine(self.state.cohort));
+
+			// function() {
+			// 	self.props.updateSetmine(function(err, metrics) {
+			// 		if (err) {
+			// 			console.log('An error occurred while loading setmine metrics.');
+			// 		} else {
+			// 			push({
+			// 				type: 'SHALLOW_MERGE',
+			// 				data: {
+			// 					setmine_metrics: metrics
+			// 				}
+			// 			});
+			// 			self.setState({
+			// 				loaded: true
+			// 			});
+			// 		}
+			// 	}, 
+
+			// 	self.state.cohort);
+			// });
 		}
 	},
 
@@ -67,7 +80,7 @@ var SetmineReport = React.createClass({
 					dateFormat = 'M[/]YY';
 					break;
 			}
-			var metrics = this.props.metrics;
+			var metrics = this.props.appState.get('setmine_metrics');
 			var labels = [];
 			var datasets = [];
 			for (var i = 0; i < metrics.plays.overtime.length; i++) {
@@ -111,8 +124,43 @@ var SetmineReport = React.createClass({
 		}
 	},
 
+	updateSetmine(params) {
+		var cohortType = '';
+		if(params != null) {
+			var cohortType = '?cohortType='+params;
+		}
+
+		var artistId = this.props.appState.get("artist_data").id;
+		var setmineRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/setmine/'
+		+ artistId + cohortType;
+
+		var timezone = moment().utcOffset();
+		$.ajax({
+			type: 'GET',
+			url: setmineRequestUrl,
+			data: {timezone: timezone}
+		})
+		.done(function(res) {
+			self.props.push({
+				type: 'SHALLOW_MERGE',
+				data: {
+					setmine_metrics: res.setmine,
+					header: 'Metrics'
+				}
+			});
+			self.setState({
+				loaded: true
+			});
+		})
+		.fail(function(err) {
+			console.log(err);
+		});
+	},
+
 	render() {
-		var {numberWithSuffix, metrics, ...other} = this.props;
+		// var {numberWithSuffix, metrics, ...other} = this.props;
+		var metrics = this.props.appState.get('setmine_metrics');
+
 		var playsCurrent = metrics.plays.current;
 		var playsChange = metrics.plays.current - metrics.plays.last;
 		var viewsCurrent = metrics.views.current;

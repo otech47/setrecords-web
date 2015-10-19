@@ -434,64 +434,35 @@ form{
 	overflow:hidden;
 }
 
-footer{
-	height:@footerHeight;
-	align-items: center;
-	background-color: @light-gray;
-	z-index: 101;
-	font-family: @regular;
-	padding: 0 1% 0 1%;
-	flex-wrap: nowrap;
-	font-size: 0.2 * @headerHeight;
-
-
-	.company-links {
-		height: 100%;
-		align-items: center;
-		justify-content: flex-start;
-		flex-wrap: nowrap;
-		a {
-			margin: 0 1vw 0 1vw;
-			color: @gray;
-			&:hover {
-				color: @blue;
-			}
-		}
-		i {
-			margin: 0 1vw 0 1vw;
-			color: @gray;
-		}
+footer {
+	.flex-column;
+	position: relative;
+	.background(@light-gray, @dark-gray);
+	padding: 3vh;
+	z-index: 3;
+	h4 {
+		margin: 0;
+		text-align: center;
 	}
-
-	.social-links {
-		height: 100%;
-		align-items: center;
-		justify-content: center;
-		flex-wrap: nowrap;
-		a {
-			margin: 0 1vw 0 1vw;
-			color: @gray;
-			&:hover {
-				color: @blue;
-			}
-		}
+	span {
+		margin-left: 1rem;
 	}
-
-	.sponsorship-links {
-		height: 100%;
-		align-items: center;
-		justify-content: flex-end;
-		flex-wrap: nowrap;
-		a {
-			margin: 0 1vw 0 1vw;
-		}
+	ul {
+		list-style: none;
+		padding: 0;
+		> * {margin:0.5rem;}
 	}
-	.fa-facebook{color:white;}
-	.fa-twitter{color:white;}
-	.fa-instagram{color:white;}
-	.fa-facebook:hover{color:@facebook-blue;}
-	.fa-twitter:hover{color:@twitter-blue;}
-	.fa-instagram:hover{color:@instagram-blue;}
+	.copyright {
+		margin: 1rem 0;
+	}
+	.sponsors, .links, .social {
+		margin: 0 1rem;
+	}
+	.large({
+		.flex-row;
+		.social{.center;}
+		.sponsors {margin: 0 1rem;}
+	}, 500px);
 }
 
 /*Content Page*/
@@ -756,38 +727,18 @@ td{
 }
 
 
-.upload-set-wizard {
+#UploadSetWizard {
 	background-color: @white;
-	margin-top: @headerHeight * 1.5;
-	min-height: 57rem;
 	padding: 2rem 3rem;
-
 	audio {
 		display: none;
 	}
 
-	.wizard-banner {
-		background-color: @light-gray;
-		font-size: 2rem;
-		color: @white;
-		font-family: @bold;
-		align-items: center;
-		justify-content: center;
-		position: fixed;
-		width: 100%;
-		margin: 0;
-		height: @headerHeight * 0.5;
-		top: @headerHeight;
-		z-index: 22;
-		left: 0;
-		p {
-			margin: 0;
-		}
-	}
 	.step-counter {
 		font-size: 2rem;
 		font-family: @regular;
 		color: @dark-gray;
+		text-align: center;
 		margin: 0;
 	}
 	.back-arrow {

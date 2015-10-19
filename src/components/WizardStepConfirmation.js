@@ -1,5 +1,6 @@
 import React from 'react';
 import MockSetTileImproved from './MockSetTileImproved';
+var constants = require('../constants/constants');
 
 var WizardStepConfirmation = React.createClass({
 	render: function() {
@@ -17,10 +18,10 @@ var WizardStepConfirmation = React.createClass({
 			mockImage = this.props.image.preview;
 		}
 		if (this.props.match_url) {
-			mockImage = this.props.match_url;
+			mockImage = constants.S3_ROOT_FOR_IMAGES + this.props.match_url;
 		}
 		var artists = this.props.originalArtist;
-		if (this.props.featured_artists.length > 0) {
+		if (this.props.featured_artists.length > 0 && this.props.set_type != 'Album') {
 			artists += ' feat. ' + this.props.featured_artists.join(', ');
 		}
 		return (

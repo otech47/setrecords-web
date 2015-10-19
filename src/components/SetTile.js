@@ -22,10 +22,10 @@ var SetTile = React.createClass({
 					<div className="divider"/>
 					<div className="flex-row flex set-stats">
 						<div className="flex-fixed play-count set-flex">
-							<i className="fa fa-play"> {this.props.popularity}</i>
+							<i className="fa fa-play"> {` ${this.props.popularity}`}</i>
 						</div>
 						<div className="flex-fixed set-length set-flex">
-							<i className="fa fa-clock-o">{this.props.set_length}</i>
+							<i className="fa fa-clock-o">{` ${this.props.set_length}`}</i>
 						</div>
 					</div>
 				</div>

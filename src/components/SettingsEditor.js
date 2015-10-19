@@ -1,4 +1,5 @@
-import React from 'react/addons';
+import React from 'react';
+import update from 'react-addons-update';
 var Dropzone = require("react-dropzone");
 import _ from 'underscore';
 import async from 'async';
@@ -34,7 +35,7 @@ var SettingsEditor = React.createClass({
 					</button>
 					<button className="flex-fixed cancel set-flex" onClick={this.cancelChanges}>
 						Cancel
-					</button>					
+					</button>
 				</div>
 				<div className="artist-name flex-row">
 					{originalSettings.artist}
@@ -76,7 +77,7 @@ var SettingsEditor = React.createClass({
 					<div>
 						<p>Facebook Link</p>
 						<input name="fb_link" type="text" value={pendingSettings.fb_link} onChange={this.changeLinkField} />
-					</div>						
+					</div>
 					<div>
 						<p>Instagram Link</p>
 						<input name="instagram_link" type="text" value={pendingSettings.instagram_link} onChange={this.changeLinkField} />
@@ -301,7 +302,7 @@ var SettingsEditor = React.createClass({
 							applying: false
 						}, function() {
 							setTimeout(function() {
-								self.props.close(true);	
+								self.props.close(true);
 							}, 3000);
 						});
 					} else {
@@ -311,7 +312,7 @@ var SettingsEditor = React.createClass({
 								success: true
 							}, function() {
 								setTimeout(function() {
-									self.props.close(true);	
+									self.props.close(true);
 								}, 3000);
 							});
 						}

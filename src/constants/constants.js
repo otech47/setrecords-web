@@ -21,6 +21,7 @@ var colors = {
 module.exports =  {
 	S3_ROOT: S3_ROOT,
 	S3_ROOT_FOR_IMAGES: S3_ROOT_FOR_IMAGES,
+	DEFAULT_IMAGE: DEFAULT_IMAGE,
 	API_ROOT: API_ROOT,
 	months: months
 };

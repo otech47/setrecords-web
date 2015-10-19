@@ -1,9 +1,14 @@
-import React from 'react/addons';
+import React from 'react';
 import SetTile from './SetTile';
 import _ from 'underscore';
 var Loader = require('react-loader');
 
 var ContentView = React.createClass({
+
+	componentWillMount() {
+		this.updateSets();
+	},
+
 	render() {
 		var sets = this.props.appState.get('sets');
 		var self = this;
@@ -35,12 +40,34 @@ var ContentView = React.createClass({
 		});
 
 		return (
-			<Loader loaded={self.props.loaded}>
+			<Loader loaded={true}>
 				<div className='content-page flex-row'>
 					{setTiles}
 				</div>
 			</Loader>
 		);
+	},
+
+	updateSets() {
+		var requestURL = 'http://localhost:3000/api/v/7/setrecords/artist/sets/' + this.props.appState.get('artist_data').id;
+
+		$.ajax({
+			type: 'GET',
+			url: requestURL
+		})
+		.done(function(res) {
+			console.log(res.payload.sets);
+			this.props.push({
+				type: 'SHALLOW_MERGE',
+				data: {
+					sets: res.payload.sets,
+					header: 'Content'
+				}
+			});
+		}.bind(this))
+		.fail(function(err) {
+			console.log(err);
+		});
 	}
 });
 

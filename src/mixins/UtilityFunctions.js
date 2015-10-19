@@ -48,4 +48,5 @@ var UtilityFunctions = {
 		return parseInt(timeArray[0]) * 60 + parseInt(timeArray[1]);
 	}
 };
+
 module.exports = UtilityFunctions;
