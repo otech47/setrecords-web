@@ -24,7 +24,8 @@ var NavBar = React.createClass({
 					<i className='fa fa-fw icon-setmine'/>
 					<div>Setmine</div>
 				</Link>
-				<Link className='flex-row flex click' to='/metrics/beacons'>
+				<Link className='flex-row flex click' to='/metrics/beacons'
+					activeClassName='active'>
 					<i className='fa fa-fw fa-dollar'/>
 					<div>Beacons</div>
 				</Link>

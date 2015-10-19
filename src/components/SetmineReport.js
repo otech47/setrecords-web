@@ -3,9 +3,7 @@ import _ from 'underscore';
 var LineChart = require('react-chartjs').Line;
 import Loader from 'react-loader';
 var moment = require('moment');
-// import UtilityFunctions from '../mixins/UtilityFunctions';
 import {numberWithSuffix} from '../mixins/UtilityFunctions';
-import {updateSetmine} from '../mixins/UpdateFunctions';
 
 var SetmineReport = React.createClass({
 	getInitialState() {
@@ -18,8 +16,7 @@ var SetmineReport = React.createClass({
 		}
 	},
 
-	componentWillMount: function() {
-		var self = this;
+	componentWillMount() {
 		this.updateSetmine();
 	},
 
@@ -32,33 +29,11 @@ var SetmineReport = React.createClass({
 	changePeriod(event) {
 		if (this.state.loaded && ($(event.currentTarget).attr('name') != this.state.cohort)) {
 			var cohortType = $(event.currentTarget).attr('name');
-			var self = this;
-			var push = this.props.push;
 
 			this.setState({
 				loaded: false,
 				cohort: cohortType
-			}, self.updateSetmine(self.state.cohort));
-
-			// function() {
-			// 	self.props.updateSetmine(function(err, metrics) {
-			// 		if (err) {
-			// 			console.log('An error occurred while loading setmine metrics.');
-			// 		} else {
-			// 			push({
-			// 				type: 'SHALLOW_MERGE',
-			// 				data: {
-			// 					setmine_metrics: metrics
-			// 				}
-			// 			});
-			// 			self.setState({
-			// 				loaded: true
-			// 			});
-			// 		}
-			// 	}, 
-
-			// 	self.state.cohort);
-			// });
+			}, this.updateSetmine(this.state.cohort));
 		}
 	},
 
@@ -125,10 +100,9 @@ var SetmineReport = React.createClass({
 	},
 
 	updateSetmine(params) {
-		var self = this;
 		var cohortType = '';
 		if(params != null) {
-			var cohortType = '?cohortType='+params;
+			cohortType = '?cohortType='+params;
 		}
 
 		var artistId = this.props.appState.get("artist_data").id;
@@ -141,15 +115,14 @@ var SetmineReport = React.createClass({
 			url: setmineRequestUrl,
 			data: {timezone: timezone}
 		})
-		.done(function(res) {
-			self.props.push({
+		.done((res) => {
+			this.props.push({
 				type: 'SHALLOW_MERGE',
 				data: {
-					setmine_metrics: res.setmine,
-					header: 'Metrics'
+					setmine_metrics: res.setmine
 				}
 			});
-			self.setState({
+			this.setState({
 				loaded: true
 			});
 		})

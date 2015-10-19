@@ -1,8 +1,10 @@
 import React from 'react';
 import _ from 'underscore';
 var LineChart = require('react-chartjs').Line;
-var Loader = require('react-loader');
+import Loader from 'react-loader';
 var moment = require('moment');
+import {numberWithSuffix} from '../mixins/UtilityFunctions';
+
 
 var SoundcloudReport = React.createClass({
 	getInitialState() {
@@ -14,6 +16,10 @@ var SoundcloudReport = React.createClass({
 		}
 	},
 
+	componentWillMounte() {
+		this.updateSoundcloud();
+	},
+
 	toggleData(event) {
 		var clicked = {};
 		clicked[event.currentTarget.id] = !this.state[event.currentTarget.id];
@@ -23,28 +29,11 @@ var SoundcloudReport = React.createClass({
 	changePeriod(event) {
 		if (this.state.loaded && ($(event.currentTarget).attr('name') != this.state.cohort)) {
 			var cohortType = $(event.currentTarget).attr('name');
-			var self = this;
-			var push = this.props.push;
+
 			this.setState({
 				loaded: false,
 				cohort: cohortType
-			}, function() {
-				self.props.updateSoundcloud(function(err, metrics) {
-					if (err) {
-						console.log('An error occurred while loading soundcloud metrics.');
-					} else {
-						push({
-							type: 'SHALLOW_MERGE',
-							data: {
-								soundcloud_metrics: metrics
-							}
-						});
-						self.setState({
-							loaded: true
-						});
-					}
-				}, self.state.cohort);
-			});
+			}, this.updateSoundcloud(this.state.cohort));
 		}
 	},
 
@@ -54,19 +43,19 @@ var SoundcloudReport = React.createClass({
 			var dateFormat;
 			switch (this.state.cohort) {
 				case 'daily':
-				dateGrouping = 'M[/]D[/]YYYY';
-				dateFormat = 'M[/]D';
-				break;
+					dateGrouping = 'M[/]D[/]YYYY';
+					dateFormat = 'M[/]D';
+					break;
 				case 'weekly':
-				dateGrouping = 'w[/]YYYY';
-				dateFormat = 'M[/]D';
-				break;
+					dateGrouping = 'w[/]YYYY';
+					dateFormat = 'M[/]D';
+					break;
 				case 'monthly':
-				dateGrouping = 'M[/]YYYY';
-				dateFormat = 'M[/]YY';
-				break;
+					dateGrouping = 'M[/]YYYY';
+					dateFormat = 'M[/]YY';
+					break;
 			}
-			var metrics = this.props.metrics;
+			var metrics = this.props.appState.get('soundcloud_metrics');
 			var labels = [];
 			var datasets = [];
 			for (var i = 0; i < metrics.followers.overtime.length; i++) {
@@ -110,8 +99,40 @@ var SoundcloudReport = React.createClass({
 		}
 	},
 
+	updateSoundcloud(params) {
+		var cohortType = '';
+		if (params != null) {
+			cohortType = "?cohortType=" + params;
+		}
+		var artistId = this.props.appState.get("artist_data").id;
+		var soundcloudRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/soundcloud/'+ artistId + cohortType;
+		var soundcloudMetrics;
+		var timezone = moment().utcOffset();
+
+		$.ajax({
+			type: 'GET',
+			url: soundcloudRequestUrl,
+			data: {timezone: timezone}
+		})
+		.done((res) => {
+			console.log(res);
+			this.props.push({
+				type: 'SHALLOW_MERGE',
+				data: {
+					soundcloud_metrics: res
+				}
+			});
+			this.setState({
+				loaded: true
+			});
+		})
+		.fail((err) => {
+			console.log(err);
+		});
+	},
+
 	render() {
-		var {numberWithSuffix, metrics, ...other} = this.props;
+		var metrics = this.props.appState.get('soundcloud_metrics');
 		var playsCurrent = metrics.plays.current;
 		var playsChange = metrics.plays.current - metrics.plays.last;
 		var followersCurrent = metrics.followers.current;

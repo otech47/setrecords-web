@@ -1,11 +1,13 @@
 import React from 'react';
 import _ from 'underscore';
 var LineChart = require('react-chartjs').Line;
-var Loader = require('react-loader');
+import Loader from 'react-loader';
 var moment = require('moment');
+import {numberWithSuffix} from '../mixins/UtilityFunctions';
+
 
 var BeaconReport = React.createClass({
-	getInitialState: function() {
+	getInitialState() {
 		return {
 			revenue: true,
 			unlocks: true,
@@ -13,57 +15,48 @@ var BeaconReport = React.createClass({
 			cohort: 'daily'
 		}
 	},
-	toggleData: function(event) {
+
+	componentWillMount() {
+		this.updateBeacon();
+	},
+
+	toggleData(event) {
 		var clicked = {};
 		clicked[event.currentTarget.id] = !this.state[event.currentTarget.id];
 		this.setState(clicked);
 	},
-	changePeriod: function(event) {
+
+	changePeriod(event) {
 		if (this.state.loaded && ($(event.currentTarget).attr('name') != this.state.cohort)) {
 			var cohortType = $(event.currentTarget).attr('name');
-			var self = this;
 			var push = this.props.push;
+
 			this.setState({
 				loaded: false,
 				cohort: cohortType
-			}, function() {
-				self.props.updateBeacons(function(err, metrics) {
-					if (err) {
-						console.log('An error occurred while loading Beacon metrics.');
-					} else {
-						push({
-							type: 'SHALLOW_MERGE',
-							data: {
-								beacon_metrics: metrics
-							}
-						});
-						self.setState({
-							loaded: true
-						});
-					}
-				}, self.state.cohort);
-			});
+			}, this.updateBeacon(this.state.cohort));
 		}
 	},
-	lineGraph: function() {
+
+	lineGraph() {
 		if ((this.state.revenue || this.state.unlocks) && this.state.loaded) {
 			var dateGrouping;
 			var dateFormat;
 			switch (this.state.cohort) {
 				case 'daily':
-				dateGrouping = 'M[/]D[/]YYYY';
-				dateFormat = 'M[/]D';
-				break;
+					dateGrouping = 'M[/]D[/]YYYY';
+					dateFormat = 'M[/]D';
+					break;
 				case 'weekly':
-				dateGrouping = 'w[/]YYYY';
-				dateFormat = 'M[/]D';
-				break;
+					dateGrouping = 'w[/]YYYY';
+					dateFormat = 'M[/]D';
+					break;
 				case 'monthly':
-				dateGrouping = 'M[/]YYYY';
-				dateFormat = 'M[/]YY';
-				break;
+					dateGrouping = 'M[/]YYYY';
+					dateFormat = 'M[/]YY';
+					break;
 			}
-			var metrics = this.props.metrics;
+			var metrics = this.props.appState.get('beacon_metrics');
 			var labels = [];
 			var datasets = [];
 			for (var i = 0; i < metrics.revenue.overtime.length; i++) {
@@ -106,8 +99,42 @@ var BeaconReport = React.createClass({
 			return (<p className='not-found'>Click a metric above to show its graph</p>);
 		}
 	},
-	render: function() {
-		var {numberWithSuffix, metrics, ...other} = this.props;
+
+	updateBeacon(params) {
+		var cohortType = '';
+		if (params != null) {
+			cohortType = "?cohortType=" + params;
+		}
+
+		var artistId = this.props.appState.get("artist_data").id;
+		var beaconRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/beacons/'
+		+ artistId + cohortType;
+		var beaconMetrics;
+		var timezone = moment().utcOffset();
+
+		$.ajax({
+			type: 'GET',
+			url: beaconRequestUrl,
+			data: {timezone: timezone}
+		})
+		.done((res) => {
+			this.props.push({
+				type: 'SHALLOW_MERGE',
+				data: {
+					beacon_metrics: res.beacons
+				}
+			});
+			this.setState({
+				loaded: true
+			});
+		})
+		.fail((err) => {
+			console.log(err);
+		});
+	},
+
+	render() {
+		var metrics = this.props.appState.get('beacon_metrics');
 
 		var revenueTotal = metrics.revenue.current;
 		var revenueChange = revenueTotal - metrics.revenue.last;

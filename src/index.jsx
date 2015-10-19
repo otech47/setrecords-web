@@ -57,10 +57,48 @@ var initialAppState = Immutable.Map({
 			overtime: []
 		}
 	},
-	soundcloud_metrics: {},
+	soundcloud_metrics: {
+		plays: {
+			current: '',
+			last: '',
+			overtime: []
+		},
+		followers: {
+			current: '',
+			last: '',
+			overtime: []
+		}
+	},
 	youtube_metrics: {},
-	beacon_metrics: {},
-	social_metrics: {}
+	beacon_metrics: {
+		revenue: {
+			current: '',
+			last: '',
+			overtime: ''
+		},
+		unlocks: {
+			current: '',
+			last: '',
+			overtime: ''
+		}
+	},
+	social_metrics: {
+		twitter: {
+			current: '',
+			last: '',
+			overtime: ''
+		},
+		facebook: {
+			current: '',
+			last: '',
+			overtime: ''
+		},
+		instagram: {
+			current: '',
+			last: '',
+			overtime: ''
+		}
+	}
 });
 
 var evtHandler = GlobalEventHandler(initialAppState);

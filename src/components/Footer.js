@@ -23,12 +23,12 @@ var Footer = React.createClass({
 				<div className='flex-column social'>
 					<h4 className='flex-row'>
 						<i className='fa fa-share-alt'/>
-						<span>CONNECT WITH US</span>
+						<span>CONTACT</span>
 					</h4>
 					<ul>
 						<li>
 							<i className='fa fa-fw fa-envelope-o'/>
-							<span>jesus@setmine.com</span>
+							<span>artists@setmine.com</span>
 						</li>
 						<li>
 							<a href='https://www.facebook.com/SetmineApp' className='fa fa-fw fa-facebook-square'/>
