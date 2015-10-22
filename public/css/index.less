@@ -22,30 +22,6 @@ a {
 	}
 }
 
-.apply-editor {
-	position: fixed;
-	width: 100%;
-	margin: 0;
-	height: @headerHeight * 0.5;
-	align-items: stretch;
-	top: @headerHeight;
-	z-index: 22;
-	left: 0;
-	color: white;
-	   * {
-			background-color: @dark-gray;
-			border: none;
-			font-size: 1rem;
-		}
-		*:hover {
-			border-bottom: 0.25rem solid #3698db;
-		}
-		.apply , .revert , .cancel {
-			color: @white;
-			justify-content: center;
-		}
-}
-
 header {
 	height: @headerHeight;
 	position: fixed;
@@ -125,8 +101,11 @@ header {
 .view-container {
 	margin-top: @headerHeight;
 	min-height: @pageHeight;
-	>.loadedContent {
-		width: @pageWidth - @sidebarWidth;
+	.view {
+		.scrollable;
+		>.loadedContent {
+			width: @pageWidth - @sidebarWidth;
+		}
 	}
 }
 
@@ -429,7 +408,8 @@ form{
 footer {
 	.flex-column;
 	position: relative;
-	.background(@light-gray, @dark-gray);
+	// .background(@light-gray, @dark-gray);
+	.background(@white, @dark-gray);
 	padding: 3vh;
 	z-index: 3;
 	h4 {
@@ -963,58 +943,74 @@ td{
 	color: @green !important;
 }
 
-.mobile-settings-editor{
-	background-color: @white;
-	margin-top: @headerHeight * 1.5;
-	min-height: 57rem;
+#SettingsEditor {
+	background-color: @light-gray;
 	align-items: flex-start;
-	padding: 2rem 3rem;
-
-   
-	.artist-name {
-		font-size: 2.25rem;
-		font-family: @bold;
+	padding: 4rem;
+	.apply-editor {
+		width: 100%;
+		height: @headerHeight * 0.5;
+		align-items: stretch;
+		top: @headerHeight;
+		z-index: 22;
+		left: 0;
+		color: white;
+		   * {
+				background-color: @dark-gray;
+				border: none;
+				font-size: 1rem;
+			}
+			*:hover {
+				border-bottom: 0.25rem solid #3698db;
+			}
+			.apply , .revert , .cancel {
+				color: @white;
+				justify-content: center;
+			}
 	}
 	.artist-image {
-		margin: 4rem 0;
+		margin: 0 auto 4rem;
+		width: 70%;
 		img {
-			height: 24rem;
-			width: 24rem;
+			.center;
+			.size(8rem, 8rem);
 			border-radius: 50%;
-			border: 1.5rem solid @blue;
+			border: 5px solid @blue;
 			box-sizing: border-box;
 		}
 	}
-	.upload-image {
-			margin: 1rem 0 0 0;
-			height: 4rem;
-			width: 25rem;
-			font-size: 1rem;
-			font-family: @regular;
-
-			align-items: center;
-			justify-content: center;
-			box-sizing: border-box;
-			background-color: @dark-gray;
-			p {
-				color: @white;
-				margin: 0;
-			}
-		}
-	.password-change{
-		input{
-			width: 130%;
+	.dropzone {
+		height: 8rem;
+		width: 25rem;
+		font-size: 1rem;
+		font-family: @regular;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+		background-color: @dark-gray;
+		border: dashed 1px;
+		.background(@white, @dark-gray);
+		.card(1);
+		p {
+			margin: 0;
 		}
 	}
-	input, select, textarea{
-			color: white; 
-	}           
+	.password-change, .artist-links, .apply-editor {
+		.background(@white, @dark-gray);
+		.border-radius(3px);
+		.card(1);
+		width: 90%;
+		margin: 0 auto 4rem;
+		padding: 5%;
+	}
 	input{
-		width: 520px;
+		width: 90%;
 		height: 30px;
-		background-color: @light-gray;
-		border: transparent;
-
+		.background(@white, @dark-gray);
+		border: solid 1px @gray;
+		.border-radius(3px);
+		outline: none;
+		padding: 0 .5rem;
 	}
 }
 
@@ -1033,17 +1029,16 @@ td{
 	justify-content: center;
 }
 
- #addTrack{
-		font-size: 50%;
-		height: 30px;
-		width: 20%;
-		border: none;
-		color: white;
-		background-color: #33b510; 
-		font-family: @demi;
-		border-radius:  12px;
-		
-		   }
+#addTrack {
+	font-size: 50%;
+	height: 30px;
+	width: 20%;
+	border: none;
+	color: white;
+	background-color: #33b510; 
+	font-family: @demi;
+	border-radius: 12px;		
+}
 
 // .SettingPage{
 //     width: 100%;

@@ -4,7 +4,7 @@ var Icon = React.createClass({
 
 	render() {
 		return (
-			<i className='fa-fw material-icon'>
+			<i className='fa-fw material-icons'>
 				{this.props.children}
 			</i>
 		);

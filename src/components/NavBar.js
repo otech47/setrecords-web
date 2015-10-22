@@ -1,5 +1,6 @@
 import React from 'react';
 import {IndexLink, Link} from 'react-router';
+import Icon from './Icon';
 
 var NavBar = React.createClass({
 
@@ -8,15 +9,15 @@ var NavBar = React.createClass({
 			<div className='flex-column' id='NavBar'>
 				<h3>CONTENT</h3>
 				<Link className='flex-row flex click' to='/upload' activeClassName='active'>
-					<i className='fa-fw material-icons'>file_upload</i>
+					<Icon>file_upload</Icon>
 					<div>Add Set</div>
 				</Link>
 				<Link className='flex-row flex click' to='/upload' activeClassName='active'>
-					<i className='fa-fw material-icons'>music_note</i>
+					<Icon>music_note</Icon>
 					<div>Add Track</div>
 				</Link>
 				<IndexLink className='flex-row flex click' to='/' activeClassName='active' onlyActiveOnIndex={true}>
-					<i className='fa-fw material-icons'>library_music</i>
+					<Icon>library_music</Icon>
 					<div>Uploads</div>
 				</IndexLink>
 				<h3>METRICS</h3>
@@ -42,7 +43,7 @@ var NavBar = React.createClass({
 					<div>Youtube</div>
 				</Link>
 				<h3>SETTINGS</h3>
-				<Link className='flex-row flex click' to='/settings' activeClassName='active'>
+				<Link className='flex-row flex click' to='/account' activeClassName='active'>
 					<i className='fa fa-fw fa-cog'/>
 					<div>Settings</div>
 				</Link>

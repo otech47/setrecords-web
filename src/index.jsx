@@ -311,14 +311,16 @@ var App = React.createClass({
 				<Header appState={appState} openSettingsEditor={this.openSettingsEditor} closeSettingsEditor={this.closeSettingsEditor} openUploadSetWizard={this.openUploadSetWizard} />
 				<div className='flex-row view-container'>
 					<NavBar />
-					{
-						React.cloneElement(this.props.children, {
-							appState: appState,
-							push: push
-						})
-					}
+					<div className='view flex-column flex'>
+						{
+							React.cloneElement(this.props.children, {
+								appState: appState,
+								push: push
+							})
+						}
+						<Footer/>
+					</div>
 				</div>
-				<Footer/>
 			</div>
 		);
 	}
@@ -373,7 +375,6 @@ ReactDOM.render(
 			<Route path='edit/:id' component={MobileSetEditor} />
 			<Route path='account' component={SettingsEditor} />
 			<Route path='upload' component={UploadWizardWrapper} />
-
 		</Route>
 	</Router>,
 document.getElementById('body-mount-point'));

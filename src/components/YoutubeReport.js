@@ -34,7 +34,7 @@ var YoutubeReport = React.createClass({
 			this.setState({
 				loaded: false,
 				cohort: cohortType
-			}, this.updateSetmine(this.state.cohort));
+			}, this.updateYoutube(this.state.cohort));
 		}
 	},
 

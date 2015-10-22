@@ -1,131 +1,177 @@
 import React from 'react';
 import update from 'react-addons-update';
-var Dropzone = require("react-dropzone");
+import Dropzone from 'react-dropzone';
 import _ from 'underscore';
+import R from 'ramda';
 import async from 'async';
-var Loader = require("react-loader");
-var constants = require('../constants/constants');
+import Loader from 'react-loader';
+import constants from '../constants/constants';
+import {History} from 'react-router';
+import Icon from './Icon';
 
 var SettingsEditor = React.createClass({
-	getInitialState: function() {
-		var settingsCopy = this.props.cloneObject(this.props.settings);
-		settingsCopy["artist_image"] = [];
-		settingsCopy["new_pass"] = null;
-		settingsCopy["confirm_pass"] = null;
-		settingsCopy["password_match"] = false;
-		settingsCopy["changes"] = false;
-		settingsCopy["busy"] = false;
-		settingsCopy["applying"] = false;
-		settingsCopy["success"] = false;
-		settingsCopy["failure"] = false;
+
+	mixins: [History],
+
+	getInitialState() {
+		var settings = this.props.appState.get('artist_data');
+		var settingsCopy = R.clone(settings);
+
+		settingsCopy['artist_image'] = [];
+		settingsCopy['new_pass'] = null;
+		settingsCopy['confirm_pass'] = null;
+		settingsCopy['password_match'] = false;
+		settingsCopy['changes'] = false;
+		settingsCopy['busy'] = false;
+		settingsCopy['applying'] = false;
+		settingsCopy['success'] = false;
+		settingsCopy['failure'] = false;
 		return settingsCopy;
 	},
-	render: function() {
-		var originalSettings = this.props.settings;
-		var pendingSettings = this.state;
-		return (
-			<div className="mobile-settings-editor flex-column">
-				{this.showApplyingStatus()}
-				<div className="flex-row apply-editor">
-					<button className="flex-fixed apply set-flex" onClick={this.applyChanges}>
-						Apply
-					</button>
-					<button className="flex-fixed revert set-flex" onClick={this.revertChanges}>
-						Revert
-					</button>
-					<button className="flex-fixed cancel set-flex" onClick={this.cancelChanges}>
-						Cancel
-					</button>
-				</div>
-				<div className="artist-name flex-row">
-					{originalSettings.artist}
-				</div>
-				<div className="artist-image">
-	    			<img src={pendingSettings.artist_image.length > 0 ? pendingSettings.artist_image[0].preview : constants.S3_ROOT_FOR_IMAGES + originalSettings.imageURL} />
-	    				<Dropzone onDrop={this.onDrop} className="upload-image set-flex" multiple={false}>
-	    					<p>Click or drag file here to upload new artist image.</p>
-	    				</Dropzone>
-				</div>
-				<div className="flex-column password-change">
-					<div>
-						<p>New Password</p>
-						<input name="new_pass" value={pendingSettings.new_pass} type="text" onChange={this.changePassField} />
-					</div>
-					<div>
-						<p>Confirm New Password<i className={pendingSettings.password_match ? "fa fa-check approved" : "fa fa-times warning"}></i></p>
-						<p className={pendingSettings.password_match ? "invisible" : "warning"} >Passwords must match.</p>
-						<input type="text" name="confirm_pass" value={pendingSettings.confirm_pass} onChange={this.changePassField} />
-					</div>
-				</div>
-				<div className="artist-links flex-column">
-					<div>
-						<p>Website Link</p>
-						<input name="web_link" type="text" value={pendingSettings.web_link} onChange={this.changeLinkField}  />
-					</div>
-					<div>
-						<p>Soundcloud Link</p>
-						<input name="soundcloud_link" type="text" value={pendingSettings.soundcloud_link} onChange={this.changeLinkField} />
-					</div>
-					<div>
-						<p>Youtube Link</p>
-						<input name="youtube_link" type="text" value={pendingSettings.youtube_link} onChange={this.changeLinkField} />
-					</div>
-					<div>
-						<p>Twitter Link</p>
-						<input name="twitter_link" type="text" value={pendingSettings.twitter_link} onChange={this.changeLinkField} />
-					</div>
-					<div>
-						<p>Facebook Link</p>
-						<input name="fb_link" type="text" value={pendingSettings.fb_link} onChange={this.changeLinkField} />
-					</div>
-					<div>
-						<p>Instagram Link</p>
-						<input name="instagram_link" type="text" value={pendingSettings.instagram_link} onChange={this.changeLinkField} />
-					</div>
-				</div>
-			</div>
-		);
+
+	componentWillMount: function() {
+		this.props.push({
+			type: 'SHALLOW_MERGE',
+			data: {
+				header: 'Preferences'
+			}
+		})
 	},
-	changePassField: function(event) {
-		var self = this;
+
+	applyChanges() {
+		var pendingSettings = this.state;
+		var originalSettings = this.props.appState.get('artist_data');
+
+		if (pendingSettings.changes) {
+			console.log('Pending changes found.');
+			var changeFunctions = [];
+			if (pendingSettings.artist_image.length > 0) {
+				changeFunctions.push(this.newImage);
+			}
+			if (pendingSettings.password_match) {
+				changeFunctions.push(this.newPassword);
+			}
+
+			switch(true) {
+				case pendingSettings.fb_link != originalSettings.fb_link:
+					changeFunctions.push(this.newLinks);
+					break;
+				case pendingSettings.twitter_link != originalSettings.twitter_link:
+					changeFunctions.push(this.newLinks);
+					break;
+				case pendingSettings.web_link != originalSettings.web_link:
+					changeFunctions.push(this.newLinks);
+					break;
+				case pendingSettings.instagram_link != originalSettings.instagram_link:
+					changeFunctions.push(this.newLinks);
+					break;
+				case pendingSettings.soundcloud_link != originalSettings.soundcloud_link:
+					changeFunctions.push(this.newLinks);
+					break;
+				case pendingSettings.youtube_link != originalSettings.youtube_link:
+					changeFunctions.push(this.newLinks);
+					break;
+			}
+
+			// if (pendingSettings.fb_link != originalSettings.fb_link
+			// 	|| pendingSettings.twitter_link != originalSettings.twitter_link
+			// 	|| pendingSettings.web_link != originalSettings.web_link
+			// 	|| pendingSettings.instagram_link != originalSettings.instagram_link
+			// 	|| pendingSettings.soundcloud_link != originalSettings.soundcloud_link
+			// 	|| pendingSettings.youtube_link != originalSettings.youtube_link) {
+			// 	changeFunctions.push(this.newLinks);
+			// }
+
+			console.log('Changes to do');
+			console.log(changeFunctions);
+			console.log('Applying changes...');
+			this.setState({
+				busy: true,
+				applying: true
+			}, () => {
+				async.parallel(changeFunctions, (err, results) => {
+					if (err) {
+						console.log('There was an error when applying changes to this set.');
+						console.log(err);
+						this.setState({
+							failure: true,
+							applying: false
+						}, () => {
+							setTimeout(() => {
+								this.props.close(true);
+							}, 3000);
+						});
+					} else {
+							console.log('All changes applied successfully.');
+							this.setState({
+								applying: false,
+								success: true
+							}, () => {
+								//TODO navigate back to content
+								setTimeout(() => {
+									this.props.close(true);
+								}, 3000);
+							});
+						}
+				});
+			});
+
+		} else {
+			console.log('No pending changes. Closing window...');
+			// this.props.close(false);
+			//TODO unmount component
+
+		}
+	},
+
+	cancelChanges() {
+		//TODO unmount component
+		// this.props.close(false);
+	},
+
+	changePassField(event) {
 		var field = event.target.name;
 		var newState = {};
 		newState[field] = event.target.value;
-		newState["changes"] = true;
-		this.setState(newState, function() {
+		newState['changes'] = true;
+
+		this.setState(newState, () => {
 			var passwordsMatch = false;
-			if ((self.state.confirm_pass == self.state.new_pass) && self.state.new_pass.length > 0) {
+			if ((this.state.confirm_pass == this.state.new_pass) && this.state.new_pass.length > 0) {
 			passwordsMatch = true;
 			}
-			self.setState({
+			this.setState({
 				password_match: passwordsMatch
 			});
 		});
 	},
-	changeLinkField: function(event) {
+
+	changeLinkField(event) {
 		var field = event.target.name;
 		var newState = {};
 		newState[field] = event.target.value;
-		newState["changes"] = true;
+		newState['changes'] = true;
 		this.setState(newState);
 	},
-	newImage: function(callback) {
-		// console.log("New tile image pending:")
+
+	newImage(callback) {
+		// console.log('New tile image pending:')
 		// console.log(this.state.artist_image);
 		async.waterfall([this.registerImageS3, this.updateImageDatabase],
-			function(err, results) {
+			(err, results) => {
 				if (err) {
-					// console.log("Error occurred while updating image. ", err);
+					// console.log('Error occurred while updating image. ', err);
 					callback(err);
 				} else {
-					// console.log("Tile image updated.");
+					// console.log('Tile image updated.');
 					callback(null);
 				}
 		});
 	},
-	newLinks: function(callback) {
+
+	newLinks(callback) {
 		var pendingSettings = this.state;
-		var requestURL = "http://localhost:3000/api/v/7/setrecords/artist/links/" + this.props.settings.id;
+		var requestURL = 'http://localhost:3000/api/v/7/setrecords/artist/links/' + this.props.appState.get('artist_data').id;
 		var links = {
 			fb_link: pendingSettings.fb_link,
 			twitter_link: pendingSettings.twitter_link,
@@ -135,38 +181,40 @@ var SettingsEditor = React.createClass({
 			web_link: pendingSettings.web_link
 		};
 		$.ajax({
-			type: "POST",
+			type: 'POST',
 			url: requestURL,
 			data: {
 				links: links
-			},
-			success: function(res) {
-				callback(null);
-			},
-			error: function(err) {
-				callback(err);
 			}
+		})
+		.done((res) => {
+			callback(null);
+		})
+		.err((err) => {
+			console.log(err);
 		});
 	},
-	newPassword: function(callback) {
+
+	newPassword(callback) {
 		var pendingPassword = this.state.confirm_pass;
-		var requestURL = "http://localhost:3000/api/v/7/setrecords/artist/password/" + this.props.settings.id;
+		var requestURL = 'http://localhost:3000/api/v/7/setrecords/artist/password/' + this.props.settings.id;
 		$.ajax({
-			type: "POST",
+			type: 'POST',
 			url: requestURL,
 			data: {
 				password: pendingPassword
 			},
-			success: function(res) {
+			success: (res) => {
 				callback(null);
 			},
-			error: function(err) {
+			error: (err) => {
 				callback(err);
 			}
 		});
 	},
-	onDrop: function(file) {
-		if (file[0].type == "image/png" || file[0].type == "image/jpeg" || file[0].type == "image/gif") {
+
+	onDrop(file) {
+		if (file[0].type == 'image/png' || file[0].type == 'image/jpeg' || file[0].type == 'image/gif') {
 			this.setState({
 				artist_image: file,
 				changes: true
@@ -175,171 +223,188 @@ var SettingsEditor = React.createClass({
 			this.setState({
 				artist_image: []
 			});
-			alert("Please upload a png, jpeg, or gif image.");
+			alert('Please upload a png, jpeg, or gif image.');
 		}
 	},
-	showApplyingStatus: function() {
-		if (this.state.busy) {
-			var statusMessage;
 
-			if (this.state.success) {
-				statusMessage = "Your changes have been applied.";
-			} else if (this.state.failure) {
-				statusMessage = "There was an error applying your changes. Please try again.";
-			} else {
-				statusMessage = "Applying changes...";
-			}
-
-			return (
-				<div className="applying-changes-overlay set-flex">
-					{statusMessage}
-				</div>
-			);
-		}
-	},
-	registerImageS3: function(callback) {
+	registerImageS3(callback) {
 		var file = this.state.artist_image[0];
-		var self = this;
-		// console.log("Requesting encoding from AWS...");
+		// console.log('Requesting encoding from AWS...');
 		$.ajax({
-			type: "GET",
-			url: "http://localhost:3000/aws/configureAWS?filename=" + encodeURIComponent(file.name),
-			contentType: "application/json",
-			success: function(response) {
-				// console.log("Encoding successful.");
-				AWS.config.update(response.settings);
-				var encodedFilename = response.encoded;
+			type: 'GET',
+			url: 'http://localhost:3000/aws/configureAWS?filename=' + encodeURIComponent(file.name),
+			contentType: 'application/json',
+			success: (res) => {
+				// console.log('Encoding successful.');
+				AWS.config.update(res.settings);
+				var encodedFilename = res.encoded;
 				var filesize = file.size;
 				var s3 = new AWS.S3();
 
 				s3.timeout = 50000;
 				var params = {
-					Bucket: "stredm",
-					Key: "namecheap/" + encodedFilename,
+					Bucket: 'stredm',
+					Key: 'namecheap/' + encodedFilename,
 					ContentType: file.type,
 					Body: file
 				};
 				var upload = s3.upload(params);
-				// upload.on("httpUploadProgress", function(event) {
+				// upload.on('httpUploadProgress', function(event) {
 				// 	var percentage = (event.loaded / filesize) * 100;
-				// 	var percent = parseInt(percentage).toString() + "%";
-				// 	console.log("Uploading image: " + percent);
+				// 	var percent = parseInt(percentage).toString() + '%';
+				// 	console.log('Uploading image: ' + percent);
 				// });
 
-				// console.log("Uploading file to S3...");
-				upload.send(function(err, data) {
+				// console.log('Uploading file to S3...');
+				upload.send((err, data) => {
 					if (err) {
-						// console.log("An error occurred uploading the file to S3.");
+						// console.log('An error occurred uploading the file to S3.');
 						callback(err);
 					} else {
-						// console.log("Upload successful. File located at: " + data.Location);
-						callback(null, response.encoded);
+						// console.log('Upload successful. File located at: ' + data.Location);
+						callback(null, res.encoded);
 					}
 				});
 			},
-			error: function(err) {
-				// console.log("There was an error encoding the file.");
+			error: (err) => {
+				// console.log('There was an error encoding the file.');
 				callback(err);
 			}
 		});
 	},
-	updateImageDatabase: function(imageURL, callback) {
-		// console.log("Adding image to databases...");
-		var requestURL = "http://localhost:3000/api/v/7/setrecords/artist/image/" + this.props.settings.id;
+
+	revertChanges() {
+		// console.log('Reverting...');
+		// var settingsCopy = this.props.cloneObject(this.props.settings);
+		// settingsCopy['artist_image'] = [];
+		// settingsCopy['new_pass'] = null;
+		// settingsCopy['confirm_pass'] = null;
+		// settingsCopy['password_match'] = false;
+		// settingsCopy['changes'] = false;
+		// settingsCopy['busy'] = false;
+		// settingsCopy['applying'] = false;
+		// settingsCopy['success'] = false;
+		// settingsCopy['failure'] = false;
+		// this.replaceState(settingsCopy);
+		// this.getInitialState();
+		this.replaceState(this.getInitialState());
+	},
+
+//APPLYING CHANGES OVERLAY
+	showApplyingStatus() {
+		if (this.state.busy) {
+			var statusMessage;
+
+			if (this.state.success) {
+				statusMessage = 'Your changes have been applied.';
+			} else if (this.state.failure) {
+				statusMessage = 'There was an error applying your changes. Please try again.';
+			} else {
+				statusMessage = 'Applying changes...';
+			}
+
+			return (
+				<div className='applying-changes-overlay set-flex'>
+					{statusMessage}
+				</div>
+			);
+		}
+	},
+
+	updateImageDatabase(imageURL, callback) {
+		// console.log('Adding image to databases...');
+		var requestURL = 'http://localhost:3000/api/v/7/setrecords/artist/image/' + this.props.settings.id;
 		$.ajax({
-			type: "POST",
+			type: 'POST',
 			url: requestURL,
 			data: {
 				image_url: imageURL
 			},
-			success: function(res) {
-				// console.log("Image successfully added to database.")
+			success: (res) => {
+				// console.log('Image successfully added to database.')
 				callback(null);
 			},
-			error: function(err) {
-				// console.log("An error occurred when updating the database.");
+			error: (err) => {
+				// console.log('An error occurred when updating the database.');
 				callback(err);
 			}
 		});
 	},
 
-	applyChanges: function() {
+	render() {
+		var originalSettings = this.props.appState.get('artist_data');
 		var pendingSettings = this.state;
-		var originalSettings = this.props.settings;
-		var self = this;
 
-		if (pendingSettings.changes) {
-			console.log("Pending changes found.");
-			var changeFunctions = [];
-			if (pendingSettings.artist_image.length > 0) {
-				changeFunctions.push(this.newImage);
-			}
-			if (pendingSettings.password_match) {
-				changeFunctions.push(this.newPassword);
-			}
-			if (pendingSettings.fb_link != originalSettings.fb_link
-				|| pendingSettings.twitter_link != originalSettings.twitter_link
-				|| pendingSettings.web_link != originalSettings.web_link
-				|| pendingSettings.instagram_link != originalSettings.instagram_link
-				|| pendingSettings.soundcloud_link != originalSettings.soundcloud_link
-				|| pendingSettings.youtube_link != originalSettings.youtube_link) {
-				changeFunctions.push(this.newLinks);
-			}
+		return (
+			<div className='flex-column flex' id='SettingsEditor'>
+				{this.showApplyingStatus()}
+				<div className='artist-name flex-row hidden'>
+					{originalSettings.artist}
+				</div>
 
-			console.log("Changes to do");
-			console.log(changeFunctions);
-			console.log("Applying changes...");
-			this.setState({
-				busy: true,
-				applying: true
-			}, function() {
-				async.parallel(changeFunctions, function(err, results) {
-					if (err) {
-						console.log("There was an error when applying changes to this set.");
-						console.log(err);
-						self.setState({
-							failure: true,
-							applying: false
-						}, function() {
-							setTimeout(function() {
-								self.props.close(true);
-							}, 3000);
-						});
-					} else {
-							console.log("All changes applied successfully.");
-							self.setState({
-								applying: false,
-								success: true
-							}, function() {
-								setTimeout(function() {
-									self.props.close(true);
-								}, 3000);
-							});
-						}
-				});
-			});
+				<div className='artist-image flex-row'>
+	    			<img src={pendingSettings.artist_image.length > 0 ? pendingSettings.artist_image[0].preview : constants.S3_ROOT_FOR_IMAGES + originalSettings.imageURL} />
+    				<Dropzone onDrop={this.onDrop} className='dropzone flex-container center click' multiple={false}>
+    					<Icon>open_in_browser</Icon>
+    					<p>Upload a new artist image</p>
+    				</Dropzone>
+				</div>
 
-		} else {
-			console.log("No pending changes. Closing window...");
-			this.props.close(false);
-		}
-	},
-	revertChanges: function() {
-		// console.log("Reverting...");
-		var settingsCopy = this.props.cloneObject(this.props.settings);
-		settingsCopy["artist_image"] = [];
-		settingsCopy["new_pass"] = null;
-		settingsCopy["confirm_pass"] = null;
-		settingsCopy["password_match"] = false;
-		settingsCopy["changes"] = false;
-		settingsCopy["busy"] = false;
-		settingsCopy["applying"] = false;
-		settingsCopy["success"] = false;
-		settingsCopy["failure"] = false;
-		this.replaceState(settingsCopy);
-	},
-	cancelChanges: function() {
-		this.props.close(false);
+				<div className='password-change flex-column center'>
+					<h1>Password</h1>
+					<div>
+						<p>New Password</p>
+						<input name='new_pass' value={pendingSettings.new_pass} type='text' onChange={this.changePassField} />
+					</div>
+					<div>
+						<p>Confirm New Password<i className={pendingSettings.password_match ? 'fa fa-check approved' : 'fa fa-times warning'}></i></p>
+						<p className={pendingSettings.password_match ? 'invisible' : 'warning'} >Passwords must match.</p>
+						<input type='text' name='confirm_pass' value={pendingSettings.confirm_pass} onChange={this.changePassField} />
+					</div>
+				</div>
+
+				<div className='artist-links flex-column center'>
+					<h1>Update Links</h1>
+					<div>
+						<p>Web</p>
+						<input name='web_link' type='text' value={pendingSettings.web_link} onChange={this.changeLinkField} />
+					</div>
+					<div>
+						<p>Soundcloud</p>
+						<input name='soundcloud_link' type='text' value={pendingSettings.soundcloud_link} onChange={this.changeLinkField} />
+					</div>
+					<div>
+						<p>Youtube</p>
+						<input name='youtube_link' type='text' value={pendingSettings.youtube_link} onChange={this.changeLinkField} />
+					</div>
+					<div>
+						<p>Twitter</p>
+						<input name='twitter_link' type='text' value={pendingSettings.twitter_link} onChange={this.changeLinkField} />
+					</div>
+					<div>
+						<p>Facebook</p>
+						<input name='fb_link' type='text' value={pendingSettings.fb_link} onChange={this.changeLinkField} />
+					</div>
+					<div>
+						<p>Instagram</p>
+						<input name='instagram_link' type='text' value={pendingSettings.instagram_link} onChange={this.changeLinkField} />
+					</div>
+				</div>
+
+				<div className='flex-row apply-editor center'>
+					<button className='flex-fixed apply flex-container' onClick={this.applyChanges}>
+						Apply
+					</button>
+					<button className='flex-fixed revert flex-container' onClick={this.revertChanges}>
+						Revert
+					</button>
+					<button className='flex-fixed cancel flex-container' onClick={this.cancelChanges}>
+						Cancel
+					</button>
+				</div>
+
+			</div>
+		);
 	}
 });
 
