@@ -201,38 +201,38 @@ var App = React.createClass({
 		}
 	},
 
-	closeSettingsEditor(isChanged) {
-		console.log("Settings editor would have been closed!");
-		if (isChanged) {
-			push({
-				type: 'SHALLOW_MERGE',
-				data: {
-					loaded: false
-				}
-			});
-			this.updateArtist(function(err, settings) {
-				if (err) {
-					// console.log('An error occurred.', err);
-				} else {
-					push({
-						type: 'SHALLOW_MERGE',
-						data: {
-							artist_data: settings,
-							settings_editor: false,
-							loaded: true
-						}
-					});
-				}
-			});
-		} else {
-			push({
-				type: 'SHALLOW_MERGE',
-				data: {
-					settings_editor: false
-				}
-			})
-		}
-	},
+	// closeSettingsEditor(isChanged) {
+	// 	console.log("Settings editor would have been closed!");
+	// 	if (isChanged) {
+	// 		push({
+	// 			type: 'SHALLOW_MERGE',
+	// 			data: {
+	// 				loaded: false
+	// 			}
+	// 		});
+	// 		this.updateArtist(function(err, settings) {
+	// 			if (err) {
+	// 				// console.log('An error occurred.', err);
+	// 			} else {
+	// 				push({
+	// 					type: 'SHALLOW_MERGE',
+	// 					data: {
+	// 						artist_data: settings,
+	// 						settings_editor: false,
+	// 						loaded: true
+	// 					}
+	// 				});
+	// 			}
+	// 		});
+	// 	} else {
+	// 		push({
+	// 			type: 'SHALLOW_MERGE',
+	// 			data: {
+	// 				settings_editor: false
+	// 			}
+	// 		})
+	// 	}
+	// },
 
 	closeUploadSetWizard(isChanged) {
 		console.log("closing upload set wizard");

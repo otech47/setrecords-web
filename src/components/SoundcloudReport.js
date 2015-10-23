@@ -115,7 +115,6 @@ var SoundcloudReport = React.createClass({
 			data: {timezone: timezone}
 		})
 		.done((res) => {
-			console.log(res);
 			this.props.push({
 				type: 'SHALLOW_MERGE',
 				data: {

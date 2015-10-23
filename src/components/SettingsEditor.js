@@ -7,7 +7,9 @@ import async from 'async';
 import Loader from 'react-loader';
 import constants from '../constants/constants';
 import {History} from 'react-router';
+import {Motion, spring, presets} from 'react-motion';
 import Icon from './Icon';
+import ConfirmChanges from './ConfirmChanges';
 
 var SettingsEditor = React.createClass({
 
@@ -26,6 +28,7 @@ var SettingsEditor = React.createClass({
 		settingsCopy['applying'] = false;
 		settingsCopy['success'] = false;
 		settingsCopy['failure'] = false;
+		settingsCopy['open'] = false;
 		return settingsCopy;
 	},
 
@@ -36,6 +39,14 @@ var SettingsEditor = React.createClass({
 				header: 'Preferences'
 			}
 		})
+	},
+
+	componentWillUnmount() {
+		if(this.state.changes) {
+			this.setState({
+				open: true
+			});
+		}
 	},
 
 	applyChanges() {
@@ -125,8 +136,17 @@ var SettingsEditor = React.createClass({
 	},
 
 	cancelChanges() {
-		//TODO unmount component
-		// this.props.close(false);
+		console.log(this.state.changes);
+		console.log(`open: ${this.state.open}`);
+		if(this.state.changes) {
+			console.log(`changes made: ${this.state.changes}`);
+			this.setState({
+				open: true
+			});
+			console.log(`open: ${this.state.open}`);
+		} else {
+			this.history.pushState(null, '/');
+		}
 	},
 
 	changePassField(event) {
@@ -138,7 +158,7 @@ var SettingsEditor = React.createClass({
 		this.setState(newState, () => {
 			var passwordsMatch = false;
 			if ((this.state.confirm_pass == this.state.new_pass) && this.state.new_pass.length > 0) {
-			passwordsMatch = true;
+				passwordsMatch = true;
 			}
 			this.setState({
 				password_match: passwordsMatch
@@ -304,7 +324,7 @@ var SettingsEditor = React.createClass({
 			}
 
 			return (
-				<div className='applying-changes-overlay set-flex'>
+				<div className='applying-changes-overlay flex-container'>
 					{statusMessage}
 				</div>
 			);
@@ -337,7 +357,23 @@ var SettingsEditor = React.createClass({
 
 		return (
 			<div className='flex-column flex' id='SettingsEditor'>
-				{this.showApplyingStatus()}
+
+				{/*this.showApplyingStatus()*/}
+				<Motion style={{
+					opacity: spring(this.state.open ? 1 : 0, presets.gentle),
+					visibility: this.state.open ? 'visible' : 'hidden'
+				}}>
+					{
+						({opacity, visibility}) =>
+						<ConfirmChanges saveChanges={this.applyChanges} style={{
+							opacity: `${opacity}`,
+							visibility: `${visibility}`
+						}}>
+							Are you sure you want to leave? All unsaved changes will be lost.
+						</ConfirmChanges>
+					}
+				</Motion>
+
 				<div className='artist-name flex-row hidden'>
 					{originalSettings.artist}
 				</div>
@@ -392,15 +428,15 @@ var SettingsEditor = React.createClass({
 				</div>
 
 				<div className='flex-row apply-editor center'>
-					<button className='flex-fixed apply flex-container' onClick={this.applyChanges}>
+					<div className='flex-fixed apply flex-container' onClick={this.applyChanges}>
 						Apply
-					</button>
-					<button className='flex-fixed revert flex-container' onClick={this.revertChanges}>
+					</div>
+					<div className='flex-fixed revert flex-container' onClick={this.revertChanges}>
 						Revert
-					</button>
-					<button className='flex-fixed cancel flex-container' onClick={this.cancelChanges}>
+					</div>
+					<div className='flex-fixed cancel flex-container' onClick={this.cancelChanges}>
 						Cancel
-					</button>
+					</div>
 				</div>
 
 			</div>

@@ -138,7 +138,6 @@ header {
 .metrics-panel {
 	background: @light-gray;
 	width: 75%;
-	height: 70vh;
 	margin: 5vw auto;
 	position: relative;
 	.card(2);
@@ -316,6 +315,7 @@ header {
 		h1 {
 			font-size: 5rem;
 			margin: auto;
+			font-weight: 100;
 		}
 		i {
 			font-size: 3rem;
@@ -408,8 +408,7 @@ form{
 footer {
 	.flex-column;
 	position: relative;
-	// .background(@light-gray, @dark-gray);
-	.background(@white, @dark-gray);
+	.background(@gray, @dark-gray);
 	padding: 3vh;
 	z-index: 3;
 	h4 {
@@ -943,30 +942,54 @@ td{
 	color: @green !important;
 }
 
+#ConfirmChanges {
+	background: fade(@dark-gray, 50%);
+	.size(100%, 100%);
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 23;
+	.modal {
+		@width: 40vw;
+		@height: 20vh;
+		align-items: center;
+		.background(@white, @dark-gray);
+		.card(3);
+		.size(@width, @height);
+		position: fixed;
+		left: (@pageWidth - @width)/2 + @sidebarWidth/2;
+		top: (@pageHeight - @height)/2;
+		i {
+			cursor: pointer;
+		}
+	}
+}
+
 #SettingsEditor {
 	background-color: @light-gray;
 	align-items: flex-start;
 	padding: 4rem;
+	position: relative;
 	.apply-editor {
-		width: 100%;
 		height: @headerHeight * 0.5;
 		align-items: stretch;
 		top: @headerHeight;
 		z-index: 22;
-		left: 0;
-		color: white;
-		   * {
-				background-color: @dark-gray;
-				border: none;
-				font-size: 1rem;
+	   * {
+			.background(@dark-gray, @white);
+			border: none;
+			font-size: 1rem;
+			cursor: pointer;
+			justify-content: center;
+			align-items: center;
+			&:hover {
+				.background(@dark-gray*0.9, @blue);
 			}
-			*:hover {
-				border-bottom: 0.25rem solid #3698db;
+			&:active, &:focus {
+				.background(@dark-gray*0.8, @blue);
+				outline: none;
 			}
-			.apply , .revert , .cancel {
-				color: @white;
-				justify-content: center;
-			}
+		}
 	}
 	.artist-image {
 		margin: 0 auto 4rem;
@@ -991,6 +1014,12 @@ td{
 		border: dashed 1px;
 		.background(@white, @dark-gray);
 		.card(1);
+		&:hover {
+			background: @white*0.9;
+		}
+		&:active {
+			background: @white*0.8;
+		}
 		p {
 			margin: 0;
 		}
