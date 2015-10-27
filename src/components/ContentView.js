@@ -55,8 +55,7 @@ var ContentView = React.createClass({
 			type: 'GET',
 			url: requestURL
 		})
-		.done(function(res) {
-			console.log(res.payload.sets);
+		.done((res) => {
 			this.props.push({
 				type: 'SHALLOW_MERGE',
 				data: {
@@ -64,7 +63,7 @@ var ContentView = React.createClass({
 					header: 'Content'
 				}
 			});
-		}.bind(this))
+		})
 		.fail(function(err) {
 			console.log(err);
 		});

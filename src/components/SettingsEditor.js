@@ -10,6 +10,7 @@ import {History} from 'react-router';
 import {Motion, spring, presets} from 'react-motion';
 import Icon from './Icon';
 import ConfirmChanges from './ConfirmChanges';
+import Notification from './Notification';
 
 var SettingsEditor = React.createClass({
 
@@ -29,6 +30,7 @@ var SettingsEditor = React.createClass({
 		settingsCopy['success'] = false;
 		settingsCopy['failure'] = false;
 		settingsCopy['open'] = false;
+		settingsCopy['notify'] = false;
 		return settingsCopy;
 	},
 
@@ -101,27 +103,28 @@ var SettingsEditor = React.createClass({
 				applying: true
 			}, () => {
 				async.parallel(changeFunctions, (err, results) => {
-					if (err) {
+					if(err) {
 						console.log('There was an error when applying changes to this set.');
 						console.log(err);
 						this.setState({
 							failure: true,
-							applying: false
+							applying: false,
+							notify: true
 						}, () => {
 							setTimeout(() => {
-								this.props.close(true);
-							}, 3000);
+								this.replaceState(this.getInitialState());
+							}, 1000);
 						});
 					} else {
 							console.log('All changes applied successfully.');
 							this.setState({
 								applying: false,
-								success: true
+								success: true,
+								notify: true
 							}, () => {
-								//TODO navigate back to content
 								setTimeout(() => {
-									this.props.close(true);
-								}, 3000);
+									this.history.pushState(null, '/');
+								}, 1000);
 							});
 						}
 				});
@@ -129,21 +132,15 @@ var SettingsEditor = React.createClass({
 
 		} else {
 			console.log('No pending changes. Closing window...');
-			// this.props.close(false);
-			//TODO unmount component
-
+			this.history.pushState(null, '/');
 		}
 	},
 
 	cancelChanges() {
-		console.log(this.state.changes);
-		console.log(`open: ${this.state.open}`);
 		if(this.state.changes) {
-			console.log(`changes made: ${this.state.changes}`);
 			this.setState({
-				open: true
+				open: !this.state.open
 			});
-			console.log(`open: ${this.state.open}`);
 		} else {
 			this.history.pushState(null, '/');
 		}
@@ -210,7 +207,7 @@ var SettingsEditor = React.createClass({
 		.done((res) => {
 			callback(null);
 		})
-		.err((err) => {
+		.fail((err) => {
 			console.log(err);
 		});
 	},
@@ -323,11 +320,7 @@ var SettingsEditor = React.createClass({
 				statusMessage = 'Applying changes...';
 			}
 
-			return (
-				<div className='applying-changes-overlay flex-container'>
-					{statusMessage}
-				</div>
-			);
+			return statusMessage;
 		}
 	},
 
@@ -358,14 +351,28 @@ var SettingsEditor = React.createClass({
 		return (
 			<div className='flex-column flex' id='SettingsEditor'>
 
-				{/*this.showApplyingStatus()*/}
+				<Motion style={{
+					opacity: spring(this.state.notify ? 1 : 0, presets.gentle),
+					visibility: this.state.notify ? 'visible' : 'hidden'
+				}}>
+					{
+						({opacity, visibility}) =>
+						<Notification dismiss={() => this.history.pushState(null, '/')} style={{
+							opacity: `${opacity}`,
+							visibility: `${visibility}`
+						}}>
+							{this.showApplyingStatus()}
+						</Notification>
+					}
+				</Motion>
+
 				<Motion style={{
 					opacity: spring(this.state.open ? 1 : 0, presets.gentle),
 					visibility: this.state.open ? 'visible' : 'hidden'
 				}}>
 					{
 						({opacity, visibility}) =>
-						<ConfirmChanges saveChanges={this.applyChanges} style={{
+						<ConfirmChanges cancel={() => this.setState({open: false})} style={{
 							opacity: `${opacity}`,
 							visibility: `${visibility}`
 						}}>
@@ -373,10 +380,6 @@ var SettingsEditor = React.createClass({
 						</ConfirmChanges>
 					}
 				</Motion>
-
-				<div className='artist-name flex-row hidden'>
-					{originalSettings.artist}
-				</div>
 
 				<div className='artist-image flex-row'>
 	    			<img src={pendingSettings.artist_image.length > 0 ? pendingSettings.artist_image[0].preview : constants.S3_ROOT_FOR_IMAGES + originalSettings.imageURL} />
