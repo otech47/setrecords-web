@@ -85,6 +85,7 @@ header {
 			.background(@dark-gray*0.9, @light-gray);
 		}
 		&.active {
+			.transition(0.3s);
 			.background(@dark-gray*0.8, white);
 			border-left: solid 5px @blue;
 		}
@@ -103,6 +104,10 @@ header {
 	min-height: @pageHeight;
 	.view {
 		.scrollable;
+		>.loader {
+			position: relative;
+			height: @pageHeight;
+		}
 		>.loadedContent {
 			width: @pageWidth - @sidebarWidth;
 		}
@@ -306,6 +311,7 @@ header {
 		padding: 1rem;
 		text-align: center;
 		text-transform: uppercase;
+		position: relative;
 		.background(@white, @dark-gray);
 		.card(1);
 		.divider {
@@ -327,6 +333,16 @@ header {
 			}
 			&.fa-instagram {
 				color: @instagram-blue;
+			}
+		}
+		a i {
+			font-size: 2rem;
+			position: absolute;
+			top: 6px;
+			right: 0;
+			&:hover {
+				.transition();
+				color: @blue;
 			}
 		}
 	}
@@ -410,7 +426,6 @@ footer {
 	position: relative;
 	.background(@gray, @dark-gray);
 	padding: 3vh;
-	z-index: 3;
 	h4 {
 		margin: 0;
 		text-align: center;
@@ -438,22 +453,22 @@ footer {
 
 /*Content Page*/
 
-table, th, td {
-	color: white;
-	margin-top: 8%;
-	border: 4px solid #bdc3cc;
-}
-td{
-	i{
-		color: red;
-	}
-	background-color: #313542;
-	.deleteTrack{
-		border: 0;
-		background-color: #bdc3cc;
-		 border: 5px solid #bdc3cc;
-	}
-}
+// table, th, td {
+// 	color: white;
+// 	margin-top: 8%;
+// 	border: 4px solid #bdc3cc;
+// }
+// td{
+// 	i{
+// 		color: red;
+// 	}
+// 	background-color: #313542;
+// 	.deleteTrack{
+// 		border: 0;
+// 		background-color: #bdc3cc;
+// 		 border: 5px solid #bdc3cc;
+// 	}
+// }
 
 	
 	
@@ -528,174 +543,8 @@ td{
 	height: 25rem;
 	width: 100%;
 }
-.mobile-set-editor{
-	background-color: @white;
-	margin-top: @headerHeight * 1.5;
-	margin-bottom: 3em;
-	min-height: 57rem;
-	align-items: flex-start;
-	padding: 2rem 3rem;
 
 
-	
-	.edit-set-name{
-		align-items: center;
-		font-family: @bold;
-		flex-wrap: nowrap;
-		font-size: 2.5em;
-		margin-right: 400px;
-		.event-title {
-			font-size: 2.25rem;
-			margin: 0;
-		}
-		.edit-button {
-			font-size: 1.5rem;
-			text-transform: uppercase;
-			margin: 0 0 0 1rem;
-			color: @dark-gray;
-			font-family: @condensed;
-		}
-		input{
-			height: 35px;
-			align-items: center;
-			font-family: Avenir Pro Bold;
-			font-size: 26px;
-
-		}
-	}
-	.edit-episode-name {
-		align-items: center;
-		flex-wrap: nowrap;
-		.episode-name , .edit-button , .uploaded-date{
-			font-size: 1.5em;
-		}
-		.episode-name  {
-			margin: 0;
-		}
-		.edit-button {
-			
-			text-transform: uppercase;
-			margin: 0 0 0 1rem;
-			color: @dark-gray;
-			font-family: @condensed;
-		}
-	}
-	.uploaded-date {
-		margin: 1rem 0;
-	   
-	}
-	.set-tile-preview {
-		margin: 4rem 0;
-		.set-tile {
-			height: 25rem;
-			width: 25rem;
-			margin: 0;
-			.artist-image {
-				top: 12rem;
-				height: 5rem;
-				width: 5rem;
-			}
-		}
-		.upload-image {
-			margin: 1rem 0 0 0;
-			height: 4rem;
-			width: 25rem;
-			font-size: 1rem;
-			font-family: @regular;
-			align-items: center;
-			justify-content: center;
-			box-sizing: border-box;
-			background-color: @dark-gray;
-			p {
-				color: @white;
-				margin: 0;
-			}
-		}
-	}
-	/*Track List Table*/
-	table{
-		border-color: @dark-gray;
-		text-align: center;
-		background-color: @dark-gray;
-	}
-	table, th, td {
-		margin-top: 8%;
-	}
-	
-	td{
-		i {
-			color: red;
-		}
-	}
-
-	.edit-set-track{
-		h1{
-			margin: 10px;
-		}
-
-		button{
-		   
-			width: 60px;
-			height: 30px;
-			font-family: Avenir Demi;
-		}
-
-		.urlTracklist{
-			margin: 6px;
-			color: @blue;
-			button{
-				color: white;
-				background-color: @blue;
-				
-				border-radius: 12px;
-				 margin-left: 10px;
-			}
-			input{
-				background-color: white;
-					border: 2px inset;
-
-			}
-		}
-		button{
-			background: transparent;
-			border: transparent;
-
-			.fa-times{
-				font-size: 25px;
-			}
-		}
-		input, textarea , table , th , td{
-			background-color: @dark-gray;
-		}
-		input{
-			border: none;
-			border-color: transparent;
-		}
-		input:focus, select:focus, textarea:focus{
-			outline-color:@light-gray;
-		}
-		input, select, textarea{
-			color: white;
-			font-family:  Avenir Demi;
-			 text-align: center;
-		}
-	   .trackList-table{
-			width: 70%;   
-			margin-bottom: 15%;
-			}
-}
-
-	.trackAdd{
-		padding-top: 20px;
-	}
-		 
-		table, th, td {
-			
-			margin-top: 8%;
-			border: none;
-			color: none;
-		 }
-}
 
 
 #UploadSetWizard {
@@ -970,30 +819,6 @@ td{
 	align-items: flex-start;
 	padding: 4rem;
 	position: relative;
-	.apply-editor {
-		height: @headerHeight * 0.5;
-		align-items: stretch;
-		top: @headerHeight;
-		z-index: 22;
-	   * {
-			.background(@dark-gray, @white);
-			.border-radius(3px);
-			font-size: 1rem;
-			cursor: pointer;
-			justify-content: center;
-			align-items: center;
-			&:hover {
-				.background(@dark-gray*0.9, @blue);
-			}
-			&:active, &:focus {
-				.background(@dark-gray*0.8, @blue);
-				outline: none;
-			}
-		}
-		.revert {
-			margin: 0 1rem;
-		}
-	}
 	.artist-image {
 		margin: 0 auto 4rem;
 		width: 70%;
@@ -1005,60 +830,209 @@ td{
 			box-sizing: border-box;
 		}
 	}
-	.dropzone {
-		height: 8rem;
-		width: 25rem;
-		font-size: 1rem;
-		font-family: @regular;
-		align-items: center;
-		justify-content: center;
-		box-sizing: border-box;
-		background-color: @dark-gray;
-		border: dashed 1px;
-		.background(@white, @dark-gray);
-		.card(1);
-		&:hover {
-			background: @white*0.9;
-		}
-		&:active {
-			background: @white*0.8;
-		}
-		p {
-			margin: 0;
-		}
-	}
-	.password-change, .artist-links, .apply-editor {
-		.background(@white, @dark-gray);
+}
+
+.apply-editor {
+	height: @headerHeight * 0.5;
+	align-items: stretch;
+	top: @headerHeight;
+	z-index: 22;
+   * {
+		.background(@dark-gray, @white);
 		.border-radius(3px);
-		.card(1);
-		width: 90%;
-		margin: 0 auto 4rem;
-		padding: 5%;
+		font-size: 1rem;
+		cursor: pointer;
+		justify-content: center;
+		align-items: center;
+		&:hover {
+			.background(@dark-gray*0.9, @blue);
+		}
+		&:active, &:focus {
+			.background(@dark-gray*0.8, @blue);
+			outline: none;
+		}
 	}
+	.revert {
+		margin: 0 1rem;
+	}
+}
+
+.dropzone {
+	min-height: 100px;
+	min-width: 35vw;
+	font-size: 1rem;
+	font-family: @regular;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	border: dashed 1px;
+	margin: 2rem auto;
+	cursor: pointer;
+	.background(@white, @dark-gray);
+	.card(1);
+	&:hover {
+		background: @white*0.9;
+	}
+	&:active {
+		background: @white*0.8;
+	}
+	p {
+		margin: 0;
+	}
+}
+
+.form-panel {
+	.background(@white, @dark-gray);
+	.border-radius(3px);
+	.card(1);
+	width: 90%;
+	margin: 0 auto 4rem;
+	padding: 5%;
+	font-size: 1rem;
 	input{
-		width: 90%;
+		width: 100%;
 		height: 30px;
 		.background(@white, @dark-gray);
 		border: solid 1px @gray;
 		.border-radius(3px);
 		outline: none;
-		padding: 0 .5rem;
+		font-size: inherit;
+		padding-left: 0.5rem;
 	}
+
 }
 
-.applying-changes-overlay {
-	background-color: @dark-gray;
-	left: 0px;
-	top: 0px;
-	height: 100vh;
-	width: 100vw;
-	position: fixed;
-	z-index: 50;
-	color: @white;
-	font-size: 2rem;
-	font-family: @bold;
-	align-items: center;
-	justify-content: center;
+#SetEditor {
+	background-color: @light-gray;
+	padding: 4rem;
+	img {
+		.size(200px);
+		.border-radius(50%);
+		margin: auto;
+	}
+	.edit-mix {
+		// text-align: center;
+		> * {
+			width: 90%;
+			margin-bottom: 2rem;
+		}
+	}
+	/*Track List Table*/
+	// table {
+	// 	border: none;
+	// 	text-align: center;
+	// 	background-color: @white;
+	// }
+	// table, th, td {
+	// 	margin-top: 8%;
+	// }
+	
+	// td {
+	// 	i {
+	// 		color: @red;
+	// 	}
+	// }
+
+	// .edit-set-track{
+	// 	h1{
+	// 		margin: 10px;
+	// 	}
+
+	// 	button{
+		   
+	// 		width: 60px;
+	// 		height: 30px;
+	// 		font-family: Avenir Demi;
+	// 	}
+
+	// 	.urlTracklist{
+	// 		margin: 6px;
+	// 		color: @blue;
+	// 		button{
+	// 			color: white;
+	// 			background-color: @blue;
+				
+	// 			border-radius: 12px;
+	// 			 margin-left: 10px;
+	// 		}
+	// 		input{
+	// 			background-color: white;
+	// 				border: 2px inset;
+
+	// 		}
+	// 	}
+	// 	button{
+	// 		background: transparent;
+	// 		border: transparent;
+
+	// 		.fa-times{
+	// 			font-size: 25px;
+	// 		}
+	// 	}
+	// 	input{
+	// 		border: none;
+	// 		border-color: transparent;
+	// 	}
+	// 	input:focus, select:focus, textarea:focus{
+	// 		outline-color:@light-gray;
+	// 	}
+	// 	input, select, textarea{
+	// 		color: white;
+	// 		font-family:  Avenir Demi;
+	// 		 text-align: center;
+	// 	}
+	//    .trackList-table {
+	// 		width: 70%;   
+	// 		margin-bottom: 15%;
+	// 	}
+	// }
+	// .trackAdd {
+	// 	padding-top: 20px;
+	// }
+	// table, th, td {
+	// 	margin-top: 8%;
+	// 	border: none;
+	// 	color: none;
+	// }
+}
+
+#Tracklist {
+	.urlTracklist {
+		input {
+			margin: 2rem auto;
+		}
+	}
+	button {
+		.background(@blue, white);
+		border: none;
+		font-size: 1rem;
+		padding: 1rem 2rem;
+		width: 12vw!important;
+		&:focus {
+			outline: none;
+		}
+		&:active {
+			background: @blue*0.9;
+		}
+	}
+	table {
+		color: @dark-gray;
+		margin: 2rem 0;
+		* {
+			border: none;
+		}
+		input {
+			text-align: center;
+		}
+		td {
+			height: 100%;
+			padding: 0;
+			text-align: center;
+			i {
+				color: @red;
+			}
+		}
+	}
 }
 
 #addTrack {

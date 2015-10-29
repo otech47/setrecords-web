@@ -86,15 +86,6 @@ var SettingsEditor = React.createClass({
 					break;
 			}
 
-			// if (pendingSettings.fb_link != originalSettings.fb_link
-			// 	|| pendingSettings.twitter_link != originalSettings.twitter_link
-			// 	|| pendingSettings.web_link != originalSettings.web_link
-			// 	|| pendingSettings.instagram_link != originalSettings.instagram_link
-			// 	|| pendingSettings.soundcloud_link != originalSettings.soundcloud_link
-			// 	|| pendingSettings.youtube_link != originalSettings.youtube_link) {
-			// 	changeFunctions.push(this.newLinks);
-			// }
-
 			console.log('Changes to do');
 			console.log(changeFunctions);
 			console.log('Applying changes...');
@@ -291,23 +282,9 @@ var SettingsEditor = React.createClass({
 	},
 
 	revertChanges() {
-		// console.log('Reverting...');
-		// var settingsCopy = this.props.cloneObject(this.props.settings);
-		// settingsCopy['artist_image'] = [];
-		// settingsCopy['new_pass'] = null;
-		// settingsCopy['confirm_pass'] = null;
-		// settingsCopy['password_match'] = false;
-		// settingsCopy['changes'] = false;
-		// settingsCopy['busy'] = false;
-		// settingsCopy['applying'] = false;
-		// settingsCopy['success'] = false;
-		// settingsCopy['failure'] = false;
-		// this.replaceState(settingsCopy);
-		// this.getInitialState();
 		this.replaceState(this.getInitialState());
 	},
 
-//APPLYING CHANGES OVERLAY
 	showApplyingStatus() {
 		if (this.state.busy) {
 			var statusMessage;
@@ -383,13 +360,13 @@ var SettingsEditor = React.createClass({
 
 				<div className='artist-image flex-row'>
 	    			<img src={pendingSettings.artist_image.length > 0 ? pendingSettings.artist_image[0].preview : constants.S3_ROOT_FOR_IMAGES + originalSettings.imageURL} />
-    				<Dropzone onDrop={this.onDrop} className='dropzone flex-container center click' multiple={false}>
+    				<Dropzone onDrop={this.onDrop} className='dropzone flex-container center' multiple={false}>
     					<Icon>open_in_browser</Icon>
     					<p>Upload a new artist image</p>
     				</Dropzone>
 				</div>
 
-				<div className='password-change flex-column center'>
+				<div className='password-change form-panel flex-column center'>
 					<h1>Password</h1>
 					<div>
 						<p>New Password</p>
@@ -402,7 +379,7 @@ var SettingsEditor = React.createClass({
 					</div>
 				</div>
 
-				<div className='artist-links flex-column center'>
+				<div className='artist-links form-panel flex-column center'>
 					<h1>Update Links</h1>
 					<div>
 						<p>Web</p>
@@ -430,7 +407,7 @@ var SettingsEditor = React.createClass({
 					</div>
 				</div>
 
-				<div className='flex-row apply-editor center'>
+				<div className='apply-editor form-panel flex-row center'>
 					<div className='flex-fixed apply flex-container' onClick={this.applyChanges}>
 						Apply
 					</div>

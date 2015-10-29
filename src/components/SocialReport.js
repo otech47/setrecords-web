@@ -1,8 +1,12 @@
 import React from 'react';
 import moment from 'moment';
-import Loader from 'react-loader';
+import R from 'ramda';
 import {numberWithSuffix} from '../mixins/UtilityFunctions';
+import constants from '../constants/constants';
 
+import Loader from 'react-loader';
+import {Link} from 'react-router';
+import Icon from './Icon';
 
 var SocialReport = React.createClass({
 
@@ -12,8 +16,31 @@ var SocialReport = React.createClass({
 		});
 	},
 
-	componentWillMount: function() {
+	componentWillMount() {
 		this.updateSocial();
+		this.checkSocial();
+	},
+
+	checkSocial() {
+		var artistId = this.props.appState.get("artist_data").id;
+		var artistRequest = constants.API_ROOT+'artist/'+artistId;
+
+		$.ajax({
+			type: 'get',
+			url: artistRequest
+		})
+		.done(res => {
+			var links = res.payload.artist.links;
+			var isEmpty = link => {
+				return R.last(link).length == 0;
+			};
+			var emptyLinks = R.fromPairs(R.filter(isEmpty, R.toPairs(links)));
+			var emptyKeys = R.keys(emptyLinks);
+			console.log(emptyKeys);
+		})
+		.fail(err => {
+			console.error(err);
+		})
 	},
 
 	updateSocial(params) {
@@ -22,13 +49,13 @@ var SocialReport = React.createClass({
 		+ artistId;
 		var socialMetrics;
 		var timezone = moment().utcOffset();
+
 		$.ajax({
 			type: 'GET',
 			url: socialRequestUrl,
 			data: {timezone: timezone}
 		})
-		.done((res) => {
-			console.log(res);
+		.done(res => {
 			this.props.push({
 				type: 'SHALLOW_MERGE',
 				data: {
@@ -64,6 +91,9 @@ var SocialReport = React.createClass({
 				</div>
 				<Loader loaded={this.state.loaded}>
 					<div className='panel twitter flex-column flex'>
+						<Link to='/account'>
+							<Icon>add</Icon>
+						</Link>
 						<i className='fa fa-fw fa-twitter center'/>
 						<h1>{numberWithSuffix(twitter_current) || '0'}</h1>
 						<span>total</span>
@@ -71,6 +101,9 @@ var SocialReport = React.createClass({
 						<span>{numberWithSuffix(twitter_last)+' yesterday'}</span>
 					</div>
 					<div className='panel facebook flex-column flex'>
+						<Link to='/account'>
+							<Icon>add</Icon>
+						</Link>
 						<i className='fa fa-fw fa-facebook center'/>
 						<h1>{numberWithSuffix(facebook_current) || '0'}</h1>
 						<span>total</span>
@@ -78,6 +111,9 @@ var SocialReport = React.createClass({
 						<span>{numberWithSuffix(facebook_last)+' yesterday'}</span>
 					</div>
 					<div className='panel instagram flex-column flex'>
+						<Link to='/account'>
+							<Icon>add</Icon>
+						</Link>
 						<i className='fa fa-fw fa-instagram center'/>
 						<h1>{numberWithSuffix(instagram_current) || '0'}</h1>
 						<span>total</span>

@@ -1,9 +1,15 @@
 import React from 'react';
 import SetTile from './SetTile';
 import _ from 'underscore';
-var Loader = require('react-loader');
+import Loader from 'react-loader';
 
 var ContentView = React.createClass({
+
+	getInitialState() {
+		return {
+			loaded: false
+		};
+	},
 
 	componentWillMount() {
 		this.updateSets();
@@ -11,9 +17,7 @@ var ContentView = React.createClass({
 
 	render() {
 		var sets = this.props.appState.get('sets');
-		var self = this;
-
-		var setTiles = _.map(sets, function(set) {
+		var setTiles = _.map(sets, (set) => {
 			var setName = set.event;
 			if(set.episode != null && set.episode.length > 0) {
 				var setName = set.event+' - '+set.episode	;
@@ -27,20 +31,21 @@ var ContentView = React.createClass({
 
 			var props = {
 				key: set.id,
+				id: set.id,
 				setName: setName,
 				artist: set.artist,
 				imageURL: imageURL,
 				set_length: set.set_length,
 				popularity: set.popularity,
-				loaded: self.props.loaded,
-				openSetEditor: self.props.openSetEditor
+				is_radiomix: set.is_radiomix,
+				push: this.props.push
 			};
-
+			
 			return (<SetTile {...props} />);
 		});
 
 		return (
-			<Loader loaded={true}>
+			<Loader loaded={this.state.loaded}>
 				<div className='content-page flex-row'>
 					{setTiles}
 				</div>
@@ -56,13 +61,15 @@ var ContentView = React.createClass({
 			url: requestURL
 		})
 		.done((res) => {
-			this.props.push({
+			this.setState({
+				loaded: true
+			}, this.props.push({
 				type: 'SHALLOW_MERGE',
 				data: {
 					sets: res.payload.sets,
 					header: 'Content'
 				}
-			});
+			}));
 		})
 		.fail(function(err) {
 			console.log(err);

@@ -152,7 +152,7 @@ var SetmineReport = React.createClass({
 			case 'monthly':
 			previousCohort = 'last month';
 			break;
-		}	
+		}
 
 		return (
 			<div className='metrics-panel' id='SetmineReport'>

@@ -22,7 +22,6 @@ var SetEditor = React.createClass({
 						</div>
 						<div>
 							<p>1001 trackiList URL (optional)</p>
-
 						</div>
 						<table className="trackiList-table">
 							<tr>

@@ -34,6 +34,7 @@ var initialAppState = Immutable.Map({
 	loaded: false,
 	sets: [],
 	working_set: {},
+	editSet: {},
 	artist_data: {
 		id: 4026,
 		artist: 'Nodex'
@@ -134,7 +135,7 @@ var App = React.createClass({
 			type: "GET",
 			url: requestURL,
 		})
-		.done(function(res) {
+		.done((res) => {
 			// console.log('Artist...');
 			if (res.status == 'failure') {
 				console.log("An error occurred getting artist data.");
@@ -148,8 +149,8 @@ var App = React.createClass({
 					}
 				});
 			}
-		}.bind(this))
-		.fail(function(err) {
+		})
+		.fail((err) => {
 			console.log('An error occurred getting artist data.');
 			console.log(err);
 		}); 
@@ -200,39 +201,6 @@ var App = React.createClass({
 			});
 		}
 	},
-
-	// closeSettingsEditor(isChanged) {
-	// 	console.log("Settings editor would have been closed!");
-	// 	if (isChanged) {
-	// 		push({
-	// 			type: 'SHALLOW_MERGE',
-	// 			data: {
-	// 				loaded: false
-	// 			}
-	// 		});
-	// 		this.updateArtist(function(err, settings) {
-	// 			if (err) {
-	// 				// console.log('An error occurred.', err);
-	// 			} else {
-	// 				push({
-	// 					type: 'SHALLOW_MERGE',
-	// 					data: {
-	// 						artist_data: settings,
-	// 						settings_editor: false,
-	// 						loaded: true
-	// 					}
-	// 				});
-	// 			}
-	// 		});
-	// 	} else {
-	// 		push({
-	// 			type: 'SHALLOW_MERGE',
-	// 			data: {
-	// 				settings_editor: false
-	// 			}
-	// 		})
-	// 	}
-	// },
 
 	closeUploadSetWizard(isChanged) {
 		console.log("closing upload set wizard");
