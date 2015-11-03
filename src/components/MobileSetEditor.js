@@ -17,7 +17,7 @@ import Dropzone from 'react-dropzone';
 
 var MobileSetEditor = React.createClass({
 
-	mixins: [History],
+	mixins: [History, LinkedStateMixin],
 
 	getInitialState() {
 		return {
@@ -253,7 +253,8 @@ var MobileSetEditor = React.createClass({
 			url: `${constants.API_ROOT}tracklist/${id}`,
 		})
 		.done((res) => {
-			var tracklist = res.payload.tracks;//returns []
+			console.log(res.payload.tracks);
+			var tracklist = res.payload.tracks;
 			this.setState({
 				tracklist: tracklist
 			});
@@ -267,7 +268,7 @@ var MobileSetEditor = React.createClass({
 		var self = this;
 
 		//put callback in pull tracks function
-		this.pull1001Tracks(function(tracks) {
+		this.pullTracks(function(tracks) {
 			if (tracks == null) {
 				alert('Please enter a valid 1001 tracklists URL.');
 			} else {
@@ -369,8 +370,9 @@ var MobileSetEditor = React.createClass({
 		}
 	},
 
-	pull1001Tracks(callback) {
+	pullTracks(callback) {
 		var tracklistURL = this.state.tracklistURL;
+		console.log(tracklistURL);
 		if (tracklistURL == null) {
 			callback(null);
 		} else {
@@ -382,6 +384,7 @@ var MobileSetEditor = React.createClass({
 					tracklist_url: tracklistURL
 				},
 				success: function(res) {
+					console.log(res);
 					if (res.status == 'failure') {
 						callback(null);
 					} else {
@@ -389,6 +392,7 @@ var MobileSetEditor = React.createClass({
 					}
 				},
 				error: function(err) {
+					console.error(err);
 					callback(null);
 				}
 			});
@@ -554,6 +558,7 @@ var MobileSetEditor = React.createClass({
 		    	<Tracklist 
 		    		tracks={this.state.tracklist} 
 		    		listURL={this.state.tracklistURL} 
+		    		linkState={this.linkState}
 		    		changeTrack={this.changeTrack} 
 		    		addTrack={this.addTrack} 
 		    		loadTracksFromURL={this.loadTracksFromURL} 

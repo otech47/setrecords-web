@@ -16,8 +16,8 @@ var Tracklist = React.createClass({
 			<div className='flex-column' id='Tracklist'>
 				<div className='urlTracklist form-panel'>
 					<h1>1001tracklists URL</h1>
-					<input type='text' value={tracklistURL} onChange={this.props.loadTracksFromURL} />
-					<button onClick={this.props.loadTracksFromURL}>Load</button>		
+					<input type='text' valueLink={linkState('tracklistURL')} />
+					<button onClick={this.loadTracksFromURL}>Load</button>		
 				</div>
 				<div className='tracks flex-column form-panel'>
 					<h1>Edit Tracks</h1>
@@ -26,6 +26,10 @@ var Tracklist = React.createClass({
 				</div>
 			</div>
 		);
+	},
+
+	loadTracksFromURL: function() {
+		this.props.loadTracksFromURL(this.props.linkState('tracklistURL').value);
 	},
 
 	showTracks: function() {

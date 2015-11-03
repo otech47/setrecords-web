@@ -606,6 +606,7 @@ var UploadWizardWrapper = React.createClass({
 			}
 		});
 	},
+	
 	deleteTrack: function(index) {
 		this.setState({
 			tracklist: update(this.state.tracklist, {$splice: [[index, 1]]})
