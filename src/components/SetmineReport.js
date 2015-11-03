@@ -79,10 +79,12 @@ var SetmineReport = React.createClass({
 				}
 				counter++;
 			});
+
 			var chartData = {
 				labels: labels,
 				datasets: datasets
 			};
+
 			var chartOptions = {
 				bezierCurve: false,
 				datasetFill: false,
@@ -92,6 +94,8 @@ var SetmineReport = React.createClass({
 				scaleFontColor: '#313542',
 				scaleShowGridLines: false
 			};
+
+
 			return (<LineChart data={chartData} className='linechart' options={chartOptions} redraw />);
 		}
 		else {

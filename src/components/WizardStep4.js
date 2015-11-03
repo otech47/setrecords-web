@@ -1,7 +1,7 @@
-var React = require('react');
+import React from 'react';
 import _ from 'underscore';
 var constants = require('../constants/constants');
-var Dropzone = require('react-dropzone');
+import Dropzone from 'react-dropzone';
 import MockSetTileImproved from './MockSetTileImproved';
 import UtilityFunctions from '../mixins/UtilityFunctions';
 import ReactDatalist from './ReactDatalist';
@@ -9,6 +9,8 @@ import ReactDatalist from './ReactDatalist';
 var WizardStep4 = React.createClass({
 	render: function() {
 		var linkState = this.props.linkState;
+		console.log(linkState);
+		
 		var mockImage = null;
 		if (this.props.image) {
 			mockImage = this.props.image.preview;

@@ -1,16 +1,14 @@
-var React = require('react');
+import React from 'react';
 
 var PreviewTrack = React.createClass({
 	render: function() {
 		var {play, pause, removeSong, title, duration, isPlaying, ...other} = this.props;
 		return (
-			<div className="preview-player flex-row">
-				<button onClick={removeSong}><i className='fa fa-times warning'></i></button>
-				<p className='flex'>{(title.length > 30 ? title.substring(0, 30) + '...' : title)}</p>
-				<p>{duration}</p>
-				<button onClick={(isPlaying ? pause : play)}>
-					<i className={'fa ' + (isPlaying ? 'fa-pause':'fa-play')}></i>
-				</button>
+			<div className='track flex-row'>
+				<i className={`fa ${isPlaying ? 'fa-pause':'fa-play'}`} onClick={(isPlaying ? pause : play)}/>
+				<p className='flex-fixed' style={{textAlign: 'center'}}>{duration}</p>
+				<p className='flex-fixed-3x'>{(title.length > 30 ? title.substring(0, 30) + '...' : title)}</p>
+				<i className='fa fa-times warning' onClick={removeSong}/>
 			</div>
 		);
 	}

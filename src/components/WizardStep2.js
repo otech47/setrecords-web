@@ -1,22 +1,29 @@
-var React = require('react');
-var Dropzone = require('react-dropzone');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Dropzone from 'react-dropzone';
+
 import PreviewPlayer from './PreviewPlayer';
+import Notification from './Notification';
+import {Motion, spring, presets} from 'react-motion';
 
 var WizardStep2 = React.createClass({
 	getInitialState: function() {
 		return {
 			current_audio: null,
 			current_track: null,
-			is_playing: false
+			is_playing: false,
+			open: false
 		};
 	},
+
 	componentWillUnmount: function() {
 		if (this.state.current_audio) {
 			URL.revokeObjectURL(this.state.current_audio);
 		}
 	},
+
 	componentDidMount: function() {
-		var player = React.findDOMNode(this.refs.player);
+		var player = ReactDOM.findDOMNode(this.refs.player);
 		player.onended = (function(e) {
 			this.setState({
 				current_audio: null,
@@ -25,32 +32,53 @@ var WizardStep2 = React.createClass({
 			});
 		}).bind(this);
 	},
+
 	render: function() {
+		var hideButton = this.props.songs.length >= 1 ? '' : 'hidden';
 		return (
-			<div className="flex-column wizard-step">
-				<audio ref='player' src={this.state.current_audio}>
-				</audio>
-				<p className='step-info set-flex'>Choose your files to upload. (mp3/wav only)</p>
-				<p className='step-info set-flex'>Multiple files will be joined.</p>
-				<div className="flex-row step-buttons">
+			<div className="flex-column wizard-step" id='WizardStep2'>
+				<audio ref='player' src={this.state.current_audio}/>
+				<div className="flex-row step-buttons hidden">
 					<Dropzone ref='dropzone' className="hidden" onDrop={this.props.addSongFile} multiple={false} />
-					<button className="step-button" onClick={this.browse}>
-						Add a file...
-					</button>
-					<button className='step-button' onClick={this.submitStep}>
-						Continue
-					</button>
 				</div>
+				<Motion style={{
+					opacity: spring(this.state.open ? 1 : 0, presets.gentle),
+					visibility: this.state.open ? 'visible' : 'hidden'
+				}}>
+					{
+						({opacity, visibility}) =>
+						<Notification dismiss={() => this.setState({open: false})} style={{
+							opacity: `${opacity}`,
+							visibility: `${visibility}`
+						}}>
+							Please upload at least one file to continue
+						</Notification>
+					}
+				</Motion>
+				
+				<div className='flex-row upload'>
+					<button className="step-button" onClick={this.browse}>
+						Upload
+					</button>
+					<p>MP3/WAV only. Multiple files will be joined.</p>
+				</div>
+
 				<PreviewPlayer songs={this.props.songs} removeSong={this.removeSong}
 				isPlaying={this.state.is_playing} currentTrack={this.state.current_track}
 				play={this.play}
 				pause={this.pause} />
+
+				<button className={`step-button ${hideButton}`} onClick={this.submitStep}>
+					Continue
+				</button>
 			</div>
 		);
 	},
+
 	browse: function(event) {
 		this.refs.dropzone.open();
 	},
+
 	removeSong: function(index) {
 		if (index == this.state.current_track) {
 			URL.revokeObjectURL(this.state.current_audio);
@@ -67,8 +95,9 @@ var WizardStep2 = React.createClass({
 		}
 		this.props.removeSong(index);
 	},
+
 	play: function(index) {
-		var player = React.findDOMNode(this.refs.player);
+		var player = ReactDOM.findDOMNode(this.refs.player);
 		if (index == this.state.current_track) {
 			this.setState({
 				is_playing: true
@@ -89,17 +118,21 @@ var WizardStep2 = React.createClass({
 			});
 		}
 	},
+
 	pause: function() {
-		var player = React.findDOMNode(this.refs.player);
+		var player = ReactDOM.findDOMNode(this.refs.player);
 		this.setState({
 			is_playing: false
-		}, function() {
+		}, () => {
 			player.pause();
 		});
 	},
+
 	submitStep: function() {
 		if (this.props.songs.length == 0) {
-			alert('Please upload at least one mp3 or wav file to continue.');
+			this.setState({
+				open: true
+			});
 		} else if (this.props.songs.length > 1) {
 			var confirm = window.confirm('You have uploaded more than one file. Joining them will take additional time. Is this ok?');
 			if (confirm == true) {

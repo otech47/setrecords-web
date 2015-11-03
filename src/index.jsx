@@ -169,116 +169,13 @@ var App = React.createClass({
 		this.updateArtist();
 	},
 
-	closeSetEditor(isChanged) {
-		if (isChanged) {
-			push({
-				type: 'SHALLOW_MERGE',
-				data: {
-					loaded: false
-				}
-
-			});
-			this.updateSets(function(err, sets) {
-				if (err) {
-					// console.log('An error occurred.', err);
-				} else {
-					push({
-						type: 'SHALLOW_MERGE',
-						data: {
-							sets: sets,
-							set_editor: false,
-							loaded: true
-						}
-					});
-				}
-			});
-		} else {
-			push({
-				type: 'SHALLOW_MERGE',
-				data: {
-					set_editor: false
-				}
-			});
-		}
-	},
-
-	closeUploadSetWizard(isChanged) {
-		console.log("closing upload set wizard");
-		if (isChanged) {
-			push({
-				type: 'SHALLOW_MERGE',
-				data: {
-					loaded: false
-				}
-			});
-			this.updateSets(function(err, sets) {
-				if (err) {
-					// console.log('An error occurred.', err);
-				} else {
-					push({
-						type: 'SHALLOW_MERGE',
-						data: {
-							sets: sets,
-							upload_set_wizard: false,
-							loaded: true
-						}
-					});
-				}
-			});
-		} else {
-			push({
-				type: 'SHALLOW_MERGE',
-				data: {
-					upload_set_wizard: false
-				}
-			});
-		}
-	},
-
-	openSettingsEditor() {
-		console.log("Settings editor would have been opened!");
-		push({
-			type: 'SHALLOW_MERGE',
-			data: {
-				settings_editor: true,
-				upload_set_wizard: false,
-				set_editor: false
-			}
-		});
-	},
-
-	openSetEditor(set) {
-		var clonedSet = this.cloneObject(set);
-		push({
-			type: 'SHALLOW_MERGE',
-			data: {
-				working_set: clonedSet,
-				set_editor: true,
-				settings_editor: false,
-				upload_set_wizard: false
-			}
-		});
-	},
-
-	openUploadSetWizard() {
-		console.log("opening upload set wizard...");
-		push({
-			type: 'SHALLOW_MERGE',
-			data: {
-				set_editor: false,
-				settings_editor: false,
-				upload_set_wizard: true
-			}
-		});
-	},
-
 	render() {
 		var appState = this.state.appState;
 		return (
-			<div className="main-container flex-column">
-				<Header appState={appState} openSettingsEditor={this.openSettingsEditor} closeSettingsEditor={this.closeSettingsEditor} openUploadSetWizard={this.openUploadSetWizard} />
+			<div className='flex-column' id='App'>
+				<Header appState={appState}/>
 				<div className='flex-row view-container'>
-					<NavBar />
+					<NavBar push={push} />
 					<div className='view flex-column flex'>
 						{
 							React.cloneElement(this.props.children, {

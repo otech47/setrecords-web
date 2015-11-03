@@ -1,9 +1,11 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import update from 'react-addons-update';
 import LinkedStateMixin from 'react-addons-linked-state-mixin';
 
 import _ from 'underscore';
-var moment = require("moment");
+import R from 'ramda';
+import moment from 'moment';
 import WizardStep1 from './WizardStep1';
 import WizardStep2 from './WizardStep2';
 import WizardStep3 from './WizardStep3';
@@ -16,9 +18,11 @@ var constants = require('../constants/constants');
 import UtilityFunctions from '../mixins/UtilityFunctions';
 import Joiner from '../services/Joiner';
 import async from 'async';
+import Icon from './Icon';
 
 var UploadWizardWrapper = React.createClass({
-	// mixins: [React.addons.LinkedStateMixin, UtilityFunctions],
+
+	mixins: [LinkedStateMixin, UtilityFunctions],
 	getInitialState: function() {
 		return {
 			featured_artists: [],
@@ -45,6 +49,15 @@ var UploadWizardWrapper = React.createClass({
 			failure: false,
 			joining: false
 		};
+	},
+
+	componentWillMount: function() {
+		this.props.push({
+			type: 'SHALLOW_MERGE',
+			data: {
+				header: 'New Set'
+			}
+		});
 	},
 
 	registerAudio: function(callback) {
@@ -81,7 +94,7 @@ var UploadWizardWrapper = React.createClass({
 						});
 					} else {
 						console.log('Join successful.');
-						var newFilename = self.props.originalArtist.artist + '_joined_' + self.state.songs[0].file.name;
+						var newFilename = self.props.appState.get('artist_data').artist + '_joined_' + self.state.songs[0].file.name;
 						var joinedFile = new File([joinedBlob], newFilename);
 						self.setState({
 							filesize: joinedFile.size,
@@ -181,6 +194,11 @@ var UploadWizardWrapper = React.createClass({
 		console.log('Set data packaged.');
 		return setData;
 	},
+
+//TODO something in here with eventlookup breaks step 4
+//MODELS from appState.get('event_lookup') are breaking shit here
+// TODO get rid of models
+// kill the artists
 	packageEventData: function(imageURL) {
 		console.log('Packaging event data...');
 		var exists = false;
@@ -250,7 +268,7 @@ var UploadWizardWrapper = React.createClass({
 					console.log('Creating bundle...');
 					var setData = self.packageSetData(registeredUrls[0]);
 					var eventData = self.packageEventData(registeredUrls[1]);
-					var artists = [self.props.originalArtist];
+					var artists = [self.props.appState.get('artist_data').artist];
 					if (self.state.set_type != 'Album') {
 						_.each(self.state.featured_artists, function(featuredArtist, index) {
 							var match = self.props.artistLookup[featuredArtist];
@@ -264,12 +282,12 @@ var UploadWizardWrapper = React.createClass({
 							}
 						});
 					}
-					var tracklist = React.addons.update(pendingSet.tracklist, {$push: []});
+					var tracklist = update(pendingSet.tracklist, {$push: []});
 					if (tracklist.length == 0) {
 						tracklist.push({
 							'track_id': -1,
 							'start_time': '00:00',
-							'artist': self.props.originalArtist.artist,
+							'artist': self.props.appState.get('artist_data').artist,
 							'song': 'untitled'
 						});
 					}
@@ -337,7 +355,7 @@ var UploadWizardWrapper = React.createClass({
 		});
 	},
 	componentDidMount: function() {
-		var counter = React.findDOMNode(this.refs.counter);
+		var counter = ReactDOM.findDOMNode(this.refs.counter);
 		counter.onloadedmetadata = (function(e) {
 			var duration = counter.duration;
 			var newSetLength = _.reduce(this.state.songs, function(counter, song) {
@@ -350,7 +368,7 @@ var UploadWizardWrapper = React.createClass({
 			this.setState({
 				pending_file: null,
 				temp_url: null,
-				songs: React.addons.update(this.state.songs, {$push: [processedSong]}),
+				songs: update(this.state.songs, {$push: [processedSong]}),
 				set_length: newSetLength
 			});
 		}).bind(this);
@@ -378,13 +396,14 @@ var UploadWizardWrapper = React.createClass({
 			setLength={this.state.set_length}
 			tracklist={this.state.tracklist}
 			addTrack={this.addTrack}
-			removeTrack={this.removeTrack}
+			loadTracksFromURL={this.loadTracksFromURL}
+			deleteTrack={this.deleteTrack}
 			changeTrack={this.changeTrack} />);
 			break;
 
 			case 4:
 			stepComponent = (<WizardStep4 stepForward={this.stepForward}
-			originalArtist={this.props.originalArtist.artist}
+			originalArtist={this.props.appState.get('artist_data').artist}
 			linkState={this.linkState}
 			type={this.state.set_type}
 			events={this.props.events}
@@ -394,7 +413,7 @@ var UploadWizardWrapper = React.createClass({
 			image={this.state.image}
 			setLength={this.state.set_length}
 			addImage={this.addImage}
-			eventLookup={this.props.eventLookup}
+			eventLookup={this.props.appState.get('event_lookup')}
 			featuredArtists={this.state.featured_artists}
 			addFeaturedArtist={this.addFeaturedArtist}
 			removeFeaturedArtist={this.removeFeaturedArtist}
@@ -419,7 +438,7 @@ var UploadWizardWrapper = React.createClass({
 			break;
 
 			case 7:
-			stepComponent = (<WizardStepConfirmation {...this.state} uploadSet={this.uploadSet} originalArtist={this.props.originalArtist.artist} />);
+			stepComponent = (<WizardStepConfirmation {...this.state} uploadSet={this.uploadSet} originalArtist={this.props.appState.get('artist_data').artist} />);
 			break;
 
 			default:
@@ -429,18 +448,25 @@ var UploadWizardWrapper = React.createClass({
 		return (
 		<div className='flex-column' id='UploadSetWizard'>
 			{this.showApplyingStatus()}
-			<audio ref='counter' preload='metadata' src={this.state.temp_url}>
-			</audio>
-			<h1 className='step-counter'>{this.state.current_step < 7 ? 'Step ' + this.state.current_step + ' of 6' : 'Confirmation'}</h1>
-			<div className={'back-arrow' + (this.state.current_step > 1 ? '':' invisible')} onClick={this.stepBackward}>
-				<i className='fa fa-chevron-left'></i> back
+			<audio ref='counter' preload='metadata' src={this.state.temp_url}/>
+
+			<div className='form-panel'>
+				<div className='step-counter flex-row'>
+					<Icon className={`${this.state.current_step > 1 ? '': 'hidden-fade'}`} onClick={this.stepBackward}>chevron_left</Icon>
+					<h1 className='center'>{this.state.current_step < 7 ? 'Step ' + this.state.current_step + ' of 6' : 'Confirmation'}</h1>
+					<Icon className='hidden-fade'>chevron_right</Icon>
+				</div>
+
+				<div className='flex wizard-body'>
+					{stepComponent}
+				</div>
 			</div>
-			<div className='flex wizard-body'>
-				{stepComponent}
-			</div>
+
 		</div>
 		);
 	},
+
+//TODO add modal notifications
 	showApplyingStatus: function() {
 		if (this.state.busy) {
 			var statusMessage;
@@ -465,12 +491,12 @@ var UploadWizardWrapper = React.createClass({
 	},
 	addFeaturedArtist: function() {
 		this.setState({
-			featured_artists: React.addons.update(this.state.featured_artists, {$push: ['']})
+			featured_artists: update(this.state.featured_artists, {$push: ['']})
 		});
 	},
 	removeFeaturedArtist: function(index) {
 		this.setState({
-			featured_artists: React.addons.update(this.state.featured_artists, {$splice: [[index, 1]]})
+			featured_artists: update(this.state.featured_artists, {$splice: [[index, 1]]})
 		});
 	},
 	changeFeaturedArtist: function(index, event) {
@@ -479,9 +505,10 @@ var UploadWizardWrapper = React.createClass({
 			$set: event.target.value
 		};
 		this.setState({
-			featured_artists: React.addons.update(this.state.featured_artists, updateObj)
+			featured_artists: update(this.state.featured_artists, updateObj)
 		});
 	},
+
 	changeTrack: function(index, key, val) {
 		var innerUpdate = {};
 		innerUpdate[key] = {
@@ -490,29 +517,57 @@ var UploadWizardWrapper = React.createClass({
 		var outerUpdate = {};
 		outerUpdate[index] = innerUpdate;
 		this.setState({
-			tracklist: React.addons.update(this.state.tracklist, outerUpdate)
+			tracklist: update(this.state.tracklist, outerUpdate)
 		});
 	},
-	addTrack: function() {
-		var artist = this.props.originalArtist.artist;
+
+	// addTrack: function() {
+	// 	var artist = this.props.appState.get('artist_data').artist;
+	// 	var tracklist = this.state.tracklist;
+	// 	if (tracklist.length == 0) {
+	// 		var nextStartTime = '00:00';
+	// 	} else {
+	// 		var lastStartTime = this.timeStringToSeconds(_.last(tracklist).start_time);
+	// 		var nextStartTime = this.secondsToMinutes(lastStartTime + 1);
+	// 	}
+	// 	var newTrack = {
+	// 		'track_id': this.state.track_id,
+	// 		'start_time': nextStartTime,
+	// 		'artist': artist,
+	// 		'song': 'untitled'
+	// 	};
+	// 	this.setState({
+	// 		tracklist: update(tracklist, {$push: [newTrack]}),
+	// 		track_id: this.state.track_id - 1
+	// 	});
+	// },
+
+	addTrack() {
+		var artistName = this.props.appState.get('artist_data').artist;
 		var tracklist = this.state.tracklist;
-		if (tracklist.length == 0) {
-			var nextStartTime = '00:00';
+		var tracklistLength = _.size(tracklist);
+
+		if (tracklistLength > 0) {
+			var nextStartTime = moment(tracklist[tracklistLength - 1].start_time, 'mm:ss').add(1, 'seconds').format('mm:ss');
 		} else {
-			var lastStartTime = this.timeStringToSeconds(_.last(tracklist).start_time);
-			var nextStartTime = this.secondsToMinutes(lastStartTime + 1);
+			var nextStartTime = '00:00';
 		}
-		var newTrack = {
-			'track_id': this.state.track_id,
+
+		var newTracklist = R.clone(tracklist);
+		newTracklist[tracklistLength] = {
+			'track_id': -1,
 			'start_time': nextStartTime,
-			'artist': artist,
+			'artist': artistName,
 			'song': 'untitled'
 		};
+
 		this.setState({
-			tracklist: React.addons.update(tracklist, {$push: [newTrack]}),
-			track_id: this.state.track_id - 1
+			tracklist: newTracklist,
+			changes: true,
+			tracklistURL: null
 		});
 	},
+
 	pullTracks: function(url, callback) {
 		var tracklistUrl = url;
 		if (tracklistUrl == null || tracklistUrl.length == 0) {
@@ -538,27 +593,27 @@ var UploadWizardWrapper = React.createClass({
 			});
 		}
 	},
-	loadTracksFromUrl: function(url) {
+	loadTracksFromURL: function(url) {
 		var self = this;
 		this.pullTracks(url, function(tracks) {
 			if (tracks == null) {
 				alert("Please enter a valid 1001 tracklists URL.");
 			} else {
-				var newTracklist = React.addons.update(self.state.tracklist, {$set: tracks});
+				var newTracklist = update(self.state.tracklist, {$set: tracks});
 				self.setState({
-					tracklist: React.addons.update(self.state.tracklist,  {$set: tracks})
+					tracklist: update(self.state.tracklist,  {$set: tracks})
 				});
 			}
 		});
 	},
-	removeTrack: function(index) {
+	deleteTrack: function(index) {
 		this.setState({
-			tracklist: React.addons.update(this.state.tracklist, {$splice: [[index, 1]]})
+			tracklist: update(this.state.tracklist, {$splice: [[index, 1]]})
 		});
 	},
 	stepForward: function(setData) {
 		if (setData) {
-			var newData = React.addons.update(setData, {$merge: {current_step: this.state.current_step + 1}});
+			var newData = update(setData, {$merge: {current_step: this.state.current_step + 1}});
 		} else {
 			var newData = {
 				current_step: this.state.current_step + 1
@@ -590,7 +645,7 @@ var UploadWizardWrapper = React.createClass({
 	},
 	removeSongFile: function(index) {
 		this.setState({
-			songs: React.addons.update(this.state.songs, {$splice: [[index, 1]]})
+			songs: update(this.state.songs, {$splice: [[index, 1]]})
 		});
 	},
 	toggleOutlet: function(outlet) {
@@ -598,11 +653,11 @@ var UploadWizardWrapper = React.createClass({
 		var index = this.state.outlets.indexOf(outlet);
 		if (index >= 0) {
 			this.setState({
-				outlets: React.addons.update(this.state.outlets, {$splice: [[index, 1]]})
+				outlets: update(this.state.outlets, {$splice: [[index, 1]]})
 			});
 		} else {
 			this.setState({
-				outlets: React.addons.update(this.state.outlets, {$push: [outlet]})
+				outlets: update(this.state.outlets, {$push: [outlet]})
 			});
 		}
 	},

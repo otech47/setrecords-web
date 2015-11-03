@@ -1,12 +1,12 @@
-var React = require('react');
+import React from 'react';
 
 var WizardStep1 = React.createClass({
 	render: function() {
 		var stepForward = this.props.stepForward;
 		return (
-			<div className="flex-column wizard-step">
-				<p className='step-info set-flex'>What kind of set is this?</p>
-				<table className="step-button-text">
+			<div className="flex-column wizard-step" id='WizardStep1'>
+				<p>What kind of set is this?</p>
+				<table>
 					<tbody>
 						<tr>
 							<td><button name="festival" className="step-button" onClick={stepForward.bind(null, {'set_type': 'Live'})}>Live</button></td>

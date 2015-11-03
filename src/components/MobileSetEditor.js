@@ -166,7 +166,8 @@ var MobileSetEditor = React.createClass({
 		});
 	},
 
-	changeTrack(fieldName, newVal, trackIndex) {
+	// changeTrack(fieldName, newVal, trackIndex) {
+	changeTrack(trackIndex, fieldName, newVal) {
 		var clonedTracklist = R.clone(this.state.tracklist);
 		clonedTracklist[trackIndex][fieldName] = newVal;
 
@@ -559,7 +560,7 @@ var MobileSetEditor = React.createClass({
 		    		deleteTrack={this.deleteTrack} 
 		    		changeTracklistURL={this.changeTracklistURL} />
 
-		    	<div className='flex-row apply-editor form-panel center'>
+		    	<div className='flex-row form-panel center' id='apply-changes'>
 					<div className='flex-fixed apply flex-container' onClick={this.applyChanges}>
 						Apply
 					</div>

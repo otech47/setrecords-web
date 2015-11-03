@@ -61,6 +61,7 @@ var ContentView = React.createClass({
 			url: requestURL
 		})
 		.done((res) => {
+			console.log(res);
 			this.setState({
 				loaded: true
 			}, this.props.push({

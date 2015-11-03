@@ -3,6 +3,8 @@ import React from 'react';
 var Footer = React.createClass({
 
 	render() {
+		var contact = 'artists@setmine.com';
+
 		return (
 			<footer>
 				<div className='flex-column links'>
@@ -16,7 +18,7 @@ var Footer = React.createClass({
 						Android
 					</a>
 					<div className='copyright'>
-		             	<i className='fa fa-copyright'/> 
+		             	<i className='fa fa-copyright'/>
 		             	{' Setmusic LLC. 2015'}
 	             	</div>
 	          </div>
@@ -25,10 +27,17 @@ var Footer = React.createClass({
 						<i className='fa fa-share-alt'/>
 						<span>CONTACT</span>
 					</h4>
-					<ul>
-						<li>
+					<nav className='flex-row'>
+						<a className='fa fa-fw fa-envelope-o' href={`mailto:${contact}`} />
+						<a href='https://www.facebook.com/SetmineApp' className='fa fa-fw fa-facebook-square'/>
+						<a href='https://twitter.com/setmineapp' className='fa fa-fw fa-twitter-square'/>
+						<a href='https://instagram.com/setmine/' className='fa fa-fw fa-instagram'/>
+						<a href='http://setmine.tumblr.com/' className='fa fa-fw fa-tumblr-square'/>
+					</nav>
+					{/*<ul className='hidden'>
+						<li onClick={this.redirect}>
 							<i className='fa fa-fw fa-envelope-o'/>
-							<span>artists@setmine.com</span>
+							<span>{contact}</span>
 						</li>
 						<li>
 							<a href='https://www.facebook.com/SetmineApp' className='fa fa-fw fa-facebook-square'/>
@@ -46,7 +55,7 @@ var Footer = React.createClass({
 							<a href='http://setmine.tumblr.com/' className='fa fa-fw fa-tumblr-square'/>
 							<span>Tumblr</span>
 						</li>
-					</ul>
+					</ul>*/}
 				</div>
 				<div className='flex-column sponsors'>
 					<a className='center' href='https://teamtreehouse.com'><img src='/images/treehouse.png' /></a>

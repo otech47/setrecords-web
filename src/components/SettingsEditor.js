@@ -407,7 +407,7 @@ var SettingsEditor = React.createClass({
 					</div>
 				</div>
 
-				<div className='apply-editor form-panel flex-row center'>
+				<div className='form-panel flex-row center' id='apply-changes'>
 					<div className='flex-fixed apply flex-container' onClick={this.applyChanges}>
 						Apply
 					</div>

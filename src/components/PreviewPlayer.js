@@ -20,7 +20,7 @@ var PreviewPlayer = React.createClass({
 		}).bind(this));
 
 		return (
-			<div className="preview-player flex-column">
+			<div className='flex-column' id='PreviewPlayer'>
 				{previewTracks}
 			</div>
 		);

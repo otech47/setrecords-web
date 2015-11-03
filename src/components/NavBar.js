@@ -1,18 +1,20 @@
 import React from 'react';
-import {IndexLink, Link} from 'react-router';
+import {IndexLink, Link, History} from 'react-router';
 import Icon from './Icon';
 
 var NavBar = React.createClass({
+
+	mixins: [History],
 
 	render() {
 		return (
 			<div className='flex-column' id='NavBar'>
 				<h3>CONTENT</h3>
-				<Link className='flex-row flex click' to='/upload' activeClassName='active'>
-					<Icon>file_upload</Icon>
+				<Link className='flex-row flex click' to='/upload' activeClassName='active' ref='set'>
+					<Icon>queue_music</Icon>
 					<div>Add Set</div>
 				</Link>
-				<Link className='flex-row flex click' to='/upload' activeClassName='active'>
+				<Link className='flex-row flex click' to='/upload' activeClassName='active' ref='track'>
 					<Icon>music_note</Icon>
 					<div>Add Track</div>
 				</Link>

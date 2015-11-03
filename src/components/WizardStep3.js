@@ -1,23 +1,25 @@
-var React = require('react');
+import React from 'react';
 import TracklistImproved from './TracklistImproved';
+import Tracklist from './Tracklist';
 import _ from 'underscore';
-var moment = require("moment");
+import moment from 'moment';
 import UtilityFunctions from '../mixins/UtilityFunctions';
 
 var WizardStep3 = React.createClass({
+
 	mixins: [UtilityFunctions],
 	render: function() {
 		return (
-			<div className="flex-column wizard-step">
-				<p className='step-info set-flex'>Create the tracklist for your set, then click Continue.</p>
-				<p className='step-info set-flex'>(This step is optional and can be done at any time)</p>
-				<button className='step-button' onClick={this.submitStep}>Continue</button>
-				<TracklistImproved tracklist={this.props.tracklist}
+			<div className='flex-column wizard-step' id='WizardStep3'>
+				<p className='step-info flex-container'>Create the tracklist for your set. We'll automatically generate the tracks from any 1001tracklists URL.</p>
+				<p className='step-info flex-container'>(This step is optional and can be done at any time)</p>
+				<Tracklist tracks={this.props.tracklist}
 				linkState={this.props.linkState}
 				addTrack={this.props.addTrack}
-				removeTrack={this.props.removeTrack}
+				deleteTrack={this.props.deleteTrack}
 				changeTrack={this.props.changeTrack}
-				loadTracksFromUrl={this.props.loadTracksFromUrl} />
+				loadTracksFromURL={this.props.loadTracksFromURL} />
+				<button className='step-button' onClick={this.submitStep}>Continue</button>
 			</div>
 		);
 	},
