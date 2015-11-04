@@ -6,6 +6,10 @@ import createBrowserHistory from 'history/lib/createBrowserHistory';
 import Router from 'react-router';
 import { IndexRoute, Link, Route, History } from 'react-router';
 import GlobalEventHandler from './services/globalEventHandler';
+import _ from 'underscore';
+import async from 'async';
+
+import Login from './components/Login';
 import MobileSetEditor from './components/MobileSetEditor';
 import Header from './components/Header';
 import NavBar from './components/NavBar';
@@ -14,8 +18,6 @@ import Footer from './components/Footer';
 import ContentView from './components/ContentView';
 import MetricsView from './components/MetricsView';
 import UploadWizardWrapper from './components/UploadWizardWrapper';
-import _ from 'underscore';
-import async from 'async';
 
 import BeaconReport from './components/BeaconReport';
 import SetmineReport from './components/SetmineReport';
@@ -39,7 +41,7 @@ var initialAppState = Immutable.Map({
 		id: 4026,
 		artist: 'Nodex'
 	},
-	header: 'Content',
+	header: '',
 	genres: [],
 	events: [],
 	mixes: [],
@@ -173,7 +175,7 @@ var App = React.createClass({
 		var appState = this.state.appState;
 		return (
 			<div className='flex-column' id='App'>
-				<Header appState={appState}/>
+				<Header appState={appState} />
 				<div className='flex-row view-container'>
 					<NavBar push={push} />
 					<div className='view flex-column flex'>
@@ -189,6 +191,8 @@ var App = React.createClass({
 			</div>
 		);
 	}
+
+});
 
 //TODO move into separate routes
 	// showView(appState) {
@@ -221,14 +225,13 @@ var App = React.createClass({
 	// 	}
 	// }
 
-});
-
 var history = createBrowserHistory();
 
 ReactDOM.render(
 	<Router>
 		<Route path='/' component={App} >
 			<IndexRoute component={ContentView} />
+			<Route path='login' component={Login} />
 			<Route path='metrics' component={MetricsView}>
 				<Route path='setmine' component={SetmineReport} />
 				<Route path='beacons' component={BeaconReport} />
@@ -236,7 +239,6 @@ ReactDOM.render(
 				<Route path='soundcloud' component={SoundcloudReport} />
 				<Route path='youtube' component={YoutubeReport} />
 			</Route>
-
 			<Route path='edit/:id' component={MobileSetEditor} />
 			<Route path='account' component={SettingsEditor} />
 			<Route path='upload' component={UploadWizardWrapper} />
