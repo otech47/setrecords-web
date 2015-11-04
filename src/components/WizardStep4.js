@@ -5,20 +5,22 @@ import Dropzone from 'react-dropzone';
 import MockSetTileImproved from './MockSetTileImproved';
 import UtilityFunctions from '../mixins/UtilityFunctions';
 import ReactDatalist from './ReactDatalist';
+import Icon from './Icon';
 
 var WizardStep4 = React.createClass({
-	render: function() {
+
+	render() {
 		var linkState = this.props.linkState;
-		console.log(linkState);
-		
 		var mockImage = null;
-		if (this.props.image) {
-			mockImage = this.props.image.preview;
-		}
 		var artists = this.props.originalArtist;
 		var showUploadButton = true;
 		var fieldComponents;
 		var featuredArtistComponent = '';
+
+		if (this.props.image) {
+			mockImage = this.props.image.preview;
+		}
+
 		if (this.props.type == 'Album') {
 			fieldComponents = (
 				<input type='text' valueLink={linkState('name')} placeholder='Album Name' />
@@ -26,22 +28,17 @@ var WizardStep4 = React.createClass({
 		} else {
 			var featuredArtistFields = _.map(this.props.featuredArtists, (function(artist, index) {
 				return (
-					<tr key={index}>
-					<td>
+					<div className='flex-row artist-field' key={index}>
 						<input type='text' list='artist-list' value={artist} onChange={this.props.changeFeaturedArtist.bind(null, index)} />
-					</td>
-					<td>
-						<button onClick={this.props.removeFeaturedArtist.bind(null, index)}><i className='fa fa-times warning'></i></button>
-					</td>
-					</tr>);
+						<i className='fa fa-times warning center' onClick={this.props.removeFeaturedArtist.bind(null, index)}/>
+					</div>
+				);
 			}).bind(this));
 			if (this.props.featuredArtists.length > 0) {
 				featuredArtistComponent = (
-				<table>
-					<tbody>
+					<div>
 						{featuredArtistFields}
-					</tbody>
-				</table>
+					</div>
 				);
 			}
 			if (this.props.type == 'Live') {
@@ -73,41 +70,51 @@ var WizardStep4 = React.createClass({
 		var featuredArtistButton = '';
 		if (this.props.type != 'Album') {
 			featuredArtistButton = (
-				<div>
-					Featured Artists
-					<button onClick={this.props.addFeaturedArtist} className='step-button'>Add</button>
+				<div className='featured-artist flex-row'>
+					<h3>Featured Artists</h3>
+					<button onClick={this.props.addFeaturedArtist}>
+						<Icon className='center'>add</Icon>
+					</button>
 				</div>
 			);
 		}
 
 		return (
-			<div className="flex-column wizard-step">
-				<p className='step-info set-flex'>Enter your set information.</p>
+			<div className='flex-column wizard-step' id='WizardStep4'>
+				<p>Enter your set information.</p>
 				<div className='flex-row'>
+
 					<div className='flex-column flex-fixed'>
 						{featuredArtistButton}
 						{featuredArtistComponent}
 						{fieldComponents}
 						<input type='text' valueLink={linkState('genre')} placeholder='Genre' list='genre-list' />
 					</div>
-					<div className='flex-column flex-fixed'>
+
+					<div className='flex-column flex-fixed' style={{alignItems: 'center'}}>
 						<MockSetTileImproved image={mockImage} artist={artists} name={linkState('name').value} episode={this.props.type == 'Mix' ? linkState('episode').value : ''} setLength={this.props.setLength} popularity={0} />
-						<Dropzone ref='dropzone'
-								onDrop={this.props.addImage}
-								className='hidden'
-								multiple={false} />
-						<button className={'step-button' + (showUploadButton ? '':' invisible')} onClick={this.browse}>
+
+						<Dropzone 
+							ref='dropzone'
+							onDrop={this.props.addImage}
+							className='hidden'
+							multiple={false} />
+
+						<button className={(showUploadButton ? '':' invisible')} onClick={this.browse}>
 							Upload an image...
 						</button>
-						<button className='step-button' onClick={this.submitStep}>
-							Continue
-						</button>
+
+						
+
 						<ReactDatalist key='event-datalist' options={this.props.events} objKey='event' listId='event-list' isArray={false} />
 						<ReactDatalist key='mix-datalist' options={this.props.mixes} objKey='mix' listId='mix-list' isArray={false} />
 						<ReactDatalist key='artist-datalist' options={this.props.artists} isArray={false} objKey='artist' listId='artist-list' />
 						<ReactDatalist key='genre-datalist' options={this.props.genres} isArray={false} objKey='genre' listId='genre-list' />
 					</div>
 				</div>
+				<button className='step-button' onClick={this.submitStep}>
+					Continue
+				</button>
 			</div>
 		);
 	},

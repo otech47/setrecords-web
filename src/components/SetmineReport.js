@@ -161,7 +161,7 @@ var SetmineReport = React.createClass({
 		return (
 			<div className='metrics-panel' id='SetmineReport'>
 				<div className='title flex-row'>
-					<img src='/public/images/setminelogo.png' />
+					<i className='fa icon-setmine center'/>
 					setmine
 				</div>
 				<div className='time-selector flex-row'>

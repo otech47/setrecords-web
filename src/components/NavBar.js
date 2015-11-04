@@ -18,10 +18,10 @@ var NavBar = React.createClass({
 					<Icon>music_note</Icon>
 					<div>Add Track</div>
 				</Link>
-				<Link className='flex-row flex click' to='/home' activeClassName='active' onlyActiveOnIndex={true}>
+				<IndexLink className='flex-row flex click' to='/' activeClassName='active' onlyActiveOnIndex={true}>
 					<Icon>library_music</Icon>
 					<div>Uploads</div>
-				</Link>
+				</IndexLink>
 				<h3>METRICS</h3>
 				<Link className='flex-row flex click' to='/metrics/setmine' activeClassName='active'>
 					<i className='fa fa-fw icon-setmine'/>

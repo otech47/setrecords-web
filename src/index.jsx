@@ -231,7 +231,7 @@ ReactDOM.render(
 	<Router>
 		<Route path='/' component={App} >
 			<IndexRoute component={ContentView} />
-			<Route path='login' component={Login} />
+			{/*<Route path='login' component={Login} />*/}
 			<Route path='metrics' component={MetricsView}>
 				<Route path='setmine' component={SetmineReport} />
 				<Route path='beacons' component={BeaconReport} />

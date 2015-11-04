@@ -94,7 +94,7 @@ var SocialReport = React.createClass({
 		return (
 			<div className='metrics-panel flex-row' id='SocialReport'>
 				<div className='title flex-row'>
-					<i className='fa fa-share-square-o'/>
+					<i className='fa fa-users'/>
 					social
 				</div>
 				<Loader loaded={this.state.loaded}>
