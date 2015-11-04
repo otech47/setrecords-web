@@ -26,7 +26,7 @@ var UploadWizardWrapper = React.createClass({
 	getInitialState: function() {
 		return {
 			featured_artists: [],
-			current_step: 1,
+			current_step: 5,
 			set_type: null,
 			songs: [],
 			set_length: 0,
@@ -426,11 +426,14 @@ var UploadWizardWrapper = React.createClass({
 
 			case 6:
 			if (this.state.release_type == 'Beacon') {
-			stepComponent = (<WizardStep6Beacon	stepForward={this.stepForward}
-			linkState={this.linkState}
-			venues={this.props.venues}
-			toggleOutlet={this.toggleOutlet}
-			outlets={this.state.outlets} />);
+			stepComponent = (
+				<WizardStep6Beacon	stepForward={this.stepForward}
+				linkState={this.linkState}
+				venues={this.props.appState.get('venues')}
+				toggleOutlet={this.toggleOutlet}
+				push={this.props.push}
+				outlets={this.state.outlets} />
+			);
 			} else {
 				stepComponent = (<WizardStep6Free stepForward={this.stepForward}
 				outlets={this.state.outlets} toggleOutlet={this.toggleOutlet} />);

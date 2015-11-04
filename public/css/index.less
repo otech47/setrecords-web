@@ -177,7 +177,7 @@ footer {
 	padding: 5%;
 	font-size: 1rem;
 	input{
-		width: 100%;
+		max-width: 100%;
 		height: 30px;
 		.background(@white, @dark-gray);
 		border: solid 1px @gray;
@@ -669,7 +669,7 @@ header {
 	button {
 		height: 3rem;
 		width: 10rem;
-		margin: auto;
+		margin: 2rem auto 0;
 		font-size: 1rem;
 		justify-content: center;
 		letter-spacing: inherit;
@@ -680,6 +680,23 @@ header {
 		&:active {
 			.background(@blue*0.9, @white);
 		}
+	}
+	p {
+		text-align: center;
+		letter-spacing: initial;
+		cursor: pointer;
+		&:hover {
+			color: @white*0.75;
+		}
+	}
+}
+
+#ForgotPassword {
+	input {
+	}
+	i:hover {
+		.transition();
+		.transform(rotate(-30deg));
 	}
 }
 	
@@ -779,40 +796,6 @@ header {
 				height: 16rem;
 				width: 16rem;
 				border: 0.25rem solid @blue;
-			}
-
-			.venue-search {
-				height: 20rem;
-				width: 100%;
-				background-color: @light-gray;
-				flex-wrap: nowrap;
-				overflow-x: hidden;
-				overflow-y: scroll;
-				.venue-listing {
-					width: 100%;
-					height: 4rem;
-					align-items: stretch;
-					background-color: @light-gray;
-					color: @white;
-					h1 {
-						font-size: 1.5rem;
-						margin: 0;
-					}
-					p {
-						font-size: 1rem;
-						margin: 0;
-					}
-					.venue-add {
-						align-items: center;
-						justify-content: center;
-						width: 4rem;
-						background-color: @white;
-						i {
-							font-size: 1.5rem;
-						}
-					}
-
-				}
 			}
 
 			.step-buttons {
@@ -930,6 +913,56 @@ header {
 	}
 	.warning {
 		cursor: pointer;
+	}
+}
+
+#WizardStep6 {
+	input {
+		margin-bottom: 1rem;
+	}
+	.venue-search {
+		height: 20rem;
+		max-width: 100%;
+		flex-wrap: nowrap;
+		overflow-x: hidden;
+		overflow-y: scroll;
+		border: solid 1px @gray;
+		.border-radius(3px);
+		.background(@white, @dark-gray);
+		.venue-listing {
+			max-width: 100%;
+			height: 4rem;
+			align-items: stretch;
+			margin-bottom: 1rem;
+			padding: 0.5rem 1rem;
+			&:hover {
+				background: @white*0.8;
+			}
+			h1 {
+				font-size: 1.5rem;
+				margin: 0;
+			}
+			p {
+				font-size: 1rem;
+				margin: 0;
+			}
+			.venue-add {
+				align-items: center;
+				justify-content: center;
+				width: 4rem;
+				i {
+					font-size: 1.5rem;
+					cursor: pointer;
+				}
+			}
+		}
+	}
+	.price {
+		align-items: center;
+		margin-bottom: 1rem;
+		* {
+			margin: 0 0.5rem;
+		}
 	}
 }
 

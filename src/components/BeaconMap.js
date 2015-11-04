@@ -62,18 +62,21 @@ var BeaconMap = React.createClass({
                 lat: venue.latitude,
                 lng: venue.longitude,
                 infoWindow: {
-                    content: '<h1>' + venue.venue + '</h1>'
-                            +'<p>' + venue.address + '</p>'
-                            + socialLinks
-                            +'<img style=\'height:8rem; width:8rem\' src=\'' + constants.S3_ROOT_FOR_IMAGES + venue.imageURL + '\' />',
-                    disableAutoPan: false
+                 content: `
+				    	<h1>${venue.venue}</h1>
+				    	<p>${venue.address}</p>
+				    `,
+                  disableAutoPan: false
                 }
             });
         });
     },
+
+    // <img style='height: 8rem; width:8rem; margin:auto;' src='${constants.S3_ROOT_FOR_IMAGES + venue.imageURL}' />
+
 	render: function() {
 		return (
-            <div id='map'></div>
+			<div id='map'></div>
 		);
 	},
 

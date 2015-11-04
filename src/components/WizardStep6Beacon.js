@@ -1,9 +1,13 @@
-var React = require('react');
+import React from 'react';
+import LinkedStateMixin from 'react-addons-linked-state-mixin';
+
 import _ from 'underscore';
 import BeaconMap from './BeaconMap';
 import VenueListing from './VenueListing';
 
 var WizardStep6 = React.createClass({
+
+	mixins:[LinkedStateMixin],
 	getInitialState: function() {
 		return {
 			lat: 26.054792,
@@ -11,6 +15,31 @@ var WizardStep6 = React.createClass({
 			query: ''
 		}
 	},
+
+	componentWillMount() {
+		this.getVenues().done((res) => {
+			var venues = res.payload.venues;
+			this.props.push({
+				type: 'SHALLOW_MERGE',
+				data: {
+					venues: venues
+				}
+			});
+		})
+	},
+
+	getVenues() {
+		return (
+			$.ajax({
+				url: 'http://localhost:3000/api/v/7/setrecords/misc/info',
+				type: 'get'
+			})
+			.fail((error) => {
+				console.error(error)
+			})
+		);
+	},
+
 	render: function() {
 		var {venues, toggleOutlet, outlets, ...other} = this.props;
 		var linkState = this.linkState;
@@ -32,7 +61,7 @@ var WizardStep6 = React.createClass({
 		});
 
 		return (
-			<div className="flex-column wizard-step">
+			<div className="flex-column wizard-step" id='WizardStep6'>
 				<p className='step-info set-flex'>Add beacon locations you'd like to release to, and set the price for your unlock.</p>
 				<BeaconMap lat={this.state.lat} lng={this.state.lng} venues={venues} />
 				<h1>Beacon Locations:</h1>
@@ -45,7 +74,13 @@ var WizardStep6 = React.createClass({
 				<div className='flex-column venue-search'>
 					{outletListings}
 				</div>
-				<span>$<input type='text' valueLink={this.props.linkState('price')} placeholder='price for unlock' /></span>
+
+				<h1>Price</h1>
+				<div className='flex-row price'>
+					<h2>$</h2>
+					<input type='text' valueLink={this.props.linkState('price')} placeholder='price for unlock' />
+				</div>
+
 				<button className='step-button' onClick={this.submitStep}>
 					Finish
 				</button>
@@ -59,6 +94,7 @@ var WizardStep6 = React.createClass({
 			lng: lng
 		});
 	},
+
 	submitStep: function(event) {
 		var errors = [];
 		if (this.props.outlets.length == 0) {

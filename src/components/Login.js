@@ -1,10 +1,10 @@
 import React from 'react';
 import {History} from 'react-router';
 import LinkedStateMixin from 'react-addons-linked-state-mixin';
+import {Motion, spring, presets} from 'react-motion';
 
+import ForgotPassword from './ForgotPassword';
 import Icon from './Icon';
-//perm_identity
-//lock_outline
 
 var Login = React.createClass ({
 
@@ -25,7 +25,7 @@ var Login = React.createClass ({
 					<source src='https://setmine.com/videos/setrecords-login-compress.mp4' type='video/mp4'/>
 				</video>
 				<section className='flex-container'>
-					<div className='form center'>
+					<div className='form center hidden'>
 						<div className='flex-row'>
 							<Icon className='center'>perm_identity</Icon>
 							<input type='text' placeholder='Username' valueLink={this.linkState('username')} />
@@ -35,7 +35,9 @@ var Login = React.createClass ({
 							<input type='password' placeholder='Password' valueLink={this.linkState('password')} />
 						</div>
 						<button className='flex-container' onClick={this.submitLogin} disabled={(this.state.username.length > 0 && this.state.password.length > 0 ? false : true)}>Sign In</button>
+						<p>Forgot pasword?</p>
 					</div>
+					<ForgotPassword />
 				</section>
 			</div>
 		);

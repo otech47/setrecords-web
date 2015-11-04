@@ -1,5 +1,5 @@
 import React from 'react';
-
+import MockSetTileImproved from './MockSetTileImproved';
 
 var SetEditor = React.createClass({
 
