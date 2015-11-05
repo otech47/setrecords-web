@@ -669,7 +669,7 @@ header {
 	button {
 		height: 3rem;
 		width: 10rem;
-		margin: 2rem auto 0;
+		margin: 2rem auto;
 		font-size: 1rem;
 		justify-content: center;
 		letter-spacing: inherit;
@@ -692,11 +692,21 @@ header {
 }
 
 #ForgotPassword {
-	input {
+	justify-content: space-around;
+	i {
+		cursor: pointer;
+		position: absolute;
+		&:hover {
+			.transform(rotate(-30deg));
+		}
 	}
-	i:hover {
-		.transition();
-		.transform(rotate(-30deg));
+	.flex-row {
+		position: relative;
+		width: 100%;
+		input {
+			margin-right: 30px;
+			width: 100%;
+		}
 	}
 }
 	

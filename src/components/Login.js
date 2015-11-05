@@ -1,7 +1,6 @@
 import React from 'react';
 import {History} from 'react-router';
 import LinkedStateMixin from 'react-addons-linked-state-mixin';
-import {Motion, spring, presets} from 'react-motion';
 
 import ForgotPassword from './ForgotPassword';
 import Icon from './Icon';
@@ -15,29 +14,30 @@ var Login = React.createClass ({
 			username: '',
 			password: '',
 			error: null,
+			changePassword: false
 		}
 	},
 
 	render: function () {
+		var password = this.state.changePassword ? <ForgotPassword /> : <p onClick={() => this.setState({changePassword: true})}>Forgot pasword?</p>
 		return(
 			<div id='Login'>
 				<video id='introvid' autoPlay='auto' loop='loop'>
 					<source src='https://setmine.com/videos/setrecords-login-compress.mp4' type='video/mp4'/>
 				</video>
 				<section className='flex-container'>
-					<div className='form center hidden'>
-						<div className='flex-row'>
+					<div className='form center'>
+						<div className='flex-row' onClick={() => this.setState({changePassword:false})}>
 							<Icon className='center'>perm_identity</Icon>
 							<input type='text' placeholder='Username' valueLink={this.linkState('username')} />
 						</div>
-						<div className='flex-row'>
+						<div className='flex-row' onClick={() => this.setState({changePassword:false})}>
 							<Icon className='center'>lock_outline</Icon>
 							<input type='password' placeholder='Password' valueLink={this.linkState('password')} />
 						</div>
 						<button className='flex-container' onClick={this.submitLogin} disabled={(this.state.username.length > 0 && this.state.password.length > 0 ? false : true)}>Sign In</button>
-						<p>Forgot pasword?</p>
+						{password}
 					</div>
-					<ForgotPassword />
 				</section>
 			</div>
 		);
