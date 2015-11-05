@@ -456,7 +456,7 @@ header {
 		}
 		.deactivated {
 			background: @light-gray;
-			color: @gray!important;
+			color: @gray;
 		}
 		h1 {
 			font-size: 2rem;
@@ -808,35 +808,6 @@ header {
 				border: 0.25rem solid @blue;
 			}
 
-			.step-buttons {
-				align-items: center;
-				justify-content: center;
-			}
-
-			.outlet-button {
-				width: 10rem;
-				height: 10rem;
-				text-transform: uppercase;
-				background-color: @gray;
-				color: @white;
-				align-items: center;
-				justify-content: center;
-				flex-wrap: nowrap;
-				box-shadow: inset 0 0 0 1px #27496d,inset 0 5px 10px #193047;
-				cursor: pointer;
-				i {
-					font-size: 5rem;
-				}
-				p {
-					font-size: 1rem;
-					margin: 0;
-				}
-			}
-			.deactivated {
-				color: @light-gray;
-				box-shadow: inset 0 0 0 1px #27496d;
-			}
-
 			.step-button {
 				font-size: 1rem;
 				.background(@blue, @white);
@@ -976,6 +947,38 @@ header {
 	}
 }
 
+#WizardStep6Free {
+	.buttons {
+		align-items: center;
+		justify-content: center;
+		margin: 1rem 0;
+	}
+	.outlet-button {
+		.size(8rem, 4rem);
+		text-transform: uppercase;
+		background-color: @light-gray;
+		color: @dark-gray;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: nowrap;
+		cursor: pointer;
+		i {
+			font-size: 2rem;
+			color: @soundcloud-orange;
+		}
+		p {
+			font-size: 1rem;
+			margin: 0;
+		}
+	}
+	.deactivated {
+		color: @gray;
+		* {
+			color: @gray!important;
+		}
+	}
+}
+
 #PreviewPlayer {
 	width: 80%;
 	margin: auto;
@@ -1006,393 +1009,3 @@ header {
 	font-family: @demi;
 	border-radius: 12px;		
 }
-
-// .WizardStep4{
-//     .upload-directions {
-//     margin-bottom: 0px;
-//     height: 12%;
-
-// }
-//     .wizard-buttons{
-//   width: 30%;
-//   height: 60px;
-//   border-radius: 7%;
-//   background-color: #313542;
-//   color:#22a7f0;
-//   border-color: #313542;
-//  }
-//  .selection{
-//        padding-bottom: 0%;
-//         margin: 10px;
-//         text-align: center;
-
-//         button{
-//             width: 25%;
-//             font-size: 1.5em;
-
-//         }
-//     }
-// .beacon{
-//    margin-bottom: 10px;
-//    justify-content: center;
-//  }
-//  #reward{
-//     margin-left: 12px;
-//     margin:10px;
-//  }
-//  .free{
-//     justify-content: center;
-//  }
-//  #immediately{
-
-//  }
-
-
-// }
-
-// .WizardStep5{
-//     .upload-directions {
-//     margin-bottom: 0px;
-
-//      }
-//      select{
-//         width: 60%;
-//         height: 30px;
-//         margin-bottom: 60px;
-//      }
-//     .beacon-location{
-//         text-align: center;
-//     }
-//     .selection{
-//        padding-bottom: 20px;
-
-//         button{
-//             width: 18%;
-//             font-size: 140%;
-
-
-
-//         }
-//     }
-// }
-
-
-// .SetstoryLandingPage{
-//     width: 100%;
-//     height: 100%;
-
-
-
-//     .mainLandingPage{
-//         background-image: url("/public/images/MainLoginPage.png");
-
-//         width: 1582px;
-//         height: 599px;
-
-//     }
-//     .brady{
-
-
-//         .drake{
-//        justify-content: center;
-//        align-item: center;
-//         width: %;
-//         height: %;
-//         img{
-//              width: 200px;
-//             height: 180px;
-
-//         }
-//     }
-//     }
-//     .cartman{
-
-//     }
-//     #setstoy-landing{
-//         z-index: -100;
-//     }
-
-//     .hub{
-//         color: white;
-//        margin-left: 50px;
-//         font-size: 300%;
-//         p{
-//             margin: 0;
-//         }
-//     }
-//     .fa-apple{
-//          margin: 0 20px;
-//         font-size: 600%;
-//     }
-//     .fa-android{
-//         padding-left: 50px;
-//          margin: 0 20px;
-//         font-size: 600%;
-
-//     }
-//     .setstory-apps{
-//         color: white;
-//         margin-right: 100px;
-//         justify-content: flex-end;
-
-//     }
-
-
-//      /*Bottom Landing Page*/
-//     .secondLanding{
-
-//         background-image: url("/public/images/Setstory-boss.png");
-//          width: 1582px;
-//         height: 599px;
-//     .boss{
-//         width: 791px;
-//         height: 599px;
-
-//         color: white;
-
-//         h1{
-//             font-size: 58px;
-//             margin: 10px;
-//         }
-//         p{
-//             margin: 0;
-//             font-size: 35px;
-//             height: 90px;
-//             width: 100%;
-
-
-//         }
-
-//     }
-//     .ghost{
-
-//         width: 791px;
-//         height: 599px;
-//     }
-// }
-// }
-
-
-// .SettingPage{
-//     width: 100%;
-//     height: 100%;
-// }
-
-/*UPLAOD WIZARD CSS*/
-// .fa-circle-o{
-//     margin-left: 10px;
-// }
-//  .current-page{
-//      margin: 0 20px;
-//     text-align: center;
-
-//  }
-//  #current-page{
-//     background-color: #313542;
-//     border-radius: 80%;
-//     text-align: center;
-//  }
-//  .step-tile{
-//     width: 764px;
-//     height: 506px;
-//     background-color: #dadfe1;
-//     border-radius: 10px;
-//  }
-//  .upload-set{
-//     border-top-left-radius: 10px;
-//     border-top-right-radius: 10px;
-//     background-color: #6c7a89;
-//     color: white;
-//     text-align: center;
-//     font-size: 1.5em;
-//  }
-//  .upload-directions{
-//     margin-bottom: 20px;
-//     text-align: center;
-//     font-size: 1.5em;
-//  }
-//  .wizard-buttons{
-//   height: 60px;
-//   border-radius: 7%;
-//   background-color: #313542;
-//   color:#22a7f0;
-//   border: none;
-//   box-shadow: 0px 5px 6px #909394;
-//  }
-//  .step{
-//     margin-left: 25px;
-//  }
-//  .selection{
-//        padding-bottom: 10%;
-//         margin: 10px;
-//         text-align: center;
-//  }
-//  .wizard {
-//     height: 560px;
-//     width: 100%;
-//     background-color: @white;
-//     justify-content: center;
-//     align-items: center;
-//  }
-//  .wizard-input{
-//     text-align: center;
-//  }
-
-// .WizardStep1{
-
-//     .selection{
-//         text-align: center;
-
-//         button{
-//             margin: 0 20px;
-//             width: 16%;
-//             font-size: 1.5em;
-//         }
-//     }
-// }
-
-// .WizardStep2{
-
-//     .selection{
-//        padding-bottom: 10%;
-//         margin: 10px;
-//         text-align: center;
-
-//         button{
-//             width: 25%;
-//             font-size: 1.5em;
-//         }
-//     }
-// }
-
-// .WizardStep3{
-//     .step{
-//         margin-top: 15px;
-//         margin-bottom: 15px;
-//         margin-left: 25px;
-//     }
-//     .upload-directions{
-//         margin-bottom: 1px;
-//     }
-//     .selection {
-//        padding-bottom: .1%;
-//        button {
-//             width: 20%;
-//             font-size: 1.5em;
-//         }
-//     }
-// }
-//     .wizard-input{
-//         width: 100%;
-//     }
-//     .input-page3{
-//        width: 60%;
-//        height: 30px;
-//        margin-bottom: 8px;
-//     }
-//     .upload-directions{
-//         margin-top: 0px;
-//         padding-top: 0px;
-//     }
-// }
-
-
-
-// .edit-set-track{
-
-	//     margin-left: .8%;
-	//     padding-left: 8%;
-	//     font-weight: bold;
-	//     height: 420px;
-
-
-	//     p{
-	//         margin:0 ;
-
-	//         font-size: 130%;
-	//     }
-	//     .trackiList-table{
-	//      width: 70%;
-
-	//      margin-bottom: 15%;
-	//     }
-	// }
-
-	// .trackAdd{
-	//     padding-top: 20px;
-	// }
-	//   #addTrack{
-	//     font-size: 50%;
-	//     height: 140%;
-	//     width: 20%;
-	//     border: none;
-	//     color: white;
-	//     background-color: #33b510;
-	//     font-family: @demi;
-	//     border-radius:  40%;
-	//     }
-	// table, th, td {
-	//     color: white;
-	//     margin-top: 8%;
-	//     border: 4px solid #bdc3cc;
-
-	// }
-	// td{
-	//     i{
-	//         color: red;
-	//     }
-	//     background-color: #313542;
-
-	//     .deleteTrack{
-
-	//         border: 0;
-	//         background-color: #bdc3cc;
-	//          border: 5px solid #bdc3cc;
-	//     }
-	//  }
-	//  .setDelete{
-
-
-	
-	//  .setDelete{ 
-
-	//       height: 80px;
-	//       margin: 20px;
-	// }
-		// .deleteSet{
-
-	// }
-	// #deleteSet{
-	//     margin-top: 2%;
-	//     margin-left: 7.5%;
-	//     background-color: @dark-gray;
-	//     color: @red;
-	//     border: @dark-gray;
-	//     width: 40%;
-
-
-	//     font-style: bold;
-	//     font-size: 110%;
-	// }
-
-	// .edit-set-preview{
-
-
-	//   img{
-	//     margin-left: 7.5%;
-	//     width: 63%;
-	//     height: 140%;
-	//   }
-	//  #change-set{
-	//      margin-left: 7.5%;
-	//     width: 63%;
-	//     height: 55px;
-	//     color: @light-gray;
-	//     background-color: #bdc3c7;
-	//     border-color:  #bdc3c7;
-	//     font-family: @demi;
-	//     font-size: 100%;
-	//     padding: 0;
-	//     border: none;
-	//     }
-	// }
