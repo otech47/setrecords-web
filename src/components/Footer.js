@@ -24,8 +24,8 @@ var Footer = React.createClass({
 	          </div>
 				<div className='flex-column social'>
 					<h4 className='flex-row'>
-						<i className='fa fa-share-alt'/>
-						<span>CONTACT</span>
+						<i className='fa fa-share-alt hidden'/>
+						<span>CONNECT WITH US</span>
 					</h4>
 					<nav className='flex-row'>
 						<a className='fa fa-fw fa-envelope-o' href={`mailto:${contact}`} />

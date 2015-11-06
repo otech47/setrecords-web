@@ -49,6 +49,10 @@ var NavBar = React.createClass({
 					<i className='fa fa-fw fa-cog'/>
 					<div>Settings</div>
 				</Link>
+				<Link className='flex-row flex click' to='/contact' activeClassName='active'>
+					<i className='fa fa-fw fa-phone'/>
+					<div>Contact</div>
+				</Link>
 				<div className='buffer-5x'/>
 			</div>
 		);

@@ -105,6 +105,12 @@ input:focus {
 	}
 }
 
+#Contact {
+	height: @pageHeight;
+	padding: 4rem;
+	background: @light-gray;
+}
+
 .dropzone {
 	min-height: 100px;
 	min-width: 35vw;
@@ -138,9 +144,9 @@ footer {
 		margin: 0;
 		text-align: center;
 	}
-	span {
-		margin-left: 1rem;
-	}
+	// span {
+	// 	margin-left: 1rem;
+	// }
 	ul {
 		list-style: none;
 		padding: 0;
@@ -247,6 +253,7 @@ header {
 	.card(3);
 	a {
 		align-items: center;
+		cursor: pointer;
 		&:hover {
 			.background(@dark-gray*0.9, @light-gray);
 		}

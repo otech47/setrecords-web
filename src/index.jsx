@@ -18,10 +18,11 @@ import Footer from './components/Footer';
 import ContentView from './components/ContentView';
 import MetricsView from './components/MetricsView';
 import UploadWizardWrapper from './components/UploadWizardWrapper';
+import SettingsEditor from './components/SettingsEditor';
+import Contact from './components/Contact';
 
 import BeaconReport from './components/BeaconReport';
 import SetmineReport from './components/SetmineReport';
-import SettingsEditor from './components/SettingsEditor';
 import SocialReport from './components/SocialReport';
 import SoundcloudReport from './components/SoundcloudReport';
 import YoutubeReport from './components/YoutubeReport';
@@ -242,6 +243,7 @@ ReactDOM.render(
 			</Route>
 			<Route path='edit/:id' component={MobileSetEditor} />
 			<Route path='account' component={SettingsEditor} />
+			<Route path='contact' component={Contact} />
 			<Route path='upload' component={UploadWizardWrapper} />
 		</Route>
 	</Router>,
