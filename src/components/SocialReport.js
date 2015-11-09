@@ -22,6 +22,10 @@ var SocialReport = React.createClass({
 		this.checkSocial();
 	},
 
+	componentDidMount() {
+		mixpanel.track("Social Metrics Open");
+	},
+
 	checkSocial() {
 		var artistId = this.props.appState.get("artist_data").id;
 		var artistRequest = constants.API_ROOT+'artist/'+artistId;

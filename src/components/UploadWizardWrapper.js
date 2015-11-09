@@ -67,6 +67,10 @@ var UploadWizardWrapper = React.createClass({
 				console.log('An error occurred with registering audio.');
 				console.log(err);
 				callback(err);
+				mixpanel.track("Error", {
+					"Page": "Upload Wizard",
+					"Message": "Error registering audio"
+				});
 			} else {
 				console.log('Audio registered on S3.');
 				console.log(audioUrl);
@@ -91,6 +95,10 @@ var UploadWizardWrapper = React.createClass({
 							joining: false
 						}, function() {
 							callback(err);
+						});
+						mixpanel.track("Error", {
+							"Page": "Upload Wizard",
+							"Message": "Error joining files"
 						});
 					} else {
 						console.log('Join successful.');
@@ -164,6 +172,10 @@ var UploadWizardWrapper = React.createClass({
 				if (err) {
 					console.log('An error occurred with registering image.');
 					callback(err);
+					mixpanel.track("Error", {
+						"Page": "Upload Wizard",
+						"Message": "Error registering image to S3"
+					});
 				} else {
 					console.log('Image successfully registered on S3.');
 					callback(null, imageUrl);
@@ -261,6 +273,10 @@ var UploadWizardWrapper = React.createClass({
 						setTimeout(function() {
 							self.props.close(true);
 						}, 3000);
+					});
+					mixpanel.track("Error", {
+						"Page": "Upload Wizard",
+						"Message": "Error uploading set"
 					});
 				} else {
 					console.log('Registrations successful.');

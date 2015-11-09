@@ -15,6 +15,10 @@ var ContentView = React.createClass({
 		this.updateSets();
 	},
 
+	componentDidMount() {
+		mixpanel.track("Content Page Open");
+	},
+
 	render() {
 		var sets = this.props.appState.get('sets');
 		var setTiles = _.map(sets, (set) => {

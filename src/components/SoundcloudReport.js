@@ -20,6 +20,10 @@ var SoundcloudReport = React.createClass({
 		this.updateSoundcloud();
 	},
 
+	componentDidMount() {
+		mixpanel.track("Soundcloud Metrics Open");
+	},
+
 	toggleData(event) {
 		var clicked = {};
 		clicked[event.currentTarget.id] = !this.state[event.currentTarget.id];

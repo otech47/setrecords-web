@@ -128,6 +128,10 @@ var MobileSetEditor = React.createClass({
 								this.history.pushState(null, '/');
 							}, 1000);
 						});
+						mixpanel.track("Error", {
+							"Page": "Set Editor",
+							"Message": "Error applying changes"
+						});
 					} else {
 							console.log('All changes applied successfully.');
 							this.setState({

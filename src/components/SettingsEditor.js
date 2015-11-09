@@ -34,6 +34,10 @@ var SettingsEditor = React.createClass({
 		return settingsCopy;
 	},
 
+	componentDidMount() {
+		mixpanel.track("Settings Page Open");
+	},
+
 	componentWillMount: function() {
 		this.props.push({
 			type: 'SHALLOW_MERGE',
@@ -95,7 +99,7 @@ var SettingsEditor = React.createClass({
 			}, () => {
 				async.parallel(changeFunctions, (err, results) => {
 					if(err) {
-						console.log('There was an error when applying changes to this set.');
+						console.log('There was an error when applying changes to your settings.');
 						console.log(err);
 						this.setState({
 							failure: true,
@@ -105,6 +109,10 @@ var SettingsEditor = React.createClass({
 							setTimeout(() => {
 								this.replaceState(this.getInitialState());
 							}, 1000);
+						});
+						mixpanel.track("Error", {
+							"Page": "Settings",
+							"Message": "Error applying changes"
 						});
 					} else {
 							console.log('All changes applied successfully.');

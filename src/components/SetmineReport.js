@@ -20,6 +20,10 @@ var SetmineReport = React.createClass({
 		this.updateSetmine();
 	},
 
+	componentDidMount() {
+		mixpanel.track("Setmine Metrics Open");
+	},
+
 	toggleData(event) {
 		var clicked = {};
 		clicked[event.currentTarget.id] = !this.state[event.currentTarget.id];

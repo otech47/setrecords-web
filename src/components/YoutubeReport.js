@@ -21,6 +21,10 @@ var YoutubeReport = React.createClass({
 		this.updateYoutube();
 	},
 
+	componentDidMount() {
+		mixpanel.track("Youtube Metrics Open");
+	},
+
 	toggleData(event) {
 		var clicked = {};
 		clicked[event.currentTarget.id] = !this.state[event.currentTarget.id];

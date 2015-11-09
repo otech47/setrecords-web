@@ -20,6 +20,10 @@ var BeaconReport = React.createClass({
 		this.updateBeacon();
 	},
 
+	componentDidMount() {
+		mixpanel.track("Beacon Metrics Open");
+	},
+
 	toggleData(event) {
 		var clicked = {};
 		clicked[event.currentTarget.id] = !this.state[event.currentTarget.id];
