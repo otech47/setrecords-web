@@ -32,6 +32,8 @@
     "node-sass": "^3.2.0",
     "q": "^1.4.1",
     "ramda": "^0.17.1",
+    "react-addons-linked-state-mixin": "^0.14.3",
+    "react-addons-update": "^0.14.3",
     "react-chartjs": "^0.6.0",
     "react-datalist": "^2.0.0",
     "react-dropzone": "^2.1.0",
