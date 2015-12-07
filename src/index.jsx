@@ -225,6 +225,10 @@ var App = React.createClass({
             var props = {};
 
             switch (child.type) {
+                case Login:
+                props = {push: push};
+                break;
+
                 default:
                 props = {push: push, appState: appState};
                 break;
@@ -233,7 +237,6 @@ var App = React.createClass({
             return React.cloneElement(child, props);
         });
     }
-
 });
 
 //TODO move into separate routes
@@ -266,6 +269,16 @@ var App = React.createClass({
     //         );
     //     }
     // }
+
+// function requireAuth(nextState, replaceState) {
+//     auth.isLoggedIn((loggedIn) => {
+//         if (loggedIn) {
+//             console.log('Logged in.');
+//         } else {
+//             console.log('Not logged in.');
+//         }
+//     });
+// };
 
 var history = createBrowserHistory();
 
