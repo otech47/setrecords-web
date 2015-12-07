@@ -62,7 +62,7 @@ var ContentView = React.createClass({
     },
 
     updateSets() {
-        var artistId = this.props.appState.get('artist_data').id;
+        var artistId = this.props.appState.get('artistId');
         var requestURL = 'http://localhost:3000/v/10/setrecords/';
         var query = `{
             artist (id: ${artistId}) {

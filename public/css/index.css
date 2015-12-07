@@ -1145,6 +1145,10 @@ header .artist img {
 #Login p:hover {
   color: #b9b9b9;
 }
+#Login .login-error {
+  justify-content: center;
+  color: #ff4e4e;
+}
 #ForgotPassword {
   justify-content: space-around;
 }

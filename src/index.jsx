@@ -8,6 +8,7 @@ import { IndexRoute, Link, Route, History } from 'react-router';
 import GlobalEventHandler from './services/globalEventHandler';
 import _ from 'underscore';
 import async from 'async';
+import constants from './constants/constants';
 
 import Login from './components/Login';
 import MobileSetEditor from './components/MobileSetEditor';
@@ -38,9 +39,13 @@ var initialAppState = Immutable.Map({
     sets: [],
     working_set: {},
     editSet: {},
+    artistId: 0,
     artist_data: {
-        id: 4026,
-        artist: 'Nodex'
+        id: 0,
+        artist: 'Not logged in',
+        icon_image: {
+            imageURL: constants.DEFAULT_IMAGE
+        }
     },
     header: '',
     genres: [],
@@ -132,8 +137,14 @@ var App = React.createClass({
         };
     },
 
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.appState.get('artistId') != this.state.appState.get('artistId')) {
+            this.updateArtist();
+        }
+    },
+
     updateArtist() {
-        var artistId = this.state.appState.get("artist_data").id;
+        var artistId = this.state.appState.get("artistId");
         var requestURL = "http://localhost:3000/v/10/setrecords/";
         var query = `{
             artist (id: ${artistId}) {
@@ -150,6 +161,7 @@ var App = React.createClass({
                 }
             }
         }`;
+
         $.ajax({
             type: "POST",
             url: requestURL,
@@ -166,7 +178,7 @@ var App = React.createClass({
                 push({
                     type: 'SHALLOW_MERGE',
                     data: {
-                        artist_info: res.payload.artist,
+                        artist_data: res.payload.artist,
                         loaded: true
                     }
                 });

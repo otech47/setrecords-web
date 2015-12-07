@@ -18,7 +18,7 @@ var NavBar = React.createClass({
                     <Icon>music_note</Icon>
                     <div>Add Track</div>
                 </Link>
-                <IndexLink className='flex-row flex click' to='/' activeClassName='active' onlyActiveOnIndex={true}>
+                <IndexLink className='flex-row flex click' to='/content' activeClassName='active' onlyActiveOnIndex={true}>
                     <Icon>library_music</Icon>
                     <div>Uploads</div>
                 </IndexLink>
