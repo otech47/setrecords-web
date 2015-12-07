@@ -6,8 +6,17 @@ import Loader from 'react-loader';
 import moment from 'moment';
 import {numberWithSuffix} from '../mixins/UtilityFunctions';
 
-
 var YoutubeReport = React.createClass({
+    render() {
+        return (
+            <div>
+                youtube report
+            </div>
+        )
+    }
+});
+
+var YoutubeReport2 = React.createClass({
 	getInitialState() {
 		return {
 			plays: true,
@@ -150,7 +159,7 @@ var YoutubeReport = React.createClass({
 			case 'monthly':
 				previousCohort = 'last month';
 				break;
-		}	
+		}
 
 		return (
 			<div className='metrics-panel' id='YoutubeReport'>
@@ -185,4 +194,4 @@ var YoutubeReport = React.createClass({
 	}
 });
 
-module.exports = YoutubeReport;					
+module.exports = YoutubeReport;

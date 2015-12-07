@@ -13,6 +13,16 @@ import ConfirmChanges from './ConfirmChanges';
 import Notification from './Notification';
 
 var SettingsEditor = React.createClass({
+    render() {
+        return (
+            <div>
+                settings editor
+            </div>
+        )
+    }
+});
+
+var SettingsEditor2 = React.createClass({
 
 	mixins: [History],
 

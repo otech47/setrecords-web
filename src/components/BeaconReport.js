@@ -5,8 +5,17 @@ import Loader from 'react-loader';
 var moment = require('moment');
 import {numberWithSuffix} from '../mixins/UtilityFunctions';
 
-
 var BeaconReport = React.createClass({
+    render() {
+        return (
+            <div>
+                beacon report
+            </div>
+        )
+    }
+});
+
+var BeaconReport2 = React.createClass({
 	getInitialState() {
 		return {
 			revenue: true,
@@ -156,7 +165,7 @@ var BeaconReport = React.createClass({
 			case 'monthly':
 			previousCohort = 'last month';
 			break;
-		}	
+		}
 
 		return (
 		<div className='metrics-panel' id='BeaconReport'>
@@ -186,9 +195,9 @@ var BeaconReport = React.createClass({
 					{this.lineGraph()}
 				</div>
 			</Loader>
-		</div>	
+		</div>
 		);
 	}
 });
 
-module.exports = BeaconReport;									
+module.exports = BeaconReport;

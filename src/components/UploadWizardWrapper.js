@@ -21,6 +21,16 @@ import async from 'async';
 import Icon from './Icon';
 
 var UploadWizardWrapper = React.createClass({
+    render() {
+        return (
+            <div>
+                upload wizard
+            </div>
+        )
+    }
+});3
+
+var UploadWizardWrapper2 = React.createClass({
 
 	mixins: [LinkedStateMixin, UtilityFunctions],
 	getInitialState: function() {
@@ -625,7 +635,7 @@ var UploadWizardWrapper = React.createClass({
 			}
 		});
 	},
-	
+
 	deleteTrack: function(index) {
 		this.setState({
 			tracklist: update(this.state.tracklist, {$splice: [[index, 1]]})

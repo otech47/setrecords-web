@@ -2,6 +2,16 @@ import React from 'react';
 var Loader = require("react-loader");
 
 var MediaReport = React.createClass({
+    render() {
+        return (
+            <div>
+                media report
+            </div>
+        )
+    }
+});
+
+var MediaReport2 = React.createClass({
 	getInitialState: function() {
 		return ({
 			loaded: false
@@ -24,7 +34,7 @@ var MediaReport = React.createClass({
 	render: function() {
 		var suffixNum = this.props.numberWithSuffix;
 		var metrics = this.props.metrics;
-		
+
 		var soundcloudMetrics = metrics.soundcloud;
 		var soundcloudTotal = soundcloudMetrics.followers.overtime[0].followers;
 		var soundcloudNewFollowers = soundcloudMetrics.followers.current;
@@ -79,4 +89,4 @@ var MediaReport = React.createClass({
 	}
 });
 
-module.exports = MediaReport;									
+module.exports = MediaReport;

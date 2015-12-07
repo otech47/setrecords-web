@@ -5,8 +5,17 @@ import Loader from 'react-loader';
 var moment = require('moment');
 import {numberWithSuffix} from '../mixins/UtilityFunctions';
 
-
 var SoundcloudReport = React.createClass({
+    render() {
+        return (
+            <div>
+                soundcloud report
+            </div>
+        )
+    }
+});
+
+var SoundcloudReport2 = React.createClass({
 	getInitialState() {
 		return {
 			plays: true,
@@ -188,4 +197,4 @@ var SoundcloudReport = React.createClass({
 	}
 });
 
-module.exports = SoundcloudReport;					
+module.exports = SoundcloudReport;

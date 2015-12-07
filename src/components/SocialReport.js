@@ -10,6 +10,16 @@ import Icon from './Icon';
 import Overlay from './Overlay';
 
 var SocialReport = React.createClass({
+    render() {
+        return (
+            <div>
+                social report
+            </div>
+        )
+    }
+});
+
+var SocialReport2 = React.createClass({
 
 	getInitialState() {
 		return ({
@@ -139,4 +149,4 @@ var SocialReport = React.createClass({
 
 });
 
-module.exports = SocialReport;									
+module.exports = SocialReport;

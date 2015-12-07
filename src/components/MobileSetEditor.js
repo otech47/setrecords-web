@@ -16,6 +16,16 @@ import Tracklist from './Tracklist';
 import Dropzone from 'react-dropzone';
 
 var MobileSetEditor = React.createClass({
+    render() {
+        return (
+            <div>
+                set editor
+            </div>
+        )
+    }
+});
+
+var MobileSetEditor2 = React.createClass({
 
 	mixins: [History, LinkedStateMixin],
 
@@ -402,7 +412,7 @@ var MobileSetEditor = React.createClass({
 			});
 		}
 	},
-	
+
 	registerImageS3(callback) {
 		var file = this.state.tile_image[0];
 		// console.log('Requesting encoding from AWS...');
@@ -559,14 +569,14 @@ var MobileSetEditor = React.createClass({
 				{/*<p className='uploaded-date hidden'>
 					Uploaded: {moment(this.state.set.datetime).format('M[/]D[/]YYYY')}
 				</p>*/}
-		    	<Tracklist 
-		    		tracks={this.state.tracklist} 
-		    		listURL={this.state.tracklistURL} 
+		    	<Tracklist
+		    		tracks={this.state.tracklist}
+		    		listURL={this.state.tracklistURL}
 		    		linkState={this.linkState}
-		    		changeTrack={this.changeTrack} 
-		    		addTrack={this.addTrack} 
-		    		loadTracksFromURL={this.loadTracksFromURL} 
-		    		deleteTrack={this.deleteTrack} 
+		    		changeTrack={this.changeTrack}
+		    		addTrack={this.addTrack}
+		    		loadTracksFromURL={this.loadTracksFromURL}
+		    		deleteTrack={this.deleteTrack}
 		    		changeTracklistURL={this.changeTracklistURL} />
 
 		    	<div className='flex-row form-panel center' id='apply-changes'>
