@@ -157,7 +157,7 @@ var App = React.createClass({
 		.fail((err) => {
 			console.log('An error occurred getting artist data.');
 			console.log(err);
-		}); 
+		});
 	},
 
 	_attachStreams() {
@@ -214,14 +214,14 @@ var App = React.createClass({
 	// 		);
 	// 	} else {
 	// 		return (
-	// 			<ViewContainer 
-	// 				appState={appState} 
-	// 				{...updateFunctions} 
-	// 				{...UtilityFunctions} 
-	// 				push={push} 
-	// 				routeHandler={RouteHandler} 
-	// 				openSetEditor={this.openSetEditor} 
-	// 				openUploadSetWizard={this.openUploadSetWizard} 
+	// 			<ViewContainer
+	// 				appState={appState}
+	// 				{...updateFunctions}
+	// 				{...UtilityFunctions}
+	// 				push={push}
+	// 				routeHandler={RouteHandler}
+	// 				openSetEditor={this.openSetEditor}
+	// 				openUploadSetWizard={this.openUploadSetWizard}
 	// 				loaded={appState.get('loaded')} />
 	// 		);
 	// 	}
