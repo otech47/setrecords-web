@@ -5,81 +5,123 @@ import Loader from 'react-loader';
 
 var ContentView = React.createClass({
 
-	getInitialState() {
-		return {
-			loaded: false
-		};
-	},
+    getInitialState() {
+        return {
+            loaded: false
+        };
+    },
 
-	componentWillMount() {
-		this.updateSets();
-	},
+    componentWillMount() {
+        this.updateSets();
+    },
 
-	componentDidMount() {
-		mixpanel.track("Content Page Open");
-	},
+    componentDidMount() {
+        mixpanel.track("Content Page Open");
+    },
 
-	render() {
-		var sets = this.props.appState.get('sets');
-		var setTiles = _.map(sets, (set) => {
-			var setName = set.event;
-			if(set.episode != null && set.episode.length > 0) {
-				var setName = set.event+' - '+set.episode	;
-			}
+    render() {
+        var sets = this.props.appState.get('sets');
+        var setTiles = _.map(sets, (set) => {
+            var setName = set.event.event;
+            if(set.episode != null && set.episode.episode.length > 0) {
+                var setName = set.event.event+' - '+set.episode.episode    ;
+            }
 
-			if (set.is_radiomix && set.episode) {
-				var imageURL = set.episode_imageURL;
-			} else {
-				var imageURL = set.main_eventimageURL;
-			}
+            if (set.event.is_radiomix && set.episode) {
+                var imageURL = set.episode.icon_image.imageURL;
+            } else {
+                var imageURL = set.event.banner_image.imageURL;
+            }
 
-			var props = {
-				key: set.id,
-				id: set.id,
-				setName: setName,
-				artist: set.artist,
-				imageURL: imageURL,
-				set_length: set.set_length,
-				popularity: set.popularity,
-				is_radiomix: set.is_radiomix,
-				push: this.props.push
-			};
-			
-			return (<SetTile {...props} />);
-		});
+            var artists = _.map(set.artists, function(artist) {
+                return artist.artist;
+            }).join(', ');
 
-		return (
-			<Loader loaded={this.state.loaded}>
-				<div className='content-page flex-row'>
-					{setTiles}
-				</div>
-			</Loader>
-		);
-	},
+            var props = {
+                key: set.id,
+                id: set.id,
+                setName: setName,
+                artist: artists,
+                imageURL: imageURL,
+                set_length: set.set_length,
+                popularity: set.popularity,
+                is_radiomix: set.event.is_radiomix,
+                push: this.props.push
+            };
 
-	updateSets() {
-		var requestURL = 'http://localhost:3000/api/v/7/setrecords/artist/sets/' + this.props.appState.get('artist_data').id;
+            return (<SetTile {...props} />);
+        });
 
-		$.ajax({
-			type: 'GET',
-			url: requestURL
-		})
-		.done((res) => {
-			console.log(res);
-			this.setState({
-				loaded: true
-			}, this.props.push({
-				type: 'SHALLOW_MERGE',
-				data: {
-					sets: res.payload.sets,
-					header: 'Content'
-				}
-			}));
-		})
-		.fail(function(err) {
-			console.log(err);
-		});
-	}
+        return (
+            <Loader loaded={this.state.loaded}>
+                <div className='content-page flex-row'>
+                    {setTiles}
+                </div>
+            </Loader>
+        );
+    },
+
+    updateSets() {
+        var artistId = this.props.appState.get('artist_data').id;
+        var requestURL = 'http://localhost:3000/v/10/setrecords/';
+        var query = `{
+            artist (id: ${artistId}) {
+                sets {
+                    id,
+                    event {
+                        event,
+                        is_radiomix,
+                        banner_image {
+                            imageURL
+                        }
+                    },
+                    episode {
+                        episode,
+                        icon_image {
+                            imageURL
+                        }
+                    },
+                    datetime,
+                    popularity,
+                    set_length,
+                    tracklistURL,
+                    artists {
+                        id,
+                        artist
+                    },
+                    tracks {
+                        id,
+                        starttime,
+                        artistname,
+                        songname
+                    }
+                }
+            }
+        }`;
+
+        $.ajax({
+            type: 'POST',
+            url: requestURL,
+            data: {
+                query: query
+            }
+        })
+        .done((res) => {
+            console.log(res);
+            this.setState({
+                loaded: true
+            }, this.props.push({
+                type: 'SHALLOW_MERGE',
+                data: {
+                    sets: res.payload.artist.sets,
+                    header: 'Content'
+                }
+            }));
+        })
+        .fail(function(err) {
+            console.log(err);
+        });
+    }
 });
 
 module.exports = ContentView;

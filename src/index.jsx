@@ -134,10 +134,28 @@ var App = React.createClass({
 
     updateArtist() {
         var artistId = this.state.appState.get("artist_data").id;
-        var requestURL = "http://localhost:3000/api/v/7/setrecords/artist/info/" + artistId;
+        var requestURL = "http://localhost:3000/v/10/setrecords/";
+        var query = `{
+            artist (id: ${artistId}) {
+                id,
+                artist,
+                fb_link,
+                twitter_link,
+                web_link,
+                instagram_link,
+                soundcloud_link,
+                youtube_link,
+                icon_image {
+                    imageURL
+                }
+            }
+        }`;
         $.ajax({
-            type: "GET",
+            type: "POST",
             url: requestURL,
+            data: {
+                query: query
+            }
         })
         .done((res) => {
             // console.log('Artist...');
@@ -148,7 +166,7 @@ var App = React.createClass({
                 push({
                     type: 'SHALLOW_MERGE',
                     data: {
-                        artist_info: res.payload.artist_info,
+                        artist_info: res.payload.artist,
                         loaded: true
                     }
                 });
