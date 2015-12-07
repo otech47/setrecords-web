@@ -69,7 +69,7 @@ var Login = React.createClass ({
 							}
 						}
 					});
-					self.history.pushState(null, '/main');
+					self.history.push(null, '/main');
 				} else {
 					switch (res.info) {
 						case 'username':

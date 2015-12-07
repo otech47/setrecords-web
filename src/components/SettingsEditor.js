@@ -132,7 +132,7 @@ var SettingsEditor2 = React.createClass({
 								notify: true
 							}, () => {
 								setTimeout(() => {
-									this.history.pushState(null, '/');
+									this.history.push(null, '/');
 								}, 1000);
 							});
 						}
@@ -141,7 +141,7 @@ var SettingsEditor2 = React.createClass({
 
 		} else {
 			console.log('No pending changes. Closing window...');
-			this.history.pushState(null, '/');
+			this.history.push(null, '/');
 		}
 	},
 
@@ -151,7 +151,7 @@ var SettingsEditor2 = React.createClass({
 				open: !this.state.open
 			});
 		} else {
-			this.history.pushState(null, '/');
+			this.history.push(null, '/');
 		}
 	},
 
@@ -352,7 +352,7 @@ var SettingsEditor2 = React.createClass({
 				}}>
 					{
 						({opacity, visibility}) =>
-						<Notification dismiss={() => this.history.pushState(null, '/')} style={{
+						<Notification dismiss={() => this.history.push(null, '/')} style={{
 							opacity: `${opacity}`,
 							visibility: `${visibility}`
 						}}>

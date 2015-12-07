@@ -16,7 +16,7 @@ var SetTile = React.createClass({
 		var image = {
 			backgroundImage: `url('${constants.S3_ROOT_FOR_IMAGES+this.props.imageURL}')`
 		};
-		
+
 		return (
 			<div className='set-tile' style={image} onClick={this.openSetEditor} >
 				<div className='flex-column tile-controls'>

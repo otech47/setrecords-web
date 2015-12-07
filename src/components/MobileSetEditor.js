@@ -135,7 +135,7 @@ var MobileSetEditor2 = React.createClass({
 							notify: true
 						}, () => {
 							setTimeout(() => {
-								this.history.pushState(null, '/');
+								this.history.push(null, '/');
 							}, 1000);
 						});
 						mixpanel.track("Error", {
@@ -150,7 +150,7 @@ var MobileSetEditor2 = React.createClass({
 								notify: true
 							}, () => {
 								setTimeout(() => {
-									this.history.pushState(null, '/');
+									this.history.push(null, '/');
 								}, 1000);
 							});
 						}
@@ -169,7 +169,7 @@ var MobileSetEditor2 = React.createClass({
 				open: !this.state.open
 			});
 		} else {
-			this.history.pushState(null, '/');
+			this.history.push(null, '/');
 		}
 	},
 
@@ -541,7 +541,7 @@ var MobileSetEditor2 = React.createClass({
 				}}>
 					{
 						({opacity, visibility}) =>
-						<Notification dismiss={() => this.history.pushState(null, '/')} style={{
+						<Notification dismiss={() => this.history.push(null, '/')} style={{
 							opacity: `${opacity}`,
 							visibility: `${visibility}`
 						}}>
