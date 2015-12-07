@@ -179,19 +179,29 @@ var App = React.createClass({
             <div className='flex-column' id='App'>
                 <Header appState={appState} />
                 <div className='flex-row view-container'>
-                    <NavBar push={push} />
+                    {this.props.location.pathname == '/' ? '' : <NavBar push={push} /> }
                     <div className='view flex-column flex'>
-                        {
-                            React.cloneElement(this.props.children, {
-                                appState: appState,
-                                push: push
-                            })
-                        }
+                        {this.renderChildren()}
                         <Footer/>
                     </div>
                 </div>
             </div>
         );
+    },
+
+    renderChildren() {
+        var appState = this.state.appState;
+        return React.Children.map(this.props.children, function (child) {
+            var props = {};
+
+            switch (child.type) {
+                default:
+                props = {push: push, appState: appState};
+                break;
+            }
+
+            return React.cloneElement(child, props);
+        });
     }
 
 });
@@ -232,8 +242,9 @@ var history = createBrowserHistory();
 ReactDOM.render(
     <Router>
         <Route path='/' component={App} >
-            <IndexRoute component={ContentView} />
-            <Route path='login' component={Login} />
+            <IndexRoute component={Login} />
+
+            <Route path='content' component={ContentView} />
             <Route path='metrics' component={MetricsView}>
                 <Route path='setmine' component={SetmineReport} />
                 <Route path='beacons' component={BeaconReport} />

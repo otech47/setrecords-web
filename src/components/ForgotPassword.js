@@ -13,7 +13,7 @@ var ForgotPassword = React.createClass({
 	},
 
 	handleChange() {
-		
+
 	},
 
 	handleBlur() {
@@ -36,7 +36,7 @@ var ForgotPassword = React.createClass({
 				email: true,
 				value: 'Reset email sent.'
 			});
-			setTimeout(() => this.setState(this.getInitialState()), 1000);
+			setTimeout(() => this.setState(this.getInitialState()), 3000);
 		} else {
 			alert('Please enter a valid email address');
 		}
