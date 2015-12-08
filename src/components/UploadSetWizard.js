@@ -25,29 +25,41 @@ var UploadSetWizard = React.createClass({
     mixins: [LinkedStateMixin, UtilityFunctions],
     getInitialState: function() {
         return {
-            featured_artists: [],
+            // wizard vars
             current_step: 1,
-            set_type: null,
-            songs: [],
-            set_length: 0,
-            tracklist: [],
-            tracklist_url: null,
-            name: '',
-            episode: '',
-            genre: '',
-            image: null,
-            release_type: null,
-            outlets: [],
-            price: '0.00',
-            pending_file: null,
-            temp_url: null,
-            track_id: -1,
             filesize: 0,
             busy: false,
             applying: false,
             success: false,
             failure: false,
-            joining: false
+            joining: false,
+
+            // step 1
+            type: null,
+
+            // step 2
+            songs: [],
+            set_length: 0,
+            pending_file: null,
+            temp_url: null,
+
+            // step 3
+            tracklist: [],
+            tracklist_url: null,
+
+            // step 4
+            event: '',
+            featured_artists: [],
+            episode: '',
+            genre: '',
+            image: null,
+
+            // step 5
+            paid: 0,
+
+            // step 6
+            outlets: [],
+            price: '0.00',
         };
     },
 
@@ -74,12 +86,11 @@ var UploadSetWizard = React.createClass({
             (<WizardStep2 songs={this.state.songs}
             stepForward={this.stepForward}
             addSongFile={this.addSong}
-            removeSong={this.removeSongFile} />);
+            removeSong={this.removeSong} />);
             break;
 
             case 3:
-            stepComponent = (<WizardStep3
-            stepForward={this.stepForward}
+            stepComponent = (<WizardStep3 stepForward={this.stepForward}
             deepLinkState={this.deepLinkState}
             setLength={this.state.set_length}
             addTrack={this.addTrack}
@@ -91,15 +102,9 @@ var UploadSetWizard = React.createClass({
             stepComponent = (<WizardStep4 stepForward={this.stepForward}
             originalArtist={this.props.originalArtist}
             linkState={this.linkState}
-            type={this.state.set_type}
-            events={this.props.events}
-            mixes={this.props.mixes}
-            artists={this.props.artists}
-            genres={this.props.genres}
             image={this.state.image}
             setLength={this.state.set_length}
             addImage={this.addImage}
-            eventLookup={this.props.appState.get('event_lookup')}
             featuredArtists={this.state.featured_artists}
             addFeaturedArtist={this.addFeaturedArtist}
             removeFeaturedArtist={this.removeFeaturedArtist}
@@ -183,6 +188,25 @@ var UploadSetWizard = React.createClass({
         this.setState(newState);
     },
 
+    addSong: function(file) {
+        console.log(file);
+        if (file[0].type == 'audio/mp3' || file[0].type == 'audio/mp4' || file[0].type == 'audio/x-m4a' || file[0].type == 'audio/mpeg' || file[0].type == 'audio/wav') {
+            var tempAudio = URL.createObjectURL(file[0]);
+            this.setState({
+                pending_file: file[0],
+                temp_url: tempAudio
+            });
+        } else {
+            alert('Only mp3 and wav files are supported.');
+        }
+    },
+
+    removeSong: function(index) {
+        this.setState({
+            songs: update(this.state.songs, {$splice: [[index, 1]]})
+        });
+    },
+
     addTrack: function() {
         var tracklist = this.state.tracklist;
 
@@ -202,6 +226,23 @@ var UploadSetWizard = React.createClass({
     deleteTrack: function(index) {
         this.setState({
             tracklist: update(this.state.tracklist, {$splice: [[index, 1]]})
+        });
+    },
+
+    addFeaturedArtist: function() {
+        var newArtist = {
+            id: -1,
+            artist: ''
+        };
+
+        this.setState({
+            featured_artists: update(this.state.featured_artists, {$push: [newArtist]})
+        });
+    },
+
+    removeFeaturedArtist: function(index) {
+        this.setState({
+            featured_artists: update(this.state.featured_artists, {$splice: [[index, 1]]})
         });
     },
 
@@ -559,16 +600,8 @@ var UploadSetWizard = React.createClass({
             return '';
         }
     },
-    addFeaturedArtist: function() {
-        this.setState({
-            featured_artists: update(this.state.featured_artists, {$push: ['']})
-        });
-    },
-    removeFeaturedArtist: function(index) {
-        this.setState({
-            featured_artists: update(this.state.featured_artists, {$splice: [[index, 1]]})
-        });
-    },
+
+
     changeFeaturedArtist: function(index, event) {
         var updateObj = {};
         updateObj[index] = {
@@ -665,23 +698,9 @@ var UploadSetWizard = React.createClass({
             console.log('Nice try, hacker.');
         }
     },
-    addSong: function(file) {
-        console.log(file);
-        if (file[0].type == 'audio/mp3' || file[0].type == 'audio/mp4' || file[0].type == 'audio/x-m4a' || file[0].type == 'audio/mpeg' || file[0].type == 'audio/wav') {
-            var tempAudio = URL.createObjectURL(file[0]);
-            this.setState({
-                pending_file: file[0],
-                temp_url: tempAudio
-            });
-        } else {
-            alert('Only mp3 and wav files are supported.');
-        }
-    },
-    removeSongFile: function(index) {
-        this.setState({
-            songs: update(this.state.songs, {$splice: [[index, 1]]})
-        });
-    },
+
+
+
     toggleOutlet: function(outlet) {
         var self = this;
         var index = this.state.outlets.indexOf(outlet);

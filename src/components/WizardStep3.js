@@ -25,6 +25,7 @@ var WizardStep3 = React.createClass({
         var timeFormatErr = false;
         var finalTimeErr = false;
         var errors = [];
+        
         var tracklist = this.props.tracklist;
         if (tracklist.length > 0) {
             var prevTime = -1;
