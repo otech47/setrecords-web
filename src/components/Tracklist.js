@@ -5,92 +5,63 @@ import Track from './Track';
 
 var Tracklist = React.createClass({
 
-	mixins: [UtilityFunctions],
+    mixins: [UtilityFunctions],
 
-	render: function() {
-		var linkState = this.props.linkState;
-		var tracks = this.props.tracks;
-		var tracklistURL = this.props.listURL;
+    render: function() {
+        var {tracklist, deepLinkState, deleteTrack, addTrack, ...other} = this.props;
 
-		return (
-			<div className='flex-column' id='Tracklist'>
-				<div className='urlTracklist form-panel'>
-					<h1>1001tracklists URL</h1>
-					<input type='text' valueLink={linkState('tracklistURL')} />
-					<button onClick={this.loadTracksFromURL}>Load</button>		
-				</div>
-				<div className='tracks flex-column form-panel'>
-					<h1>Edit Tracks</h1>
-					{this.showTracks()}
-					<button onClick={this.props.addTrack}>Add Track</button>
-				</div>
-			</div>
-		);
-	},
+        if(tracklist.length > 0) {
+            var trackRows = _.map(tracklist, (track, index) => {
+                var props = {
+                    key: `${track.track_id}_${index}`,
+                    index: index,
+                    deepLinkState: deepLinkState,
+                    deleteTrack: deleteTrack.bind(null, index)
+                };
 
-	loadTracksFromURL: function() {
-		this.props.loadTracksFromURL(this.props.linkState('tracklistURL').value);
-	},
+                return (
+                    <Track {...props} />
+                );
+            });
 
-	showTracks: function() {
-		var tracks = this.props.tracks;
-		var self = this;
+            var trackComponents = (
+                <table className='tracklist'>
+                    <tbody>
+                        <tr>
+                            <th>Time</th>
+                            <th>Title</th>
+                            <th>Artist</th>
+                            <th>Delete</th>
+                        </tr>
+                        {trackRows}
+                    </tbody>
+                </table>
+            );
+        } else {
+            var trackComponents = (
+                <p>No tracks found for this set.</p>
+            );
+        }
 
-		if(_.size(tracks) > 0) {
-			var trackRows = _.map(tracks, (track, index) => {
-				var props = {
-					track: track,
-					key: `${track.track_id}_${index}`,
-					index: index,
-					changeTrack: this.props.changeTrack,
-					deleteTrack: this.props.deleteTrack
-				};
+        return (
+            <div className='flex-column' id='Tracklist'>
+                <div className='urlTracklist form-panel'>
+                    <h1>1001tracklists URL</h1>
+                    <input type='text' valueLink={deepLinkState(['tracklist_url'])} />
+                    <button onClick={this.loadTracksFromURL}>Load</button>
+                </div>
+                <div className='tracks flex-column form-panel'>
+                    <h1>Edit Tracks</h1>
+                    {trackComponents}
+                    <button onClick={addTrack}>Add Track</button>
+                </div>
+            </div>
+        );
+    },
 
-				return (
-					<Track {...props} />
-				);
-			});
-			return (
-				<table className='tracklist'>
-					<tbody>
-						<tr>
-							<th>Time</th>
-							<th>Title</th>
-							<th>Artist</th>
-							<th>Delete</th>
-						</tr>
-						{trackRows}				
-					</tbody>
-				</table>
-			);
-		} else {
-			return <p>No tracks found for this set.</p>
-		}
-	// 	if (_.size(tracks) > 0) {
-	// 		var trackRows = _.map(tracks, function(value, key) {
-	// 			return (
-	// 				<Track track={value} key={value.track_id + '_' + key} index={key} changeTrack={self.props.changeTrack} deleteTrack={self.props.deleteTrack} />
-	// 			);
-	// 		});
-	// 		return (
-	// 			<table className='tracklist'>
-	// 				<tbody>
-	// 					<tr>
-	// 						<th>Time MM:SS</th>
-	// 						<th>Track Title</th>
-	// 						<th>Artist</th>
-	// 						<th>Delete</th>
-	// 					</tr>
-	// 					{trackRows}				
-	// 				</tbody>
-	// 			</table>
-	// 		);
-	// 	} else {
-	// 		return (
-	// 			<p>No tracks found for this set.</p>
-	// 		);
-	// 	}
-	}
+    loadTracksFromURL() {
+        console.log('loading tracks...');
+    }
 });
 
 module.exports = Tracklist;

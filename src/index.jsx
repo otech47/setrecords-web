@@ -18,7 +18,7 @@ import ViewContainer from './components/ViewContainer';
 import Footer from './components/Footer';
 import ContentView from './components/ContentView';
 import MetricsView from './components/MetricsView';
-import UploadWizardWrapper from './components/UploadWizardWrapper';
+import UploadSetWizard from './components/UploadSetWizard';
 import SettingsEditor from './components/SettingsEditor';
 import Contact from './components/Contact';
 
@@ -229,6 +229,10 @@ var App = React.createClass({
                 props = {push: push};
                 break;
 
+                case UploadSetWizard:
+                props = {push: push, originalArtist: appState.get('artist_data')};
+                break;
+
                 default:
                 props = {push: push, appState: appState};
                 break;
@@ -298,7 +302,7 @@ ReactDOM.render(
             <Route path='edit/:id' component={MobileSetEditor} />
             <Route path='account' component={SettingsEditor} />
             <Route path='contact' component={Contact} />
-            <Route path='upload' component={UploadWizardWrapper} />
+            <Route path='upload-set' component={UploadSetWizard} />
         </Route>
     </Router>,
 document.getElementById('body-mount-point'));
