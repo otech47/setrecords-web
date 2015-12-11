@@ -66,7 +66,7 @@ var Login = React.createClass ({
                 self.props.push({
                     type: 'SHALLOW_MERGE',
                     data: {
-                        artistId: res.payload.setrecordsuser_login.artist.id,
+                        artistId: res.payload.setrecordsuser_login,
                     }
                 });
                 self.history.pushState(null, '/content');
