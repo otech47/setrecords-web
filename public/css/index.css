@@ -758,8 +758,8 @@ header .artist img {
 }
 #Tracklist table {
   color: #313542;
-  margin: 2rem auto;
-  width: 90%;
+  margin: 2rem 0;
+  align-self: center;
 }
 #Tracklist table * {
   border: none;

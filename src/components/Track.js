@@ -2,25 +2,27 @@ import React from 'react';
 import _ from 'underscore';
 
 var Track = React.createClass({
-	render: function() {
-		var track = this.props.track;
-		return (
-			<tr>
-				<td><input type='text' value={track.starttime} placeholder='00:00' name='start_time' onChange={this.changeTrack} /></td>
-				<td><input type='text' value={track.songname} placeholder='title' name='song' onChange={this.changeTrack} /></td>
-				<td><input type='text' value={track.artistname} placeholder='artist' name='artist' onChange={this.changeTrack} /></td>
-				<td><i className='fa fa-times center' onClick={this.deleteTrack}/></td>
-			</tr>
-		);
-	},
+    render: function() {
+        var {deepLinkState, deleteTrack, index} = this.props;
 
-	changeTrack: function(event) {
-		this.props.changeTrack(this.props.index, event.target.name, event.target.value);
-	},
+        return (
+            <tr>
+                <td>
+                    <input type='text' valueLink={deepLinkState(['tracklist', index, 'starttime'])} placeholder='00:00' name='starttime' />
+                </td>
+                <td>
+                    <input type='text' valueLink={deepLinkState(['tracklist', index, 'songname'])} placeholder='title' name='songname' />
 
-	deleteTrack: function(event) {
-		this.props.deleteTrack(this.props.index);
-	}
+                </td>
+                <td>
+                    <input type='text' valueLink={deepLinkState(['tracklist', index, 'artistname'])} placeholder='artist' name='artistname' />
+                </td>
+                <td>
+                    <i className='fa fa-times center' onClick={deleteTrack} />
+                </td>
+            </tr>
+        );
+    }
 });
 
 module.exports = Track;

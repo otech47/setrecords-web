@@ -10,11 +10,11 @@ var NavBar = React.createClass({
         return (
             <div className='flex-column' id='NavBar'>
                 <h3>CONTENT</h3>
-                <Link className='flex-row flex click' to='/upload' activeClassName='active' ref='set'>
+                <Link className='flex-row flex click' to='/upload-set' activeClassName='active' ref='set'>
                     <Icon>queue_music</Icon>
                     <div>Add Set</div>
                 </Link>
-                <Link className='flex-row flex click' to='/upload' activeClassName='active' ref='track'>
+                <Link className='flex-row flex click' to='/upload-set' activeClassName='active' ref='track'>
                     <Icon>music_note</Icon>
                     <div>Add Track</div>
                 </Link>
