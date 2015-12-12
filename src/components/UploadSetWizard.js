@@ -49,7 +49,7 @@ var UploadSetWizard = React.createClass({
 
             // step 4
             event: '',
-            featured_artists: [],
+            artists: [this.props.originalArtist],
             episode: '',
             genre: '',
             image: null,
@@ -100,12 +100,8 @@ var UploadSetWizard = React.createClass({
 
             case 4:
             stepComponent = (<WizardStep4 stepForward={this.stepForward}
-            originalArtist={this.props.originalArtist}
-            linkState={this.linkState}
-            image={this.state.image}
-            setLength={this.state.set_length}
+            deepLinkState={this.deepLinkState}
             addImage={this.addImage}
-            featuredArtists={this.state.featured_artists}
             addFeaturedArtist={this.addFeaturedArtist}
             removeFeaturedArtist={this.removeFeaturedArtist}
             changeFeaturedArtist={this.changeFeaturedArtist} />);
@@ -212,7 +208,7 @@ var UploadSetWizard = React.createClass({
 
         var newTrack = {
             'id': -1,
-            'starttime': '',
+            'starttime': '00:00',
             'artistname': this.props.originalArtist.artist,
             'songname': 'untitled'
         };
@@ -264,6 +260,7 @@ var UploadSetWizard = React.createClass({
             }
         });
     },
+
     joinFiles: function(callback) {
         var self = this;
         if (this.state.songs.length > 1) {
@@ -309,6 +306,7 @@ var UploadSetWizard = React.createClass({
             });
         }
     },
+
     registerS3: function(file, callback) {
         $.ajax({
             type: 'GET',
@@ -348,6 +346,7 @@ var UploadSetWizard = React.createClass({
             }
         });
     },
+
     registerImage: function(callback) {
         if (this.state.match_url) {
             console.log('Selected event already exists, so we can use that URL.');
@@ -373,6 +372,7 @@ var UploadSetWizard = React.createClass({
             callback(null, defaultUrl);
         }
     },
+
     packageSetData: function(audioURL) {
         console.log('Packaging set data...');
         var genreId = _.findWhere(this.props.genres, {genre: this.state.genre}).id;

@@ -4,7 +4,6 @@ var constants = require('../constants/constants');
 import Dropzone from 'react-dropzone';
 import MockSetTileImproved from './MockSetTileImproved';
 import UtilityFunctions from '../mixins/UtilityFunctions';
-import ReactDatalist from './ReactDatalist';
 import Icon from './Icon';
 
 var WizardStep4 = React.createClass({
@@ -12,14 +11,14 @@ var WizardStep4 = React.createClass({
     render() {
         var deepLinkState = this.props.deepLinkState;
         var type = deepLinkState(['type']).value;
+        var artists = deepLinkState(['artists']).value;
         var mockImage = null;
-        var artists = this.props.originalArtist;
         var showUploadButton = true;
         var fieldComponents;
         var featuredArtistComponent = '';
 
-        if (this.props.image) {
-            mockImage = this.props.image.preview;
+        if (deepLinkState(['image']).value) {
+            mockImage = deepLinkState(['image', 'preview']).value;
         }
 
         if (type == 'Album') {
@@ -27,11 +26,11 @@ var WizardStep4 = React.createClass({
                 <input type='text' valueLink={deepLinkState(['event'])} placeholder='Album Name' />
             );
         } else {
-            if (this.props.featuredArtists.length > 0) {
-                var featuredArtistFields = _.map(this.props.featuredArtists, (function(artist, index) {
+            if (artists.length > 1) {
+                var featuredArtistFields = _.map(_.rest(artists), (function(artist, index) {
                     return (
                         <div className='flex-row artist-field' key={index}>
-                            <input type='text' list='artist-list' valueLink={deepLinkState(['featured_artists', index, 'artist'])} />
+                            <input type='text' list='artist-list' valueLink={deepLinkState(['artists', index, 'artist'])} />
                             <i className='fa fa-times warning center' onClick={this.props.removeFeaturedArtist.bind(null, index)}/>
                         </div>
                     );
@@ -45,33 +44,26 @@ var WizardStep4 = React.createClass({
             }
 
             if (type == 'Live') {
-                var eventMatch = this.props.eventLookup[linkState('name').value];
-                if (eventMatch) {
-                    mockImage = constants.S3_ROOT_FOR_IMAGES + eventMatch.image_url;
-                    showUploadButton = false;
-                }
                 var placeholder = 'Event Name';
-                var listId = 'event-list';
             } else {
                 var placeholder = 'Mix Name';
-                var listId = 'mix-list';
                 var episodeField = (
-                    <input type='text' placeholder='Episode Name' valueLink={linkState('episode')} />
+                    <input type='text' placeholder='Episode Name' valueLink={deepLinkState(['episode'])} />
                 );
             }
 
             fieldComponents = (
                 <div>
-                    <input type='text' valueLink={linkState('name')} placeholder={placeholder} list={listId} />
+                    <input type='text' valueLink={deepLinkState(['event'])} placeholder={placeholder} />
                     {episodeField ? episodeField : ''}
                 </div>
             );
-            if (this.props.featuredArtists.length > 0) {
-                artists += ' feat. ' + this.props.featuredArtists.join(', ');
+            if (artists.length > 1) {
+                // artists += ' feat. ' + this.props.featuredArtists.join(', ');
             }
         }
         var featuredArtistButton = '';
-        if (this.props.type != 'Album') {
+        if (type != 'Album') {
             featuredArtistButton = (
                 <div className='featured-artist flex-row'>
                     <h3>Featured Artists</h3>
@@ -91,11 +83,11 @@ var WizardStep4 = React.createClass({
                         {featuredArtistButton}
                         {featuredArtistComponent}
                         {fieldComponents}
-                        <input type='text' valueLink={linkState('genre')} placeholder='Genre' list='genre-list' />
+                        <input type='text' valueLink={deepLinkState(['genre'])} placeholder='Genre' />
                     </div>
 
                     <div className='flex-column flex-fixed' style={{alignItems: 'center'}}>
-                        <MockSetTileImproved image={mockImage} artist={artists} name={linkState('name').value} episode={this.props.type == 'Mix' ? linkState('episode').value : ''} setLength={this.props.setLength} popularity={0} />
+                        <MockSetTileImproved image={mockImage} artist={'NODEX'} name={deepLinkState(['event']).value} episode={type == 'Mix' ? deepLinkState(['episode']).value : ''} setLength={deepLinkState(['set_length']).value} popularity={0} />
 
                         <Dropzone
                             ref='dropzone'
@@ -106,13 +98,6 @@ var WizardStep4 = React.createClass({
                         <button className={(showUploadButton ? '':' invisible')} onClick={this.browse}>
                             Upload an image...
                         </button>
-
-
-
-                        <ReactDatalist key='event-datalist' options={this.props.events} objKey='event' listId='event-list' isArray={false} />
-                        <ReactDatalist key='mix-datalist' options={this.props.mixes} objKey='mix' listId='mix-list' isArray={false} />
-                        <ReactDatalist key='artist-datalist' options={this.props.artists} isArray={false} objKey='artist' listId='artist-list' />
-                        <ReactDatalist key='genre-datalist' options={this.props.genres} isArray={false} objKey='genre' listId='genre-list' />
                     </div>
                 </div>
                 <button className='step-button' onClick={this.submitStep}>
