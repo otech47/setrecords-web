@@ -99,12 +99,22 @@ var UploadSetWizard = React.createClass({
             break;
 
             case 4:
+            var setData = {
+                event: this.state.event,
+                artists: this.state.artists,
+                image: this.state.image,
+                episode: this.state.episode,
+                setLength: this.state.set_length,
+                type: this.state.type
+            };
+
             stepComponent = (<WizardStep4 stepForward={this.stepForward}
             deepLinkState={this.deepLinkState}
             addImage={this.addImage}
             addFeaturedArtist={this.addFeaturedArtist}
             removeFeaturedArtist={this.removeFeaturedArtist}
-            changeFeaturedArtist={this.changeFeaturedArtist} />);
+            changeFeaturedArtist={this.changeFeaturedArtist}
+            {...setData} />);
             break;
 
             case 5:
@@ -232,14 +242,24 @@ var UploadSetWizard = React.createClass({
         };
 
         this.setState({
-            featured_artists: update(this.state.featured_artists, {$push: [newArtist]})
+            artists: update(this.state.artists, {$push: [newArtist]})
         });
     },
 
     removeFeaturedArtist: function(index) {
         this.setState({
-            featured_artists: update(this.state.featured_artists, {$splice: [[index, 1]]})
+            artists: update(this.state.artists, {$splice: [[index, 1]]})
         });
+    },
+
+    addImage: function(file) {
+        if (file[0].type == "image/png" || file[0].type == "image/jpeg" || file[0].type == "image/gif") {
+            this.setState({
+                image: file[0]
+            });
+        } else {
+            alert("Please upload a png, jpeg, or gif image.");
+        }
     },
 
     registerAudio: function(callback) {
@@ -602,39 +622,6 @@ var UploadSetWizard = React.createClass({
     },
 
 
-    changeFeaturedArtist: function(index, event) {
-        var updateObj = {};
-        updateObj[index] = {
-            $set: event.target.value
-        };
-        this.setState({
-            featured_artists: update(this.state.featured_artists, updateObj)
-        });
-    },
-
-
-
-    // addTrack: function() {
-    //     var artist = this.props.appState.get('artist_data').artist;
-    //     var tracklist = this.state.tracklist;
-    //     if (tracklist.length == 0) {
-    //         var nextStartTime = '00:00';
-    //     } else {
-    //         var lastStartTime = this.timeStringToSeconds(_.last(tracklist).start_time);
-    //         var nextStartTime = this.secondsToMinutes(lastStartTime + 1);
-    //     }
-    //     var newTrack = {
-    //         'track_id': this.state.track_id,
-    //         'start_time': nextStartTime,
-    //         'artist': artist,
-    //         'song': 'untitled'
-    //     };
-    //     this.setState({
-    //         tracklist: update(tracklist, {$push: [newTrack]}),
-    //         track_id: this.state.track_id - 1
-    //     });
-    // },
-
 
 
     pullTracks: function(url, callback) {
@@ -688,6 +675,7 @@ var UploadSetWizard = React.createClass({
         }
         this.setState(newData);
     },
+
     stepBackward: function() {
         if (this.state.current_step > 1) {
             var newData = {
@@ -712,15 +700,6 @@ var UploadSetWizard = React.createClass({
             this.setState({
                 outlets: update(this.state.outlets, {$push: [outlet]})
             });
-        }
-    },
-    addImage: function(file) {
-        if (file[0].type == "image/png" || file[0].type == "image/jpeg" || file[0].type == "image/gif") {
-            this.setState({
-                image: file[0]
-            });
-        } else {
-            alert("Please upload a png, jpeg, or gif image.");
         }
     }
 });
