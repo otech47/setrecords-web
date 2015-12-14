@@ -406,14 +406,13 @@ var UploadSetWizard = React.createClass({
     },
 
     registerS3: function(file, callback) {
-        var uniqueFilename = file.name + moment().unix();
+        var uniqueFilename = moment().unix() + file.name;
         $.ajax({
             type: 'POST',
             url: 'http://localhost:3000/v/10/aws/configureAWS',
             data: {
                 filename: encodeURIComponent(uniqueFilename)
-            },
-            contentType: 'application/json'
+            }
         })
         .done((res) => {
             AWS.config.update(res.payload.settings);
@@ -440,11 +439,11 @@ var UploadSetWizard = React.createClass({
                 if (err) {
                     callback(err);
                 } else {
-                    callback(null, response.encoded);
+                    callback(null, res.payload.encoded);
                 }
             });
         })
-        .failure((err) => {
+        .fail((err) => {
             callback(err);
         });
     },
@@ -618,7 +617,7 @@ var UploadSetWizard = React.createClass({
                     console.log(res);
                     callback(null, res.payload.register.id);
                 })
-                .failure((err) => {
+                .fail((err) => {
                     console.log('An error occurred when updating the database.');
                     console.log(err);
                     callback(err);
@@ -641,7 +640,7 @@ var UploadSetWizard = React.createClass({
                     console.log(res);
                     console.log('This is where we would close the upload wizard.');
                 })
-                .failure((err) => {
+                .fail((err) => {
                     console.log('An error occurred when adding the tracklist to the new set.');
                     console.log(err);
                     console.log('This is where we would close the upload wizard.');

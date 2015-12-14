@@ -25,7 +25,7 @@ var WizardStepConfirmation = React.createClass({
 
         var mockImage = null;
         if (image) {
-            mockImage = image.preview;
+            mockImage = image;
         }
 
         var artistText = artists[0].artist;
