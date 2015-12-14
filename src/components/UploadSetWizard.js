@@ -70,6 +70,7 @@ var UploadSetWizard = React.createClass({
                 header: 'New Set'
             }
         });
+        this.getVenues();
     },
 
     render: function() {
@@ -101,6 +102,7 @@ var UploadSetWizard = React.createClass({
             case 4:
             var setData = {
                 event: this.state.event,
+                genre: this.state.genre,
                 artists: this.state.artists,
                 image: this.state.image,
                 episode: this.state.episode,
@@ -122,13 +124,14 @@ var UploadSetWizard = React.createClass({
             break;
 
             case 6:
-            if (this.state.release_type == 'Beacon') {
+            if (this.state.paid == 1) {
             stepComponent = (
-                <WizardStep6Beacon    stepForward={this.stepForward}
-                linkState={this.linkState}
-                venues={this.props.appState.get('venues')}
-                toggleOutlet={this.toggleOutlet}
-                push={this.props.push}
+                <WizardStep6Beacon stepForward={this.stepForward}
+                deepLinkState={this.deepLinkState}
+                addOutlet={this.addOutlet}
+                removeOutlet={this.removeOutlet}
+                price={this.state.price}
+                venues={this.state.venues}
                 outlets={this.state.outlets} />
             );
             } else {
@@ -138,7 +141,7 @@ var UploadSetWizard = React.createClass({
             break;
 
             case 7:
-            stepComponent = (<WizardStepConfirmation {...this.state} uploadSet={this.uploadSet} originalArtist={this.props.appState.get('artist_data').artist} />);
+            stepComponent = (<WizardStepConfirmation {...this.state} uploadSet={this.uploadSet} originalArtist={this.props.originalArtist} />);
             break;
 
             default:
@@ -260,6 +263,34 @@ var UploadSetWizard = React.createClass({
         } else {
             alert("Please upload a png, jpeg, or gif image.");
         }
+    },
+
+    getVenues: function() {
+        var query = `{
+            venues (beacon: 1) {
+                id,
+                venue,
+                web_link,
+                address,
+                latitude,
+                longitude
+            }
+        }`;
+        $.ajax({
+            url: 'http://localhost:3000/v/10/setrecords',
+            type: 'post',
+            data: {
+                query: query
+            }
+        })
+        .done((res) => {
+            this.setState({
+                venues: res.payload.venues
+            });
+        })
+        .fail((error) => {
+            console.error(error)
+        });
     },
 
     registerAudio: function(callback) {
@@ -689,18 +720,31 @@ var UploadSetWizard = React.createClass({
 
 
 
-    toggleOutlet: function(outlet) {
-        var self = this;
-        var index = this.state.outlets.indexOf(outlet);
+    toggleOutlet: function(outletName) {
+        var index = this.state.outlets.indexOf(outletName);
         if (index >= 0) {
             this.setState({
                 outlets: update(this.state.outlets, {$splice: [[index, 1]]})
             });
         } else {
             this.setState({
-                outlets: update(this.state.outlets, {$push: [outlet]})
+                outlets: update(this.state.outlets, {$push: [outletName]})
             });
         }
+    },
+
+    addOutlet: function (venueName) {
+        console.log('Add venue ' + venueName);
+        this.setState({
+            outlets: update(this.state.outlets, {$push: [_.findWhere(this.state.venues, {venue: venueName})]})
+        });
+    },
+
+    removeOutlet: function (index) {
+        console.log('Remove index ' + index);
+        this.setState({
+            outlets: update(this.state.outlets, {$splice: [[index, 1]]})
+        });
     }
 });
 

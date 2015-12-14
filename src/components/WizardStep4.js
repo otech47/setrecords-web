@@ -22,9 +22,9 @@ var WizardStep4 = React.createClass({
             if (artists.length > 1) {
                 var featuredArtistFields = _.map(_.rest(artists), (function(artist, index) {
                     return (
-                        <div className='flex-row artist-field' key={index}>
-                            <input type='text' list='artist-list' valueLink={deepLinkState(['artists', index, 'artist'])} />
-                            <i className='fa fa-times warning center' onClick={this.props.removeFeaturedArtist.bind(null, index)}/>
+                        <div className='flex-row artist-field' key={index + 1}>
+                            <input type='text' list='artist-list' valueLink={deepLinkState(['artists', (index + 1), 'artist'])} placeholder='Featured artist' />
+                            <i className='fa fa-times warning center' onClick={this.props.removeFeaturedArtist.bind(null, (index + 1))}/>
                         </div>
                     );
                 }).bind(this));
@@ -47,7 +47,8 @@ var WizardStep4 = React.createClass({
 
             fieldComponents = (
                 <div>
-                    <input type='text' valueLink={deepLinkState(['event'])} placeholder={placeholder} />
+                    <h3>{placeholder}</h3>
+                    <input type='text' valueLink={deepLinkState(['event'])} />
                     {episodeField ? episodeField : ''}
                 </div>
             );
@@ -73,7 +74,8 @@ var WizardStep4 = React.createClass({
                         {featuredArtistButton}
                         {featuredArtistComponent}
                         {fieldComponents}
-                        <input type='text' valueLink={deepLinkState(['genre'])} placeholder='Genre' />
+                        <h3>Genre</h3>
+                        <input type='text' valueLink={deepLinkState(['genre'])} />
                     </div>
 
                     <div className='flex-column flex-fixed' style={{alignItems: 'center'}}>
@@ -104,6 +106,7 @@ var WizardStep4 = React.createClass({
     submitStep: function(event) {
         var artistEmptyErr = false;
         var nameEmptyErr = false;
+        var genreEmptyErr = false;
         var errors = [];
 
         if (_.some(_.rest(this.props.artists), function (artist) {
@@ -116,6 +119,11 @@ var WizardStep4 = React.createClass({
         if (this.props.event.length < 1) {
             nameEmptyErr = true;
             errors.push('Name cannot be empty.');
+        }
+
+        if (this.props.genre.length < 1) {
+            genreEmptyErr = true;
+            errors.push('Genre field cannot be empty.');
         }
 
         if (errors.length == 0) {

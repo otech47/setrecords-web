@@ -1351,10 +1351,7 @@ header .artist img {
 }
 #WizardStep6 .venue-search {
   height: 20rem;
-  max-width: 100%;
-  flex-wrap: nowrap;
-  overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-x: auto;
   border: solid 1px #bdc3c7;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -1363,11 +1360,9 @@ header .artist img {
   color: #313542;
 }
 #WizardStep6 .venue-search .venue-listing {
-  max-width: 100%;
   height: 4rem;
   align-items: stretch;
-  margin-bottom: 1rem;
-  padding: 0.5rem 1rem;
+  padding: 1rem 1rem;
 }
 #WizardStep6 .venue-search .venue-listing:hover {
   background: #c6c6c6;
@@ -1379,6 +1374,9 @@ header .artist img {
 #WizardStep6 .venue-search .venue-listing p {
   font-size: 1rem;
   margin: 0;
+}
+#WizardStep6 .venue-search .venue-listing .venue-info {
+  justify-content: center;
 }
 #WizardStep6 .venue-search .venue-listing .venue-add {
   align-items: center;
