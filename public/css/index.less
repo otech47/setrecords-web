@@ -914,19 +914,14 @@ header {
     }
     .venue-search {
         height: 20rem;
-        max-width: 100%;
-        flex-wrap: nowrap;
-        overflow-x: hidden;
-        overflow-y: scroll;
+        overflow-x: auto;
         border: solid 1px @gray;
         .border-radius(3px);
         .background(@white, @dark-gray);
         .venue-listing {
-            max-width: 100%;
             height: 4rem;
             align-items: stretch;
-            margin-bottom: 1rem;
-            padding: 0.5rem 1rem;
+            padding: 1rem 1rem;
             &:hover {
                 background: @white*0.8;
             }
@@ -937,6 +932,9 @@ header {
             p {
                 font-size: 1rem;
                 margin: 0;
+            }
+            .venue-info {
+                justify-content: center;
             }
             .venue-add {
                 align-items: center;

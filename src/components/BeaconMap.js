@@ -41,7 +41,8 @@ var BeaconMap = React.createClass({
                 click: function() {
                     self.geolocate(function(err, pos) {
                         if (err) {
-                            alert('Geolocation is not available at this time: ' + err);
+                            alert('Geolocation is not available at this time. (Hint: try turning on your WiFi)');
+                            console.log(err);
                         } else {
                             map.setCenter(pos.coords.latitude, pos.coords.longitude);
                             map.setZoom(16);
