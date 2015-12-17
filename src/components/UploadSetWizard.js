@@ -21,6 +21,16 @@ import async from 'async';
 import Icon from './Icon';
 
 var UploadSetWizard = React.createClass({
+    render: function() {
+        return (
+            <div>
+                upload wizard page
+            </div>
+        );
+    }
+});
+
+var UploadSetWizard2 = React.createClass({
 
     mixins: [LinkedStateMixin, UtilityFunctions],
 
