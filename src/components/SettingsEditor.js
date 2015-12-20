@@ -12,20 +12,6 @@ import Icon from './Icon';
 import ConfirmChanges from './ConfirmChanges';
 import Notification from './Notification';
 
-
-//
-// <div className='password-change form-panel flex-column center'>
-//     <h1>Password</h1>
-//     <div>
-//         <p>New Password</p>
-//         <input name='new_pass' value={pendingSettings.new_pass} type='text' onChange={this.changePassField} />
-//     </div>
-//     <div>
-//         <p>Confirm New Password<i className={pendingSettings.password_match ? 'fa fa-check approved' : 'fa fa-times warning'}></i></p>
-//         <p className={pendingSettings.password_match ? 'invisible' : 'warning'} >Passwords must match.</p>
-//         <input type='text' name='confirm_pass' value={pendingSettings.confirm_pass} onChange={this.changePassField} />
-//     </div>
-// </div>
 //
 // <div className='artist-links form-panel flex-column center'>
 //     <h1>Update Links</h1>
@@ -74,9 +60,8 @@ var SettingsEditor = React.createClass({
     getInitialState() {
         return {
             uploadedImage: [],
-            newPass: null,
-            confirmPass: null,
-            passwordMatch: false,
+            newPass: '',
+            confirmPass: '',
             changes: false,
             busy: false,
             applying: false,
@@ -113,6 +98,8 @@ var SettingsEditor = React.createClass({
         // var originalSettings = this.props.appState.get('artist_data');
         // var pendingSettings = this.state;
 
+        var deepLinkState = this.deepLinkState;
+
         var imageUrl = constants.S3_ROOT_FOR_IMAGES + constants.DEFAULT_IMAGE;
 
         if (this.state.uploadedImage.length > 0) {
@@ -120,6 +107,8 @@ var SettingsEditor = React.createClass({
         } else if (this.state.icon_image) {
             imageUrl = constants.S3_ROOT_FOR_IMAGES + this.state.icon_image.imageURL;
         }
+
+        var passwordMatch = this.state.newPass == this.state.confirmPass && this.state.newPass.length > 0;
 
         return (
             <div className='flex-column flex' id='SettingsEditor'>
@@ -164,6 +153,20 @@ var SettingsEditor = React.createClass({
                     </button>
                 </div>
 
+
+                <div className='password-change form-panel flex-column center'>
+                    <h1>Change Password</h1>
+                    <div>
+                        <p>New Password</p>
+                        <input name='new_pass' valueLink={deepLinkState(['newPass'])} type='text' />
+                    </div>
+                    <div>
+                        <p>Confirm New Password<i className={passwordMatch ? 'fa fa-check approved' : 'fa fa-times warning'}></i></p>
+                        <p className={passwordMatch ? 'invisible' : 'warning'} >Passwords must match.</p>
+                        <input type='text' name='confirm_pass' valueLink={deepLinkState(['confirmPass'])} />
+                    </div>
+                </div>
+
             </div>
         );
     },
@@ -196,6 +199,34 @@ var SettingsEditor = React.createClass({
             console.log('An error occurred.');
             console.log(err);
         });
+    },
+
+    deepLinkState: function (keyArray) {
+        return {
+            value: this.getValue(keyArray),
+            requestChange: function (value) {
+                this.setValue(keyArray, value);
+            }.bind(this)
+        }
+    },
+
+    getValue: function (keyArray) {
+        var output = _.reduce(keyArray, function (counter, current) {
+            return counter[current];
+        }, this.state);
+        return output;
+    },
+
+    setValue: function(keyArray, value) {
+        var updateObject = _.reduceRight(_.rest(keyArray), function(counter, current) {
+            var innerUpdate = {};
+            innerUpdate[current] = counter;
+            return innerUpdate;
+        }, {$set: value});
+
+        var newState = {};
+        newState[ keyArray[0] ] = update(this.state[ keyArray[0] ], updateObject);
+        this.setState(newState);
     },
 
     applyChanges() {
