@@ -233,6 +233,10 @@ var App = React.createClass({
                 props = {push: push, originalArtist: appState.get('artist_data')};
                 break;
 
+                case SettingsEditor:
+                props = {push: push, artistId: appState.get('artistId')};
+                break;
+
                 default:
                 props = {push: push, appState: appState};
                 break;
