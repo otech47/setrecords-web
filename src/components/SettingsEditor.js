@@ -12,20 +12,6 @@ import Icon from './Icon';
 import ConfirmChanges from './ConfirmChanges';
 import Notification from './Notification';
 
-
-//
-// <div className='form-panel flex-row center' id='apply-changes'>
-//     <div className='flex-fixed apply flex-container' onClick={this.applyChanges}>
-//         Apply
-//     </div>
-//     <div className='flex-fixed revert flex-container' onClick={this.revertChanges}>
-//         Revert
-//     </div>
-//     <div className='flex-fixed cancel flex-container' onClick={this.cancelChanges}>
-//         Cancel
-//     </div>
-// </div>
-
 var SettingsEditor = React.createClass({
 
     mixins: [History],
@@ -67,7 +53,7 @@ var SettingsEditor = React.createClass({
         }
     },
 
-    render() {
+    render: function() {
         // var originalSettings = this.props.appState.get('artist_data');
         // var pendingSettings = this.state;
 
@@ -166,6 +152,19 @@ var SettingsEditor = React.createClass({
                     <div>
                         <p>Instagram</p>
                         <input name='instagram_link' type='text' valueLink={deepLinkState(['instagram_link'])} />
+                    </div>
+                </div>
+
+
+                <div className='form-panel flex-row center' id='apply-changes'>
+                    <div className='flex-fixed apply flex-container' onClick={this.applyChanges}>
+                        Apply
+                    </div>
+                    <div className='flex-fixed revert flex-container' onClick={this.revertChanges}>
+                        Revert
+                    </div>
+                    <div className='flex-fixed cancel flex-container' onClick={this.cancelChanges}>
+                        Cancel
                     </div>
                 </div>
 
@@ -327,31 +326,6 @@ var SettingsEditor = React.createClass({
         }
     },
 
-    changePassField(event) {
-        var field = event.target.name;
-        var newState = {};
-        newState[field] = event.target.value;
-        newState['changes'] = true;
-
-        this.setState(newState, () => {
-            var passwordsMatch = false;
-            if ((this.state.confirm_pass == this.state.new_pass) && this.state.new_pass.length > 0) {
-                passwordsMatch = true;
-            }
-            this.setState({
-                password_match: passwordsMatch
-            });
-        });
-    },
-
-    changeLinkField(event) {
-        var field = event.target.name;
-        var newState = {};
-        newState[field] = event.target.value;
-        newState['changes'] = true;
-        this.setState(newState);
-    },
-
     newImage(callback) {
         // console.log('New tile image pending:')
         // console.log(this.state.artist_image);
@@ -469,7 +443,8 @@ var SettingsEditor = React.createClass({
     },
 
     revertChanges() {
-        this.replaceState(this.getInitialState());
+        this.getAccountData();
+        this.setState(this.getInitialState());
     },
 
     showApplyingStatus() {
