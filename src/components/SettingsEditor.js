@@ -12,34 +12,7 @@ import Icon from './Icon';
 import ConfirmChanges from './ConfirmChanges';
 import Notification from './Notification';
 
-//
-// <div className='artist-links form-panel flex-column center'>
-//     <h1>Update Links</h1>
-//     <div>
-//         <p>Web</p>
-//         <input name='web_link' type='text' value={pendingSettings.web_link} onChange={this.changeLinkField} />
-//     </div>
-//     <div>
-//         <p>Soundcloud</p>
-//         <input name='soundcloud_link' type='text' value={pendingSettings.soundcloud_link} onChange={this.changeLinkField} />
-//     </div>
-//     <div>
-//         <p>Youtube</p>
-//         <input name='youtube_link' type='text' value={pendingSettings.youtube_link} onChange={this.changeLinkField} />
-//     </div>
-//     <div>
-//         <p>Twitter</p>
-//         <input name='twitter_link' type='text' value={pendingSettings.twitter_link} onChange={this.changeLinkField} />
-//     </div>
-//     <div>
-//         <p>Facebook</p>
-//         <input name='fb_link' type='text' value={pendingSettings.fb_link} onChange={this.changeLinkField} />
-//     </div>
-//     <div>
-//         <p>Instagram</p>
-//         <input name='instagram_link' type='text' value={pendingSettings.instagram_link} onChange={this.changeLinkField} />
-//     </div>
-// </div>
+
 //
 // <div className='form-panel flex-row center' id='apply-changes'>
 //     <div className='flex-fixed apply flex-container' onClick={this.applyChanges}>
@@ -167,6 +140,35 @@ var SettingsEditor = React.createClass({
                     </div>
                 </div>
 
+
+                <div className='artist-links form-panel flex-column center'>
+                    <h1>Update Links</h1>
+                    <div>
+                        <p>Web</p>
+                        <input name='web_link' type='text' valueLink={deepLinkState(['web_link'])} />
+                    </div>
+                    <div>
+                        <p>Soundcloud</p>
+                        <input name='soundcloud_link' type='text' valueLink={deepLinkState(['soundcloud_link'])} />
+                    </div>
+                    <div>
+                        <p>Youtube</p>
+                        <input name='youtube_link' type='text' valueLink={deepLinkState(['youtube_link'])} />
+                    </div>
+                    <div>
+                        <p>Twitter</p>
+                        <input name='twitter_link' type='text' valueLink={deepLinkState(['twitter_link'])} />
+                    </div>
+                    <div>
+                        <p>Facebook</p>
+                        <input name='fb_link' type='text' valueLink={deepLinkState(['fb_link'])} />
+                    </div>
+                    <div>
+                        <p>Instagram</p>
+                        <input name='instagram_link' type='text' valueLink={deepLinkState(['instagram_link'])} />
+                    </div>
+                </div>
+
             </div>
         );
     },
@@ -180,7 +182,13 @@ var SettingsEditor = React.createClass({
             artist (id: ${this.props.artistId}) {
                 icon_image {
                     imageURL
-                }
+                },
+                web_link,
+                twitter_link,
+                fb_link,
+                soundcloud_link,
+                youtube_link,
+                instagram_link
             }
         }`;
 
