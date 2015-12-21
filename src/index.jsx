@@ -176,11 +176,12 @@ var App = React.createClass({
             }
         })
         .done((res) => {
+            console.log(res);
             // console.log('Artist...');
             if (res.status == 'failure') {
                 console.log("An error occurred getting artist data.");
                 console.log(res.payload.error);
-            } else {
+            } else if (res.payload.artist) {
                 push({
                     type: 'SHALLOW_MERGE',
                     data: {
@@ -213,7 +214,7 @@ var App = React.createClass({
         var appState = this.state.appState;
         return (
             <div className='flex-column' id='App'>
-                <Header appState={appState} />
+                <Header artistImage={appState.get('artist_data').icon_image.imageURL} artistName={appState.get('artist_data').artist} headerText={appState.get('header')} />
                 <div className='flex-row view-container'>
                     {this.props.location.pathname == '/' ? '' : <NavBar push={push} /> }
                     <div className='view flex-column flex'>
@@ -240,7 +241,7 @@ var App = React.createClass({
                 break;
 
                 case SettingsEditor:
-                props = {push: push, artistId: appState.get('artistId'), loaded: appState.get('loaded')};
+                props = {push: push, artistId: appState.get('artistId'), loaded: appState.get('loaded'), artistData: appState.get('artist_data')};
                 break;
 
                 default:

@@ -182,11 +182,7 @@ var SettingsEditor = React.createClass({
     },
 
     checkChangedField: function(fieldName) {
-        if (this.state.originalAccountData) {
-            return this.state[fieldName] != this.state.originalAccountData[fieldName];
-        } else {
-            return false;
-        }
+        return this.state[fieldName] != this.props.artistData[fieldName];
     },
 
     browse: function(event) {
@@ -196,6 +192,7 @@ var SettingsEditor = React.createClass({
     getAccountData: function() {
         var query = `{
             artist (id: ${this.props.artistId}) {
+                artist,
                 icon_image {
                     imageURL
                 },
@@ -217,16 +214,14 @@ var SettingsEditor = React.createClass({
         })
         .done((res) => {
             console.log(res);
-            var newState = res.payload.artist;
-            newState['originalAccountData'] = res.payload.artist;
-            this.setState(newState, () => {
-                this.props.push({
-                    type: 'SHALLOW_MERGE',
-                    data: {
-                        loaded: true
-                    }
-                });
+            this.props.push({
+                type: 'SHALLOW_MERGE',
+                data: {
+                    loaded: true,
+                    artist_data: res.payload.artist
+                }
             });
+            this.setState(res.payload.artist);
         })
         .fail((err) => {
             console.log('An error occurred.');
@@ -263,7 +258,7 @@ var SettingsEditor = React.createClass({
     },
 
     hasChanges: function() {
-        var referenceObject = _.extend(this.getInitialState(), this.state.originalAccountData);
+        var referenceObject = _.extend(this.getInitialState(), this.props.artistData);
 
         var changes = _.some(referenceObject, (value, key) => {
             return !(_.isEqual(value, this.state[key]));
@@ -279,7 +274,7 @@ var SettingsEditor = React.createClass({
         if ( (this.state.newPass.length > 0 || this.state.confirmPass.length > 0) && !passwordMatch ) {
             alert('New password and confirm password fields must match.');
         } else {
-            var originalSettings = this.state.originalAccountData;
+            var originalSettings = this.props.artistData;
 
             var changeFunctions = [];
 
@@ -432,8 +427,7 @@ var SettingsEditor = React.createClass({
     onDrop(file) {
         if (file[0].type == 'image/png' || file[0].type == 'image/jpeg' || file[0].type == 'image/gif') {
             this.setState({
-                uploadedImage: file,
-                changes: true
+                uploadedImage: file
             });
         } else {
             alert('Please upload a png, jpeg, or gif image.');
