@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Immutable from 'immutable';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
-import {browserHistory, IndexRoute, Link, Route, Router, History } from 'react-router';
+import {IndexRoute, Link, Route, Router, History } from 'react-router';
 import GlobalEventHandler from './services/globalEventHandler';
 import _ from 'underscore';
 import async from 'async';
@@ -143,6 +143,13 @@ var App = React.createClass({
     },
 
     updateArtist() {
+        push({
+            type: 'SHALLOW_MERGE',
+            data: {
+                loaded: false
+            }
+        });
+
         var artistId = this.state.appState.get("artistId");
         var requestURL = "http://localhost:3000/v/10/setrecords/";
         var query = `{
@@ -233,7 +240,7 @@ var App = React.createClass({
                 break;
 
                 case SettingsEditor:
-                props = {push: push, artistId: appState.get('artistId')};
+                props = {push: push, artistId: appState.get('artistId'), loaded: appState.get('loaded')};
                 break;
 
                 default:
@@ -249,7 +256,7 @@ var App = React.createClass({
 var history = createBrowserHistory();
 
 ReactDOM.render(
-    <Router history={browserHistory}>
+    <Router history={history}>
         <Route path='/' component={App} >
             <IndexRoute component={Login} />
 
