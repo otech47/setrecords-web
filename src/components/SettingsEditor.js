@@ -54,9 +54,6 @@ var SettingsEditor = React.createClass({
     },
 
     render: function() {
-        // var originalSettings = this.props.appState.get('artist_data');
-        // var pendingSettings = this.state;
-
         var deepLinkState = this.deepLinkState;
 
         var imageUrl = constants.S3_ROOT_FOR_IMAGES + constants.DEFAULT_IMAGE;
@@ -93,7 +90,7 @@ var SettingsEditor = React.createClass({
                 }}>
                     {
                         ({opacity, visibility}) =>
-                        <ConfirmChanges cancel={() => this.setState({open: false})} style={{
+                        <ConfirmChanges confirmRoute={'/content'} cancel={() => this.setState({open: false})} style={{
                             opacity: `${opacity}`,
                             visibility: `${visibility}`
                         }}>
@@ -200,7 +197,9 @@ var SettingsEditor = React.createClass({
         })
         .done((res) => {
             console.log(res);
-            this.setState(res.payload.artist, console.log(this.state));
+            var newState = res.payload.artist;
+            newState['originalAccountData'] = res.payload.artist;
+            this.setState(newState, console.log(this.state));
         })
         .fail((err) => {
             console.log('An error occurred.');
@@ -317,13 +316,9 @@ var SettingsEditor = React.createClass({
     },
 
     cancelChanges() {
-        if(this.state.changes) {
-            this.setState({
-                open: !this.state.open
-            });
-        } else {
-            this.history.push(null, '/');
-        }
+        this.setState({
+            open: !this.state.open
+        });
     },
 
     newImage(callback) {
