@@ -5,7 +5,7 @@ import _ from 'underscore';
 import async from 'async';
 import Loader from 'react-loader';
 import constants from '../constants/constants';
-import {History} from 'react-router';
+import {History, Lifecycle} from 'react-router';
 import {Motion, spring, presets} from 'react-motion';
 import Icon from './Icon';
 import ConfirmChanges from './ConfirmChanges';
@@ -14,14 +14,13 @@ import moment from 'moment';
 
 var SettingsEditor = React.createClass({
 
-    mixins: [History],
+    mixins: [History, Lifecycle],
 
     getInitialState() {
         return {
             uploadedImage: [],
             newPass: '',
             confirmPass: '',
-            changes: false,
             busy: false,
             applying: false,
             success: false,
@@ -46,11 +45,9 @@ var SettingsEditor = React.createClass({
         });
     },
 
-    componentWillUnmount() {
-        if(this.state.changes) {
-            this.setState({
-                open: true
-            });
+    routerWillLeave: function (nextLocation) {
+        if (this.hasChanges()) {
+            return ('You have unsaved changes that will be lost. Are you sure you want to leave?');
         }
     },
 
@@ -65,7 +62,15 @@ var SettingsEditor = React.createClass({
             imageUrl = constants.S3_ROOT_FOR_IMAGES + this.state.icon_image.imageURL;
         }
 
-        var passwordMatch = this.passwordMatch();
+        var passwordMatch = this.state.newPass == this.state.confirmPass;
+
+        var passwordWarning = ((this.state.newPass.length > 0 || this.state.confirmPass.length > 0) && !passwordMatch) ? 'warning' : 'hidden';
+
+        if ((this.state.newPass.length > 0 || this.state.confirmPass.length > 0)) {
+            var passwordIcon = (passwordMatch ? 'fa fa-check approved' : 'fa fa-times warning');
+        } else {
+            var passwordIcon = 'hidden';
+        }
 
         var statusMessage;
         if (this.state.busy) {
@@ -108,21 +113,6 @@ var SettingsEditor = React.createClass({
                         }
                     </Motion>
 
-                    <Motion style={{
-                        opacity: spring(this.state.open ? 1 : 0, presets.gentle),
-                        visibility: this.state.open ? 'visible' : 'hidden'
-                    }}>
-                        {
-                            ({opacity, visibility}) =>
-                            <ConfirmChanges confirmRoute={'/content'} cancel={() => this.setState({open: false})} style={{
-                                opacity: `${opacity}`,
-                                visibility: `${visibility}`
-                            }}>
-                                Are you sure you want to leave? All unsaved changes will be lost.
-                            </ConfirmChanges>
-                        }
-                    </Motion>
-
                     <div className='artist-image flex-row'>
                         <img src={imageUrl} />
 
@@ -137,12 +127,12 @@ var SettingsEditor = React.createClass({
                     <div className='password-change form-panel flex-column center'>
                         <h1>Change Password</h1>
                         <div>
-                            <p>New Password</p>
+                            <p>New Password {((this.state.newPass.length > 0) ? <span className='warning'>*</span> : '')}</p>
                             <input name='new_pass' valueLink={deepLinkState(['newPass'])} type='password' />
                         </div>
                         <div>
-                            <p>Confirm New Password<i className={passwordMatch ? 'fa fa-check approved' : 'fa fa-times warning'}></i></p>
-                            <p className={passwordMatch ? 'invisible' : 'warning'} >Passwords must match.</p>
+                            <p>Confirm New Password <i className={passwordIcon}></i></p>
+                            <p className={passwordWarning}>Passwords must match.</p>
                             <input type='password' name='confirm_pass' valueLink={deepLinkState(['confirmPass'])} />
                         </div>
                     </div>
@@ -151,27 +141,27 @@ var SettingsEditor = React.createClass({
                     <div className='artist-links form-panel flex-column center'>
                         <h1>Update Links</h1>
                         <div>
-                            <p>Web</p>
+                            <p>Web {this.checkChangedField('web_link') ? <span className='warning'>*</span>: ''}</p>
                             <input name='web_link' type='text' valueLink={deepLinkState(['web_link'])} />
                         </div>
                         <div>
-                            <p>Soundcloud</p>
+                            <p>Soundcloud {this.checkChangedField('soundcloud_link') ? <span className='warning'>*</span>: ''}</p>
                             <input name='soundcloud_link' type='text' valueLink={deepLinkState(['soundcloud_link'])} />
                         </div>
                         <div>
-                            <p>Youtube</p>
+                            <p>Youtube {this.checkChangedField('youtube_link') ? <span className='warning'>*</span>: ''}</p>
                             <input name='youtube_link' type='text' valueLink={deepLinkState(['youtube_link'])} />
                         </div>
                         <div>
-                            <p>Twitter</p>
+                            <p>Twitter {this.checkChangedField('twitter_link') ? <span className='warning'>*</span>: ''}</p>
                             <input name='twitter_link' type='text' valueLink={deepLinkState(['twitter_link'])} />
                         </div>
                         <div>
-                            <p>Facebook</p>
+                            <p>Facebook {this.checkChangedField('fb_link') ? <span className='warning'>*</span>: ''}</p>
                             <input name='fb_link' type='text' valueLink={deepLinkState(['fb_link'])} />
                         </div>
                         <div>
-                            <p>Instagram</p>
+                            <p>Instagram {this.checkChangedField('instagram_link') ? <span className='warning'>*</span>: ''}</p>
                             <input name='instagram_link' type='text' valueLink={deepLinkState(['instagram_link'])} />
                         </div>
                     </div>
@@ -189,6 +179,14 @@ var SettingsEditor = React.createClass({
                 </div>
             </Loader>
         );
+    },
+
+    checkChangedField: function(fieldName) {
+        if (this.state.originalAccountData) {
+            return this.state[fieldName] != this.state.originalAccountData[fieldName];
+        } else {
+            return false;
+        }
     },
 
     browse: function(event) {
@@ -265,30 +263,20 @@ var SettingsEditor = React.createClass({
     },
 
     hasChanges: function() {
+        var referenceObject = _.extend(this.getInitialState(), this.state.originalAccountData);
 
-        if (_.some(this.state.originalAccountData, (value,key) => {
-            return _.isEqual(value, this.state[key]);
-        })) {
-            return true;
-        }
+        var changes = _.some(referenceObject, (value, key) => {
+            return !(_.isEqual(value, this.state[key]));
+        });
 
-        if (_.some(this.getInitialState, (value, key) => {
-            return _.isEqual(value, this.state[key]);
-        })) {
-            return true;
-        }
-
-        return false;
-    },
-
-    passwordMatch: function() {
-        return (this.state.newPass.length > 0 && this.state.newPass == this.state.confirmPass);
+        return changes;
     },
 
     applyChanges() {
         var pendingSettings = this.state;
+        var passwordMatch = this.state.newPass == this.state.confirmPass;
 
-        if ( (this.state.newPass.length > 0 || this.state.confirmPass.length > 0) && !this.passwordMatch()) {
+        if ( (this.state.newPass.length > 0 || this.state.confirmPass.length > 0) && !passwordMatch ) {
             alert('New password and confirm password fields must match.');
         } else {
             var originalSettings = this.state.originalAccountData;
@@ -299,7 +287,7 @@ var SettingsEditor = React.createClass({
                 changeFunctions.push(this.newImage);
             }
 
-            if (this.passwordMatch()) {
+            if ((this.state.newPass.length > 0)) {
                 changeFunctions.push(this.newPassword);
             }
 
