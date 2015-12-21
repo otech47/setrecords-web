@@ -12,7 +12,7 @@ var ConfirmChanges = React.createClass({
 				<div className='modal flex-column'>
 					<p className='center'>{this.props.children}</p>
 					<div className='flex-row'>
-						<Icon onClick={() => this.history.push(null, '/')}>done</Icon>
+						<Icon onClick={() => this.history.pushState(null, this.props.confirmRoute)}>done</Icon>
 						<Icon onClick={this.props.cancel}>close</Icon>
 					</div>
 				</div>

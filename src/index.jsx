@@ -3,8 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Immutable from 'immutable';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
-import Router from 'react-router';
-import { IndexRoute, Link, Route, History } from 'react-router';
+import {IndexRoute, Link, Route, Router, History } from 'react-router';
 import GlobalEventHandler from './services/globalEventHandler';
 import _ from 'underscore';
 import async from 'async';
@@ -144,6 +143,13 @@ var App = React.createClass({
     },
 
     updateArtist() {
+        push({
+            type: 'SHALLOW_MERGE',
+            data: {
+                loaded: false
+            }
+        });
+
         var artistId = this.state.appState.get("artistId");
         var requestURL = "http://localhost:3000/v/10/setrecords/";
         var query = `{
@@ -233,6 +239,10 @@ var App = React.createClass({
                 props = {push: push, originalArtist: appState.get('artist_data')};
                 break;
 
+                case SettingsEditor:
+                props = {push: push, artistId: appState.get('artistId'), loaded: appState.get('loaded')};
+                break;
+
                 default:
                 props = {push: push, appState: appState};
                 break;
@@ -243,51 +253,10 @@ var App = React.createClass({
     }
 });
 
-//TODO move into separate routes
-    // showView(appState) {
-    //     var updateFunctions = {updateArtist: this.updateArtist, updateSetmine: this.updateSetmine, updateSocial: this.updateSocial, updateBeacons: this.updateBeacons, updateYoutube: this.updateYoutube, updateSoundcloud: this.updateSoundcloud, updateSets: this.updateSets};
-    //     if (appState.get('set_editor')) {
-    //         return (
-    //             <MobileSetEditor set={appState.get('working_set')} close={this.closeSetEditor} appState={appState} {...UtilityFunctions} />
-    //         );
-    //     } else if (appState.get('settings_editor')) {
-    //         return (
-    //             <SettingsEditor settings={appState.get('artist_data')} close={this.closeSettingsEditor} appState={appState} {...UtilityFunctions} />
-    //         );
-    //     } else if (appState.get('upload_set_wizard')) {
-    //         return (
-    //             <UploadWizardWrapper originalArtist={appState.get('artist_data').artist} eventLookup={appState.get('event_lookup')} events={appState.get('events')} mixes={appState.get('mixes')} genres={appState.get('genres')}
-    //                 venues={appState.get('venues')} />
-    //         );
-    //     } else {
-    //         return (
-    //             <ViewContainer
-    //                 appState={appState}
-    //                 {...updateFunctions}
-    //                 {...UtilityFunctions}
-    //                 push={push}
-    //                 routeHandler={RouteHandler}
-    //                 openSetEditor={this.openSetEditor}
-    //                 openUploadSetWizard={this.openUploadSetWizard}
-    //                 loaded={appState.get('loaded')} />
-    //         );
-    //     }
-    // }
-
-// function requireAuth(nextState, replaceState) {
-//     auth.isLoggedIn((loggedIn) => {
-//         if (loggedIn) {
-//             console.log('Logged in.');
-//         } else {
-//             console.log('Not logged in.');
-//         }
-//     });
-// };
-
 var history = createBrowserHistory();
 
 ReactDOM.render(
-    <Router>
+    <Router history={history}>
         <Route path='/' component={App} >
             <IndexRoute component={Login} />
 
