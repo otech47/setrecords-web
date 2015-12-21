@@ -113,7 +113,7 @@ var ContentView = React.createClass({
             }
         })
         .done((res) => {
-            console.log(res);
+            // console.log(res);
             this.setState({
                 loaded: true
             }, this.props.push({

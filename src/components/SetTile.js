@@ -7,7 +7,6 @@ var SetTile = React.createClass({
 	mixins: [History],
 
 	openSetEditor() {
-		console.log(this.props);
 		this.history.pushState(null, `/edit/${this.props.id}`);
 	},
 
