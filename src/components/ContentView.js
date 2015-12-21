@@ -13,6 +13,12 @@ var ContentView = React.createClass({
 
     componentWillMount() {
         this.updateSets();
+        this.props.push({
+            type: 'SHALLOW_MERGE',
+            data: {
+                header: 'Uploads'
+            }
+        });
     },
 
     componentDidMount() {
@@ -113,8 +119,7 @@ var ContentView = React.createClass({
             }, this.props.push({
                 type: 'SHALLOW_MERGE',
                 data: {
-                    sets: res.payload.artist.sets,
-                    header: 'Content'
+                    sets: res.payload.artist.sets
                 }
             }));
         })
