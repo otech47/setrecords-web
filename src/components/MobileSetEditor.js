@@ -7,6 +7,7 @@ import R from 'ramda';
 import async from 'async';
 import constants from '../constants/constants';
 import {History} from 'react-router';
+import Loader from 'react-loader';
 
 import {Motion, spring, presets} from 'react-motion';
 import ConfirmChanges from './ConfirmChanges';
@@ -44,45 +45,36 @@ var MobileSetEditor = React.createClass({
     },
 
     render: function() {
-        var episodeName;
-
-        var titleComponent;
+        var deepLinkState = this.deepLinkState;
+        var episodeComponent;
+        var editTitleComponent;
 
         if (this.state.event && this.state.event.is_radiomix) {
-            if (this.state.episode.episode) {
-                episodeName = (
+            if (this.state.episode) {
+                episodeComponent = (
                     <div className='center'>
                         <h1>Episode Title</h1>
                         <input type='text' valueLink={deepLinkState(['episode', 'episode'])} />
                     </div>
                 )
             }
-        }
 
-        if(this.state.event.is_radiomix) {
-            if(this.state.set.episode) {
-                episodeName = (
-                    <div className='center'>
-                        <h1>Episode Title</h1>
-                        <input type='text' onChange={this.changeEpisodeText} />
-                    </div>
-                );
-            }
+            var image = this.state.uploadedImage.length > 0 ? this.state.uploadedImage[0].preview : constants.S3_ROOT_FOR_IMAGES + this.state.event.banner_image.imageURL;
 
-            var image = this.state.tile_image.length > 0 ? this.state.tile_image[0].preview : constants.S3_ROOT_FOR_IMAGES+this.state.set.main_eventimageURL;
-
-            return (
+            editTitleComponent = (
                 <div className='edit-mix flex-column form-panel'>
                     <img src={image} />
-                    <Dropzone onDrop={this.onDrop} className='dropzone flex-container' multiple={false}>
+                    <Dropzone onDrop={this.onDrop} className='hidden' ref='dropzone' multiple={false} />
+                    <button onClick={this.browse} className='dropzone flex-container center'>
                         <Icon>open_in_browser</Icon>
                           <p>Upload a new set image</p>
-                    </Dropzone>
+                    </button>
+
                     <div className='center'>
-                        <h1>Edit Title</h1>
-                        <input type='text' className='MixTitle' onChange={this.changeTitleText} />
+                        <h1>Edit Mix Name</h1>
+                        <input type='text' className='MixTitle' valueLink={deepLinkState(['event', 'event'])} />
                     </div>
-                    {episodeName}
+                    {episodeComponent}
                 </div>
             );
         }
@@ -121,10 +113,7 @@ var MobileSetEditor = React.createClass({
                         }
                     </Motion>
 
-                    {/* this.showMixOptions() */}
-                    {/*<p className='uploaded-date hidden'>
-                        Uploaded: {moment(this.state.set.datetime).format('M[/]D[/]YYYY')}
-                    </p>*/}
+                    {editTitleComponent}
                     {/*<Tracklist
                         tracks={this.state.tracklist}
                         listURL={this.state.tracklistURL}
@@ -150,6 +139,20 @@ var MobileSetEditor = React.createClass({
                 </div>
             </Loader>
         );
+    },
+
+    browse: function(event) {
+        this.refs.dropzone.open();
+    },
+
+    onDrop(file) {
+        if (file[0].type == 'image/png' || file[0].type == 'image/jpeg' || file[0].type == 'image/gif') {
+            this.setState({
+                uploadedImage: file
+            });
+        } else {
+            alert('Please upload a png, jpeg, or gif image.');
+        }
     },
 
     deepLinkState: function (keyArray) {
@@ -179,7 +182,6 @@ var MobileSetEditor = React.createClass({
         newState[ keyArray[0] ] = update(this.state[ keyArray[0] ], updateObject);
         this.setState(newState);
     },
-
 
     getSetById(setId) {
         var query = `{
@@ -530,16 +532,7 @@ module.exports = MobileSetEditor;
 //     });
 // },
 //
-// onDrop(file) {
-//     if (file[0].type == 'image/png' || file[0].type == 'image/jpeg' || file[0].type == 'image/gif') {
-//         this.setState({
-//             tile_image: file,
-//             changes: true
-//         });
-//     } else {
-//         alert('Please upload a png, jpeg, or gif image.');
-//     }
-// },
+
 //
 // pullTracks(callback) {
 //     var tracklistURL = this.state.tracklistURL;

@@ -243,6 +243,10 @@ var App = React.createClass({
                 props = {push: push, artistId: appState.get('artistId'), loaded: appState.get('loaded'), artistData: appState.get('artist_data')};
                 break;
 
+                case MobileSetEditor:
+                props = {push: push, loaded: appState.get('loaded')};
+                break;
+
                 default:
                 props = {push: push, appState: appState};
                 break;
