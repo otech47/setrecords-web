@@ -176,7 +176,7 @@ var App = React.createClass({
             }
         })
         .done((res) => {
-            console.log(res);
+            // console.log(res);
             // console.log('Artist...');
             if (res.status == 'failure') {
                 console.log("An error occurred getting artist data.");
