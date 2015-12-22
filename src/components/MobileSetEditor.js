@@ -21,7 +21,7 @@ var MobileSetEditor = React.createClass({
 
     getInitialState() {
         return {
-            tile_image: [],
+            uploadedImage: [],
             changes: false,
             busy: false,
             applying: false,
@@ -41,72 +41,145 @@ var MobileSetEditor = React.createClass({
             }
         });
         this.getSetById(this.props.params.id);
-        // this.getTracklist(this.props.params.id);
     },
 
-    render() {
-        return (
-            <div className='flex-column' id='SetEditor'>
+    render: function() {
+        var episodeName;
 
-                <Motion style={{
-                    opacity: spring(this.state.notify ? 1 : 0, presets.gentle),
-                    visibility: this.state.notify ? 'visible' : 'hidden'
-                }}>
-                    {
-                        ({opacity, visibility}) =>
-                        <Notification dismiss={() => this.history.push(null, '/')} style={{
-                            opacity: `${opacity}`,
-                            visibility: `${visibility}`
-                        }}>
-                            {/*this.showApplyingStatus()*/}
-                        </Notification>
-                    }
-                </Motion>
+        var titleComponent;
 
-                <Motion style={{
-                    opacity: spring(this.state.open ? 1 : 0, presets.gentle),
-                    visibility: this.state.open ? 'visible' : 'hidden'
-                }}>
-                    {
-                        ({opacity, visibility}) =>
-                        <ConfirmChanges cancel={() => this.setState({open: false})} style={{
-                            opacity: `${opacity}`,
-                            visibility: `${visibility}`
-                        }}>
-                            Are you sure you want to leave? All unsaved changes will be lost.
-                        </ConfirmChanges>
-                    }
-                </Motion>
-
-                {/* this.showMixOptions() */}
-                {/*<p className='uploaded-date hidden'>
-                    Uploaded: {moment(this.state.set.datetime).format('M[/]D[/]YYYY')}
-                </p>*/}
-                {/*<Tracklist
-                    tracks={this.state.tracklist}
-                    listURL={this.state.tracklistURL}
-                    linkState={this.linkState}
-                    changeTrack={this.changeTrack}
-                    addTrack={this.addTrack}
-                    loadTracksFromURL={this.loadTracksFromURL}
-                    deleteTrack={this.deleteTrack}
-                    changeTracklistURL={this.changeTracklistURL} />*/}
-
-                <div className='flex-row form-panel center' id='apply-changes'>
-                    <div className='flex-fixed apply flex-container' onClick={this.applyChanges}>
-                        Apply
+        if (this.state.event && this.state.event.is_radiomix) {
+            if (this.state.episode.episode) {
+                episodeName = (
+                    <div className='center'>
+                        <h1>Episode Title</h1>
+                        <input type='text' valueLink={deepLinkState(['episode', 'episode'])} />
                     </div>
-                    <div className='flex-fixed revert flex-container' onClick={this.revertChanges}>
-                        Revert
+                )
+            }
+        }
+
+        if(this.state.event.is_radiomix) {
+            if(this.state.set.episode) {
+                episodeName = (
+                    <div className='center'>
+                        <h1>Episode Title</h1>
+                        <input type='text' onChange={this.changeEpisodeText} />
                     </div>
-                    <div className='flex-fixed cancel flex-container' onClick={this.cancelChanges}>
-                        Cancel
+                );
+            }
+
+            var image = this.state.tile_image.length > 0 ? this.state.tile_image[0].preview : constants.S3_ROOT_FOR_IMAGES+this.state.set.main_eventimageURL;
+
+            return (
+                <div className='edit-mix flex-column form-panel'>
+                    <img src={image} />
+                    <Dropzone onDrop={this.onDrop} className='dropzone flex-container' multiple={false}>
+                        <Icon>open_in_browser</Icon>
+                          <p>Upload a new set image</p>
+                    </Dropzone>
+                    <div className='center'>
+                        <h1>Edit Title</h1>
+                        <input type='text' className='MixTitle' onChange={this.changeTitleText} />
                     </div>
+                    {episodeName}
                 </div>
+            );
+        }
 
-            </div>
+        return (
+            <Loader loaded={this.props.loaded}>
+                <div className='flex-column' id='SetEditor'>
+
+                    <Motion style={{
+                        opacity: spring(this.state.notify ? 1 : 0, presets.gentle),
+                        visibility: this.state.notify ? 'visible' : 'hidden'
+                    }}>
+                        {
+                            ({opacity, visibility}) =>
+                            <Notification dismiss={() => this.history.push(null, '/')} style={{
+                                opacity: `${opacity}`,
+                                visibility: `${visibility}`
+                            }}>
+                                {/*this.showApplyingStatus()*/}
+                            </Notification>
+                        }
+                    </Motion>
+
+                    <Motion style={{
+                        opacity: spring(this.state.open ? 1 : 0, presets.gentle),
+                        visibility: this.state.open ? 'visible' : 'hidden'
+                    }}>
+                        {
+                            ({opacity, visibility}) =>
+                            <ConfirmChanges cancel={() => this.setState({open: false})} style={{
+                                opacity: `${opacity}`,
+                                visibility: `${visibility}`
+                            }}>
+                                Are you sure you want to leave? All unsaved changes will be lost.
+                            </ConfirmChanges>
+                        }
+                    </Motion>
+
+                    {/* this.showMixOptions() */}
+                    {/*<p className='uploaded-date hidden'>
+                        Uploaded: {moment(this.state.set.datetime).format('M[/]D[/]YYYY')}
+                    </p>*/}
+                    {/*<Tracklist
+                        tracks={this.state.tracklist}
+                        listURL={this.state.tracklistURL}
+                        linkState={this.linkState}
+                        changeTrack={this.changeTrack}
+                        addTrack={this.addTrack}
+                        loadTracksFromURL={this.loadTracksFromURL}
+                        deleteTrack={this.deleteTrack}
+                        changeTracklistURL={this.changeTracklistURL} />*/}
+
+                    <div className='flex-row form-panel center' id='apply-changes'>
+                        <div className='flex-fixed apply flex-container' onClick={this.applyChanges}>
+                            Apply
+                        </div>
+                        <div className='flex-fixed revert flex-container' onClick={this.revertChanges}>
+                            Revert
+                        </div>
+                        <div className='flex-fixed cancel flex-container' onClick={this.cancelChanges}>
+                            Cancel
+                        </div>
+                    </div>
+
+                </div>
+            </Loader>
         );
     },
+
+    deepLinkState: function (keyArray) {
+        return {
+            value: this.getValue(keyArray),
+            requestChange: function (value) {
+                this.setValue(keyArray, value);
+            }.bind(this)
+        }
+    },
+
+    getValue: function (keyArray) {
+        var output = _.reduce(keyArray, function (counter, current) {
+            return counter[current];
+        }, this.state);
+        return output;
+    },
+
+    setValue: function(keyArray, value) {
+        var updateObject = _.reduceRight(_.rest(keyArray), function(counter, current) {
+            var innerUpdate = {};
+            innerUpdate[current] = counter;
+            return innerUpdate;
+        }, {$set: value});
+
+        var newState = {};
+        newState[ keyArray[0] ] = update(this.state[ keyArray[0] ], updateObject);
+        this.setState(newState);
+    },
+
 
     getSetById(setId) {
         var query = `{
@@ -153,7 +226,8 @@ var MobileSetEditor = React.createClass({
             this.props.push({
                 type: 'SHALLOW_MERGE',
                 data: {
-                    loaded: true
+                    loaded: true,
+                    header: `Edit Set - ${res.payload.set.event.event}`
                 }
             });
             this.setState(res.payload.set);
@@ -582,34 +656,3 @@ module.exports = MobileSetEditor;
 //     }
 // },
 //
-// showMixOptions() {
-//     var episodeName;
-//
-//     if(this.state.set.is_radiomix) {
-//         if(this.state.set.episode) {
-//             episodeName = (
-//                 <div className='center'>
-//                     <h1>Episode Title</h1>
-//                     <input type='text' onChange={this.changeEpisodeText} />
-//                 </div>
-//             );
-//         }
-//
-//         var image = this.state.tile_image.length > 0 ? this.state.tile_image[0].preview : constants.S3_ROOT_FOR_IMAGES+this.state.set.main_eventimageURL;
-//
-//         return (
-//             <div className='edit-mix flex-column form-panel'>
-//                 <img src={image} />
-//                 <Dropzone onDrop={this.onDrop} className='dropzone flex-container' multiple={false}>
-//                     <Icon>open_in_browser</Icon>
-//                       <p>Upload a new set image</p>
-//                 </Dropzone>
-//                 <div className='center'>
-//                     <h1>Edit Title</h1>
-//                     <input type='text' className='MixTitle' onChange={this.changeTitleText} />
-//                 </div>
-//                 {episodeName}
-//             </div>
-//         );
-//     }
-// },
