@@ -53,7 +53,7 @@ var MobileSetEditor = React.createClass({
             if (this.state.episode) {
                 episodeComponent = (
                     <div className='center'>
-                        <h1>Episode Title</h1>
+                        <h1>Episode Name</h1>
                         <input type='text' valueLink={deepLinkState(['episode', 'episode'])} />
                     </div>
                 )
@@ -71,7 +71,7 @@ var MobileSetEditor = React.createClass({
                     </button>
 
                     <div className='center'>
-                        <h1>Edit Mix Name</h1>
+                        <h1>Mix Name</h1>
                         <input type='text' className='MixTitle' valueLink={deepLinkState(['event', 'event'])} />
                     </div>
                     {episodeComponent}
