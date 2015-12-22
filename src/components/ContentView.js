@@ -2,6 +2,7 @@ import React from 'react';
 import SetTile from './SetTile';
 import _ from 'underscore';
 import Loader from 'react-loader';
+import constants from '../constants/constants';
 
 var ContentView = React.createClass({
 
@@ -28,6 +29,14 @@ var ContentView = React.createClass({
     render() {
         var sets = this.props.appState.get('sets');
         var setTiles = _.map(sets, (set) => {
+            if (!set.event) {
+                set.event = {
+                    event: 'error',
+                    banner_image: {
+                        imageURL: constants.DEFAULT_IMAGE
+                    }
+                };
+            }
             var setName = set.event.event;
             if(set.episode != null && set.episode.episode.length > 0) {
                 var setName = set.event.event+' - '+set.episode.episode    ;
