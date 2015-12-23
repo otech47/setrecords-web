@@ -202,11 +202,13 @@ header {
     .background(@white, @dark-gray);
     justify-content: space-between;
     .header-main {
+        width: 85%;
         .card(2);
         h1 {
             font-size: 1.5rem;
             margin: auto 1rem;
         }
+        flex-wrap: nowrap;
     }
     .logo {
         .background(@dark-gray*1.25, @white);
@@ -221,6 +223,7 @@ header {
     }
     .artist {
         align-items: center;
+        flex-wrap: nowrap;
         .options {
             align-items: flex-end;
             justify-content: center;

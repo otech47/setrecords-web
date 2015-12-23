@@ -176,8 +176,6 @@ var App = React.createClass({
             }
         })
         .done((res) => {
-            // console.log(res);
-            // console.log('Artist...');
             if (res.status == 'failure') {
                 console.log("An error occurred getting artist data.");
                 console.log(res.payload.error);
@@ -242,6 +240,10 @@ var App = React.createClass({
 
                 case SettingsEditor:
                 props = {push: push, artistId: appState.get('artistId'), loaded: appState.get('loaded'), artistData: appState.get('artist_data')};
+                break;
+
+                case MobileSetEditor:
+                props = {push: push, loaded: appState.get('loaded'), originalArtist: appState.get('artist_data')};
                 break;
 
                 default:
