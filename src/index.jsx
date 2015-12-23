@@ -244,7 +244,7 @@ var App = React.createClass({
                 break;
 
                 case MobileSetEditor:
-                props = {push: push, loaded: appState.get('loaded')};
+                props = {push: push, loaded: appState.get('loaded'), originalArtist: appState.get('artist_data')};
                 break;
 
                 default:

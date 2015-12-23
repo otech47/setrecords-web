@@ -1,12 +1,11 @@
 import React from 'react';
 import moment from 'moment';
-import LinkedStateMixin from 'react-addons-linked-state-mixin';
 import update from 'react-addons-update';
 import _ from 'underscore';
 import R from 'ramda';
 import async from 'async';
 import constants from '../constants/constants';
-import {History} from 'react-router';
+import {History, Lifecycle} from 'react-router';
 import Loader from 'react-loader';
 
 import {Motion, spring, presets} from 'react-motion';
@@ -18,9 +17,9 @@ import Dropzone from 'react-dropzone';
 
 var MobileSetEditor = React.createClass({
 
-    mixins: [History, LinkedStateMixin],
+    mixins: [History, Lifecycle],
 
-    getInitialState() {
+    getInitialState: function() {
         return {
             uploadedImage: [],
             changes: false,
@@ -33,7 +32,7 @@ var MobileSetEditor = React.createClass({
         }
     },
 
-    componentWillMount() {
+    componentWillMount: function() {
         this.props.push({
             type: 'SHALLOW_MERGE',
             data: {
@@ -41,7 +40,16 @@ var MobileSetEditor = React.createClass({
                 loaded: false
             }
         });
+    },
+
+    componentDidMount: function() {
         this.getSetById(this.props.params.id);
+    },
+
+    routerWillLeave: function (nextLocation) {
+        if (this.hasChanges()) {
+            return ('You have unsaved changes that will be lost. Are you sure you want to leave?');
+        }
     },
 
     render: function() {
@@ -74,9 +82,21 @@ var MobileSetEditor = React.createClass({
                         <h1>Mix Name</h1>
                         <input type='text' className='MixTitle' valueLink={deepLinkState(['event', 'event'])} />
                     </div>
+
                     {episodeComponent}
                 </div>
             );
+        }
+
+        var statusMessage;
+        if (this.state.busy) {
+            if (this.state.success) {
+                statusMessage = 'Your changes have been applied.';
+            } else if (this.state.failure) {
+                statusMessage = 'There was an error applying your changes. Please try again.';
+            } else {
+                statusMessage = 'Applying changes...';
+            }
         }
 
         return (
@@ -93,36 +113,19 @@ var MobileSetEditor = React.createClass({
                                 opacity: `${opacity}`,
                                 visibility: `${visibility}`
                             }}>
-                                {/*this.showApplyingStatus()*/}
+                                {statusMessage}
                             </Notification>
                         }
                     </Motion>
 
-                    <Motion style={{
-                        opacity: spring(this.state.open ? 1 : 0, presets.gentle),
-                        visibility: this.state.open ? 'visible' : 'hidden'
-                    }}>
-                        {
-                            ({opacity, visibility}) =>
-                            <ConfirmChanges cancel={() => this.setState({open: false})} style={{
-                                opacity: `${opacity}`,
-                                visibility: `${visibility}`
-                            }}>
-                                Are you sure you want to leave? All unsaved changes will be lost.
-                            </ConfirmChanges>
-                        }
-                    </Motion>
-
                     {editTitleComponent}
-                    {/*<Tracklist
-                        tracks={this.state.tracklist}
-                        listURL={this.state.tracklistURL}
-                        linkState={this.linkState}
-                        changeTrack={this.changeTrack}
+
+                    <Tracklist
+                        deepLinkState={deepLinkState}
+                        setLength={this.state.set_length}
                         addTrack={this.addTrack}
-                        loadTracksFromURL={this.loadTracksFromURL}
                         deleteTrack={this.deleteTrack}
-                        changeTracklistURL={this.changeTracklistURL} />*/}
+                        tracklist={this.state.tracklist || []} />
 
                     <div className='flex-row form-panel center' id='apply-changes'>
                         <div className='flex-fixed apply flex-container' onClick={this.applyChanges}>
@@ -141,11 +144,30 @@ var MobileSetEditor = React.createClass({
         );
     },
 
+    addTrack: function() {
+        var newTrack = {
+            'id': -1,
+            'starttime': '00:00',
+            'artistname': this.props.originalArtist.artist,
+            'songname': 'untitled'
+        };
+
+        this.setState({
+            tracklist: update(this.state.tracklist, {$push: [newTrack]}),
+        });
+    },
+
+    deleteTrack: function(index) {
+        this.setState({
+            tracklist: update(this.state.tracklist, {$splice: [[index, 1]]})
+        });
+    },
+
     browse: function(event) {
         this.refs.dropzone.open();
     },
 
-    onDrop(file) {
+    onDrop: function(file) {
         if (file[0].type == 'image/png' || file[0].type == 'image/jpeg' || file[0].type == 'image/gif') {
             this.setState({
                 uploadedImage: file
@@ -183,7 +205,105 @@ var MobileSetEditor = React.createClass({
         this.setState(newState);
     },
 
-    getSetById(setId) {
+    revertChanges: function() {
+        this.props.push({
+            type: 'SHALLOW_MERGE',
+            data: {
+                loaded: false
+            }
+        });
+
+        this.getSetById(this.props.params.id);
+        this.setState(this.getInitialState());
+    },
+
+    cancelChanges: function() {
+        this.history.pushState(null, '/content');
+    },
+
+    hasChanges: function() {
+        return true;
+    },
+
+    applyChanges() {
+        var pendingSet = this.state;
+
+        if (pendingSet.changes) {
+            console.log('Pending changes found.');
+            var changeFunctions = [];
+            if (pendingSet.tile_image.length > 0) {
+                changeFunctions.push(this.newImage);
+            }
+            if (pendingSet.event != this.state.set.event) {
+                changeFunctions.push(this.newTitle);
+            }
+            if (pendingSet.episode != this.state.set.episode) {
+                changeFunctions.push(this.newEpisodeTitle);
+            }
+            // console.log('Comparing tracklists to determine a change...');
+            var originalTracklist = R.clone(this.state.set.tracklist);
+            var pendingTracklist = this.state.tracklist;
+            // console.log('PENDING');
+            // console.log(pendingTracklist);
+            // console.log('ORIGINAL');
+            // console.log(originalTracklist);
+
+            // var tracklistChanged = !(_.isEqual(pendingTracklist, originalTracklist));
+            var tracklistChanged = !(R.equals(pendingTracklist, originalTracklist));
+
+            // console.log('Change?');
+            // console.log(tracklistChanged);
+
+            if (tracklistChanged) {
+                changeFunctions.push(this.newTracks);
+            }
+            console.log('Changes to do');
+            console.log(changeFunctions);
+            console.log('Applying changes...');
+
+            this.setState({
+                busy: true,
+                applying: true
+            }, () => {
+                async.parallel(changeFunctions, (err, results) => {
+                    if (err) {
+                        console.log('There was an error when applying changes to this set.');
+                        console.log(err);
+                        this.setState({
+                            failure: true,
+                            applying: false,
+                            notify: true
+                        }, () => {
+                            setTimeout(() => {
+                                this.history.push(null, '/');
+                            }, 1000);
+                        });
+                        mixpanel.track("Error", {
+                            "Page": "Set Editor",
+                            "Message": "Error applying changes"
+                        });
+                    } else {
+                            console.log('All changes applied successfully.');
+                            this.setState({
+                                applying: false,
+                                success: true,
+                                notify: true
+                            }, () => {
+                                setTimeout(() => {
+                                    this.history.push(null, '/');
+                                }, 1000);
+                            });
+                        }
+                });
+            });
+
+        } else {
+            console.log('No pending changes. Closing window...');
+            this.props.close(false);
+        }
+    },
+
+    getSetById: function(setId) {
         var query = `{
             set (id: ${setId}) {
                 id,
@@ -200,7 +320,7 @@ var MobileSetEditor = React.createClass({
                         imageURL
                     }
                 },
-                tracks {
+                tracklist: tracks {
                     id,
                     songname,
                     artistname,
@@ -232,7 +352,10 @@ var MobileSetEditor = React.createClass({
                     header: `Edit Set - ${res.payload.set.event.event}`
                 }
             });
-            this.setState(res.payload.set);
+
+            this.setState(_.extend(res.payload.set, {
+                originalSet: res.payload.set
+            }));
         })
         .fail((err) => {
             console.error(err);
@@ -243,216 +366,10 @@ var MobileSetEditor = React.createClass({
 module.exports = MobileSetEditor;
 
 
-//
-// addTrack() {
-//     var artistName = this.props.appState.get('artist_data').artist;
-//     var tracklist = this.state.tracklist;
-//     var tracklistLength = _.size(tracklist);
-//
-//     if (tracklistLength > 0) {
-//         var nextStartTime = moment(tracklist[tracklistLength - 1].start_time, 'mm:ss').add(1, 'seconds').format('mm:ss');
-//     } else {
-//         var nextStartTime = '00:00';
-//     }
-//
-//     var newTracklist = R.clone(tracklist);
-//     newTracklist[tracklistLength] = {
-//         'track_id': -1,
-//         'start_time': nextStartTime,
-//         'artist': artistName,
-//         'song': 'untitled'
-//     };
-//
-//     this.setState({
-//         tracklist: newTracklist,
-//         changes: true,
-//         tracklistURL: null
-//     });
-// },
-//
-// applyChanges() {
-//     var pendingSet = this.state;
-//
-//     if (pendingSet.changes) {
-//         console.log('Pending changes found.');
-//         var changeFunctions = [];
-//         if (pendingSet.tile_image.length > 0) {
-//             changeFunctions.push(this.newImage);
-//         }
-//         if (pendingSet.event != this.state.set.event) {
-//             changeFunctions.push(this.newTitle);
-//         }
-//         if (pendingSet.episode != this.state.set.episode) {
-//             changeFunctions.push(this.newEpisodeTitle);
-//         }
-//         // console.log('Comparing tracklists to determine a change...');
-//         var originalTracklist = R.clone(this.state.set.tracklist);
-//         var pendingTracklist = this.state.tracklist;
-//         // console.log('PENDING');
-//         // console.log(pendingTracklist);
-//         // console.log('ORIGINAL');
-//         // console.log(originalTracklist);
-//
-//         // var tracklistChanged = !(_.isEqual(pendingTracklist, originalTracklist));
-//         var tracklistChanged = !(R.equals(pendingTracklist, originalTracklist));
-//
-//         // console.log('Change?');
-//         // console.log(tracklistChanged);
-//
-//         if (tracklistChanged) {
-//             changeFunctions.push(this.newTracks);
-//         }
-//         console.log('Changes to do');
-//         console.log(changeFunctions);
-//         console.log('Applying changes...');
-//
-//         this.setState({
-//             busy: true,
-//             applying: true
-//         }, () => {
-//             async.parallel(changeFunctions, (err, results) => {
-//                 if (err) {
-//                     console.log('There was an error when applying changes to this set.');
-//                     console.log(err);
-//                     this.setState({
-//                         failure: true,
-//                         applying: false,
-//                         notify: true
-//                     }, () => {
-//                         setTimeout(() => {
-//                             this.history.push(null, '/');
-//                         }, 1000);
-//                     });
-//                     mixpanel.track("Error", {
-//                         "Page": "Set Editor",
-//                         "Message": "Error applying changes"
-//                     });
-//                 } else {
-//                         console.log('All changes applied successfully.');
-//                         this.setState({
-//                             applying: false,
-//                             success: true,
-//                             notify: true
-//                         }, () => {
-//                             setTimeout(() => {
-//                                 this.history.push(null, '/');
-//                             }, 1000);
-//                         });
-//                     }
-//             });
-//         });
-//
-//     } else {
-//         console.log('No pending changes. Closing window...');
-//         this.props.close(false);
-//     }
-// },
-//
-// cancelChanges() {
-//     if(this.state.changes) {
-//         this.setState({
-//             open: !this.state.open
-//         });
-//     } else {
-//         this.history.push(null, '/');
-//     }
-// },
-//
-// changeTitleText(event) {
-//     this.setState({
-//         event: event.target.value,
-//         changes: true
-//     });
-// },
-//
-// // changeTrack(fieldName, newVal, trackIndex) {
-// changeTrack(trackIndex, fieldName, newVal) {
-//     var clonedTracklist = R.clone(this.state.tracklist);
-//     clonedTracklist[trackIndex][fieldName] = newVal;
-//
-//     this.setState({
-//         tracklist: clonedTracklist,
-//         changes: true,
-//         tracklistURL: null
-//     });
-// },
-//
-// changeTracklistURL(e) {
-//     this.setState({
-//         tracklistURL: e.target.value,
-//         changes: true
-//     });
-// },
-//
-// changeEpisodeText(e) {
-//     this.setState({
-//         episode: e.target.value,
-//         changes: true
-//     });
-// },
-//
+
+
 
 //
-// componentWillUnmount() {
-//     if(this.state.changes) {
-//         this.setState({
-//             open: true
-//         });
-//     }
-// },
-//
-// deleteTrack(trackIndex) {
-//     var clonedTracklist = R.clone(this.state.tracklist);
-//     var counter = 0;
-//     var updatedTracklist = {};
-//     _.each(clonedTracklist, function(value, key) {
-//         if (key != trackIndex) {
-//             updatedTracklist[counter] = value;
-//             counter++;
-//         }
-//     });
-//     this.setState({
-//         tracklist: updatedTracklist,
-//         changes: true,
-//         tracklistURL: null
-//     });
-// },
-//
-
-//
-// getTracklist(id) {
-//     $.ajax({
-//         type: 'get',
-//         url: `${constants.API_ROOT}tracklist/${id}`,
-//     })
-//     .done((res) => {
-//         console.log(res.payload.tracks);
-//         var tracklist = res.payload.tracks;
-//         this.setState({
-//             tracklist: tracklist
-//         });
-//     })
-//     .fail((err) => {
-//         console.error(err);
-//     });
-// },
-//
-// loadTracksFromURL(event) {
-//     var self = this;
-//
-//     //put callback in pull tracks function
-//     this.pullTracks(function(tracks) {
-//         if (tracks == null) {
-//             alert('Please enter a valid 1001 tracklists URL.');
-//         } else {
-//             var clonedTracks = R.clone(tracks);
-//             self.setState({
-//                 tracklist: clonedTracks,
-//                 changes: true
-//             });
-//         }
-//     });
-// },
 //
 // newEpisodeTitle(callback) {
 //     // console.log('New episode title pending.');
@@ -534,34 +451,7 @@ module.exports = MobileSetEditor;
 //
 
 //
-// pullTracks(callback) {
-//     var tracklistURL = this.state.tracklistURL;
-//     console.log(tracklistURL);
-//     if (tracklistURL == null) {
-//         callback(null);
-//     } else {
-//         var requestURL = 'http://localhost:3000/api/v/7/setrecords/set/tracklist/';
-//         $.ajax({
-//             type: 'GET',
-//             url: requestURL,
-//             data: {
-//                 tracklist_url: tracklistURL
-//             },
-//             success: function(res) {
-//                 console.log(res);
-//                 if (res.status == 'failure') {
-//                     callback(null);
-//                 } else {
-//                     callback(res.payload.set_tracklist);
-//                 }
-//             },
-//             error: function(err) {
-//                 console.error(err);
-//                 callback(null);
-//             }
-//         });
-//     }
-// },
+
 //
 // registerImageS3(callback) {
 //     var file = this.state.tile_image[0];
@@ -609,9 +499,7 @@ module.exports = MobileSetEditor;
 //     });
 // },
 //
-// revertChanges() {
-//     this.replaceState(this.getInitialstate());
-// },
+
 //
 // updateImageDatabase(imageURL, callback) {
 //     // console.log('Adding image to databases...');
@@ -634,18 +522,6 @@ module.exports = MobileSetEditor;
 // },
 //
 // showApplyingStatus() {
-//     if (this.state.busy) {
-//         var statusMessage;
-//
-//         if (this.state.success) {
-//             statusMessage = 'Your changes have been applied.';
-//         } else if (this.state.failure) {
-//             statusMessage = 'There was an error applying your changes. Please try again.';
-//         } else {
-//             statusMessage = 'Applying changes...';
-//         }
-//
-//         return statusMessage;
-//     }
+
 // },
 //
