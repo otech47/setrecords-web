@@ -33,10 +33,11 @@ var ContentView = React.createClass({
                 var setName = set.event.event+' - '+set.episode.episode    ;
             }
 
-            if (set.event.is_radiomix && set.episode) {
-                var imageURL = set.episode.icon_image.imageURL;
+            var imageURL;
+            if (set.icon_image && set.icon_image.imageURL) {
+                imageURL = set.icon_image.imageURL;
             } else {
-                var imageURL = set.event.banner_image.imageURL;
+                imageURL = set.event.banner_image.imageURL;
             }
 
             var artists = _.map(set.artists, function(artist) {
@@ -74,6 +75,9 @@ var ContentView = React.createClass({
             artist (id: ${artistId}) {
                 sets {
                     id,
+                    icon_image {
+                        imageURL
+                    },
                     event {
                         event,
                         is_radiomix,

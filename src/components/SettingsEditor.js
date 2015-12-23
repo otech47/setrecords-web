@@ -360,7 +360,7 @@ var SettingsEditor = React.createClass({
                     console.log('Error occurred while updating image. ', err);
                     callback(err);
                 } else {
-                    console.log('Tile image updated.');
+                    console.log('Artist image updated.');
                     callback(null);
                 }
         });

@@ -22,7 +22,6 @@ var MobileSetEditor = React.createClass({
     getInitialState: function() {
         return {
             uploadedImage: [],
-            changes: false,
             busy: false,
             applying: false,
             success: false,
@@ -67,7 +66,14 @@ var MobileSetEditor = React.createClass({
                 )
             }
 
-            var image = this.state.uploadedImage.length > 0 ? this.state.uploadedImage[0].preview : constants.S3_ROOT_FOR_IMAGES + this.state.event.banner_image.imageURL;
+            var image;
+            if (this.state.uploadedImage.length > 0) {
+                image = this.state.uploadedImage[0].preview;
+            } else if (this.state.icon_image && this.state.icon_image.imageURL) {
+                image = constants.S3_ROOT_FOR_IMAGES + this.state.icon_image.imageURL;
+            } else {
+                image = constants.S3_ROOT_FOR_IMAGES + this.state.event.banner_image.imageURL;
+            }
 
             editTitleComponent = (
                 <div className='edit-mix flex-column form-panel'>
@@ -109,7 +115,7 @@ var MobileSetEditor = React.createClass({
                     }}>
                         {
                             ({opacity, visibility}) =>
-                            <Notification dismiss={() => this.history.push(null, '/')} style={{
+                            <Notification dismiss={() => this.history.pushState(null, '/content')} style={{
                                 opacity: `${opacity}`,
                                 visibility: `${visibility}`
                             }}>
@@ -225,88 +231,159 @@ var MobileSetEditor = React.createClass({
         return true;
     },
 
-    applyChanges() {
-        var pendingSet = this.state;
+    newImage(callback) {
+        console.log('New set image pending:')
+        console.log(this.state.uploadedImage);
 
-        if (pendingSet.changes) {
-            console.log('Pending changes found.');
-            var changeFunctions = [];
-            if (pendingSet.tile_image.length > 0) {
-                changeFunctions.push(this.newImage);
+        async.waterfall([this.registerImageS3, this.updateImageDatabase],
+            function(err, results) {
+                if (err) {
+                    console.log('Error occurred while updating image. ', err);
+                    callback(err);
+                } else {
+                    console.log('Set image updated.');
+                    callback(null);
+                }
             }
-            if (pendingSet.event != this.state.set.event) {
-                changeFunctions.push(this.newTitle);
+        );
+    },
+
+    registerImageS3(callback) {
+        console.log('Requesting encoding from AWS...');
+        var file = this.state.uploadedImage[0];
+        var uniqueFilename = moment().unix() + file.name;
+
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:3000/v/10/aws/configureAWS',
+            data: {
+                filename: encodeURIComponent(uniqueFilename)
             }
-            if (pendingSet.episode != this.state.set.episode) {
-                changeFunctions.push(this.newEpisodeTitle);
-            }
-            // console.log('Comparing tracklists to determine a change...');
-            var originalTracklist = R.clone(this.state.set.tracklist);
-            var pendingTracklist = this.state.tracklist;
-            // console.log('PENDING');
-            // console.log(pendingTracklist);
-            // console.log('ORIGINAL');
-            // console.log(originalTracklist);
+        })
+        .done((res) => {
+            console.log('Encoding successful.');
+            AWS.config.update(res.payload.settings);
+            var encodedFilename = res.payload.encoded;
+            var filesize = file.size;
+            var s3 = new AWS.S3();
 
-            // var tracklistChanged = !(_.isEqual(pendingTracklist, originalTracklist));
-            var tracklistChanged = !(R.equals(pendingTracklist, originalTracklist));
+            s3.timeout = 50000;
+            var params = {
+                Bucket: 'stredm',
+                Key: 'namecheap/' + encodedFilename,
+                ContentType: file.type,
+                Body: file
+            };
 
-            // console.log('Change?');
-            // console.log(tracklistChanged);
+            var upload = s3.upload(params);
 
-            if (tracklistChanged) {
-                changeFunctions.push(this.newTracks);
-            }
-            console.log('Changes to do');
-            console.log(changeFunctions);
-            console.log('Applying changes...');
-
-            this.setState({
-                busy: true,
-                applying: true
-            }, () => {
-                async.parallel(changeFunctions, (err, results) => {
-                    if (err) {
-                        console.log('There was an error when applying changes to this set.');
-                        console.log(err);
-                        this.setState({
-                            failure: true,
-                            applying: false,
-                            notify: true
-                        }, () => {
-                            setTimeout(() => {
-                                this.history.push(null, '/');
-                            }, 1000);
-                        });
-                        mixpanel.track("Error", {
-                            "Page": "Set Editor",
-                            "Message": "Error applying changes"
-                        });
-                    } else {
-                            console.log('All changes applied successfully.');
-                            this.setState({
-                                applying: false,
-                                success: true,
-                                notify: true
-                            }, () => {
-                                setTimeout(() => {
-                                    this.history.push(null, '/');
-                                }, 1000);
-                            });
-                        }
-                });
+            upload.on('httpUploadProgress', function(event) {
+                var percentage = (event.loaded / filesize) * 100;
+                var percent = parseInt(percentage).toString() + '%';
+                console.log('Uploading image: ' + percent);
             });
 
-        } else {
-            console.log('No pending changes. Closing window...');
-            this.props.close(false);
+            console.log('Uploading file to S3...');
+            upload.send((err, data) => {
+                if (err) {
+                    console.log('An error occurred uploading the file to S3.');
+                    callback(err);
+                } else {
+                    console.log('Upload successful. File located at: ' + data.Location);
+                    callback(null, res.payload.encoded);
+                }
+            });
+        })
+        .fail((err) => {
+            console.log('There was an error encoding the file.');
+            callback(err);
+        });
+    },
+
+    updateImageDatabase(imageURL, callback) {
+        console.log('Adding image to databases...');
+        var requestURL = 'http://localhost:3000/v/10/sets/image';
+        $.ajax({
+            type: 'POST',
+            url: requestURL,
+            data: {
+                image_url: imageURL,
+                set_id: this.props.params.id
+            }
+        })
+        .done((res) => {
+            console.log('Image successfully added to database.')
+            callback(null);
+        })
+        .fail((err) => {
+            console.log('Error adding image to database.');
+            callback(err);
+        });
+    },
+
+    applyChanges() {
+        var pendingSet = this.state;
+        var changeFunctions = [];
+
+        if (pendingSet.uploadedImage.length > 0) {
+            changeFunctions.push(this.newImage);
         }
+
+        // if (pendingSet.event != pendingSet.originalSet.event) {
+        //     changeFunctions.push(this.newTitle);
+        // }
+
+        // if (pendingSet.episode != pendingSet.originalSet.episode) {
+        //     changeFunctions.push(this.newEpisodeTitle);
+        // }
+
+        // if (!(_.isEqual(pendingSet.tracklist, pendingSet.originalSet.tracklist))) {
+        //     changeFunctions.push(this.newTracks);
+        // }
+
+        console.log('Changes to do');
+        console.log(changeFunctions);
+        console.log('Applying changes...');
+
+        this.setState({
+            busy: true,
+            applying: true
+        }, () => {
+            async.parallel(changeFunctions, (err, results) => {
+                if (err) {
+                    console.log('There was an error when applying changes to this set.');
+                    console.log(err);
+
+                    this.setState({
+                        failure: true,
+                        applying: false,
+                        notify: true
+                    });
+
+                    // mixpanel.track("Error", {
+                    //     "Page": "Set Editor",
+                    //     "Message": "Error applying changes"
+                    // });
+                } else {
+                    console.log('All changes applied successfully.');
+
+                    this.setState({
+                        applying: false,
+                        success: true,
+                        notify: true
+                    });
+                }
+            });
+        });
     },
 
     getSetById: function(setId) {
         var query = `{
             set (id: ${setId}) {
                 id,
+                icon_image {
+                    imageURL
+                },
                 event {
                     event,
                     is_radiomix,
@@ -315,10 +392,7 @@ var MobileSetEditor = React.createClass({
                     }
                 },
                 episode {
-                    episode,
-                    icon_image {
-                        imageURL
-                    }
+                    episode
                 },
                 tracklist: tracks {
                     id,
@@ -393,21 +467,7 @@ module.exports = MobileSetEditor;
 //     });
 // },
 //
-// newImage(callback) {
-//     // console.log('New tile image pending:')
-//     // console.log(this.state.tile_image);
-//     async.waterfall([this.registerImageS3, this.updateImageDatabase],
-//         function(err, results) {
-//             if (err) {
-//                 // console.log('Error occurred while updating image. ', err);
-//                 callback(err);
-//             } else {
-//                 // console.log('Tile image updated.');
-//                 callback(null);
-//             }
-//         }
-//     );
-// },
+
 //
 // newTitle(callback) {
 //     // console.log('New set title pending.');
@@ -453,73 +513,7 @@ module.exports = MobileSetEditor;
 //
 
 //
-// registerImageS3(callback) {
-//     var file = this.state.tile_image[0];
-//     // console.log('Requesting encoding from AWS...');
-//     $.ajax({
-//         type: 'GET',
-//         url: 'http://localhost:3000/aws/configureAWS?filename=' + encodeURIComponent(file.name),
-//         contentType: 'application/json',
-//         success: function(response) {
-//             // console.log('Encoding successful.');
-//             AWS.config.update(response.settings);
-//             var encodedFilename = response.encoded;
-//             var filesize = file.size;
-//             var s3 = new AWS.S3();
-//
-//             s3.timeout = 50000;
-//             var params = {
-//                 Bucket: 'stredm',
-//                 Key: 'namecheap/' + encodedFilename,
-//                 ContentType: file.type,
-//                 Body: file
-//             };
-//             var upload = s3.upload(params);
-//             // upload.on('httpUploadProgress', function(event) {
-//             //     var percentage = (event.loaded / filesize) * 100;
-//             //     var percent = parseInt(percentage).toString() + '%';
-//             //     console.log('Uploading image: ' + percent);
-//             // });
-//
-//             // console.log('Uploading file to S3...');
-//             upload.send(function(err, data) {
-//                 if (err) {
-//                     // console.log('An error occurred uploading the file to S3.');
-//                     callback(err);
-//                 } else {
-//                     // console.log('Upload successful. File located at: ' + data.Location);
-//                     callback(null, response.encoded);
-//                 }
-//             });
-//         },
-//         error: function(err) {
-//             // console.log('There was an error encoding the file.');
-//             callback(err);
-//         }
-//     });
-// },
-//
 
-//
-// updateImageDatabase(imageURL, callback) {
-//     // console.log('Adding image to databases...');
-//     var requestURL = 'http://localhost:3000/api/v/7/setrecords/mix/image/' + this.state.set.id;
-//     $.ajax({
-//         type: 'POST',
-//         url: requestURL,
-//         data: {
-//             image_url: imageURL
-//         }
-//     })
-//     .done((res) => {
-//         // console.log('Image successfully added to database.')
-//         callback(null);
-//     })
-//     .fail((err) => {
-//         // console.log('Image successfully added to database.')
-//         callback(err);
-//     });
-// },
 //
 // showApplyingStatus() {
 
