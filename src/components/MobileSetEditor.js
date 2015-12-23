@@ -152,7 +152,6 @@ var MobileSetEditor = React.createClass({
 
     addTrack: function() {
         var newTrack = {
-            'id': -1,
             'starttime': '00:00',
             'artistname': this.props.originalArtist.artist,
             'songname': 'untitled'
@@ -360,9 +359,9 @@ var MobileSetEditor = React.createClass({
             changeFunctions.push(this.newEpisodeTitle);
         }
 
-        // if (!(_.isEqual(pendingSet.tracklist, pendingSet.originalSet.tracklist))) {
-        //     changeFunctions.push(this.newTracks);
-        // }
+        if (!(_.isEqual(pendingSet.tracklist, pendingSet.originalSet.tracklist))) {
+            changeFunctions.push(this.newTracks);
+        }
 
         console.log('Changes to do');
         console.log(changeFunctions);
@@ -423,6 +422,29 @@ var MobileSetEditor = React.createClass({
         });
     },
 
+    newTracks(callback) {
+        console.log('New tracks pending.');
+        console.log(this.state.tracklist);
+
+        var requestUrl = 'http://localhost:3000/v/10/sets/tracklist';
+        $.ajax({
+            type: 'POST',
+            url: requestUrl,
+            data: {
+                tracklist: this.state.tracklist,
+                set_id: this.props.params.id
+            }
+        })
+        .done((res) => {
+            console.log('Tracklist updated on database.');
+            callback(null);
+        })
+        .fail((err) => {
+            console.log('An error occurred updating the tracks on the database.');
+            callback(err);
+        });
+    },
+
     getSetById: function(setId) {
         var query = `{
             set (id: ${setId}) {
@@ -441,7 +463,6 @@ var MobileSetEditor = React.createClass({
                     episode
                 },
                 tracklist: tracks {
-                    id,
                     songname,
                     artistname,
                     starttime
@@ -497,25 +518,7 @@ module.exports = MobileSetEditor;
 //
 
 //
-// newTracks(callback) {
-//     // console.log('New tracks pending.');
-//     // console.log(this.state.tracklist);
-//     var pendingTracklist = this.state.tracklist;
-//     var requestURL = 'http://localhost:3000/api/v/7/setrecords/mix/tracklist/' + this.state.set.id;
-//     $.ajax({
-//         type: 'POST',
-//         url: requestURL,
-//         data: {
-//             tracklist: pendingTracklist
-//         }
-//     })
-//     .done((res) => {
-//         callback(null);
-//     })
-//     .fail((err) => {
-//         callback(err);
-//     });
-// },
+
 //
 
 //
