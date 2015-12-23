@@ -321,6 +321,29 @@ var MobileSetEditor = React.createClass({
         });
     },
 
+    newTitle(callback) {
+        console.log('New set title pending.');
+        console.log(this.state.event.event);
+
+        var requestUrl = 'http://localhost:3000/v/10/sets/event';
+        $.ajax({
+            type: 'POST',
+            url: requestUrl,
+            data: {
+                event_name: this.state.event.event,
+                set_id: this.props.params.id
+            }
+        })
+        .done((res) => {
+            console.log('Set title updated on database.');
+            callback(null);
+        })
+        .fail((err) => {
+            console.log('Error updating set title on database.');
+            callback(err);
+        });
+    },
+
     applyChanges() {
         var pendingSet = this.state;
         var changeFunctions = [];
@@ -329,9 +352,9 @@ var MobileSetEditor = React.createClass({
             changeFunctions.push(this.newImage);
         }
 
-        // if (pendingSet.event != pendingSet.originalSet.event) {
-        //     changeFunctions.push(this.newTitle);
-        // }
+        if (pendingSet.event != pendingSet.originalSet.event) {
+            changeFunctions.push(this.newTitle);
+        }
 
         // if (pendingSet.episode != pendingSet.originalSet.episode) {
         //     changeFunctions.push(this.newEpisodeTitle);
@@ -469,25 +492,7 @@ module.exports = MobileSetEditor;
 //
 
 //
-// newTitle(callback) {
-//     // console.log('New set title pending.');
-//     // console.log(this.state.event);
-//     var requestURL = 'http://localhost:3000/api/v/7/setrecords/mix/title/' + this.state.set.id;
-//     var pendingTitle = this.state.event;
-//     $.ajax({
-//         type: 'POST',
-//         url: requestURL,
-//         data: {
-//             event: pendingTitle
-//         }
-//     })
-//     .done((res) => {
-//         callback(null);
-//     })
-//     .fail((err) => {
-//         callback(err);
-//     });
-// },
+
 //
 // newTracks(callback) {
 //     // console.log('New tracks pending.');
