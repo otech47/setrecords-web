@@ -571,7 +571,9 @@ header {
   justify-content: space-between;
 }
 header .header-main {
+  width: 85%;
   box-shadow: 0 6px 10px 0 rgba(49, 53, 66, 0.3), 0 2px 2px 0 rgba(49, 53, 66, 0.2);
+  flex-wrap: nowrap;
 }
 header .header-main h1 {
   font-size: 1.5rem;
@@ -591,6 +593,7 @@ header .logo img {
 }
 header .artist {
   align-items: center;
+  flex-wrap: nowrap;
 }
 header .artist .options {
   align-items: flex-end;
