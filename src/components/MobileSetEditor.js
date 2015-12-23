@@ -356,9 +356,9 @@ var MobileSetEditor = React.createClass({
             changeFunctions.push(this.newTitle);
         }
 
-        // if (pendingSet.episode != pendingSet.originalSet.episode) {
-        //     changeFunctions.push(this.newEpisodeTitle);
-        // }
+        if (pendingSet.episode != pendingSet.originalSet.episode) {
+            changeFunctions.push(this.newEpisodeTitle);
+        }
 
         // if (!(_.isEqual(pendingSet.tracklist, pendingSet.originalSet.tracklist))) {
         //     changeFunctions.push(this.newTracks);
@@ -397,6 +397,29 @@ var MobileSetEditor = React.createClass({
                     });
                 }
             });
+        });
+    },
+
+    newEpisodeTitle(callback) {
+        console.log('New episode title pending.');
+        console.log(this.state.episode.episode);
+
+        var requestUrl = 'http://localhost:3000/v/10/sets/episode';
+        $.ajax({
+            type: 'POST',
+            url: requestUrl,
+            data: {
+                episode: this.state.episode.episode,
+                set_id: this.props.params.id
+            }
+        })
+        .done((res) => {
+            console.log('Episode title updated on database.');
+            callback(null);
+        })
+        .fail((err) => {
+            console.log('An error occurred when updating episode title on database.');
+            callback(err);
         });
     },
 
@@ -468,27 +491,7 @@ module.exports = MobileSetEditor;
 
 //
 //
-// newEpisodeTitle(callback) {
-//     // console.log('New episode title pending.');
-//     // console.log(this.state.episode);
-//     var requestURL = 'http://localhost:3000/api/v/7/setrecords/mix/episode/' + this.state.episode_id;
-//     var pendingEpisode = this.state.episode;
-//     $.ajax({
-//         type: 'POST',
-//         url: requestURL,
-//         data: {
-//             episode: pendingEpisode
-//         },
-//         success: function(res) {
-//             // console.log('Episode title updated on database.');
-//             callback(null);
-//         },
-//         error: function(err) {
-//             // console.log('An error occurred when updating episode title on database.');
-//             callback(err);
-//         }
-//     });
-// },
+
 //
 
 //
