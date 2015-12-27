@@ -1,58 +1,55 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+var httpProxy = require('http-proxy');
+// var jsdom = require('jsdom');
+var fs = require('fs');
 
-var routes = require('./routes/index');
-
+var proxy = httpProxy.createProxyServer();
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+var isProduction = process.env.NODE_ENV === 'production';
+var port = isProduction ? 3000 : process.env.PORT;
+var publicPath = path.resolve(__dirname, 'public');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', routes);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.use(function( req, res, next ) {
+    for(var prop in req.query) {
+        res.redirect('https://www.setmine.com/' + prop);
+        return;
+    }
+    next();
 });
 
-// error handlers
+app.use(express.static(publicPath));
 
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
+if (!isProduction) {
+    var bundle = require('./server/bundle.js');
+    bundle();
+
+    app.all('/build/*', function (req, res) {
+        proxy.web(req, res, {
+            target: 'http://localhost:8080'
+        });
     });
-  });
 }
 
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+proxy.on('error', function(e) {
+    console.log('Could not connect to proxy, please try again...');
 });
 
 
-module.exports = app;
+app.get('*', function( req, res, next ) {
+
+    // For facebook metatags, HTML is read first then the og url is inserted before sending it as the response
+
+    fs.readFile(__dirname + '/public/index.html', 'utf8', function(err, text) {
+        console.log(text.indexOf('</head>'));
+        var ogurl = '<meta property=\"og:url\" content=\"https://setmine.com/metadata/' + encodeURIComponent(req.path.substring(1)) + '\">';
+        var textWithOGUrl = text.replace('</head>',  ogurl + '</head>');
+        res.send(textWithOGUrl);
+    });
+});
+
+
+app.listen(port, function () {
+    console.log('Server running on port ' + port);
+});

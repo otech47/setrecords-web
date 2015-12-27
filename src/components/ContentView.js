@@ -79,7 +79,7 @@ var ContentView = React.createClass({
 
     updateSets() {
         var artistId = this.props.appState.get('artistId');
-        var requestURL = 'http://localhost:3000/v/10/setrecords/';
+        var requestURL = 'https://api.setmine.com/v/10/setrecordsuser/graph';
         var query = `{
             artist (id: ${artistId}) {
                 sets {
