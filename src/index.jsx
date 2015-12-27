@@ -2,13 +2,7 @@ import R from 'ramda';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Immutable from 'immutable';
-<<<<<<< fc8eac53298081aba6c120782c65227129d1d275
-import createBrowserHistory from 'history/lib/createBrowserHistory';
 import {IndexRoute, Link, Route, Router, History } from 'react-router';
-=======
-import Router from 'react-router';
-import { IndexRoute, Link, Route, History } from 'react-router';
->>>>>>> production bundling, package upgrades babel, bugfixes
 import GlobalEventHandler from './services/globalEventHandler';
 import _ from 'underscore';
 import async from 'async';
