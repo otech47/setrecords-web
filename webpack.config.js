@@ -1,45 +1,35 @@
-'use strict';
-
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var entryPoints = ['./src/index.jsx'];
+var path = require('path');
+
+var buildPath = path.resolve(__dirname, 'public');
+var mainPath = path.resolve(__dirname, 'src', 'index.jsx');
 
 module.exports = {
-  entry: {
-    'click-gator-app': entryPoints
-  },
-  output: {
-    path: 'public/js',
-    filename: '[name]-bundle.js',
-    pathinfo: true
-  },
-  resolve: {
-    extensions: ['', '.jsx', '.es6', '.js', '.scss']
-  },
-  plugins: [new HtmlWebpackPlugin({
-    template: 'src/index.html',
-    inject: 'body'
-  })],
-  devtool: 'source-map',
-  module: {
-    loaders: [{
-      test: /\.es6$/,
-      loader: 'babel',
-      exclude: /node_modules/
+    entry: {
+        setrecords: mainPath
     },
-    {
-      test: /\.jsx$/,
-      loader: 'jsx!babel',
-      exclude: /node_modules/
+    output: {
+        path: buildPath,
+        filename: '[name]-bundle.js',
+        pathinfo: true,
+        historyApiFallback: true
     },
-    {
-      test: /\.js$/,
-      loader: 'jsx!babel',
-      exclude: /node_modules/
+    resolve: {
+        extensions: ['', '.jsx', '.es6', '.js', '.scss'],
+        moduleDirectories: ['node_modules']
     },
-    {
-      test: /\.scss$/,
-      loader: 'style!css!sass?sourceMap',
-      exclude: /node_modules/
-    }]
-  }
+    plugins: [new HtmlWebpackPlugin({
+        template: 'src/index-dev.html',
+        inject: 'body'
+    })],
+    devtool: 'cheap-source-map',
+    module: {
+        loaders: [
+            {
+                test: /.jsx?$/,
+                loader: 'babel-loader',
+                exclude: /node_modules/
+            }
+        ]
+    }
 };
