@@ -2,8 +2,13 @@ import R from 'ramda';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Immutable from 'immutable';
+<<<<<<< fc8eac53298081aba6c120782c65227129d1d275
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import {IndexRoute, Link, Route, Router, History } from 'react-router';
+=======
+import Router from 'react-router';
+import { IndexRoute, Link, Route, History } from 'react-router';
+>>>>>>> production bundling, package upgrades babel, bugfixes
 import GlobalEventHandler from './services/globalEventHandler';
 import _ from 'underscore';
 import async from 'async';
@@ -128,7 +133,7 @@ var push = evtHandler.push;
 var App = React.createClass({
 
     displayName: 'App container',
-    mixins: [UpdateFunctions, UtilityFunctions],
+    mixins: [UpdateFunctions, UtilityFunctions, History],
 
     getInitialState() {
         return {
@@ -151,7 +156,7 @@ var App = React.createClass({
         });
 
         var artistId = this.state.appState.get("artistId");
-        var requestURL = "http://localhost:3000/v/10/setrecords/";
+        var requestURL = 'https://api.setmine.com/v/10/setrecordsuser/graph';
         var query = `{
             artist (id: ${artistId}) {
                 id,
@@ -177,7 +182,7 @@ var App = React.createClass({
         })
         .done((res) => {
             if (res.status == 'failure') {
-                console.log("An error occurred getting artist data.");
+                console.log("An error occufrred getting artist data.");
                 console.log(res.payload.error);
             } else if (res.payload.artist) {
                 push({
@@ -256,25 +261,31 @@ var App = React.createClass({
     }
 });
 
+var bodyMount = document.getElementById('body-mount-point');
+
+import createBrowserHistory from 'history/lib/createBrowserHistory';
 var history = createBrowserHistory();
+
+var routes = (
+    <Route path='/' component={App} >
+        <IndexRoute component={Login} />
+        <Route path='content' component={ContentView} />
+        <Route path='metrics' component={MetricsView}>
+            <Route path='setmine' component={SetmineReport} />
+            <Route path='beacons' component={BeaconReport} />
+            <Route path='social' component={SocialReport} />
+            <Route path='soundcloud' component={SoundcloudReport} />
+            <Route path='youtube' component={YoutubeReport} />
+        </Route>
+        <Route path='edit/:id' component={MobileSetEditor} />
+        <Route path='account' component={SettingsEditor} />
+        <Route path='contact' component={Contact} />
+        <Route path='upload-set' component={UploadSetWizard} />
+    </Route>
+);
 
 ReactDOM.render(
     <Router history={history}>
-        <Route path='/' component={App} >
-            <IndexRoute component={Login} />
-
-            <Route path='content' component={ContentView} />
-            <Route path='metrics' component={MetricsView}>
-                <Route path='setmine' component={SetmineReport} />
-                <Route path='beacons' component={BeaconReport} />
-                <Route path='social' component={SocialReport} />
-                <Route path='soundcloud' component={SoundcloudReport} />
-                <Route path='youtube' component={YoutubeReport} />
-            </Route>
-            <Route path='edit/:id' component={MobileSetEditor} />
-            <Route path='account' component={SettingsEditor} />
-            <Route path='contact' component={Contact} />
-            <Route path='upload-set' component={UploadSetWizard} />
-        </Route>
-    </Router>,
-document.getElementById('body-mount-point'));
+        {routes}
+    </Router>
+, bodyMount);

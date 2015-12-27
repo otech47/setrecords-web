@@ -19,7 +19,7 @@ var Login = React.createClass ({
     },
 
     render: function () {
-        var password = this.state.changePassword ? <ForgotPassword /> : <p onClick={() => this.setState({changePassword: true})}>Forgot pasword?</p>
+        var password = this.state.changePassword ? <ForgotPassword /> : <p onClick={() => this.setState({changePassword: true})}>Forgot password?</p>
         return(
             <div id='Login'>
                 <video id='introvid' autoPlay='auto' loop='loop'>
@@ -52,7 +52,7 @@ var Login = React.createClass ({
         console.log(this.state.password);
 
         var self = this;
-        var requestUrl = 'http://localhost:3000/v/10/setrecordsuser/login';
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/login';
         $.ajax({
             type: 'POST',
             url: requestUrl,
@@ -66,7 +66,7 @@ var Login = React.createClass ({
                 self.props.push({
                     type: 'SHALLOW_MERGE',
                     data: {
-                        artistId: res.payload.setrecordsuser_login,
+                        artistId: res.payload.setrecordsuser_login.artist_id,
                     }
                 });
                 self.history.pushState(null, '/content');
