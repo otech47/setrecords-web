@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "forever stopall; NODE_ENV=production forever start app.js;",
+    "start": "forever stopall; NODE_ENV=production forever start server.js;",
     "stop": "forever stopall;",
     "deploy": "NODE_ENV=production webpack -p --config webpack.config.production.js; npm start;"
   },
