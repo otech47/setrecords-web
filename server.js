@@ -8,7 +8,7 @@ var proxy = httpProxy.createProxyServer();
 var app = express();
 
 var isProduction = process.env.NODE_ENV === 'production';
-var port = isProduction ? 3000 : process.env.PORT;
+var port = isProduction ? 80 : 3000;
 var publicPath = path.resolve(__dirname, 'public');
 
 app.use(function( req, res, next ) {
@@ -20,17 +20,6 @@ app.use(function( req, res, next ) {
 });
 
 app.use(express.static(publicPath));
-
-if (!isProduction) {
-    var bundle = require('./server/bundle.js');
-    bundle();
-
-    app.all('/build/*', function (req, res) {
-        proxy.web(req, res, {
-            target: 'http://localhost:8080'
-        });
-    });
-}
 
 proxy.on('error', function(e) {
     console.log('Could not connect to proxy, please try again...');
