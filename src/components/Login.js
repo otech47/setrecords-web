@@ -52,7 +52,7 @@ var Login = React.createClass ({
         console.log(this.state.password);
 
         var self = this;
-        var requestUrl = 'http://localhost:3000/v/10/setrecordsuser/login';
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/login';
         $.ajax({
             type: 'POST',
             url: requestUrl,
