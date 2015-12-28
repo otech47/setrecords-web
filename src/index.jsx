@@ -148,44 +148,30 @@ var App = React.createClass({
                 loaded: false
             }
         });
-
-        var artistId = this.state.appState.get("artistId");
-        var requestURL = 'https://api.setmine.com/v/10/setrecordsuser/graph';
-        var query = `{
-            artist (id: ${artistId}) {
-                id,
-                artist,
-                fb_link,
-                twitter_link,
-                web_link,
-                instagram_link,
-                soundcloud_link,
-                youtube_link,
-                icon_image {
-                    imageURL
-                }
-            }
-        }`;
-
+        var requestURL = 'http://localhost:3000/v/10/setrecordsuser/login';
         $.ajax({
             type: "POST",
             url: requestURL,
-            data: {
-                query: query
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
             if (res.status == 'failure') {
                 console.log("An error occufrred getting artist data.");
                 console.log(res.payload.error);
-            } else if (res.payload.artist) {
+            } else {
+                console.log(res);
                 push({
                     type: 'SHALLOW_MERGE',
                     data: {
                         artist_data: res.payload.artist,
+                        artistId: res.payload.artist_id,
                         loaded: true
                     }
                 });
+                history.pushState(null, '/content');
             }
         })
         .fail((err) => {
