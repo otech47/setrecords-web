@@ -29,7 +29,7 @@
     "react": "^0.14.3",
     "react-addons-linked-state-mixin": "^0.14.3",
     "react-addons-update": "^0.14.3",
-    "react-chartjs": "github:jhudson8/react-chartjs",
+    "react-chartjs": "^0.6.0",
     "react-dom": "^0.14.3",
     "react-dropzone": "^3.2.2",
     "react-loader": "^2.0.0",
@@ -39,6 +39,5 @@
     "underscore": "^1.8.3",
     "webpack": "^1.12.9"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
