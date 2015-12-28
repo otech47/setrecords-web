@@ -11,13 +11,13 @@ var isProduction = process.env.NODE_ENV === 'production';
 var port = isProduction ? 80 : 3000;
 var publicPath = path.resolve(__dirname, 'public');
 
-app.use(function( req, res, next ) {
-    for(var prop in req.query) {
-        res.redirect('https://www.setmine.com/' + prop);
-        return;
-    }
-    next();
-});
+// app.use(function( req, res, next ) {
+//     for(var prop in req.query) {
+//         res.redirect('https://www.setmine.com/' + prop);
+//         return;
+//     }
+//     next();
+// });
 
 app.use(express.static(publicPath));
 
@@ -31,7 +31,6 @@ app.get('*', function( req, res, next ) {
     // For facebook metatags, HTML is read first then the og url is inserted before sending it as the response
 
     fs.readFile(__dirname + '/public/index.html', 'utf8', function(err, text) {
-        console.log(text.indexOf('</head>'));
         var ogurl = '<meta property=\"og:url\" content=\"https://setmine.com/metadata/' + encodeURIComponent(req.path.substring(1)) + '\">';
         var textWithOGUrl = text.replace('</head>',  ogurl + '</head>');
         res.send(textWithOGUrl);
