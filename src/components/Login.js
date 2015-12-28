@@ -52,10 +52,14 @@ var Login = React.createClass ({
         console.log(this.state.password);
 
         var self = this;
-        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/login';
+        var requestUrl = 'http://localhost:3000/v/10/setrecordsuser/login';
         $.ajax({
             type: 'POST',
             url: requestUrl,
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
             data: {
                 username: self.state.username,
                 password: self.state.password
