@@ -1,9 +1,22 @@
 {
   "name": "setrecords-web",
-  "version": "0.0.0",
+  "version": "4.0.0",
+  "author": "Setmusic LLC",
   "private": true,
+  "description": "SetAPI - A Node.js project",
+  "main": "server.js",
+  "keywords": [
+    "setmine",
+    "setrecords"
+  ],
+  "repositories": {
+    "type": "private",
+    "url": "https://github.com/otech47/setrecords-web"
+  },
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "forever stopall; forever start server.js",
+    "stop": "forever stopall",
+    "deploy": "webpack -p --config webpack.config.production.js; npm start;"
   },
   "dependencies": {
     "async": "^1.4.2",
@@ -14,9 +27,11 @@
     "cookie-parser": "~1.3.5",
     "css-loader": "^0.16.0",
     "express": "~4.13.1",
+    "forever": "^0.15.1",
     "fs": "0.0.2",
     "history": "^1.13.1",
     "html-webpack-plugin": "^1.6.1",
+    "http-proxy": "^1.12.0",
     "immutable": "^3.7.4",
     "jquery": "^2.1.4",
     "jsx-loader": "^0.13.2",
@@ -26,16 +41,15 @@
     "react": "^0.14.3",
     "react-addons-linked-state-mixin": "^0.14.3",
     "react-addons-update": "^0.14.3",
-    "react-chartjs": "github:jhudson8/react-chartjs",
+    "react-chartjs": "github:otech47/react-chartjs",
     "react-dom": "^0.14.3",
     "react-dropzone": "^3.2.2",
     "react-loader": "^2.0.0",
     "react-motion": "^0.3.0",
     "react-router": "^1.0.2",
     "rx": "^3.1.0",
-    "underscore": "^1.8.3"
-  },
-  "devDependencies": {
+    "underscore": "^1.8.3",
     "webpack": "^1.12.9"
-  }
+  },
+  "devDependencies": {}
 }

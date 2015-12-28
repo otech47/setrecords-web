@@ -19,7 +19,7 @@ module.exports = {
         moduleDirectories: ['node_modules']
     },
     plugins: [new HtmlWebpackPlugin({
-        template: 'src/index-dev.html',
+        template: 'src/index.html',
         inject: 'body'
     })],
     devtool: 'cheap-source-map',

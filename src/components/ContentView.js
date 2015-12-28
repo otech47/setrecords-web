@@ -79,7 +79,8 @@ var ContentView = React.createClass({
 
     updateSets() {
         var artistId = this.props.appState.get('artistId');
-        var requestURL = 'http://localhost:3000/v/10/setrecordsuser/graph';
+        var requestURL = 'https://api.setmine.com/v/10/setrecordsuser/graph';
+        
         var query = `{
             artist (id: ${artistId}) {
                 sets {
@@ -121,12 +122,16 @@ var ContentView = React.createClass({
         $.ajax({
             type: 'POST',
             url: requestURL,
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
             data: {
                 query: query
             }
         })
         .done((res) => {
-            // console.log(res);
+            console.log(res);
             this.setState({
                 loaded: true
             }, this.props.push({
