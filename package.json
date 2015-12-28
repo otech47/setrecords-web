@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "forever stopall; NODE_ENV=production forever start server.js;",
+    "start": "forever stopall; forever start server.js;",
     "stop": "forever stopall;",
-    "deploy": "NODE_ENV=production webpack -p --config webpack.config.production.js; npm start;"
+    "deploy": "webpack -p --config webpack.config.production.js; npm start;"
   },
   "dependencies": {
     "async": "^1.4.2",
@@ -36,9 +36,9 @@
     "react-motion": "^0.3.0",
     "react-router": "^1.0.2",
     "rx": "^3.1.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "webpack": "^1.12.9"
   },
   "devDependencies": {
-    "webpack": "^1.12.9"
   }
 }
