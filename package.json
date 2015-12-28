@@ -1,7 +1,18 @@
 {
   "name": "setrecords-web",
-  "version": "0.0.0",
+  "version": "4.0.0",
+  "author": "Setmusic LLC",
   "private": true,
+  "description": "SetAPI - A Node.js project",
+  "main": "server.js",
+  "keywords": [
+    "setmine",
+    "setrecords"
+  ],
+  "repositories": {
+    "type": "private",
+    "url": "https://github.com/otech47/setrecords-web"
+  },
   "scripts": {
     "start": "forever stopall; forever start server.js;",
     "stop": "forever stopall;",
