@@ -52,7 +52,7 @@ var initialAppState = Immutable.Map({
     mixes: [],
     artists: [],
     venues: [],
-    setmine_metrics: {
+    setmineMetrics: {
         plays: {
             current: '',
             overtime: []
@@ -151,7 +151,7 @@ var App = React.createClass({
         });
 
         var artistId = this.state.appState.get("artistId");
-        var requestURL = "http://localhost:3000/v/10/setrecords/";
+        var requestURL = "http://localhost:3000/v/10/setrecordsuser/graph";
         var query = `{
             artist (id: ${artistId}) {
                 id,
@@ -246,6 +246,10 @@ var App = React.createClass({
                 props = {push: push, loaded: appState.get('loaded'), originalArtist: appState.get('artist_data')};
                 break;
 
+                case SetmineReport:
+                props = {push: push, loaded: appState.get('loaded'), setmineMetrics: appState.get('setmineMetrics'), artistId: appState.get('artistId')};
+                break;
+
                 default:
                 props = {push: push, appState: appState};
                 break;
@@ -264,13 +268,13 @@ ReactDOM.render(
             <IndexRoute component={Login} />
 
             <Route path='content' component={ContentView} />
-            <Route path='metrics' component={MetricsView}>
-                <Route path='setmine' component={SetmineReport} />
-                <Route path='beacons' component={BeaconReport} />
-                <Route path='social' component={SocialReport} />
-                <Route path='soundcloud' component={SoundcloudReport} />
-                <Route path='youtube' component={YoutubeReport} />
-            </Route>
+
+            <Route path='metrics/setmine' component={SetmineReport} />
+            <Route path='metrics/beacons' component={BeaconReport} />
+            <Route path='metrics/social' component={SocialReport} />
+            <Route path='metrics/soundcloud' component={SoundcloudReport} />
+            <Route path='metrics/youtube' component={YoutubeReport} />
+
             <Route path='edit/:id' component={MobileSetEditor} />
             <Route path='account' component={SettingsEditor} />
             <Route path='contact' component={Contact} />

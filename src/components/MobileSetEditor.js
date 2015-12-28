@@ -479,7 +479,7 @@ var MobileSetEditor = React.createClass({
 
         $.ajax({
             type: 'post',
-            url: 'http://localhost:3000/v/10/setrecords',
+            url: 'http://localhost:3000/v/10/setrecordsuser/graph',
             data: {
                 query: query
             }

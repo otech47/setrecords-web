@@ -6,38 +6,34 @@ var moment = require('moment');
 import {numberWithSuffix} from '../mixins/UtilityFunctions';
 
 var SetmineReport = React.createClass({
-    render() {
-        return (
-            <div>
-                setmine report
-            </div>
-        )
-    }
-});
-
-var SetmineReport2 = React.createClass({
     getInitialState() {
         return {
             plays: true,
             views: true,
             favorites: true,
-            loaded: true,
             cohort: 'daily'
         }
     },
 
     componentWillMount() {
-        this.updateSetmine();
+        this.props.push({
+            type: 'SHALLOW_MERGE',
+            data: {
+                header: 'Metrics',
+                loaded: false
+            }
+        });
     },
 
     componentDidMount() {
-        mixpanel.track("Setmine Metrics Open");
+        // mixpanel.track("Setmine Metrics Open");
+        this.updateSetmine();
     },
 
     toggleData(event) {
-        var clicked = {};
-        clicked[event.currentTarget.id] = !this.state[event.currentTarget.id];
-        this.setState(clicked);
+        // var clicked = {};
+        // clicked[event.currentTarget.id] = !this.state[event.currentTarget.id];
+        // this.setState(clicked);
     },
 
     changePeriod(event) {
@@ -69,7 +65,7 @@ var SetmineReport2 = React.createClass({
                     dateFormat = 'M[/]YY';
                     break;
             }
-            var metrics = this.props.appState.get('setmine_metrics');
+            var metrics = this.props.setmineMetrics;
             var labels = [];
             var datasets = [];
             for (var i = 0; i < metrics.plays.overtime.length; i++) {
@@ -117,29 +113,69 @@ var SetmineReport2 = React.createClass({
         }
     },
 
-    updateSetmine(params) {
-        var cohortType = '';
-        if(params != null) {
-            cohortType = '?cohortType='+params;
-        }
+    updateSetmine() {
+        var timezoneOffset = moment().utcOffset();
 
-        var artistId = this.props.appState.get("artist_data").id;
-        var setmineRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/setmine/'
-        + artistId + cohortType;
+        var query = `{
+            setmine_metrics (artist_id: ${this.props.artistId}) {
+                plays (cohort: \"${this.state.cohort}\", timezoneOffset: ${timezoneOffset}) {
+                    date,
+                    count
+                },
+                views (cohort: \"${this.state.cohort}\", timezoneOffset: ${timezoneOffset}) {
+                    date,
+                    count
+                },
+                favorites (cohort: \"${this.state.cohort}\", timezoneOffset: ${timezoneOffset}) {
+                    date,
+                    count
+                }
+            },
+            artist (id: ${this.props.artistId}) {
+                views,
+                favorites,
+                plays
+            }
+        }`;
 
-        var timezone = moment().utcOffset();
+        var requestUrl = 'http://localhost:3000/v/10/setrecordsuser/graph';
+
         $.ajax({
-            type: 'GET',
-            url: setmineRequestUrl,
-            data: {timezone: timezone}
+            type: 'post',
+            url: requestUrl,
+            data: {
+                query: query
+            }
         })
         .done((res) => {
+            var overtime = res.payload.setmine_metrics;
+            var artist = res.payload.artist;
+
+            var setmineMetrics = {
+                plays: {
+                    current: artist.plays,
+                    last: artist.plays - _.last(overtime.plays).count,
+                    overtime: overtime.plays
+                },
+                views: {
+                    current: artist.views,
+                    last: artist.views - _.last(overtime.views).count,
+                    overtime: overtime.views
+                },
+                favorites: {
+                    current: artist.favorites,
+                    last: artist.favorites - _.last(overtime.favorites).count,
+                    overtime: overtime.favorites
+                }
+            }
+
             this.props.push({
                 type: 'SHALLOW_MERGE',
                 data: {
-                    setmine_metrics: res.setmine
+                    setmineMetrics: setmineMetrics
                 }
             });
+
             this.setState({
                 loaded: true
             });
@@ -151,7 +187,7 @@ var SetmineReport2 = React.createClass({
 
     render() {
         // var {numberWithSuffix, metrics, ...other} = this.props;
-        var metrics = this.props.appState.get('setmine_metrics');
+        var metrics = this.props.setmineMetrics;
 
         var playsCurrent = metrics.plays.current;
         var playsChange = metrics.plays.current - metrics.plays.last;
