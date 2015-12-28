@@ -159,7 +159,7 @@ var App = React.createClass({
         })
         .done((res) => {
             if (res.status == 'failure') {
-                console.log("An error occufrred getting artist data.");
+                console.log("An error occurred getting artist data.");
                 console.log(res.payload.error);
             } else {
                 console.log(res);
