@@ -27,30 +27,37 @@ var SetmineReport = React.createClass({
 
     componentDidMount() {
         // mixpanel.track("Setmine Metrics Open");
-        this.updateSetmine();
+        this.updateSetmine(this.state.cohort);
     },
 
-    toggleData(event) {
-        // var clicked = {};
-        // clicked[event.currentTarget.id] = !this.state[event.currentTarget.id];
-        // this.setState(clicked);
+    toggleData(metricType) {
+        var clicked = {};
+        clicked[metricType] = !this.state[metricType];
+        console.log(clicked);
+
+        this.setState(clicked);
     },
 
-    changePeriod(event) {
-        if (this.state.loaded && ($(event.currentTarget).attr('name') != this.state.cohort)) {
-            var cohortType = $(event.currentTarget).attr('name');
+    changeCohort(newCohort) {
+        if (this.props.loaded && (newCohort != this.state.cohort)) {
+            this.props.push({
+                type: 'SHALLOW_MERGE',
+                data: {
+                    loaded: false
+                }
+            });
 
             this.setState({
-                loaded: false,
-                cohort: cohortType
-            }, this.updateSetmine(this.state.cohort));
+                cohort: newCohort
+            }, this.updateSetmine(newCohort));
         }
     },
 
     lineGraph() {
-        if ((this.state.plays || this.state.views || this.state.favorites) && this.state.loaded) {
+        if ((this.state.plays || this.state.views || this.state.favorites) && this.props.loaded) {
             var dateGrouping;
             var dateFormat;
+
             switch (this.state.cohort) {
                 case 'daily':
                     dateGrouping = 'M[/]D[/]YYYY';
@@ -113,19 +120,22 @@ var SetmineReport = React.createClass({
         }
     },
 
-    updateSetmine() {
+    updateSetmine(cohort) {
+        console.log('Updating to cohort: ');
+        console.log(cohort);
+
         var timezoneOffset = moment().utcOffset();
         var query = `{
             setmine_metrics (artist_id: ${this.props.artistId}) {
-                plays (cohort: \"${this.state.cohort}\", timezoneOffset: ${timezoneOffset}) {
+                plays (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
                     date,
                     count
                 },
-                views (cohort: \"${this.state.cohort}\", timezoneOffset: ${timezoneOffset}) {
+                views (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
                     date,
                     count
                 },
-                favorites (cohort: \"${this.state.cohort}\", timezoneOffset: ${timezoneOffset}) {
+                favorites (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
                     date,
                     count
                 }
@@ -138,7 +148,7 @@ var SetmineReport = React.createClass({
         }`;
 
         var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
-        
+
         $.ajax({
             type: 'GET',
             url: requestUrl,
@@ -172,15 +182,14 @@ var SetmineReport = React.createClass({
                 }
             }
 
+            console.log(setmineMetrics);
+
             this.props.push({
                 type: 'SHALLOW_MERGE',
                 data: {
-                    setmineMetrics: setmineMetrics
+                    setmineMetrics: setmineMetrics,
+                    loaded: true
                 }
-            });
-
-            this.setState({
-                loaded: true
             });
         })
         .fail(function(err) {
@@ -193,11 +202,9 @@ var SetmineReport = React.createClass({
         var metrics = this.props.setmineMetrics;
 
         var playsCurrent = metrics.plays.current;
-        var playsChange = metrics.plays.current - metrics.plays.last;
         var viewsCurrent = metrics.views.current;
-        var viewsChange = metrics.views.current - metrics.views.last;
         var favoritesCurrent = metrics.favorites.current;
-        var favoritesChange = metrics.favorites.current - metrics.favorites.last;
+
         var previousCohort;
         switch (this.state.cohort) {
             case 'daily':
@@ -218,34 +225,31 @@ var SetmineReport = React.createClass({
                     setmine
                 </div>
                 <div className='time-selector flex-row'>
-                    <p onClick={this.changePeriod} className={this.state.cohort == 'daily' ? 'active':''} name='daily'>
+                    <p onClick={this.changeCohort.bind(this, 'daily')} className={this.state.cohort == 'daily' ? 'active':''} name='daily'>
                         <span>day</span>
                     </p>
-                    <p onClick={this.changePeriod} className={this.state.cohort == 'weekly' ? 'active':''} name='weekly'>
+                    <p onClick={this.changeCohort.bind(this, 'weekly')} className={this.state.cohort == 'weekly' ? 'active':''} name='weekly'>
                         <span>week</span>
                     </p>
-                    <p onClick={this.changePeriod} className={this.state.cohort == 'monthly' ? 'active':''} name='monthly'>
+                    <p onClick={this.changeCohort.bind(this, 'monthly')} className={this.state.cohort == 'monthly' ? 'active':''} name='monthly'>
                         <span>month</span>
                     </p>
                 </div>
                 <div className='numbers flex-row'>
-                    <div className={'toggle click plays flex-column flex-fixed ' + (this.state.plays ? '':'deactivated')} id='plays' onClick={this.toggleData}>
+                    <div className={'toggle click plays flex-column flex-fixed ' + (this.state.plays ? '':'deactivated')} id='plays' onClick={this.toggleData.bind(this, 'plays')}>
                         <h1>{numberWithSuffix(playsCurrent)}</h1>
                         <p>plays</p>
-                        <p className='hidden'>{previousCohort} {playsChange >= 0 ? '+':''}{numberWithSuffix(playsChange)}</p>
                     </div>
-                    <div className={'toggle click profileviews flex-column flex-fixed ' + (this.state.views ? '':'deactivated')} id='views' onClick={this.toggleData}>
+                    <div className={'toggle click profileviews flex-column flex-fixed ' + (this.state.views ? '':'deactivated')} id='views' onClick={this.toggleData.bind(this, 'views')}>
                         <h1>{numberWithSuffix(viewsCurrent)}</h1>
                         <p>views</p>
-                        <p className='hidden'>{previousCohort} {viewsChange >= 0 ? '+':''}{numberWithSuffix(viewsChange)}</p>
                     </div>
-                    <div className={'toggle click favorites flex-column flex-fixed ' + (this.state.favorites ? '':'deactivated')} id='favorites' onClick={this.toggleData}>
+                    <div className={'toggle click favorites flex-column flex-fixed ' + (this.state.favorites ? '':'deactivated')} id='favorites' onClick={this.toggleData.bind(this, 'favorites')}>
                         <h1>{numberWithSuffix(favoritesCurrent)}</h1>
                         <p>favorites</p>
-                        <p className='hidden'>{previousCohort} {favoritesChange >= 0 ? '+':''}{numberWithSuffix(favoritesChange)}</p>
                     </div>
                 </div>
-                <Loader loaded={this.state.loaded}>
+                <Loader loaded={this.props.loaded}>
                     <div className='graph'>
                         {this.lineGraph()}
                     </div>
