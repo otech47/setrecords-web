@@ -325,10 +325,14 @@ var UploadSetWizard = React.createClass({
             }
         }`;
         $.ajax({
-            url: 'http://localhost:3000/v/10/setrecords',
-            type: 'post',
+            url: 'https://api.setmine.com/v/10/setrecordsuser/graph',
+            type: 'get',
             data: {
                 query: query
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -409,9 +413,13 @@ var UploadSetWizard = React.createClass({
         var uniqueFilename = moment().unix() + file.name;
         $.ajax({
             type: 'POST',
-            url: 'http://localhost:3000/v/10/aws/configureAWS',
+            url: 'https://api.setmine.com/v/10/aws/configureAWS',
             data: {
                 filename: encodeURIComponent(uniqueFilename)
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -606,11 +614,15 @@ var UploadSetWizard = React.createClass({
     updateDatabase: function(bundle, tracklist) {
         async.waterfall([
             function (callback) {
-                var requestUrl = 'http://localhost:3000/v/10/sets/register';
+                var requestUrl = 'https://api.setmine.com/v/10/sets/register';
                 $.ajax({
                     type: 'POST',
                     url: requestUrl,
-                    data: bundle
+                    data: bundle,
+                    crossDomain: true,
+                    xhrFields: {
+                        withCredentials: true
+                    }
                 })
                 .done((res) => {
                     console.log('Set registered on database.');
@@ -626,13 +638,17 @@ var UploadSetWizard = React.createClass({
 
             function (newSetId, callback) {
                 console.log('Adding tracklist for set ID = ' + newSetId);
-                var requestUrl = 'http://localhost:3000/v/10/sets/tracklist';
+                var requestUrl = 'https://api.setmine.com/v/10/sets/tracklist';
                 $.ajax({
                     type: 'POST',
                     url: requestUrl,
                     data: {
                         tracklist: tracklist,
                         set_id: newSetId
+                    },
+                    crossDomain: true,
+                    xhrFields: {
+                        withCredentials: true
                     }
                 })
                 .done((res) => {
@@ -683,12 +699,16 @@ var UploadSetWizard = React.createClass({
         if (tracklistUrl == null || tracklistUrl.length == 0) {
             callback(null);
         } else {
-            var requestUrl = "http://localhost:3000/api/v/7/setrecords/set/tracklist/";
+            var requestUrl = "https://api.setmine.com/api/v/7/setrecords/set/tracklist/";
             $.ajax({
                 type: "GET",
                 url: requestUrl,
                 data: {
                     tracklist_url: tracklistUrl
+                },
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
                 },
                 success: function(res) {
                     if (res.status == "failure") {
