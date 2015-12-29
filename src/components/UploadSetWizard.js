@@ -325,10 +325,14 @@ var UploadSetWizard = React.createClass({
             }
         }`;
         $.ajax({
-            url: 'https://api.setmine.com/v/10/venues',
-            type: 'post',
+            url: 'https://api.setmine.com/v/10/setrecordsuser/graph',
+            type: 'get',
             data: {
                 query: query
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -412,6 +416,10 @@ var UploadSetWizard = React.createClass({
             url: 'https://api.setmine.com/v/10/aws/configureAWS',
             data: {
                 filename: encodeURIComponent(uniqueFilename)
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -610,7 +618,11 @@ var UploadSetWizard = React.createClass({
                 $.ajax({
                     type: 'POST',
                     url: requestUrl,
-                    data: bundle
+                    data: bundle,
+                    crossDomain: true,
+                    xhrFields: {
+                        withCredentials: true
+                    }
                 })
                 .done((res) => {
                     console.log('Set registered on database.');
@@ -633,6 +645,10 @@ var UploadSetWizard = React.createClass({
                     data: {
                         tracklist: tracklist,
                         set_id: newSetId
+                    },
+                    crossDomain: true,
+                    xhrFields: {
+                        withCredentials: true
                     }
                 })
                 .done((res) => {
@@ -689,6 +705,10 @@ var UploadSetWizard = React.createClass({
                 url: requestUrl,
                 data: {
                     tracklist_url: tracklistUrl
+                },
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
                 },
                 success: function(res) {
                     if (res.status == "failure") {
