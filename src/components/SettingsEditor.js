@@ -206,8 +206,8 @@ var SettingsEditor = React.createClass({
         }`;
 
         $.ajax({
-            type: 'post',
-            url: 'http://localhost:3000/v/10/setrecordsuser/graph',
+            type: 'get',
+            url: 'https://api.setmine.com/v/10/setrecordsuser/graph',
             data: {
                 query: query
             }
@@ -377,7 +377,7 @@ var SettingsEditor = React.createClass({
             web_link: pendingSettings.web_link
         };
 
-        var requestUrl = 'http://localhost:3000/v/10/setrecordsuser/artist/link';
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/artist/link';
 
         async.forEachOf(links, (value, key, callback) => {
             $.ajax({
@@ -406,7 +406,7 @@ var SettingsEditor = React.createClass({
     },
 
     newPassword(callback) {
-        var requestUrl = 'http://localhost:3000/v/10/setrecordsuser/password/update';
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/password/update';
 
         $.ajax({
             type: 'POST',
@@ -441,7 +441,7 @@ var SettingsEditor = React.createClass({
 
         $.ajax({
             type: 'POST',
-            url: 'http://localhost:3000/v/10/aws/configureAWS',
+            url: 'https://api.setmine.com/v/10/aws/configureAWS',
             data: {
                 filename: encodeURIComponent(uniqueFilename)
             }
@@ -500,7 +500,7 @@ var SettingsEditor = React.createClass({
 
     updateImageDatabase(imageURL, callback) {
         console.log('Adding image to databases...');
-        var requestUrl = 'http://localhost:3000/v/10/setrecordsuser/artist/image';
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/artist/image';
 
         $.ajax({
             type: 'POST',

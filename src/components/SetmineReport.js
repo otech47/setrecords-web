@@ -138,11 +138,15 @@ var SetmineReport = React.createClass({
             }
         }`;
 
-        var requestUrl = 'http://localhost:3000/v/10/setrecordsuser/graph';
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
 
         $.ajax({
-            type: 'post',
+            type: 'GET',
             url: requestUrl,
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
             data: {
                 query: query
             }
