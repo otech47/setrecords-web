@@ -119,7 +119,7 @@ var YoutubeReport2 = React.createClass({
 			cohortType = "?cohortType=" + params;
 		}
 		var artistId = this.props.appState.get("artist_data").id;
-		var youtubeRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/youtube/'
+		var youtubeRequestUrl = 'https://api.setmine.com/api/v/7/setrecords/metrics/youtube/'
 		+ artistId + cohortType;
 		var youtubeMetrics;
 		var timezone = moment().utcOffset();

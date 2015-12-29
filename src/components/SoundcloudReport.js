@@ -118,7 +118,7 @@ var SoundcloudReport2 = React.createClass({
 			cohortType = "?cohortType=" + params;
 		}
 		var artistId = this.props.appState.get("artist_data").id;
-		var soundcloudRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/soundcloud/'+ artistId + cohortType;
+		var soundcloudRequestUrl = 'https://api.setmine.com/api/v/7/setrecords/metrics/soundcloud/'+ artistId + cohortType;
 		var soundcloudMetrics;
 		var timezone = moment().utcOffset();
 

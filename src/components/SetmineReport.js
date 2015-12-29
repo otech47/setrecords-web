@@ -124,7 +124,7 @@ var SetmineReport2 = React.createClass({
         }
 
         var artistId = this.props.appState.get("artist_data").id;
-        var setmineRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/setmine/'
+        var setmineRequestUrl = 'https://api.setmine.com/api/v/7/setrecords/metrics/setmine/'
         + artistId + cohortType;
 
         var timezone = moment().utcOffset();

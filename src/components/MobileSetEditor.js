@@ -254,7 +254,7 @@ var MobileSetEditor = React.createClass({
 
         $.ajax({
             type: 'POST',
-            url: 'http://localhost:3000/v/10/aws/configureAWS',
+            url: 'https://api.setmine.com/v/10/aws/configureAWS',
             data: {
                 filename: encodeURIComponent(uniqueFilename)
             }
@@ -301,7 +301,7 @@ var MobileSetEditor = React.createClass({
 
     updateImageDatabase(imageURL, callback) {
         console.log('Adding image to databases...');
-        var requestURL = 'http://localhost:3000/v/10/sets/image';
+        var requestURL = 'https://api.setmine.com/v/10/sets/image';
         $.ajax({
             type: 'POST',
             url: requestURL,
@@ -324,7 +324,7 @@ var MobileSetEditor = React.createClass({
         console.log('New set title pending.');
         console.log(this.state.event.event);
 
-        var requestUrl = 'http://localhost:3000/v/10/sets/event';
+        var requestUrl = 'https://api.setmine.com/v/10/sets/event';
         $.ajax({
             type: 'POST',
             url: requestUrl,
@@ -403,7 +403,7 @@ var MobileSetEditor = React.createClass({
         console.log('New episode title pending.');
         console.log(this.state.episode.episode);
 
-        var requestUrl = 'http://localhost:3000/v/10/sets/episode';
+        var requestUrl = 'https://api.setmine.com/v/10/sets/episode';
         $.ajax({
             type: 'POST',
             url: requestUrl,
@@ -426,7 +426,7 @@ var MobileSetEditor = React.createClass({
         console.log('New tracks pending.');
         console.log(this.state.tracklist);
 
-        var requestUrl = 'http://localhost:3000/v/10/sets/tracklist';
+        var requestUrl = 'https://api.setmine.com/v/10/sets/tracklist';
         $.ajax({
             type: 'POST',
             url: requestUrl,
@@ -479,7 +479,7 @@ var MobileSetEditor = React.createClass({
 
         $.ajax({
             type: 'post',
-            url: 'http://localhost:3000/v/10/setrecords',
+            url: 'https://api.setmine.com/v/10/setrecords',
             data: {
                 query: query
             }
