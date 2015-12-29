@@ -257,6 +257,10 @@ var MobileSetEditor = React.createClass({
             url: 'https://api.setmine.com/v/10/aws/configureAWS',
             data: {
                 filename: encodeURIComponent(uniqueFilename)
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -308,6 +312,10 @@ var MobileSetEditor = React.createClass({
             data: {
                 image_url: imageURL,
                 set_id: this.props.params.id
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -331,6 +339,10 @@ var MobileSetEditor = React.createClass({
             data: {
                 event_name: this.state.event.event,
                 set_id: this.props.params.id
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -404,12 +416,17 @@ var MobileSetEditor = React.createClass({
         console.log(this.state.episode.episode);
 
         var requestUrl = 'https://api.setmine.com/v/10/sets/episode';
+
         $.ajax({
             type: 'POST',
             url: requestUrl,
             data: {
                 episode: this.state.episode.episode,
                 set_id: this.props.params.id
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -427,12 +444,17 @@ var MobileSetEditor = React.createClass({
         console.log(this.state.tracklist);
 
         var requestUrl = 'https://api.setmine.com/v/10/sets/tracklist';
+
         $.ajax({
             type: 'POST',
             url: requestUrl,
             data: {
                 tracklist: this.state.tracklist,
                 set_id: this.props.params.id
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {

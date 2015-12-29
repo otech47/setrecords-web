@@ -210,6 +210,10 @@ var SettingsEditor = React.createClass({
             url: 'https://api.setmine.com/v/10/setrecordsuser/graph',
             data: {
                 query: query
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -387,6 +391,10 @@ var SettingsEditor = React.createClass({
                     link_type: key,
                     link_url: value,
                     artist_id: this.props.artistId
+                },
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
                 }
             })
             .done((res) => {
@@ -414,6 +422,10 @@ var SettingsEditor = React.createClass({
             data: {
                 new_password: this.state.newPass,
                 artist_id: 155
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -444,6 +456,10 @@ var SettingsEditor = React.createClass({
             url: 'https://api.setmine.com/v/10/aws/configureAWS',
             data: {
                 filename: encodeURIComponent(uniqueFilename)
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -508,6 +524,10 @@ var SettingsEditor = React.createClass({
             data: {
                 image_url: imageURL,
                 artist_id: this.props.artistId
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
