@@ -67,7 +67,7 @@ var SocialReport2 = React.createClass({
 
 	updateSocial(params) {
 		var artistId = this.props.appState.get("artist_data").id;
-		var socialRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/social/'
+		var socialRequestUrl = 'https://api.setmine.com/api/v/7/setrecords/metrics/social/'
 		+ artistId;
 		var socialMetrics;
 		var timezone = moment().utcOffset();

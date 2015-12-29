@@ -2,7 +2,7 @@ var auth = {
     isLoggedIn(callback) {
         $.ajax({
             type: 'POST',
-            url: 'http://localhost:3000/v/10/setrecordsuser/login',
+            url: 'https://api.setmine.com/v/10/setrecordsuser/login',
         })
         .done((res) => {
             console.log('SUCCESS');

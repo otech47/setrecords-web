@@ -699,7 +699,7 @@ var UploadSetWizard = React.createClass({
         if (tracklistUrl == null || tracklistUrl.length == 0) {
             callback(null);
         } else {
-            var requestUrl = "https://api.setmine.com/api/v/7/setrecords/set/tracklist/";
+            var requestUrl = "https://api.setmine.com/v/10/sets/1001tracklist";
             $.ajax({
                 type: "GET",
                 url: requestUrl,

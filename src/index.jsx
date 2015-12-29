@@ -148,9 +148,7 @@ var App = React.createClass({
                 loaded: false
             }
         });
-
         var requestURL = 'https://api.setmine.com/v/10/setrecordsuser/login';
-
         $.ajax({
             type: "POST",
             url: requestURL,

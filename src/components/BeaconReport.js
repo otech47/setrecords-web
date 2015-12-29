@@ -120,7 +120,7 @@ var BeaconReport2 = React.createClass({
 		}
 
 		var artistId = this.props.appState.get("artist_data").id;
-		var beaconRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/beacons/'
+		var beaconRequestUrl = 'https://api.setmine.com/api/v/7/setrecords/metrics/beacons/'
 		+ artistId + cohortType;
 		var beaconMetrics;
 		var timezone = moment().utcOffset();

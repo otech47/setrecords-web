@@ -115,7 +115,6 @@ var SetmineReport = React.createClass({
 
     updateSetmine() {
         var timezoneOffset = moment().utcOffset();
-
         var query = `{
             setmine_metrics (artist_id: ${this.props.artistId}) {
                 plays (cohort: \"${this.state.cohort}\", timezoneOffset: ${timezoneOffset}) {
@@ -139,7 +138,7 @@ var SetmineReport = React.createClass({
         }`;
 
         var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
-
+        
         $.ajax({
             type: 'GET',
             url: requestUrl,
