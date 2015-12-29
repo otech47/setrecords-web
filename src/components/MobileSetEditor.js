@@ -254,9 +254,13 @@ var MobileSetEditor = React.createClass({
 
         $.ajax({
             type: 'POST',
-            url: 'http://localhost:3000/v/10/aws/configureAWS',
+            url: 'https://api.setmine.com/v/10/aws/configureAWS',
             data: {
                 filename: encodeURIComponent(uniqueFilename)
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -301,13 +305,17 @@ var MobileSetEditor = React.createClass({
 
     updateImageDatabase(imageURL, callback) {
         console.log('Adding image to databases...');
-        var requestURL = 'http://localhost:3000/v/10/sets/image';
+        var requestURL = 'https://api.setmine.com/v/10/sets/image';
         $.ajax({
             type: 'POST',
             url: requestURL,
             data: {
                 image_url: imageURL,
                 set_id: this.props.params.id
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -324,13 +332,17 @@ var MobileSetEditor = React.createClass({
         console.log('New set title pending.');
         console.log(this.state.event.event);
 
-        var requestUrl = 'http://localhost:3000/v/10/sets/event';
+        var requestUrl = 'https://api.setmine.com/v/10/sets/event';
         $.ajax({
             type: 'POST',
             url: requestUrl,
             data: {
                 event_name: this.state.event.event,
                 set_id: this.props.params.id
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -403,13 +415,18 @@ var MobileSetEditor = React.createClass({
         console.log('New episode title pending.');
         console.log(this.state.episode.episode);
 
-        var requestUrl = 'http://localhost:3000/v/10/sets/episode';
+        var requestUrl = 'https://api.setmine.com/v/10/sets/episode';
+
         $.ajax({
             type: 'POST',
             url: requestUrl,
             data: {
                 episode: this.state.episode.episode,
                 set_id: this.props.params.id
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -426,13 +443,18 @@ var MobileSetEditor = React.createClass({
         console.log('New tracks pending.');
         console.log(this.state.tracklist);
 
-        var requestUrl = 'http://localhost:3000/v/10/sets/tracklist';
+        var requestUrl = 'https://api.setmine.com/v/10/sets/tracklist';
+
         $.ajax({
             type: 'POST',
             url: requestUrl,
             data: {
                 tracklist: this.state.tracklist,
                 set_id: this.props.params.id
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -477,9 +499,14 @@ var MobileSetEditor = React.createClass({
             }
         }`;
 
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
         $.ajax({
-            type: 'post',
-            url: 'http://localhost:3000/v/10/setrecords',
+            type: 'GET',
+            url: requestUrl,
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
             data: {
                 query: query
             }

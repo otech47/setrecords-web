@@ -206,10 +206,14 @@ var SettingsEditor = React.createClass({
         }`;
 
         $.ajax({
-            type: 'post',
-            url: 'http://localhost:3000/v/10/setrecords/',
+            type: 'get',
+            url: 'https://api.setmine.com/v/10/setrecordsuser/graph',
             data: {
                 query: query
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -377,7 +381,7 @@ var SettingsEditor = React.createClass({
             web_link: pendingSettings.web_link
         };
 
-        var requestUrl = 'http://localhost:3000/v/10/setrecordsuser/artist/link';
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/artist/link';
 
         async.forEachOf(links, (value, key, callback) => {
             $.ajax({
@@ -387,6 +391,10 @@ var SettingsEditor = React.createClass({
                     link_type: key,
                     link_url: value,
                     artist_id: this.props.artistId
+                },
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
                 }
             })
             .done((res) => {
@@ -406,7 +414,7 @@ var SettingsEditor = React.createClass({
     },
 
     newPassword(callback) {
-        var requestUrl = 'http://localhost:3000/v/10/setrecordsuser/password/update';
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/password/update';
 
         $.ajax({
             type: 'POST',
@@ -414,6 +422,10 @@ var SettingsEditor = React.createClass({
             data: {
                 new_password: this.state.newPass,
                 artist_id: 155
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -441,9 +453,13 @@ var SettingsEditor = React.createClass({
 
         $.ajax({
             type: 'POST',
-            url: 'http://localhost:3000/v/10/aws/configureAWS',
+            url: 'https://api.setmine.com/v/10/aws/configureAWS',
             data: {
                 filename: encodeURIComponent(uniqueFilename)
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
@@ -500,7 +516,7 @@ var SettingsEditor = React.createClass({
 
     updateImageDatabase(imageURL, callback) {
         console.log('Adding image to databases...');
-        var requestUrl = 'http://localhost:3000/v/10/setrecordsuser/artist/image';
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/artist/image';
 
         $.ajax({
             type: 'POST',
@@ -508,6 +524,10 @@ var SettingsEditor = React.createClass({
             data: {
                 image_url: imageURL,
                 artist_id: this.props.artistId
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         })
         .done((res) => {
