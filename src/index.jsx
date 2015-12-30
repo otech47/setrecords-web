@@ -101,7 +101,7 @@ var initialAppState = Immutable.Map({
             overtime: []
         }
     },
-    social_metrics: {
+    socialMetrics: {
         twitter: {
             current: '',
             last: '',
@@ -233,6 +233,10 @@ var App = React.createClass({
 
                 case SetmineReport:
                 props = {push: push, loaded: appState.get('loaded'), setmineMetrics: appState.get('setmineMetrics'), artistId: appState.get('artistId')};
+                break;
+
+                case SocialReport:
+                props = {push: push, loaded: appState.get('loaded'), socialMetrics: appState.get('socialMetrics'), artistId: appState.get('artistId')};
                 break;
 
                 default:

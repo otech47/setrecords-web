@@ -10,100 +10,111 @@ import Icon from './Icon';
 import Overlay from './Overlay';
 
 var SocialReport = React.createClass({
-    render() {
-        return (
-            <div>
-                social report
-            </div>
-        )
-    }
-});
-
-var SocialReport2 = React.createClass({
-
-    getInitialState() {
-        return ({
-            loaded: false
-        });
+    getInitialState: function() {
+        return {
+            twitter: true,
+            facebook: true,
+            instagram: true
+        }
     },
 
     componentWillMount() {
+        this.props.push({
+            type: 'SHALLOW_MERGE',
+            data: {
+                loaded: false,
+                header: 'Metrics'
+            }
+        })
+    },
+
+    componentDidMount() {
+        // mixpanel.track("Social Metrics Open");
         this.updateSocial();
         this.checkSocial();
     },
 
-    componentDidMount() {
-        mixpanel.track("Social Metrics Open");
-    },
-
     checkSocial() {
-        var artistId = this.props.appState.get("artist_data").id;
-        var artistRequest = constants.API_ROOT+'artist/'+artistId;
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
+
+        var query = `{
+            artist (id: ${this.props.artistId}) {
+                twitter_link,
+                fb_link,
+                instagram_link
+            }
+        }`;
 
         $.ajax({
             type: 'get',
-            url: artistRequest
+            url: requestUrl,
+            data: {
+                query: query
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            }
         })
-        .done(res => {
-            var links = res.payload.artist.links;
-            var isEmpty = link => {
-                return R.last(link).length == 0;
-            };
-            var emptyLinks = R.fromPairs(R.filter(isEmpty, R.toPairs(links)));
-            var emptyKeys = R.keys(emptyLinks);
-
-            var newState = {};
-            emptyKeys.forEach(key => {
-                newState[key] = false;
-            });
-
-            this.setState(newState);
-            console.log(this.state);
+        .done( (res) => {
+            console.log(res);
+            this.setState(res.payload.artist);
         })
-        .fail(err => {
+        .fail( (err) => {
             console.error(err);
         });
     },
 
-    updateSocial(params) {
-        var artistId = this.props.appState.get("artist_data").id;
-        var socialRequestUrl = 'https://api.setmine.com/api/v/7/setrecords/metrics/social/'
-        + artistId;
-        var socialMetrics;
-        var timezone = moment().utcOffset();
+    updateSocial() {
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
+
+        var query = `{
+            social_metrics (artist_id: ${this.props.artistId}) {
+                twitter_current,
+                twitter_last,
+                facebook_current,
+                facebook_last,
+                instagram_current,
+                instagram_last
+            }
+        }`;
 
         $.ajax({
             type: 'GET',
-            url: socialRequestUrl,
-            data: {timezone: timezone}
+            url: requestUrl,
+            data: {
+                query: query
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            }
         })
-        .done(res => {
+        .done( (res) => {
             this.props.push({
                 type: 'SHALLOW_MERGE',
                 data: {
-                    social_metrics: res.social
+                    socialMetrics: res.payload.social_metrics,
+                    loaded: true
                 }
             });
-            this.setState({
-                loaded: true
-            });
         })
+        .fail( (err) => {
+            console.log(err);
+        });
     },
 
     render() {
-        var metrics = this.props.appState.get('social_metrics');
+        var metrics = this.props.socialMetrics;
 
-        var twitterMetrics = metrics.twitter;
-        var twitter_current = twitterMetrics.current;
-        var twitter_last = twitterMetrics.last;
+        var twitter_current = metrics.twitter_current;
+        var twitter_last = metrics.twitter_last;
 
-        var facebookMetrics = metrics.facebook;
-        var facebook_current = facebookMetrics.current;
-        var facebook_last = facebookMetrics.last;
+        var facebook_current = metrics.facebook_current;
+        var facebook_last = metrics.facebook_last;
 
-        var instagramMetrics = metrics.instagram;
-        var instagram_current = instagramMetrics.current;
-        var instagram_last = instagramMetrics.last;
+        var instagram_current = metrics.instagram_current;
+        var instagram_last = metrics.instagram_last;
 
         return (
             <div className='metrics-panel flex-row' id='SocialReport'>
@@ -111,9 +122,9 @@ var SocialReport2 = React.createClass({
                     <i className='fa fa-users'/>
                     social
                 </div>
-                <Loader loaded={this.state.loaded}>
+                <Loader loaded={this.props.loaded}>
                     <div className='panel twitter flex-column flex'>
-                        <Overlay icon='plus' hidden={this.state.twitter}>
+                        <Overlay icon='plus' hidden={this.state.twitter_link}>
                             Add Link
                         </Overlay>
                         <i className='fa fa-fw fa-twitter center'/>
@@ -123,7 +134,7 @@ var SocialReport2 = React.createClass({
                         <span>{numberWithSuffix(twitter_last)+' yesterday'}</span>
                     </div>
                     <div className='panel facebook flex-column flex'>
-                        <Overlay icon='plus' hidden={this.state.facebook}>
+                        <Overlay icon='plus' hidden={this.state.fb_link}>
                             Add Link
                         </Overlay>
                         <i className='fa fa-fw fa-facebook center'/>
@@ -133,7 +144,7 @@ var SocialReport2 = React.createClass({
                         <span>{numberWithSuffix(facebook_last)+' yesterday'}</span>
                     </div>
                     <div className='panel instagram flex-column flex'>
-                        <Overlay icon='plus' hidden={this.state.instagram}>
+                        <Overlay icon='plus' hidden={this.state.instagram_link}>
                             Add Link
                         </Overlay>
                         <i className='fa fa-fw fa-instagram center'/>
