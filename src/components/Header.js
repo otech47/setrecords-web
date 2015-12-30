@@ -9,7 +9,7 @@ var Header = React.createClass({
         return (
             <header className='flex-row'>
                 <div className='logo flex-row'>
-                    <img src='/public/images/setrecords-logo-white.png' />
+                    <img src='images/setrecords-logo-white.png' />
                     setrecords
                 </div>
                 <div className='header-main flex-row'>
