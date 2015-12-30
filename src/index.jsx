@@ -89,7 +89,7 @@ var initialAppState = Immutable.Map({
             overtime: []
         }
     },
-    beacon_metrics: {
+    beaconMetrics: {
         revenue: {
             current: '',
             last: '',
@@ -237,6 +237,10 @@ var App = React.createClass({
 
                 case SocialReport:
                 props = {push: push, loaded: appState.get('loaded'), socialMetrics: appState.get('socialMetrics'), artistId: appState.get('artistId')};
+                break;
+
+                case BeaconReport:
+                props = {push: push, loaded: appState.get('loaded'), beaconMetrics: appState.get('beaconMetrics'), artistId: appState.get('artistId')};
                 break;
 
                 default:

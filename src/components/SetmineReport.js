@@ -33,7 +33,6 @@ var SetmineReport = React.createClass({
     toggleData(metricType) {
         var clicked = {};
         clicked[metricType] = !this.state[metricType];
-        console.log(clicked);
 
         this.setState(clicked);
     },
@@ -192,7 +191,7 @@ var SetmineReport = React.createClass({
                 }
             });
         })
-        .fail( (err) => {
+        .fail((err) => {
             console.log(err);
         });
     },

@@ -6,53 +6,53 @@ var moment = require('moment');
 import {numberWithSuffix} from '../mixins/UtilityFunctions';
 
 var BeaconReport = React.createClass({
-    render() {
-        return (
-            <div>
-                beacon report
-            </div>
-        )
-    }
-});
-
-var BeaconReport2 = React.createClass({
     getInitialState() {
         return {
             revenue: true,
             unlocks: true,
-            loaded: true,
             cohort: 'daily'
         }
     },
 
     componentWillMount() {
-        this.updateBeacon();
+        this.props.push({
+            type: 'SHALLOW_MERGE',
+            data: {
+                header: 'Metrics',
+                loaded: false
+            }
+        });
     },
 
     componentDidMount() {
-        mixpanel.track("Beacon Metrics Open");
+        // mixpanel.track("Beacon Metrics Open");
+        this.updateBeacon(this.state.cohort);
     },
 
-    toggleData(event) {
+    toggleData(metricType) {
         var clicked = {};
-        clicked[event.currentTarget.id] = !this.state[event.currentTarget.id];
+        clicked[metricType] = !this.state[metricType];
+
         this.setState(clicked);
     },
 
-    changePeriod(event) {
-        if (this.state.loaded && ($(event.currentTarget).attr('name') != this.state.cohort)) {
-            var cohortType = $(event.currentTarget).attr('name');
-            var push = this.props.push;
+    changeCohort(newCohort) {
+        if (this.props.loaded && (newCohort != this.state.cohort)) {
+            this.props.push({
+                type: 'SHALLOW_MERGE',
+                data: {
+                    loaded: false
+                }
+            });
 
             this.setState({
-                loaded: false,
-                cohort: cohortType
-            }, this.updateBeacon(this.state.cohort));
+                cohort: newCohort
+            }, this.updateBeacon(newCohort));
         }
     },
 
     lineGraph() {
-        if ((this.state.revenue || this.state.unlocks) && this.state.loaded) {
+        if ((this.state.revenue || this.state.unlocks) && this.props.loaded) {
             var dateGrouping;
             var dateFormat;
             switch (this.state.cohort) {
@@ -69,7 +69,7 @@ var BeaconReport2 = React.createClass({
                     dateFormat = 'M[/]YY';
                     break;
             }
-            var metrics = this.props.appState.get('beacon_metrics');
+            var metrics = this.props.beaconMetrics;
             var labels = [];
             var datasets = [];
             for (var i = 0; i < metrics.revenue.overtime.length; i++) {
@@ -113,32 +113,65 @@ var BeaconReport2 = React.createClass({
         }
     },
 
-    updateBeacon(params) {
-        var cohortType = '';
-        if (params != null) {
-            cohortType = "?cohortType=" + params;
-        }
+    updateBeacon(cohort) {
+        console.log('Updating to cohort: ');
+        console.log(cohort);
 
-        var artistId = this.props.appState.get("artist_data").id;
-        var beaconRequestUrl = 'https://api.setmine.com/api/v/7/setrecords/metrics/beacons/'
-        + artistId + cohortType;
-        var beaconMetrics;
-        var timezone = moment().utcOffset();
+        var timezoneOffset = moment().utcOffset();
+        var query = `{
+            beacon_metrics (artist_id: ${this.props.artistId}) {
+                unlocks (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
+                    date,
+                    count
+                },
+                revenue (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
+                    date,
+                    count
+                }
+            },
+            artist (id: ${this.props.artistId}) {
+                unlocks,
+                revenue
+            }
+        }`;
+
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
 
         $.ajax({
             type: 'GET',
-            url: beaconRequestUrl,
-            data: {timezone: timezone}
+            url: requestUrl,
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
+            data: {
+                query: query
+            }
         })
         .done((res) => {
+            var overtime = res.payload.beacon_metrics;
+            var artist = res.payload.artist;
+
+            var beaconMetrics = {
+                revenue: {
+                    current: artist.revenue,
+                    last: artist.revenue - _.last(overtime.revenue).count,
+                    overtime: overtime.revenue
+                },
+                unlocks: {
+                    current: artist.unlocks,
+                    last: artist.unlocks - _.last(overtime.unlocks).count,
+                    overtime: overtime.unlocks
+                }
+            };
+            console.log(beaconMetrics);
+
             this.props.push({
                 type: 'SHALLOW_MERGE',
                 data: {
-                    beacon_metrics: res.beacons
+                    beaconMetrics: beaconMetrics,
+                    loaded: true
                 }
-            });
-            this.setState({
-                loaded: true
             });
         })
         .fail((err) => {
@@ -147,12 +180,10 @@ var BeaconReport2 = React.createClass({
     },
 
     render() {
-        var metrics = this.props.appState.get('beacon_metrics');
+        var metrics = this.props.beaconMetrics;
 
         var revenueTotal = metrics.revenue.current;
-        var revenueChange = revenueTotal - metrics.revenue.last;
         var unlocksTotal = metrics.unlocks.current;
-        var unlocksChange = unlocksTotal - metrics.unlocks.last;
 
         var previousCohort;
         switch (this.state.cohort) {
@@ -174,23 +205,21 @@ var BeaconReport2 = React.createClass({
                 beacons
             </div>
             <div className='time-selector flex-row'>
-                <p onClick={this.changePeriod} className={this.state.cohort == 'daily' ? 'active':''} name='daily'>day</p>
-                <p onClick={this.changePeriod} className={this.state.cohort == 'weekly' ? 'active':''} name='weekly'>week</p>
-                <p onClick={this.changePeriod} className={this.state.cohort == 'monthly' ? 'active':''} name='monthly'>month</p>
+                <p onClick={this.changeCohort.bind(this, 'daily')} className={this.state.cohort == 'daily' ? 'active':''} name='daily'>day</p>
+                <p onClick={this.changeCohort.bind(this, 'weekly')} className={this.state.cohort == 'weekly' ? 'active':''} name='weekly'>week</p>
+                <p onClick={this.changeCohort.bind(this, 'monthly')} className={this.state.cohort == 'monthly' ? 'active':''} name='monthly'>month</p>
             </div>
             <div className='numbers flex-row'>
-                <div className={'toggle revenue flex-column flex-fixed ' + (this.state.revenue ? '':'deactivated')} id='revenue' onClick={this.toggleData}>
+                <div className={'toggle revenue flex-column flex-fixed ' + (this.state.revenue ? '':'deactivated')} id='revenue' onClick={this.toggleData.bind(this, 'revenue')}>
                     <h1>${numberWithSuffix(revenueTotal)}</h1>
                     <p>total revenue</p>
-                    <p className='hidden'>{previousCohort} {revenueChange >= 0 ? '+':''}${numberWithSuffix(revenueChange.toFixed(2))}</p>
                 </div>
-                <div className={'toggle unlockedsets flex-column flex-fixed ' + (this.state.unlocks ? '':'deactivated')} id='unlocks' onClick={this.toggleData}>
+                <div className={'toggle unlockedsets flex-column flex-fixed ' + (this.state.unlocks ? '':'deactivated')} id='unlocks' onClick={this.toggleData.bind(this, 'unlocks')}>
                     <h1>{numberWithSuffix(unlocksTotal)}</h1>
                     <p>unlocks</p>
-                    <p className='hidden'>{previousCohort} {unlocksChange >= 0 ? '+':''}{numberWithSuffix(unlocksChange)}</p>
                 </div>
             </div>
-            <Loader loaded={this.state.loaded}>
+            <Loader loaded={this.props.loaded}>
                 <div className='graph'>
                     {this.lineGraph()}
                 </div>
