@@ -192,7 +192,7 @@ var SetmineReport = React.createClass({
                 }
             });
         })
-        .fail(function(err) {
+        .fail( (err) => {
             console.log(err);
         });
     },
