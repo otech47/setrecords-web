@@ -18,10 +18,6 @@ module.exports = {
         extensions: ['', '.jsx', '.es6', '.js', '.scss'],
         moduleDirectories: ['node_modules']
     },
-    plugins: [new HtmlWebpackPlugin({
-        template: 'src/index.html',
-        inject: 'body'
-    })],
     devtool: 'cheap-source-map',
     module: {
         loaders: [
