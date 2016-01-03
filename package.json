@@ -16,7 +16,8 @@
   "scripts": {
     "start": "forever stopall; forever start server.js",
     "stop": "forever stopall",
-    "deploy": "webpack -p --config webpack.config.production.js"
+    "deploy": "webpack -p --config webpack.config.production.js; npm start",
+    "test": "webpack-dev-server --progress --colors --content-base public/"
   },
   "dependencies": {
     "async": "^1.4.2",

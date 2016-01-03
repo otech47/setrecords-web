@@ -201,7 +201,7 @@ var BeaconReport = React.createClass({
         return (
         <div className='metrics-panel' id='BeaconReport'>
             <div className='title flex-row'>
-                <img src='/public/images/beacon_icon.png' />
+                <img src='/images/beacon_icon.png' />
                 beacons
             </div>
             <div className='time-selector flex-row'>
