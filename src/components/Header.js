@@ -18,7 +18,7 @@ var Header = React.createClass({
                     <div className='artist flex-row'>
                         <div className='options flex-column'>
                             <h1>{artistName}</h1>
-                            <p onClick={this.props.logOut}>Logout</p>
+                            <p onClick={this.props.logOut} hidden={!this.props.loggedIn}>Logout</p>
                         </div>
                         <img src={constants.S3_ROOT_FOR_IMAGES + artistImage} />
                     </div>

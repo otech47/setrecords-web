@@ -33,7 +33,7 @@ import Icon from './components/Icon';
 import UpdateFunctions from './mixins/UpdateFunctions';
 import UtilityFunctions from './mixins/UtilityFunctions';
 
-var initialAppState = Immutable.Map({
+var defaultValues = {
     settings_editor: false,
     set_editor: false,
     upload_set_wizard: false,
@@ -123,7 +123,9 @@ var initialAppState = Immutable.Map({
             overtime: []
         }
     }
-});
+};
+
+var initialAppState = Immutable.Map(defaultValues);
 
 var evtHandler = GlobalEventHandler(initialAppState);
 var evtTypes = evtHandler.types;
@@ -156,10 +158,7 @@ var App = React.createClass({
             console.log('This user not authorized.');
             push({
                 type: 'SHALLOW_MERGE',
-                data: {
-                    artistId: 0,
-                    loggedIn: false
-                }
+                data: defaultValues
             });
         }
     },
@@ -218,7 +217,7 @@ var App = React.createClass({
 
         return (
             <div className='flex-column' id='App'>
-                <Header artistImage={appState.get('artist_data').icon_image.imageURL} artistName={appState.get('artist_data').artist} headerText={appState.get('header')} logOut={this.logOut} />
+                <Header artistImage={appState.get('artist_data').icon_image.imageURL} artistName={appState.get('artist_data').artist} headerText={appState.get('header')} logOut={this.logOut} loggedIn={appState.get('loggedIn')} />
                 <div className='flex-row view-container'>
                     {this.props.location.pathname == '/' ? '' : <NavBar push={push} /> }
                     <div className='view flex-column flex'>

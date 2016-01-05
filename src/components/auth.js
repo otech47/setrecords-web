@@ -44,10 +44,10 @@ var auth = {
                         cb(true);
                     }
                 } else {
+                    this.onChange();
                     if (cb) {
                         cb(false);
                     }
-                    this.onChange();
                 }
             });
         });
