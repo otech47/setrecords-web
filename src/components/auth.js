@@ -29,24 +29,27 @@ var auth = {
 
         this.loggedIn((artistId) => {
             if (artistId) {
-                if (cb) {
-                    cb(true);
-                }
+                console.log('Session exists!');
                 this.onChange(artistId);
+                if (cb) {
+                    cb();
+                }
                 return;
             }
 
             console.log('No session exists, attempting to submit credentials.');
             this.submitCredentials(user, pass, (res) => {
                 if (res.status == 'success') {
+                    console.log('Submission successful.');
                     this.onChange(res.payload.setrecordsuser_login.artist_id);
                     if (cb) {
-                        cb(true);
+                        cb();
                     }
                 } else {
+                    console.log('Submission not successful');
                     this.onChange();
                     if (cb) {
-                        cb(false);
+                        cb(res);
                     }
                 }
             });

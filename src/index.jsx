@@ -244,7 +244,7 @@ var App = React.createClass({
                 break;
 
                 case Login:
-                props = {push: push};
+                props = {push: push, loggedIn: appState.get('loggedIn')};
                 break;
 
                 case MobileSetEditor:
@@ -295,6 +295,14 @@ var Login = React.createClass ({
 
     mixins: [LinkedStateMixin, History],
 
+    componentWillMount: function() {
+        auth.loggedIn((artistId) => {
+            if (artistId) {
+                this.history.replaceState(null, '/content');
+            }
+        });
+    },
+
     getInitialState: function() {
         return {
             username: '',
@@ -337,11 +345,39 @@ var Login = React.createClass ({
         console.log(this.state.username);
         console.log(this.state.password);
 
-        auth.logIn(this.state.username, this.state.password, (result) => {
-            console.log('Login Result:');
-            console.log(result);
+        auth.logIn(this.state.username, this.state.password, (err) => {
+            console.log('Errors?');
+            console.log(err);
 
-            if (result) {
+            if (err) {
+                switch (err.responseJSON.error) {
+                    case 'User not found':
+                    console.log('Username was incorrect.');
+                    this.setState({
+                        username: '',
+                        password: '',
+                        error: 'User not found.'
+                    });
+                    break;
+
+                    case 'Incorrect Password':
+                    console.log('Password was incorrect.');
+                    this.setState({
+                        password: '',
+                        error: 'Incorrect password.'
+                    });
+                    break;
+
+                    default:
+                    console.log('Unknown error.');
+                    this.setState({
+                        username: '',
+                        password: '',
+                        error: 'User not found.'
+                    });
+                    break;
+                }
+            } else {
                 this.history.pushState(null, '/content');
             }
         });
