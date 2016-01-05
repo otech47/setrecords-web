@@ -65,7 +65,7 @@ var initialAppState = Immutable.Map({
             overtime: []
         }
     },
-    soundcloud_metrics: {
+    soundcloudMetrics: {
         plays: {
             current: '',
             last: '',
@@ -237,6 +237,10 @@ var App = React.createClass({
 
                 case SocialReport:
                 props = {push: push, loaded: appState.get('loaded'), socialMetrics: appState.get('socialMetrics'), artistId: appState.get('artistId')};
+                break;
+
+                case SoundcloudReport:
+                props = {push: push, loaded: appState.get('loaded'), soundcloudMetrics: appState.get('soundcloudMetrics'), artistId: appState.get('artistId')};
                 break;
 
                 case BeaconReport:

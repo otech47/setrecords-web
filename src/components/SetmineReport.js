@@ -120,9 +120,6 @@ var SetmineReport = React.createClass({
     },
 
     updateSetmine(cohort) {
-        console.log('Updating to cohort: ');
-        console.log(cohort);
-
         var timezoneOffset = moment().utcOffset();
         var query = `{
             setmine_metrics (artist_id: ${this.props.artistId}) {
@@ -203,19 +200,6 @@ var SetmineReport = React.createClass({
         var playsCurrent = metrics.plays.current;
         var viewsCurrent = metrics.views.current;
         var favoritesCurrent = metrics.favorites.current;
-
-        var previousCohort;
-        switch (this.state.cohort) {
-            case 'daily':
-            previousCohort = 'yesterday';
-            break;
-            case 'weekly':
-            previousCohort = 'last week';
-            break;
-            case 'monthly':
-            previousCohort = 'last month';
-            break;
-        }
 
         return (
             <div className='metrics-panel' id='SetmineReport'>
