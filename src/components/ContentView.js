@@ -5,29 +5,23 @@ import Loader from 'react-loader';
 import constants from '../constants/constants';
 
 var ContentView = React.createClass({
-
-    getInitialState() {
-        return {
-            loaded: false
-        };
-    },
-
     componentWillMount() {
-        this.updateSets();
         this.props.push({
             type: 'SHALLOW_MERGE',
             data: {
-                header: 'Uploads'
+                header: 'Uploads',
+                loaded: false
             }
         });
     },
 
     componentDidMount() {
-        mixpanel.track("Content Page Open");
+        // mixpanel.track("Content Page Open");
+        this.updateSets();
     },
 
     render() {
-        var sets = this.props.appState.get('sets');
+        var sets = this.props.sets;
         var setTiles = _.map(sets, (set) => {
             if (!set.event) {
                 set.event = {
@@ -39,7 +33,7 @@ var ContentView = React.createClass({
             }
             var setName = set.event.event;
             if(set.episode != null && set.episode.episode.length > 0) {
-                var setName = set.event.event+' - '+set.episode.episode    ;
+                var setName = set.event.event + ' - ' + set.episode.episode;
             }
 
             var imageURL;
@@ -61,15 +55,14 @@ var ContentView = React.createClass({
                 imageURL: imageURL,
                 set_length: set.set_length,
                 popularity: set.popularity,
-                is_radiomix: set.event.is_radiomix,
-                push: this.props.push
+                is_radiomix: set.event.is_radiomix
             };
 
             return (<SetTile {...props} />);
         });
 
         return (
-            <Loader loaded={this.state.loaded}>
+            <Loader loaded={this.props.loaded}>
                 <div className='content-page flex-row'>
                     {setTiles}
                 </div>
@@ -78,7 +71,8 @@ var ContentView = React.createClass({
     },
 
     updateSets() {
-        var artistId = this.props.appState.get('artistId');
+        var artistId = this.props.artistId;
+        console.log(artistId);
         var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
 
         var query = `{
@@ -132,14 +126,13 @@ var ContentView = React.createClass({
         })
         .done((res) => {
             console.log(res);
-            this.setState({
-                loaded: true
-            }, this.props.push({
+            this.props.push({
                 type: 'SHALLOW_MERGE',
                 data: {
+                    loaded: true,
                     sets: res.payload.artist.sets
                 }
-            }));
+            });
         })
         .fail(function(err) {
             console.log(err);

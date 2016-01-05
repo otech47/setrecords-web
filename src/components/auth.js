@@ -1,20 +1,111 @@
 var auth = {
-    isLoggedIn(callback) {
+    loggedIn: function (cb) {
+        console.log('Checking log in status...');
+
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/login';
+
         $.ajax({
-            type: 'POST',
-            url: 'https://api.setmine.com/v/10/setrecordsuser/login',
+            type: 'post',
+            url: requestUrl,
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            }
         })
         .done((res) => {
-            console.log('SUCCESS');
+            console.log('==LOGGED IN==');
             console.log(res);
-            callback(true);
+            cb(res.payload.artist_id);
         })
-        .error((err) => {
-            console.log("FAILURE");
+        .fail((err) => {
             console.log(err);
-            callback(false);
+            cb();
         });
-    }
-}
+    },
+
+    logIn: function (user, pass, cb) {
+        console.log('Logging in...');
+        cb = arguments[arguments.length - 1];
+
+        this.loggedIn((artistId) => {
+            if (artistId) {
+                console.log('Session exists!');
+                this.onChange(artistId);
+                if (cb) {
+                    cb();
+                }
+                return;
+            }
+
+            console.log('No session exists, attempting to submit credentials.');
+            this.submitCredentials(user, pass, (res) => {
+                if (res.status == 'success') {
+                    console.log('Submission successful.');
+                    this.onChange(res.payload.setrecordsuser_login.artist_id);
+                    if (cb) {
+                        cb();
+                    }
+                } else {
+                    console.log('Submission not successful');
+                    this.onChange();
+                    if (cb) {
+                        cb(res);
+                    }
+                }
+            });
+        });
+    },
+
+    logOut: function (cb) {
+        console.log('Logging out...');
+
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/logout';
+        $.ajax({
+            type: 'get',
+            url: requestUrl,
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            }
+        })
+        .done((res) => {
+            if (cb) {
+                cb();
+            }
+            this.onChange(false);
+        })
+        .fail((err) => {
+            console.log(err);
+        });
+    },
+
+    onChange: function () {},
+
+    submitCredentials: function (user, pass, cb) {
+        console.log('==SUBMIT CREDENTIALS==');
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/login';
+
+        $.ajax({
+            type: 'POST',
+            url: requestUrl,
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
+            data: {
+                username: user,
+                password: pass
+            }
+        })
+        .done((res) => {
+            console.log(res);
+            cb(res);
+        })
+        .fail((err) => {
+            console.log(err);
+            cb(err);
+        });
+    },
+};
 
 module.exports = auth;

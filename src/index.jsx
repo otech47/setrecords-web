@@ -1,14 +1,15 @@
 import R from 'ramda';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import LinkedStateMixin from 'react-addons-linked-state-mixin';
 import Immutable from 'immutable';
 import {IndexRoute, Link, Route, Router, History } from 'react-router';
 import GlobalEventHandler from './services/globalEventHandler';
 import _ from 'underscore';
 import async from 'async';
 import constants from './constants/constants';
+import auth from './components/auth';
 
-import Login from './components/Login';
 import MobileSetEditor from './components/MobileSetEditor';
 import Header from './components/Header';
 import NavBar from './components/NavBar';
@@ -26,14 +27,18 @@ import SocialReport from './components/SocialReport';
 import SoundcloudReport from './components/SoundcloudReport';
 import YoutubeReport from './components/YoutubeReport';
 
+import ForgotPassword from './components/ForgotPassword';
+import Icon from './components/Icon';
+
 import UpdateFunctions from './mixins/UpdateFunctions';
 import UtilityFunctions from './mixins/UtilityFunctions';
 
-var initialAppState = Immutable.Map({
+var defaultValues = {
     settings_editor: false,
     set_editor: false,
     upload_set_wizard: false,
     loaded: false,
+    loggedIn: false,
     sets: [],
     working_set: {},
     editSet: {},
@@ -118,7 +123,9 @@ var initialAppState = Immutable.Map({
             overtime: []
         }
     }
-});
+};
+
+var initialAppState = Immutable.Map(defaultValues);
 
 var evtHandler = GlobalEventHandler(initialAppState);
 var evtTypes = evtHandler.types;
@@ -135,9 +142,24 @@ var App = React.createClass({
         };
     },
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevState.appState.get('artistId') != this.state.appState.get('artistId')) {
+    updateAuth: function (artistId) {
+        console.log('Update auth: ' + artistId);
+        if (artistId) {
+            console.log('Updating auth to artist ID: ' + artistId);
+            push({
+                type: 'SHALLOW_MERGE',
+                data: {
+                    artistId: artistId,
+                    loggedIn: true
+                }
+            });
             this.updateArtist();
+        } else {
+            console.log('This user not authorized.');
+            push({
+                type: 'SHALLOW_MERGE',
+                data: defaultValues
+            });
         }
     },
 
@@ -148,6 +170,7 @@ var App = React.createClass({
                 loaded: false
             }
         });
+
         var requestURL = 'https://api.setmine.com/v/10/setrecordsuser/login';
         $.ajax({
             type: "POST",
@@ -158,21 +181,15 @@ var App = React.createClass({
             }
         })
         .done((res) => {
-            if (res.status == 'failure') {
-                console.log("An error occurred getting artist data.");
-                console.log(res.payload.error);
-            } else {
-                console.log(res);
-                push({
-                    type: 'SHALLOW_MERGE',
-                    data: {
-                        artist_data: res.payload.artist,
-                        artistId: res.payload.artist_id,
-                        loaded: true
-                    }
-                });
-                history.pushState(null, '/content');
-            }
+            console.log(res);
+            push({
+                type: 'SHALLOW_MERGE',
+                data: {
+                    artist_data: res.payload.artist,
+                    artistId: res.payload.artist_id,
+                    loaded: true
+                }
+            });
         })
         .fail((err) => {
             console.log('An error occurred getting artist data.');
@@ -190,14 +207,17 @@ var App = React.createClass({
 
     componentWillMount() {
         this._attachStreams(); //global event handler
-        this.updateArtist();
+        auth.onChange = this.updateAuth;
+        console.log('Will mount');
+        auth.logIn();
     },
 
     render() {
         var appState = this.state.appState;
+
         return (
             <div className='flex-column' id='App'>
-                <Header artistImage={appState.get('artist_data').icon_image.imageURL} artistName={appState.get('artist_data').artist} headerText={appState.get('header')} />
+                <Header artistImage={appState.get('artist_data').icon_image.imageURL} artistName={appState.get('artist_data').artist} headerText={appState.get('header')} logOut={this.logOut} loggedIn={appState.get('loggedIn')} />
                 <div className='flex-row view-container'>
                     {this.props.location.pathname == '/' ? '' : <NavBar push={push} /> }
                     <div className='view flex-column flex'>
@@ -219,8 +239,12 @@ var App = React.createClass({
                 props = {push: push, loaded: appState.get('loaded'), beaconMetrics: appState.get('beaconMetrics'), artistId: appState.get('artistId')};
                 break;
 
+                case ContentView:
+                props = {push: push, loaded: appState.get('loaded'), sets: appState.get('sets'), artistId: appState.get('artistId')};
+                break;
+
                 case Login:
-                props = {push: push};
+                props = {push: push, loggedIn: appState.get('loggedIn')};
                 break;
 
                 case MobileSetEditor:
@@ -258,7 +282,106 @@ var App = React.createClass({
 
             return React.cloneElement(child, props);
         });
-    }
+    },
+
+    logOut: function () {
+        auth.logOut(() => {
+            this.history.pushState(null, '/');
+        });
+    },
+});
+
+var Login = React.createClass ({
+
+    mixins: [LinkedStateMixin, History],
+
+    componentWillMount: function() {
+        auth.loggedIn((artistId) => {
+            if (artistId) {
+                this.history.replaceState(null, '/content');
+            }
+        });
+    },
+
+    getInitialState: function() {
+        return {
+            username: '',
+            password: '',
+            error: null,
+            changePassword: false
+        }
+    },
+
+    render: function () {
+        var password = this.state.changePassword ? <ForgotPassword /> : <p onClick={() => this.setState({changePassword: true})}>Forgot password?</p>
+        return(
+            <div id='Login'>
+                <video id='introvid' autoPlay='auto' loop='loop'>
+                    <source src='https://setmine.com/videos/setrecords-login-compress.mp4' type='video/mp4'/>
+                </video>
+                <section className='flex-container'>
+                    <div className='form center'>
+                        <div className='flex-row' onClick={() => this.setState({changePassword:false})}>
+                            <Icon className='center'>perm_identity</Icon>
+                            <input type='text' placeholder='Username' valueLink={this.linkState('username')} />
+                        </div>
+                        <div className='flex-row' onClick={() => this.setState({changePassword:false})}>
+                            <Icon className='center'>lock_outline</Icon>
+                            <input type='password' placeholder='Password' valueLink={this.linkState('password')} />
+                        </div>
+                        <div className={'set-flex login-error ' + (this.state.error ? '' : 'hidden')}>
+                            {this.state.error}
+                        </div>
+                        <button className='flex-container' onClick={this.submitLogin} disabled={(this.state.username.length > 0 && this.state.password.length > 0 ? false : true)}>Sign In</button>
+                        {password}
+                    </div>
+                </section>
+            </div>
+        );
+    },
+
+    submitLogin: function() {
+        console.log('Submitting login with:');
+        console.log(this.state.username);
+        console.log(this.state.password);
+
+        auth.logIn(this.state.username, this.state.password, (err) => {
+            console.log('Errors?');
+            console.log(err);
+
+            if (err) {
+                switch (err.responseJSON.error) {
+                    case 'User not found':
+                    console.log('Username was incorrect.');
+                    this.setState({
+                        username: '',
+                        password: '',
+                        error: 'User not found.'
+                    });
+                    break;
+
+                    case 'Incorrect Password':
+                    console.log('Password was incorrect.');
+                    this.setState({
+                        password: '',
+                        error: 'Incorrect password.'
+                    });
+                    break;
+
+                    default:
+                    console.log('Unknown error.');
+                    this.setState({
+                        username: '',
+                        password: '',
+                        error: 'User not found.'
+                    });
+                    break;
+                }
+            } else {
+                this.history.pushState(null, '/content');
+            }
+        });
+    },
 });
 
 var bodyMount = document.getElementById('body-mount-point');
