@@ -77,7 +77,7 @@ var initialAppState = Immutable.Map({
             overtime: []
         }
     },
-    youtube_metrics: {
+    youtubeMetrics: {
         plays: {
             current: '',
             last: '',
@@ -215,16 +215,12 @@ var App = React.createClass({
             var props = {};
 
             switch (child.type) {
+                case BeaconReport:
+                props = {push: push, loaded: appState.get('loaded'), beaconMetrics: appState.get('beaconMetrics'), artistId: appState.get('artistId')};
+                break;
+
                 case Login:
                 props = {push: push};
-                break;
-
-                case UploadSetWizard:
-                props = {push: push, originalArtist: appState.get('artist_data')};
-                break;
-
-                case SettingsEditor:
-                props = {push: push, artistId: appState.get('artistId'), loaded: appState.get('loaded'), artistData: appState.get('artist_data')};
                 break;
 
                 case MobileSetEditor:
@@ -235,6 +231,10 @@ var App = React.createClass({
                 props = {push: push, loaded: appState.get('loaded'), setmineMetrics: appState.get('setmineMetrics'), artistId: appState.get('artistId')};
                 break;
 
+                case SettingsEditor:
+                props = {push: push, artistId: appState.get('artistId'), loaded: appState.get('loaded'), artistData: appState.get('artist_data')};
+                break;
+
                 case SocialReport:
                 props = {push: push, loaded: appState.get('loaded'), socialMetrics: appState.get('socialMetrics'), artistId: appState.get('artistId')};
                 break;
@@ -243,8 +243,12 @@ var App = React.createClass({
                 props = {push: push, loaded: appState.get('loaded'), soundcloudMetrics: appState.get('soundcloudMetrics'), artistId: appState.get('artistId')};
                 break;
 
-                case BeaconReport:
-                props = {push: push, loaded: appState.get('loaded'), beaconMetrics: appState.get('beaconMetrics'), artistId: appState.get('artistId')};
+                case UploadSetWizard:
+                props = {push: push, originalArtist: appState.get('artist_data')};
+                break;
+
+                case YoutubeReport:
+                props = {push: push, loaded: appState.get('loaded'), youtubeMetrics: appState.get('youtubeMetrics'), artistId: appState.get('artistId')};
                 break;
 
                 default:
