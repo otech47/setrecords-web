@@ -218,7 +218,7 @@ var App = React.createClass({
 
         return (
             <div className='flex-column' id='App'>
-                <Header artistImage={appState.get('artist_data').icon_image.imageURL} artistName={appState.get('artist_data').artist} headerText={appState.get('header')} />
+                <Header artistImage={appState.get('artist_data').icon_image.imageURL} artistName={appState.get('artist_data').artist} headerText={appState.get('header')} logOut={this.logOut} />
                 <div className='flex-row view-container'>
                     {this.props.location.pathname == '/' ? '' : <NavBar push={push} /> }
                     <div className='view flex-column flex'>
@@ -238,6 +238,10 @@ var App = React.createClass({
             switch (child.type) {
                 case BeaconReport:
                 props = {push: push, loaded: appState.get('loaded'), beaconMetrics: appState.get('beaconMetrics'), artistId: appState.get('artistId')};
+                break;
+
+                case ContentView:
+                props = {push: push, loaded: appState.get('loaded'), sets: appState.get('sets'), artistId: appState.get('artistId')};
                 break;
 
                 case Login:
@@ -279,7 +283,13 @@ var App = React.createClass({
 
             return React.cloneElement(child, props);
         });
-    }
+    },
+
+    logOut: function () {
+        auth.logOut(() => {
+            this.history.pushState(null, '/');
+        });
+    },
 });
 
 var Login = React.createClass ({

@@ -39,10 +39,10 @@ var auth = {
             console.log('No session exists, attempting to submit credentials.');
             this.submitCredentials(user, pass, (res) => {
                 if (res.status == 'success') {
+                    this.onChange(res.payload.setrecordsuser_login.artist_id);
                     if (cb) {
                         cb(true);
                     }
-                    this.onChange(res.payload.setrecordsuser_login.artist_id);
                 } else {
                     if (cb) {
                         cb(false);
