@@ -601,10 +601,13 @@ header .artist .options {
 }
 header .artist .options h1 {
   font-size: 2rem;
-  margin: 0.5rem 0;
+  margin: 0;
 }
 header .artist .options p {
   margin: 0;
+  color: #22a7f0;
+  text-decoration: underline;
+  cursor: pointer;
 }
 header .artist .options span:hover {
   cursor: pointer;
