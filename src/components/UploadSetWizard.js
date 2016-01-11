@@ -116,8 +116,10 @@ var UploadSetWizard = React.createClass({
             deepLinkState={this.deepLinkState}
             setLength={this.state.set_length}
             addTrack={this.addTrack}
+            tracklistUrl={this.state.tracklist_url}
             deleteTrack={this.deleteTrack}
-            tracklist={this.state.tracklist} />);
+            tracklist={this.state.tracklist}
+            loadTracksFromUrl={this.loadTracksFromUrl} />);
             break;
 
             case 4:
@@ -724,17 +726,32 @@ var UploadSetWizard = React.createClass({
         }
     },
 
-    loadTracksFromURL: function() {
-        var self = this;
-        this.pullTracks(this.state.tracklistURL, function(tracks) {
-            if (tracks == null) {
-                alert("Please enter a valid 1001 tracklists URL.");
-            } else {
-                var newTracklist = update(self.state.tracklist, {$set: tracks});
-                self.setState({
-                    tracklist: update(self.state.tracklist,  {$set: tracks})
-                });
+    loadTracksFromUrl: function (url) {
+        console.log('Requested to load ' + url);
+
+        var requestUrl = 'https://api.setmine.com/v/10/sets/1001tracklist';
+
+        $.ajax({
+            type: 'post',
+            url: requestUrl,
+            data: {
+                set_id: -1,
+                tracklist_url: url
+            },
+            crossDoman: true,
+            xhrFields: {
+                withCredentials: true
             }
+        })
+        .done((res) => {
+            console.log(res);
+            this.setState({
+                tracklist: res.payload
+            });
+        })
+        .fail((err) => {
+            console.log(err);
+            alert('Please enter a valid 1001 tracklists URL.');
         });
     },
 
