@@ -131,7 +131,9 @@ var MobileSetEditor = React.createClass({
                         setLength={this.state.set_length}
                         addTrack={this.addTrack}
                         deleteTrack={this.deleteTrack}
-                        tracklist={this.state.tracklist || []} />
+                        tracklistUrl={this.state.tracklist_url}
+                        tracklist={this.state.tracklist || []}
+                        loadTracksFromUrl={this.loadTracksFromUrl} />
 
                     <div className='flex-row form-panel center' id='apply-changes'>
                         <div className='flex-fixed apply flex-container' onClick={this.applyChanges}>
@@ -543,31 +545,35 @@ var MobileSetEditor = React.createClass({
             console.error(err);
         });
     },
+
+    loadTracksFromUrl: function (url) {
+        console.log('Requested to load ' + url);
+
+        var requestUrl = 'https://api.setmine.com/v/10/sets/1001tracklist';
+
+        $.ajax({
+            type: 'post',
+            url: requestUrl,
+            data: {
+                set_id: this.props.params.id,
+                tracklist_url: url
+            },
+            crossDoman: true,
+            xhrFields: {
+                withCredentials: true
+            }
+        })
+        .done((res) => {
+            console.log(res);
+            this.setState({
+                tracklist: res.payload
+            });
+        })
+        .fail((err) => {
+            console.log(err);
+            alert('Please enter a valid 1001 tracklists URL.');
+        });
+    },
 });
 
 module.exports = MobileSetEditor;
-
-
-
-
-
-//
-//
-
-//
-
-//
-
-//
-
-//
-
-//
-
-//
-
-//
-// showApplyingStatus() {
-
-// },
-//

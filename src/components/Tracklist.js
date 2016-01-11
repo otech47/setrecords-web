@@ -8,7 +8,7 @@ var Tracklist = React.createClass({
     mixins: [UtilityFunctions],
 
     render: function() {
-        var {tracklist, deepLinkState, deleteTrack, addTrack, ...other} = this.props;
+        var {tracklist, tracklistUrl, deepLinkState, deleteTrack, addTrack, ...other} = this.props;
 
         if(tracklist.length > 0) {
             var trackRows = _.map(tracklist, (track, index) => {
@@ -48,7 +48,7 @@ var Tracklist = React.createClass({
                 <div className='urlTracklist form-panel'>
                     <h1>1001tracklists URL</h1>
                     <input type='text' valueLink={deepLinkState(['tracklist_url'])} />
-                    <button onClick={this.loadTracksFromURL}>Load</button>
+                    <button onClick={this.props.loadTracksFromUrl.bind(null, tracklistUrl)}>Load</button>
                 </div>
                 <div className='tracks flex-column form-panel'>
                     <h1>Edit Tracks</h1>
@@ -57,10 +57,6 @@ var Tracklist = React.createClass({
                 </div>
             </div>
         );
-    },
-
-    loadTracksFromURL() {
-        console.log('loading tracks...');
     }
 });
 
