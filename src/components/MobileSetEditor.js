@@ -441,15 +441,20 @@ var MobileSetEditor = React.createClass({
 
     newTracks(callback) {
         console.log('New tracks pending.');
-        console.log(this.state.tracklist);
 
-        var requestUrl = 'https://api.setmine.com/v/10/sets/tracklist';
+        var toSend = _.map(this.state.tracklist, function (track, index) {
+            track['trackname'] = track.artistname + ' - ' + track.songname;
+            return _.omit(track, 'starttime');
+        });
+        console.log(toSend);
+
+        var requestUrl = 'http://localhost:3000/v/10/sets/tracklist';
 
         $.ajax({
             type: 'POST',
             url: requestUrl,
             data: {
-                tracklist: this.state.tracklist,
+                tracklist: toSend,
                 set_id: this.props.params.id
             },
             crossDomain: true,
