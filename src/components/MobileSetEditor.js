@@ -60,7 +60,7 @@ var MobileSetEditor = React.createClass({
             if (this.state.episode) {
                 episodeComponent = (
                     <div className='center'>
-                        <h1>Episode Name</h1>
+                        <h1>Episode Name {this.checkChangedField(['episode', 'episode']) ? <span className='warning'>*</span> : ''}</h1>
                         <input type='text' valueLink={deepLinkState(['episode', 'episode'])} />
                     </div>
                 )
@@ -85,7 +85,7 @@ var MobileSetEditor = React.createClass({
                     </button>
 
                     <div className='center'>
-                        <h1>Mix Name</h1>
+                        <h1>Mix Name {this.checkChangedField(['event', 'event']) ? <span className='warning'>*</span> : ''}</h1>
                         <input type='text' className='MixTitle' valueLink={deepLinkState(['event', 'event'])} />
                     </div>
 
@@ -148,6 +148,14 @@ var MobileSetEditor = React.createClass({
                 </div>
             </Loader>
         );
+    },
+
+    checkChangedField: function (fieldArray) {
+        var potential = this.deepLinkState(fieldArray).value;
+
+        var reference = this.deepLinkState(['originalSet'].concat(fieldArray)).value;
+
+        return potential != reference;
     },
 
     addTrack: function() {
@@ -227,7 +235,13 @@ var MobileSetEditor = React.createClass({
     },
 
     hasChanges: function() {
-        return true;
+        var referenceObject = _.extend(this.getInitialState(), this.state.originalSet);
+
+        var changes = _.some(referenceObject, (value, key) => {
+            return !(_.isEqual(value, this.state[key]));
+        });
+
+        return changes;
     },
 
     newImage(callback) {

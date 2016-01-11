@@ -30,11 +30,6 @@ var SettingsEditor = React.createClass({
         };
     },
 
-    componentDidMount() {
-        mixpanel.track("Settings Page Open");
-        this.getAccountData();
-    },
-
     componentWillMount: function() {
         this.props.push({
             type: 'SHALLOW_MERGE',
@@ -43,6 +38,11 @@ var SettingsEditor = React.createClass({
                 loaded: false
             }
         });
+    },
+
+    componentDidMount() {
+        // mixpanel.track("Settings Page Open");
+        this.getAccountData();
     },
 
     routerWillLeave: function (nextLocation) {
@@ -100,7 +100,6 @@ var SettingsEditor = React.createClass({
                                             loaded: false
                                         }
                                     });
-
                                     this.setState(this.getInitialState);
                                     this.getAccountData();
                                 }}
