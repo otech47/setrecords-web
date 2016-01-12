@@ -100,7 +100,7 @@ var SettingsEditor = React.createClass({
                                             loaded: false
                                         }
                                     });
-                                    this.setState(this.getInitialState);
+                                    this.setState(this.getInitialState());
                                     this.getAccountData();
                                 }}
                                 style={{
