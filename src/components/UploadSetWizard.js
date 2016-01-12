@@ -562,10 +562,7 @@ var UploadSetWizard = React.createClass({
                         failure: true,
                         applying: false
                     }, () => {
-                        console.log('This is where the upload wizard would close and we would redirect to the content view.');
-                        // setTimeout(function() {
-                        //     this.props.close(true);
-                        // }, 3000);
+                        this.history.pushState(null, '/content');
                     });
 
                     mixpanel.track("Error", {
@@ -616,7 +613,7 @@ var UploadSetWizard = React.createClass({
     updateDatabase: function(bundle, tracklist) {
         async.waterfall([
             function (callback) {
-                var requestUrl = 'https://api.setmine.com/v/10/sets/register';
+                var requestUrl = 'http://localhost:3000/v/10/sets/register';
                 $.ajax({
                     type: 'POST',
                     url: requestUrl,
