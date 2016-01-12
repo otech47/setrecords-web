@@ -9,6 +9,26 @@ var WizardStepConfirmation = React.createClass({
 
         var outletText = '';
         var releaseType = 'Free';
+        var typeText = '';
+
+        switch (type) {
+            case 'album':
+            typeText = 'Album';
+            break;
+
+            case 'festival':
+            typeText = 'Live';
+            break;
+
+            case 'mix':
+            typeText = 'Mix';
+            break;
+
+            default:
+            typeText = 'Mix';
+            break;
+        }
+
 
         if (paid == 1) {
             var priceData = (
@@ -29,7 +49,7 @@ var WizardStepConfirmation = React.createClass({
         }
 
         var artistText = artists[0].artist;
-        if (artists.length > 1 && type != 'Album') {
+        if (artists.length > 1 && type != 'album') {
             artistText += ' feat. ' + _.pluck(_.rest(artists), 'artist').join(', ');
         }
 
@@ -46,7 +66,7 @@ var WizardStepConfirmation = React.createClass({
                             </tr>
                             <tr>
                                 <td><p>Set Type:</p></td>
-                                <td><p>{type}</p></td>
+                                <td><p>{typeText}</p></td>
                             </tr>
                             <tr>
                                 <td><p>Release:</p></td>
@@ -61,7 +81,7 @@ var WizardStepConfirmation = React.createClass({
                         </table>
                     </div>
                     <div className='flex-column flex-fixed'>
-                        <MockSetTileImproved image={mockImage} artists={artists} event={event} episode={type == 'Mix' ? episode : ''} setLength={set_length} popularity={0} />
+                        <MockSetTileImproved image={mockImage} artists={artists} event={event} episode={type == 'mix' ? episode : ''} setLength={set_length} popularity={0} />
                     </div>
                 </div>
                 <button className='step-button' onClick={this.props.uploadSet}>

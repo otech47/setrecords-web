@@ -14,7 +14,7 @@ var WizardStep4 = React.createClass({
         var fieldComponents;
         var featuredArtistComponent = '';
 
-        if (type == 'Album') {
+        if (type == 'album') {
             fieldComponents = (
                 <input type='text' valueLink={deepLinkState(['event'])} placeholder='Album Name' />
             );
@@ -36,7 +36,7 @@ var WizardStep4 = React.createClass({
                 );
             }
 
-            if (type == 'Live') {
+            if (type == 'festival') {
                 var placeholder = 'Event Name';
             } else {
                 var placeholder = 'Mix Name';
@@ -54,7 +54,7 @@ var WizardStep4 = React.createClass({
             );
         }
         var featuredArtistButton = '';
-        if (type != 'Album') {
+        if (type != 'album') {
             featuredArtistButton = (
                 <div className='featured-artist flex-row'>
                     <h3>Featured Artists</h3>
@@ -79,7 +79,7 @@ var WizardStep4 = React.createClass({
                     </div>
 
                     <div className='flex-column flex-fixed' style={{alignItems: 'center'}}>
-                        <MockSetTileImproved image={this.props.image} artists={this.props.artists} event={this.props.event} episode={type == 'Mix' ? this.props.episode : ''} setLength={this.props.setLength} popularity={0} />
+                        <MockSetTileImproved image={this.props.image} artists={this.props.artists} event={this.props.event} episode={type == 'mix' ? this.props.episode : ''} setLength={this.props.setLength} popularity={0} />
 
                         <Dropzone
                             ref='dropzone'

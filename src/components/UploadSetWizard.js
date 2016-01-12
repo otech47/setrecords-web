@@ -585,7 +585,8 @@ var UploadSetWizard = React.createClass({
                         tracklist_url: this.state.tracklist_url,
                         paid: this.state.paid,
                         additional_artists: additionalArtists,
-                        image_url: registeredUrls[1]
+                        image_url: registeredUrls[1],
+                        tags: [this.state.genre]
                     };
                     console.log('Bundle done:');
                     console.log(setBundle);
@@ -596,21 +597,23 @@ var UploadSetWizard = React.createClass({
                         tracklist.push({
                             'id': -1,
                             'starttime': '00:00',
-                            'artistname': this.props.originalArtist,
+                            'artistname': this.props.originalArtist.artist,
                             'songname': 'untitled'
                         });
                     }
                     console.log('Tracklist done:');
                     console.log(tracklist);
 
-                    console.log('Sending bundle and tracklist to database...');
-                    this.updateDatabase(setBundle, tracklist);
+                    setBundle.tracklist = tracklist;
+
+                    console.log('Sending bundle to database...');
+                    this.updateDatabase(setBundle);
                 }
             });
         });
     },
 
-    updateDatabase: function(bundle, tracklist) {
+    updateDatabase: function(bundle) {
         async.waterfall([
             function (callback) {
                 var requestUrl = 'http://localhost:3000/v/10/sets/register';
