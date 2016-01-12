@@ -9,15 +9,15 @@ var WizardStep1 = React.createClass({
                 <table>
                     <tbody>
                         <tr>
-                            <td><button name="festival" className="step-button" onClick={stepForward.bind(null, {'type': 'Live'})}>Live</button></td>
+                            <td><button name="festival" className="step-button" onClick={stepForward.bind(null, {'type': 'festival'})}>Live</button></td>
                             <td><p>From a festival, concert, or another live venue.</p></td>
                         </tr>
                         <tr>
-                            <td><button name="mix" className="step-button" onClick={stepForward.bind(null, {'type': 'Mix'})}>Mix</button></td>
+                            <td><button name="mix" className="step-button" onClick={stepForward.bind(null, {'type': 'mix'})}>Mix</button></td>
                             <td><p>A set mixed in a studio, featuring samples from other artists (e.g., a radio show).</p></td>
                         </tr>
                         <tr>
-                            <td><button name="album" className="step-button" onClick={stepForward.bind(null, {'type': 'Album'})}>Album</button></td>
+                            <td><button name="album" className="step-button" onClick={stepForward.bind(null, {'type': 'album'})}>Album</button></td>
                             <td><p>An official, original release.</p></td>
                         </tr>
                     </tbody>
