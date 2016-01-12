@@ -115,9 +115,13 @@ var MobileSetEditor = React.createClass({
                     }}>
                         {
                             ({opacity, visibility}) =>
-                            <Notification dismiss={() => this.history.pushState(null, '/content')} style={{
-                                opacity: `${opacity}`,
-                                visibility: `${visibility}`
+                            <Notification dismiss={() => {
+                                this.setState(this.getInitialState());
+                                this.history.pushState(null, '/content');
+                                }}
+                                style={{
+                                   opacity: `${opacity}`,
+                                   visibility: `${visibility}`
                             }}>
                                 {statusMessage}
                             </Notification>
@@ -237,9 +241,16 @@ var MobileSetEditor = React.createClass({
     },
 
     hasChanges: function() {
-        var referenceObject = _.extend(this.getInitialState(), this.state.originalSet);
+        var referenceObject = _.extend({
+            uploadedImage: []
+        }, this.state.originalSet);
 
         var changes = _.some(referenceObject, (value, key) => {
+            if (!(_.isEqual(value, this.state[key]))) {
+                console.log(value + ' did not match ' + this.state[key]);
+                console.log(referenceObject);
+                console.log(key);
+            }
             return !(_.isEqual(value, this.state[key]));
         });
 
@@ -416,6 +427,8 @@ var MobileSetEditor = React.createClass({
                     // });
                 } else {
                     console.log('All changes applied successfully.');
+
+                    this.getSetById(this.props.params.id);
 
                     this.setState({
                         applying: false,
