@@ -614,62 +614,24 @@ var UploadSetWizard = React.createClass({
     },
 
     updateDatabase: function(bundle) {
-        async.waterfall([
-            function (callback) {
-                var requestUrl = 'http://localhost:3000/v/10/sets/register';
-                $.ajax({
-                    type: 'POST',
-                    url: requestUrl,
-                    data: bundle,
-                    crossDomain: true,
-                    xhrFields: {
-                        withCredentials: true
-                    }
-                })
-                .done((res) => {
-                    console.log('Set registered on database.');
-                    console.log(res);
-                    callback(null, res.payload.register.id);
-                })
-                .fail((err) => {
-                    console.log('An error occurred when updating the database.');
-                    console.log(err);
-                    callback(err);
-                });
-            },
+        var requestUrl = 'http://localhost:3000/v/10/sets/register';
 
-            function (newSetId, callback) {
-                console.log('Adding tracklist for set ID = ' + newSetId);
-                var requestUrl = 'https://api.setmine.com/v/10/sets/tracklist';
-                $.ajax({
-                    type: 'POST',
-                    url: requestUrl,
-                    data: {
-                        tracklist: tracklist,
-                        set_id: newSetId
-                    },
-                    crossDomain: true,
-                    xhrFields: {
-                        withCredentials: true
-                    }
-                })
-                .done((res) => {
-                    console.log('Tracklist added to the new set.');
-                    console.log(res);
-                    console.log('This is where we would close the upload wizard.');
-                })
-                .fail((err) => {
-                    console.log('An error occurred when adding the tracklist to the new set.');
-                    console.log(err);
-                    console.log('This is where we would close the upload wizard.');
-                })
+        $.ajax({
+            type: 'POST',
+            url: requestUrl,
+            data: bundle,
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
-        ], function (err, results) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(results);
-            }
+        })
+        .done((res) => {
+            console.log('Set registered on database.');
+            console.log(res);
+        })
+        .fail((err) => {
+            console.log('An error occurred when updating the database.');
+            console.log(err);
         });
     },
 
