@@ -18,6 +18,7 @@ import Footer from './components/Footer';
 import ContentView from './components/ContentView';
 import MetricsView from './components/MetricsView';
 import UploadSetWizard from './components/UploadSetWizard';
+import UploadTrackWizard from './components/UploadTrackWizard';
 import SettingsEditor from './components/SettingsEditor';
 import Contact from './components/Contact';
 
@@ -268,6 +269,7 @@ var App = React.createClass({
                 break;
 
                 case UploadSetWizard:
+                case UploadTrackWizard:
                 props = {push: push, originalArtist: appState.get('artist_data')};
                 break;
 
@@ -404,6 +406,7 @@ var routes = (
         <Route path='account' component={SettingsEditor} />
         <Route path='contact' component={Contact} />
         <Route path='upload-set' component={UploadSetWizard} />
+        <Route path='upload-track' component={UploadTrackWizard} />
     </Route>
 );
 

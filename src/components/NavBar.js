@@ -14,7 +14,7 @@ var NavBar = React.createClass({
                     <Icon>queue_music</Icon>
                     <div>Add Set</div>
                 </Link>
-                <Link className='flex-row flex click' to='/upload-set' activeClassName='active' ref='track'>
+                <Link className='flex-row flex click' to='/upload-track' activeClassName='active' ref='track'>
                     <Icon>music_note</Icon>
                     <div>Add Track</div>
                 </Link>
