@@ -2,18 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import update from 'react-addons-update';
 import LinkedStateMixin from 'react-addons-linked-state-mixin';
+import Loader from 'react-loader';
 
 import _ from 'underscore';
 import R from 'ramda';
 import moment from 'moment';
-import WizardStep1 from './WizardStep1';
-import WizardStep2 from './WizardStep2';
-import WizardStep3 from './WizardStep3';
-import WizardStep4Track from './WizardStep4Track';
-import WizardStep5 from './WizardStep5';
-import WizardStep6Beacon from './WizardStep6Beacon';
-import WizardStep6Free from './WizardStep6Free';
-import WizardStepConfirmation from './WizardStepConfirmation';
+import TrackWizardStep1 from './TrackWizardStep1';
+import TrackWizardStep2 from './TrackWizardStep2';
+import TrackWizardStep3 from './TrackWizardStep3';
+import TrackWizardConfirmation from './TrackWizardConfirmation';
 var constants = require('../constants/constants');
 import UtilityFunctions from '../mixins/UtilityFunctions';
 import Joiner from '../services/Joiner';
@@ -34,9 +31,10 @@ var UploadTrackWizard = React.createClass({
             success: false,
             failure: false,
             joining: false,
+            singlesSets: [],
 
             // step 1
-            type: null,
+            selectedSetIndex: -1,
 
             // step 2
             songs: [],
@@ -45,22 +43,11 @@ var UploadTrackWizard = React.createClass({
             temp_url: null,
 
             // step 3
-            tracklist: [],
-            tracklist_url: null,
-
-            // step 4
-            track: '',
-            artists: [this.props.originalArtist],
-            episode: '',
-            genre: '',
-            image: null,
-
-            // step 5
-            paid: 0,
-
-            // step 6
-            outlets: [],
-            price: '0.00',
+            trackName: '',
+            trackArtist: '',
+            event: '',
+            tags: '',
+            uploadedImage: null
         };
     },
 
@@ -68,10 +55,11 @@ var UploadTrackWizard = React.createClass({
         this.props.push({
             type: 'SHALLOW_MERGE',
             data: {
-                header: 'New Track'
+                header: 'New Track',
+                loaded: false
             }
         });
-        this.getTracksSet();
+        this.getSinglesSets();
     },
 
     componentDidMount: function() {
@@ -89,7 +77,7 @@ var UploadTrackWizard = React.createClass({
                 pending_file: null,
                 temp_url: null,
                 songs: update(this.state.songs, {$push: [processedSong]}),
-                set_length: newSetLength
+                setLength: newSetLength
             });
         }).bind(this);
     },
@@ -100,43 +88,75 @@ var UploadTrackWizard = React.createClass({
         switch(this.state.current_step) {
             case 1:
             stepComponent =
-            (<WizardStep2 songs={this.state.songs}
+            (<TrackWizardStep1 stepForward={this.stepForward}
+            availableSets={this.state.singlesSets}
+            originalArtist={this.props.originalArtist} />);
+            break;
+
+            case 2:
+            stepComponent =
+            (<TrackWizardStep2 songs={this.state.songs}
             stepForward={this.stepForward}
             addSongFile={this.addSong}
             removeSong={this.removeSong} />);
             break;
 
-            case 2:
-            stepComponent = (<WizardStep3 stepForward={this.stepForward}
-            deepLinkState={this.deepLinkState}
-            setLength={this.state.set_length}
-            addTrack={this.addTrack}
-            tracklistUrl={this.state.tracklist_url}
-            deleteTrack={this.deleteTrack}
-            tracklist={this.state.tracklist}
-            loadTracksFromUrl={this.loadTracksFromUrl} />);
-            break;
-
             case 3:
-            var setData = {
-                track: this.state.track,
-                genre: this.state.genre,
-                artists: this.state.artists,
-                image: this.state.image,
-                setLength: this.state.set_length,
-            };
+            if (this.state.selectedSetIndex > -1) {
+                var selectedSet = this.state.singlesSets[this.state.selectedSetIndex];
 
-            stepComponent = (<WizardStep4Track stepForward={this.stepForward}
-            deepLinkState={this.deepLinkState}
+                var setData = {
+                    set_id: selectedSet.id,
+                    image: {
+                        preview: constants.S3_ROOT_FOR_IMAGES + selectedSet.icon_image.imageURL
+                    },
+                    event: selectedSet.event.event,
+                    setLength: selectedSet.set_length,
+                    popularity: selectedSet.popularity
+                };
+            } else {
+                var setData = {
+                    set_id: -1,
+                    image: this.state.uploadedImage,
+                    event: this.state.event,
+                    setLength: this.state.setLength,
+                    tags: this.state.tags,
+                    popularity: 0
+                };
+            }
+
+            stepComponent = (<TrackWizardStep3 stepForward={this.stepForward}
+            deepLinkState={this.deepLinkState} {...setData} trackName={this.state.trackName} trackArtist={this.state.trackArtist}
             addImage={this.addImage}
-            addFeaturedArtist={this.addFeaturedArtist}
-            removeFeaturedArtist={this.removeFeaturedArtist}
-            changeFeaturedArtist={this.changeFeaturedArtist}
-            {...setData} />);
+            originalArtist={this.props.originalArtist} />);
             break;
 
             case 4:
-            stepComponent = (<WizardStepConfirmation {...this.state} uploadSet={this.uploadSet} originalArtist={this.props.originalArtist} />);
+            if (this.state.selectedSetIndex > -1) {
+                var selectedSet = this.state.singlesSets[this.state.selectedSetIndex];
+
+                var setData = {
+                    set_id: selectedSet.id,
+                    image: {
+                        preview: constants.S3_ROOT_FOR_IMAGES + selectedSet.icon_image.imageURL
+                    },
+                    event: selectedSet.event.event,
+                    setLength: selectedSet.set_length,
+                    popularity: selectedSet.popularity
+                };
+            } else {
+                var setData = {
+                    set_id: -1,
+                    image: this.state.uploadedImage,
+                    event: this.state.event,
+                    setLength: this.state.setLength,
+                    tags: this.state.tags,
+                    popularity: 0
+                };
+            }
+
+            stepComponent = (<TrackWizardConfirmation {...this.state} uploadTrack={this.uploadTrack} {...setData}
+            originalArtist={this.props.originalArtist} />);
             break;
 
             default:
@@ -151,15 +171,16 @@ var UploadTrackWizard = React.createClass({
             <div className='form-panel'>
                 <div className='step-counter flex-row'>
                     <Icon className={`${this.state.current_step > 1 ? '': 'hidden-fade'}`} onClick={this.stepBackward}>chevron_left</Icon>
-                    <h1 className='center'>{this.state.current_step < 7 ? 'Step ' + this.state.current_step + ' of 6' : 'Confirmation'}</h1>
+                    <h1 className='center'>{this.state.current_step < 4 ? 'Step ' + this.state.current_step + ' of 3' : 'Confirmation'}</h1>
                     <Icon className='hidden-fade'>chevron_right</Icon>
                 </div>
 
                 <div className='flex wizard-body'>
-                    {stepComponent}
+                    <Loader loaded={this.props.loaded}>
+                        {stepComponent}
+                    </Loader>
                 </div>
             </div>
-
         </div>
         );
     },
@@ -192,13 +213,56 @@ var UploadTrackWizard = React.createClass({
         this.setState(newState);
     },
 
-    getTracksSet: function() {
-        var requestUrl = 'https://';
+    getSinglesSets: function() {
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
+        var query = `{
+            artist (id: ${this.props.originalArtist.id}) {
+                sets (event_type: \"singles\") {
+                    id,
+                    event {
+                        id,
+                        event
+                    },
+                    icon_image {
+                        imageURL
+                    }
+                }
+            }
+        }`;
+
+        $.ajax({
+            url: requestUrl,
+            type: 'get',
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
+            data: {
+                query: query
+            }
+        })
+        .done( (res) => {
+            console.log(res);
+            this.setState({
+                singlesSets: res.payload.artist.sets
+            });
+
+            this.props.push({
+                type: 'SHALLOW_MERGE',
+                data: {
+                    loaded: true
+                }
+            });
+        })
+        .fail( (err) => {
+            console.log(err);
+        });
     },
 
     addSong: function(file) {
         console.log(file);
         if (file[0].type == 'audio/mp3' || file[0].type == 'audio/mp4' || file[0].type == 'audio/x-m4a' || file[0].type == 'audio/mpeg' || file[0].type == 'audio/wav') {
+
             var tempAudio = URL.createObjectURL(file[0]);
             this.setState({
                 pending_file: file[0],
@@ -257,7 +321,7 @@ var UploadTrackWizard = React.createClass({
     addImage: function(file) {
         if (file[0].type == "image/png" || file[0].type == "image/jpeg" || file[0].type == "image/gif") {
             this.setState({
-                image: file[0]
+                uploadedImage: file[0]
             });
         } else {
             alert("Please upload a png, jpeg, or gif image.");
@@ -484,7 +548,7 @@ var UploadTrackWizard = React.createClass({
         return eventData;
     },
 
-    uploadSet: function() {
+    uploadTrack: function() {
         console.log('Beginning upload process.');
         this.setState({
             busy: true,
@@ -525,7 +589,7 @@ var UploadTrackWizard = React.createClass({
                         episode: this.state.episode,
                         audio_url: registeredUrls[0],
                         filesize: this.state.filesize,
-                        set_length: this.secondsToMinutes(this.state.set_length),
+                        set_length: this.secondsToMinutes(this.state.setLength),
                         tracklist_url: this.state.tracklist_url,
                         paid: this.state.paid,
                         additional_artists: additionalArtists,

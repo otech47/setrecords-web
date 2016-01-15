@@ -270,7 +270,7 @@ var App = React.createClass({
 
                 case UploadSetWizard:
                 case UploadTrackWizard:
-                props = {push: push, originalArtist: appState.get('artist_data')};
+                props = {push: push, originalArtist: appState.get('artist_data'), loaded: appState.get('loaded')};
                 break;
 
                 case YoutubeReport:
