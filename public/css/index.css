@@ -338,6 +338,9 @@ a {
 a:hover {
   color: inherit;
 }
+.invisible {
+  visibility: hidden;
+}
 button {
   border: none;
 }

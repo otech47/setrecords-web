@@ -25,7 +25,7 @@ var MockSetTileImproved = React.createClass({
         }
 
         return (
-            <div className='set-tile' style={style}>
+            <div className='set-tile' style={style} onClick={this.props.onClick}>
                 <div className='flex-column tile-controls'>
                     <div className='flex-column flex-2x set-info'>
                         <div>{artistText}</div>
