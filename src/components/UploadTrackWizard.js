@@ -237,7 +237,11 @@ var UploadTrackWizard = React.createClass({
                         songname,
                         artistname,
                         starttime
-                    }
+                    },
+                    episode {
+                        episode
+                    },
+                    set_length
                 }
             }
         }`;
@@ -307,11 +311,7 @@ var UploadTrackWizard = React.createClass({
         if (this.state.selectedSetIndex == -1) {
             console.log('Set is new and audio needs to be registered.');
 
-            this.state.songs[0].file.name = moment().unix() + file.name;
-            console.log('Unique filename:');
-            console.log(this.state.songs[0].file.name);
-
-            this.registerS3(this.state.songs[0].file, (err, audioUrl) => {
+            this.registerS3(this.state.songs[0].file, encodeURIComponent(moment().unix() + this.state.songs[0].file.name), (err, audioUrl) => {
                 if (err) {
                     console.log('An error occurred with registering audio.');
                     console.log(err);
@@ -385,12 +385,12 @@ var UploadTrackWizard = React.createClass({
         });
     },
 
-    registerS3: function(file, callback) {
+    registerS3: function(file, filename, callback) {
         $.ajax({
             type: 'POST',
             url: 'https://api.setmine.com/v/10/aws/configureAWS',
             data: {
-                filename: encodeURIComponent(file.name)
+                filename: filename
             },
             crossDomain: true,
             xhrFields: {
@@ -480,7 +480,8 @@ var UploadTrackWizard = React.createClass({
     registerImage: function(callback) {
         if (this.state.selectedSetIndex == -1) {
             console.log('Image is new and needs to be registered on S3.');
-            this.registerS3(this.state.uploadedImage, function(err, imageUrl) {
+            var uniqueFilename = encodeURIComponent(moment().unix() + this.state.uploadedImage.name);
+            this.registerS3(this.state.uploadedImage, uniqueFilename, function(err, imageUrl) {
                 if (err) {
                     console.log('An error occurred with registering image.');
                     callback(err);
@@ -606,7 +607,8 @@ var UploadTrackWizard = React.createClass({
                             set_length: this.secondsToMinutes(this.state.setLength),
                             tracklist_url: '',
                             image_url: registeredUrls[1],
-                            tags: [this.state.genre],
+                            tags: [this.state.tags],
+                            paid: 0,
                             tracklist: [
                                 {
                                     starttime: '00:00',
@@ -714,7 +716,7 @@ var UploadTrackWizard = React.createClass({
     },
 
     registerSet: function(bundle) {
-        var requestUrl = 'https://api.setmine.com/v/10/sets/register';
+        var requestUrl = 'http://localhost:3000/v/10/sets/register';
 
         $.ajax({
             type: 'POST',

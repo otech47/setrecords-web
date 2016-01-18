@@ -1,26 +1,31 @@
 import React from 'react';
 import _ from 'underscore';
+import constants from '../constants/constants';
 
 import MockSetTileImproved from './MockSetTileImproved';
+import UtilityFunctions from '../mixins/UtilityFunctions';
 
 var TrackWizardStep1 = React.createClass({
+    mixins: [UtilityFunctions],
+
     render: function() {
+        console.log(this.props.originalArtist);
         var stepForward = this.props.stepForward;
         var setTiles = _.map(this.props.availableSets, (set, index) => {
             var setImage = {
-                preview: set.icon_image.imageURL
+                preview: constants.S3_ROOT_FOR_IMAGES + set.icon_image.imageURL
             };
 
             var setData = {
                 image: setImage,
                 artists: [this.props.originalArtist],
                 event: set.event.event,
-                episode: set.episode.episode,
-                setLength: set.set_length,
+                episode: (set.episode ? set.episode.episode : ''),
+                setLength: this.timeStringToSeconds(set.set_length),
                 popularity: set.popularity
             };
 
-            return (<MockSetTileImproved setData={setData} onClick={this.props.stepForward.bind(null, {selectedSetIndex: index})} />);
+            return (<MockSetTileImproved {...setData} key={set.id} onClick={this.props.stepForward.bind(null, {selectedSetIndex: index})} />);
         });
 
         return (
