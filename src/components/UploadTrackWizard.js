@@ -71,10 +71,6 @@ var UploadTrackWizard = React.createClass({
                 return counter + song.duration
             }, duration);
 
-            if (this.state.selectedSetIndex > -1) {
-                newSetLength += this.timeStringToSeconds(this.state.availableSets[this.state.selectedIndex].set_length);
-            }
-
             var processedSong = {};
             processedSong.file = this.state.pending_file;
             processedSong.duration = duration;
@@ -95,7 +91,7 @@ var UploadTrackWizard = React.createClass({
             case 1:
             stepComponent =
             (<TrackWizardStep1 stepForward={this.stepForward}
-            availableSets={this.state.singlesSets}
+            singlesSets={this.state.singlesSets}
             originalArtist={this.props.originalArtist} />);
             break;
 
@@ -119,7 +115,7 @@ var UploadTrackWizard = React.createClass({
                         preview: constants.S3_ROOT_FOR_IMAGES + selectedSet.icon_image.imageURL
                     },
                     event: selectedSet.event.event,
-                    setLength: this.state.setLength,
+                    setLength: setLength,
                     popularity: selectedSet.popularity
                 };
             } else {
@@ -143,12 +139,15 @@ var UploadTrackWizard = React.createClass({
             if (this.state.selectedSetIndex > -1) {
                 var selectedSet = this.state.singlesSets[this.state.selectedSetIndex];
 
+                var setLength = this.timeStringToSeconds(selectedSet.set_length) + this.state.setLength;
+
                 var setData = {
                     set_id: selectedSet.id,
                     image: {
                         preview: constants.S3_ROOT_FOR_IMAGES + selectedSet.icon_image.imageURL
                     },
                     event: selectedSet.event.event,
+                    setLength: setLength,
                     popularity: selectedSet.popularity
                 };
             } else {
@@ -161,7 +160,7 @@ var UploadTrackWizard = React.createClass({
                 };
             }
 
-            stepComponent = (<TrackWizardConfirmation {...this.state} uploadTrack={this.uploadTrack} {...setData}
+            stepComponent = (<TrackWizardConfirmation uploadTrack={this.uploadTrack} {...setData} trackName={this.state.trackName} trackArtist={this.state.trackArtist}
             originalArtist={this.props.originalArtist} />);
             break;
 
@@ -241,7 +240,8 @@ var UploadTrackWizard = React.createClass({
                     episode {
                         episode
                     },
-                    set_length
+                    set_length,
+                    popularity
                 }
             }
         }`;
@@ -349,7 +349,7 @@ var UploadTrackWizard = React.createClass({
 
     joinFiles: function(callback) {
         console.log('Grabbing original audio from URL...');
-        var originalUrl = this.state.availableSets[this.state.selectedSetIndex].songURL;
+        var originalUrl = this.state.singlesSets[this.state.selectedSetIndex].songURL;
 
         this.setState({
             joining: true
@@ -432,6 +432,8 @@ var UploadTrackWizard = React.createClass({
     },
 
     updateS3: function(file, callback) {
+        console.log('Update S3 File:');
+        console.log(file);
         $.ajax({
             type: 'POST',
             url: 'https://api.setmine.com/v/10/aws/configureAWS',
@@ -445,7 +447,7 @@ var UploadTrackWizard = React.createClass({
         })
         .done((res) => {
             AWS.config.update(res.payload.settings);
-            var encodedFilename = res.payload.encoded;
+            var encodedFilename = file.name;
             var filesize = file.size;
             var s3 = new AWS.S3();
 
@@ -468,7 +470,7 @@ var UploadTrackWizard = React.createClass({
                 if (err) {
                     callback(err);
                 } else {
-                    callback(null, res.payload.encoded);
+                    callback(null, file.name);
                 }
             });
         })
@@ -496,7 +498,7 @@ var UploadTrackWizard = React.createClass({
             });
         } else {
             console.log('No new image needed, using image URL from existing set.');
-            var imageUrl = this.state.availableSets[this.state.selectedSetIndex].icon_image.imageURL;
+            var imageUrl = this.state.singlesSets[this.state.selectedSetIndex].icon_image.imageURL;
             callback(null, imageUrl);
         }
     },
@@ -625,12 +627,19 @@ var UploadTrackWizard = React.createClass({
                         this.registerSet(setBundle);
                     } else {
                         console.log('Set on the database needs to be updated.');
-                        var originalSet = this.state.availableSets[this.state.selectedSetIndex];
+                        var originalSet = this.state.singlesSets[this.state.selectedSetIndex];
 
                         console.log('Prepping tracklist...');
-                        var newStartTime = this.secondsToMinutes(
-                            this.timeStringToSeconds(_.last(originalSet.tracklist)) + 1
-                        );
+                        var originalSeconds = this.timeStringToSeconds(originalSet.set_length);
+                        console.log('==original seconds==');
+                        console.log(originalSeconds);
+
+                        originalSeconds += 1;
+                        console.log(originalSeconds);
+
+                        var newStartTime = this.secondsToMinutes(originalSeconds);
+                        console.log('==new start time==');
+                        console.log(newStartTime);
 
                         var newTracklist = update(originalSet.tracklist, {$push: [
                             {
@@ -642,8 +651,11 @@ var UploadTrackWizard = React.createClass({
                         console.log('Tracklist:');
                         console.log(newTracklist);
 
+                        var newSetLength = this.secondsToMinutes(   this.timeStringToSeconds(originalSet.set_length) + this.state.setLength
+                        );
+
                         async.parallel([
-                            this.updateSongUrl.bind(null, registeredUrls[0]),
+                            this.updateSetLength.bind(null, newSetLength),
                             this.updateTracklist.bind(null, newTracklist)
                         ], (err, results) => {
                             if (err) {
@@ -664,15 +676,17 @@ var UploadTrackWizard = React.createClass({
         });
     },
 
-    updateSongUrl: function (songUrl, callback) {
-        console.log('Updating song URL on database...');
-        var requestUrl = 'https://api.setmine.com/v/10/sets/songurl';
+    updateSetLength: function (newSetLength, callback) {
+        console.log('Updating set length on database...');
+        console.log(newSetLength);
+        var requestUrl = 'https://api.setmine.com/v/10/sets/set-length';
 
         $.ajax({
             type: 'POST',
             url: requestUrl,
             data: {
-                song_url: songUrl
+                set_id: this.state.singlesSets[this.state.selectedSetIndex].id,
+                set_length: newSetLength
             },
             crossDomain: true,
             xhrFields: {
@@ -680,11 +694,11 @@ var UploadTrackWizard = React.createClass({
             }
         })
         .done((res) => {
-            console.log('Song URL updated on database.');
+            console.log('Set length updated on database.');
             callback(null);
         })
         .fail((err) => {
-            console.log('An error occurred when updating song URL on database.');
+            console.log('An error occurred when updating set length on database.');
             callback(err);
         });
     },
@@ -698,7 +712,7 @@ var UploadTrackWizard = React.createClass({
             url: requestUrl,
             data: {
                 tracklist: newTracklist,
-                set_id: this.state.availableSets[this.state.selectedSetIndex].id
+                set_id: this.state.singlesSets[this.state.selectedSetIndex].id
             },
             crossDomain: true,
             xhrFields: {
@@ -716,7 +730,7 @@ var UploadTrackWizard = React.createClass({
     },
 
     registerSet: function(bundle) {
-        var requestUrl = 'http://localhost:3000/v/10/sets/register';
+        var requestUrl = 'https://api.setmine.com/v/10/sets/register';
 
         $.ajax({
             type: 'POST',

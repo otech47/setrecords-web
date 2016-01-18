@@ -11,7 +11,7 @@ var TrackWizardStep1 = React.createClass({
     render: function() {
         console.log(this.props.originalArtist);
         var stepForward = this.props.stepForward;
-        var setTiles = _.map(this.props.availableSets, (set, index) => {
+        var setTiles = _.map(this.props.singlesSets, (set, index) => {
             var setImage = {
                 preview: constants.S3_ROOT_FOR_IMAGES + set.icon_image.imageURL
             };
