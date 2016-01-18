@@ -51475,7 +51475,7 @@
 	    loggedIn: function loggedIn(cb) {
 	        console.log('Checking log in status...');
 
-	        var requestUrl = 'http://localhost:3000/v/10/setrecordsuser/login';
+	        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/login';
 
 	        $.ajax({
 	            type: 'post',
@@ -51534,7 +51534,7 @@
 
 	        console.log('Logging out...');
 
-	        var requestUrl = 'http://localhost:3000/v/10/setrecordsuser/logout';
+	        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/logout';
 	        $.ajax({
 	            type: 'get',
 	            url: requestUrl,
@@ -51556,7 +51556,7 @@
 
 	    submitCredentials: function submitCredentials(user, pass, cb) {
 	        console.log('==SUBMIT CREDENTIALS==');
-	        var requestUrl = 'http://localhost:3000/v/10/setrecordsuser/login';
+	        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/login';
 
 	        $.ajax({
 	            type: 'POST',
