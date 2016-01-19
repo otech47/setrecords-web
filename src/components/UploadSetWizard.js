@@ -20,6 +20,8 @@ import Joiner from '../services/Joiner';
 import async from 'async';
 import Icon from './Icon';
 
+var SC = require('soundcloud');
+
 var UploadSetWizard = React.createClass({
 
     mixins: [LinkedStateMixin, UtilityFunctions],
@@ -72,6 +74,25 @@ var UploadSetWizard = React.createClass({
             }
         });
         this.getVenues();
+
+        console.log('Initializing soundcloud...');
+        SC.initialize({
+            client_id: 'c00cb419a074ad09052ef2d44fdc65ff',
+            redirect_uri: 'http://localhost:8080/soundcloudcallback'
+        });
+
+        console.log('Connecting...');
+        SC.connect()
+            .then( () => {
+                return SC.get('/me');
+            })
+            .then( (me) => {
+                alert('Hello, ' + me.username);
+            })
+            .catch( (err) => {
+                console.log('Error connecting to soundcloud.');
+                console.log(err);
+            });
     },
 
     componentDidMount: function() {
