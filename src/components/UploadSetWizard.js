@@ -606,14 +606,33 @@ var UploadSetWizard = React.createClass({
 
                     setBundle.tracklist = tracklist;
 
-                    console.log('Sending bundle to database...');
-                    this.updateDatabase(setBundle);
+                    var releaseFunctions = [
+                        this.updateDatabase.bind(this, setBundle)
+                    ];
+
+                    if (this.state.paid == 1) {
+                        releaseFunctions.push(this.beaconRelease);
+                    } else {
+                        releaseFunctions.push(this.freeRelease);
+                    }
+
+                    async.waterfall(releaseFunctions, (err, results) => {
+                        if (err) {
+                            console.log('An error occurred.');
+                            console.log(err);
+                        } else {
+                            console.log('Set registered and released.');
+                        }
+                    });
                 }
             });
         });
     },
 
-    updateDatabase: function(bundle) {
+    updateDatabase: function(bundle, callback) {
+        console.log('Sending bundle to database:');
+        console.log(bundle);
+
         var requestUrl = 'https://api.setmine.com/v/10/sets/register';
 
         $.ajax({
@@ -628,10 +647,59 @@ var UploadSetWizard = React.createClass({
         .done((res) => {
             console.log('Set registered on database.');
             console.log(res);
+            callback(null, res.payload.new_set);
         })
         .fail((err) => {
             console.log('An error occurred when updating the database.');
             console.log(err);
+            callback(err);
+        });
+    },
+
+    freeRelease: function (setId, callback) {
+        console.log('Free release for set ID ' + setId);
+
+        callback(null);
+    },
+
+    beaconRelease: function (setId, callback) {
+        console.log('Beacon release for set ID ' + setId);
+
+        var venueIds = _.pluck(this.state.outlets, 'id');
+        console.log('Venue IDs:');
+        console.log(venueIds);
+
+        var price = this.state.price.replace(".", "");
+        console.log('==price==');
+        console.log(price);
+
+        var requestUrl = 'https://api.setmine.com/v/10/offers/beacon-release';
+
+        $.ajax({
+            type: 'post',
+            url: requestUrl,
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
+            data: {
+                set_id: setId,
+                price: parseFloat(price),
+                venues: venueIds,
+                artist_id: this.props.originalArtist.id
+            }
+        })
+        .done( (res) => {
+            console.log('Set released to beacons.');
+            console.log(res);
+
+            callback(null);
+        })
+        .fail( (err) => {
+            console.log('Error releasing sets to beacons.');
+            console.log(err);
+
+            callback(err);
         });
     },
 
