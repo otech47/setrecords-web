@@ -55,7 +55,7 @@ var UploadSetWizard = React.createClass({
             event: '',
             artists: [this.props.originalArtist],
             episode: '',
-            genre: '',
+            tags: [],
             image: null,
 
             // step 5
@@ -134,7 +134,7 @@ var UploadSetWizard = React.createClass({
             case 4:
             var setData = {
                 event: this.state.event,
-                genre: this.state.genre,
+                tags: this.state.tags,
                 artists: this.state.artists,
                 image: this.state.image,
                 episode: this.state.episode,
@@ -147,7 +147,8 @@ var UploadSetWizard = React.createClass({
             addImage={this.addImage}
             addFeaturedArtist={this.addFeaturedArtist}
             removeFeaturedArtist={this.removeFeaturedArtist}
-            changeFeaturedArtist={this.changeFeaturedArtist}
+            addTag={this.addTag}
+            removeTag={this.removeTag}
             {...setData} />);
             break;
 
@@ -284,6 +285,18 @@ var UploadSetWizard = React.createClass({
     removeFeaturedArtist: function(index) {
         this.setState({
             artists: update(this.state.artists, {$splice: [[index, 1]]})
+        });
+    },
+
+    addTag: function() {
+        this.setState({
+            tags: update(this.state.tags, {$push: ['']})
+        });
+    },
+
+    removeTag: function(index) {
+        this.setState({
+            tags: update(this.state.tags, {$splice: [[index, 1]]})
         });
     },
 
@@ -492,65 +505,6 @@ var UploadSetWizard = React.createClass({
         }
     },
 
-    packageSetData: function(audioURL) {
-        console.log('Packaging set data...');
-        var genreId = _.findWhere(this.props.genres, {genre: this.state.genre}).id;
-        var setLength = this.secondsToMinutes(this.state.set_length);
-        var paid = 0;
-        if (this.state.release_type == 'Beacon') {
-            paid = 1;
-        }
-        var setData = {
-            genre: genreId,
-            audio_url: audioURL,
-            tracklist_url: this.state.tracklist_url,
-            filesize: this.state.filesize,
-            set_length: setLength,
-            paid: paid
-        };
-        console.log('Set data packaged.');
-        return setData;
-    },
-
-    packageEventData: function(imageURL) {
-        console.log('Packaging event data...');
-        var exists = false;
-        var type;
-        var radioMix = false;
-        var matchedEvent = null;
-        switch (this.state.set_type) {
-            case 'Live':
-            if (this.state.match_url) {
-                exists = true;
-                matchedEvent = this.props.eventLookup[this.state.name];
-            }
-            type = 'festival';
-            break;
-
-            case 'Mix':
-            type = 'mix';
-            radioMix = true;
-            break;
-
-            case 'Album':
-            type = 'album';
-            break;
-
-            default:
-            break;
-        }
-        var eventData = {
-            does_exist: exists,
-            event: this.state.name,
-            is_radiomix: radioMix,
-            type: type,
-            image_url: imageURL,
-            matched_event: matchedEvent
-        };
-        console.log('Event data packaged.');
-        return eventData;
-    },
-
     uploadSet: function() {
         console.log('Beginning upload process.');
         this.setState({
@@ -597,7 +551,7 @@ var UploadSetWizard = React.createClass({
                         paid: this.state.paid,
                         additional_artists: additionalArtists,
                         image_url: registeredUrls[1],
-                        tags: [this.state.genre]
+                        tags: this.state.tags
                     };
                     console.log('Bundle done:');
                     console.log(setBundle);

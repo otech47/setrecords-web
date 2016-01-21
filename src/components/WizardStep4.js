@@ -10,9 +10,14 @@ var WizardStep4 = React.createClass({
         var deepLinkState = this.props.deepLinkState;
         var type = this.props.type;
         var artists = this.props.artists;
+        var tags = this.props.tags;
         var showUploadButton = true;
         var fieldComponents;
         var featuredArtistComponent = '';
+        var tagComponent = '';
+
+        console.log(tags);
+        console.log(tags.length);
 
         if (type == 'album') {
             fieldComponents = (
@@ -53,6 +58,7 @@ var WizardStep4 = React.createClass({
                 </div>
             );
         }
+
         var featuredArtistButton = '';
         if (type != 'album') {
             featuredArtistButton = (
@@ -61,6 +67,32 @@ var WizardStep4 = React.createClass({
                     <button onClick={this.props.addFeaturedArtist}>
                         <Icon className='center'>add</Icon>
                     </button>
+                </div>
+            );
+        }
+
+        var tagButton = (
+            <div className='featured-artist flex-row'>
+                <h3>Genres</h3>
+                <button onClick={this.props.addTag}>
+                    <Icon className='center'>add</Icon>
+                </button>
+            </div>
+        );
+
+        if (tags.length > 0) {
+            var tagFields = _.map(tags, (function(tag, index) {
+                return (
+                    <div className='flex-row artist-field' key={index}>
+                        <input type='text' list='artist-list' valueLink={deepLinkState(['tags', index])} placeholder='Genre name' />
+                        <i className='fa fa-times warning center' onClick={this.props.removeTag.bind(null, index)}/>
+                    </div>
+                );
+            }).bind(this));
+
+            tagComponent = (
+                <div>
+                    {tagFields}
                 </div>
             );
         }
@@ -74,8 +106,9 @@ var WizardStep4 = React.createClass({
                         {featuredArtistButton}
                         {featuredArtistComponent}
                         {fieldComponents}
-                        <h3>Genre</h3>
-                        <input type='text' valueLink={deepLinkState(['genre'])} />
+
+                        {tagButton}
+                        {tagComponent}
                     </div>
 
                     <div className='flex-column flex-fixed' style={{alignItems: 'center'}}>
@@ -106,7 +139,8 @@ var WizardStep4 = React.createClass({
     submitStep: function(event) {
         var artistEmptyErr = false;
         var nameEmptyErr = false;
-        var genreEmptyErr = false;
+        var noTagsErr = false;
+        var tagEmptyErr = false;
         var errors = [];
 
         if (_.some(_.rest(this.props.artists), function (artist) {
@@ -121,9 +155,16 @@ var WizardStep4 = React.createClass({
             errors.push('Name cannot be empty.');
         }
 
-        if (this.props.genre.length < 1) {
-            genreEmptyErr = true;
-            errors.push('Genre field cannot be empty.');
+        if (this.props.tags.length < 1) {
+            noTagsErr = true;
+            errors.push('You must enter at least one genre.');
+        } else {
+            if (_.some(this.props.tags, function (tag) {
+                return (tag.length == 0);
+            })) {
+                tagEmptyErr = true;
+                errors.push('Genre fields cannot be empty.');
+            }
         }
 
         if (errors.length == 0) {
