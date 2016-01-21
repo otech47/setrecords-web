@@ -19,12 +19,13 @@ import UtilityFunctions from '../mixins/UtilityFunctions';
 import Joiner from '../services/Joiner';
 import async from 'async';
 import Icon from './Icon';
+import {History} from 'react-router';
 
 var SC = require('soundcloud');
 
 var UploadSetWizard = React.createClass({
 
-    mixins: [LinkedStateMixin, UtilityFunctions],
+    mixins: [LinkedStateMixin, UtilityFunctions, History],
 
     getInitialState: function() {
         return {
