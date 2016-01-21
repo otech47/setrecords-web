@@ -83,11 +83,14 @@ var UploadSetWizard = React.createClass({
 
         SC.connect({
             client_id: 'c00cb419a074ad09052ef2d44fdc65ff',
-            redirect_uri: 'https://setrecords.setmine.com/soundcloudcallback',
-            display: 'popup'
+            redirect_uri: 'https://setrecords.setmine.com/soundcloudcallback'
         })
         .then( () => {
             console.log('Done.');
+        })
+        .catch( (err) => {
+            console.log('==error==');
+            console.log(err);
         });
     },
 
