@@ -83,6 +83,7 @@ var UploadSetWizard = React.createClass({
 
         SC.connect()
         .then( () => {
+            alert('Done');
             console.log('Done.');
         })
         .catch( (err) => {
