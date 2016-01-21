@@ -5,6 +5,11 @@ var app = express();
 
 app.use(express.static(__dirname + '/public'));
 
+app.get('/soundcloudcallback', function (req, res) {
+    console.log('Soundcloud callback requested.');
+    res.sendFile(path.resolve(__dirname, 'soundcloudcallback.html'));
+});
+
 app.get('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
 });
