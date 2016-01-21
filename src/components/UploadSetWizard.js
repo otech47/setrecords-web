@@ -78,21 +78,8 @@ var UploadSetWizard = React.createClass({
         console.log('Initializing soundcloud...');
         SC.initialize({
             client_id: 'c00cb419a074ad09052ef2d44fdc65ff',
-            redirect_uri: 'http://localhost:8080/soundcloudcallback'
+            redirect_uri: 'https://setrecords.setmine.com/soundcloudcallback'
         });
-
-        console.log('Connecting...');
-        SC.connect()
-            .then( () => {
-                return SC.get('/me');
-            })
-            .then( (me) => {
-                alert('Hello, ' + me.username);
-            })
-            .catch( (err) => {
-                console.log('Error connecting to soundcloud.');
-                console.log(err);
-            });
     },
 
     componentDidMount: function() {
