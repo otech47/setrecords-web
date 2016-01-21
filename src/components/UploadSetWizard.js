@@ -87,6 +87,7 @@ var UploadSetWizard = React.createClass({
             display: 'popup'
         })
         .then( () => {
+            alert('Done');
             console.log('Done.');
         });
     },
