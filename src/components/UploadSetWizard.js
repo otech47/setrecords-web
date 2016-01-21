@@ -80,16 +80,6 @@ var UploadSetWizard = React.createClass({
             client_id: 'c00cb419a074ad09052ef2d44fdc65ff',
             redirect_uri: 'https://setrecords.setmine.com/soundcloudcallback'
         });
-
-        SC.connect({
-            client_id: 'c00cb419a074ad09052ef2d44fdc65ff',
-            redirect_uri: 'https://setrecords.setmine.com/soundcloudcallback',
-            display: 'popup'
-        })
-        .then( () => {
-            alert('Done');
-            console.log('Done.');
-        });
     },
 
     componentDidMount: function() {
@@ -412,6 +402,7 @@ var UploadSetWizard = React.createClass({
                         var joinedFile = new File([joinedBlob], newFilename);
                         this.setState({
                             filesize: joinedFile.size,
+                            finalFile: joinedFile,
                             joining: false
                         }, function() {
                             callback(null, joinedFile);
@@ -422,7 +413,8 @@ var UploadSetWizard = React.createClass({
         } else {
             console.log('Only one file detected. No join needed.');
             this.setState({
-                filesize: this.state.songs[0].file.size
+                filesize: this.state.songs[0].file.size,
+                finalFile: this.state.songs[0].file
             }, () => {
                 callback(null, this.state.songs[0].file);
             });
@@ -628,18 +620,20 @@ var UploadSetWizard = React.createClass({
                         this.updateDatabase.bind(this, setBundle)
                     ];
 
-                    if (this.state.paid == 1) {
-                        releaseFunctions.push(this.beaconRelease);
-                    } else {
-                        releaseFunctions.push(this.freeRelease);
-                    }
-
-                    async.waterfall(releaseFunctions, (err, results) => {
+                    this.updateDatabase(setBundle, (err, newSetId) => {
                         if (err) {
                             console.log('An error occurred.');
                             console.log(err);
                         } else {
-                            console.log('Set registered and released.');
+                            console.log('Running release function...');
+
+                            if (this.state.paid == 1) {
+                                console.log('Release to beacon.');
+                                this.beaconRelease(newSetId, this.cleanUp);
+                            } else {
+                                console.log('Free release.');
+                                this.freeRelease(this.state.finalFile, this.cleanUp);
+                            }
                         }
                     });
                 }
@@ -674,10 +668,51 @@ var UploadSetWizard = React.createClass({
         });
     },
 
-    freeRelease: function (setId, callback) {
-        console.log('Free release for set ID ' + setId);
+    freeRelease: function (setFile, callback) {
+        console.log('Free release for file:');
+        console.log(setFile);
 
-        callback(null);
+        if (this.state.outlets.indexOf('Soundcloud') > -1) {
+            var uploadName = this.state.event;
+            if (this.state.episode && this.state.episode.length > 0) {
+                uploadName += ` - ${this.state.episode}`;
+            }
+            console.log('Upload name is ' + uploadName);
+
+            console.log('Authenticating...');
+            SC.connect()
+            .then( () => {
+                console.log('Successfully authenticated.');
+
+                console.log('Uploading file to Soundcloud...');
+                var upload = SC.upload({
+                    file: setFile,
+                    title: uploadName
+                });
+
+                upload.request.addEventListener('progress', (e) => {
+                    console.log('Soundcloud ', (e.loaded / e.total) * 100, '%');
+                });
+
+                upload.then( (track) => {
+                    console.log('Soundcloud complete. Link: ', track.permalink_url);
+                    callback(null);
+                })
+                .catch( (err) => {
+                    console.log('Error uploading to Soundcloud.');
+                    console.log(err);
+                    callback(err);
+                });
+            })
+            .catch( (err) => {
+                console.log('Error authenticating.');
+                console.log(err);
+                callback(err);
+            });
+        } else {
+            console.log('Done.');
+            callback(null);
+        }
     },
 
     beaconRelease: function (setId, callback) {
@@ -719,6 +754,11 @@ var UploadSetWizard = React.createClass({
 
             callback(err);
         });
+    },
+
+    cleanUp: function (err) {
+        console.log('Set registration and uploads complete. Returning to content...');
+        this.history.pushState(null, '/content');
     },
 
     showApplyingStatus: function() {
