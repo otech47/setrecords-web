@@ -679,7 +679,7 @@ var UploadTrackWizard = React.createClass({
     updateSetLength: function (newSetLength, callback) {
         console.log('Updating set length on database...');
         console.log(newSetLength);
-        var requestUrl = 'https://api.setmine.com/v/10/sets/set-length';
+        var requestUrl = 'https://api.setmine.com/v/10/sets/setLength';
 
         $.ajax({
             type: 'POST',
