@@ -681,7 +681,7 @@ var UploadSetWizard = React.createClass({
         console.log('==price==');
         console.log(price);
 
-        var requestUrl = 'https://api.setmine.com/v/10/offers/beacon-release';
+        var requestUrl = 'https://api.setmine.com/v/10/offers/beaconRelease';
 
         $.ajax({
             type: 'post',
