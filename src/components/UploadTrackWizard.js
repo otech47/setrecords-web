@@ -258,7 +258,7 @@ var UploadTrackWizard = React.createClass({
             }
         })
         .done( (res) => {
-            console.log(res);
+            // console.log(res);
             this.setState({
                 singlesSets: res.payload.artist.sets
             });
@@ -271,12 +271,12 @@ var UploadTrackWizard = React.createClass({
             });
         })
         .fail( (err) => {
-            console.log(err);
+            // console.log(err);
         });
     },
 
     addSong: function(file) {
-        console.log(file);
+        // console.log(file);
         if (file[0].type == 'audio/mp3' || file[0].type == 'audio/mp4' || file[0].type == 'audio/x-m4a' || file[0].type == 'audio/mpeg' || file[0].type == 'audio/wav') {
 
             var tempAudio = URL.createObjectURL(file[0]);
@@ -306,41 +306,41 @@ var UploadTrackWizard = React.createClass({
     },
 
     registerAudio: function(callback) {
-        console.log('Registering audio...');
+        // console.log('Registering audio...');
 
         if (this.state.selectedSetIndex == -1) {
-            console.log('Set is new and audio needs to be registered.');
+            // console.log('Set is new and audio needs to be registered.');
 
             this.registerS3(this.state.songs[0].file, encodeURIComponent(moment().unix() + this.state.songs[0].file.name), (err, audioUrl) => {
                 if (err) {
-                    console.log('An error occurred with registering audio.');
-                    console.log(err);
+                    // console.log('An error occurred with registering audio.');
+                    // console.log(err);
                     callback(err);
                     mixpanel.track("Error", {
                         "Page": "Upload Wizard",
                         "Message": "Error registering audio in Track Wizard"
                     });
                 } else {
-                    console.log('Audio registered on S3.');
-                    console.log(audioUrl);
+                    // console.log('Audio registered on S3.');
+                    // console.log(audioUrl);
                     callback(null, audioUrl);
                 }
             });
         } else {
-            console.log('Track needs to be joined to the existing audio for this set.');
+            // console.log('Track needs to be joined to the existing audio for this set.');
 
             async.waterfall([this.joinFiles, this.updateS3], (err, audioUrl) => {
                 if (err) {
-                    console.log('An error occurred with registering audio.');
-                    console.log(err);
+                    // console.log('An error occurred with registering audio.');
+                    // console.log(err);
                     callback(err);
                     mixpanel.track("Error", {
                         "Page": "Upload Wizard",
                         "Message": "Error registering audio"
                     });
                 } else {
-                    console.log('Audio registered on S3.');
-                    console.log(audioUrl);
+                    // console.log('Audio registered on S3.');
+                    // console.log(audioUrl);
                     callback(null, audioUrl);
                 }
             });
@@ -348,7 +348,7 @@ var UploadTrackWizard = React.createClass({
     },
 
     joinFiles: function(callback) {
-        console.log('Grabbing original audio from URL...');
+        // console.log('Grabbing original audio from URL...');
         var originalUrl = this.state.singlesSets[this.state.selectedSetIndex].songURL;
 
         this.setState({
@@ -359,7 +359,7 @@ var UploadTrackWizard = React.createClass({
 
                 Joiner.combineAudioFiles(toJoin, (err, joinedBlob) => {
                     if (err) {
-                        console.log('Join unsuccessful');
+                        // console.log('Join unsuccessful');
                         this.setState({
                             joining: false
                         }, function() {
@@ -370,7 +370,7 @@ var UploadTrackWizard = React.createClass({
                             "Message": "Error joining files"
                         });
                     } else {
-                        console.log('Join successful.');
+                        // console.log('Join successful.');
                         var joinedFile = new File([joinedBlob], originalUrl);
 
                         this.setState({
@@ -415,7 +415,7 @@ var UploadTrackWizard = React.createClass({
             upload.on("httpUploadProgress", function(event) {
                 var percentage = (event.loaded / filesize) * 100;
                 var percent = parseInt(percentage).toString() + "%";
-                console.log('Uploading ' + file.type + ' file: ' + percent);
+                // console.log('Uploading ' + file.type + ' file: ' + percent);
             });
 
             upload.send(function(err, data) {
@@ -432,8 +432,8 @@ var UploadTrackWizard = React.createClass({
     },
 
     updateS3: function(file, callback) {
-        console.log('Update S3 File:');
-        console.log(file);
+        // console.log('Update S3 File:');
+        // console.log(file);
         $.ajax({
             type: 'POST',
             url: 'https://api.setmine.com/v/10/aws/configureAWS',
@@ -463,7 +463,7 @@ var UploadTrackWizard = React.createClass({
             upload.on("httpUploadProgress", function(event) {
                 var percentage = (event.loaded / filesize) * 100;
                 var percent = parseInt(percentage).toString() + "%";
-                console.log('Uploading ' + file.type + ' file: ' + percent);
+                // console.log('Uploading ' + file.type + ' file: ' + percent);
             });
 
             upload.send(function(err, data) {
@@ -481,30 +481,30 @@ var UploadTrackWizard = React.createClass({
 
     registerImage: function(callback) {
         if (this.state.selectedSetIndex == -1) {
-            console.log('Image is new and needs to be registered on S3.');
+            // console.log('Image is new and needs to be registered on S3.');
             var uniqueFilename = encodeURIComponent(moment().unix() + this.state.uploadedImage.name);
             this.registerS3(this.state.uploadedImage, uniqueFilename, function(err, imageUrl) {
                 if (err) {
-                    console.log('An error occurred with registering image.');
+                    // console.log('An error occurred with registering image.');
                     callback(err);
                     mixpanel.track("Error", {
                         "Page": "Upload Wizard",
                         "Message": "Error registering image to S3"
                     });
                 } else {
-                    console.log('Image successfully registered on S3.');
+                    // console.log('Image successfully registered on S3.');
                     callback(null, imageUrl);
                 }
             });
         } else {
-            console.log('No new image needed, using image URL from existing set.');
+            // console.log('No new image needed, using image URL from existing set.');
             var imageUrl = this.state.singlesSets[this.state.selectedSetIndex].icon_image.imageURL;
             callback(null, imageUrl);
         }
     },
 
     packageSetData: function(audioURL) {
-        console.log('Packaging set data...');
+        // console.log('Packaging set data...');
         var genreId = _.findWhere(this.props.genres, {genre: this.state.genre}).id;
         var setLength = this.secondsToMinutes(this.state.set_length);
         var paid = 0;
@@ -519,12 +519,12 @@ var UploadTrackWizard = React.createClass({
             set_length: setLength,
             paid: paid
         };
-        console.log('Set data packaged.');
+        // console.log('Set data packaged.');
         return setData;
     },
 
     packageEventData: function(imageURL) {
-        console.log('Packaging event data...');
+        // console.log('Packaging event data...');
         var exists = false;
         var type;
         var radioMix = false;
@@ -558,12 +558,12 @@ var UploadTrackWizard = React.createClass({
             image_url: imageURL,
             matched_event: matchedEvent
         };
-        console.log('Event data packaged.');
+        // console.log('Event data packaged.');
         return eventData;
     },
 
     uploadTrack: function() {
-        console.log('Beginning upload process.');
+        // console.log('Beginning upload process.');
         this.setState({
             busy: true,
             applying: true
@@ -574,11 +574,11 @@ var UploadTrackWizard = React.createClass({
                 this.registerImage
             ];
 
-            console.log('Performing register functions...');
+            // console.log('Performing register functions...');
             async.parallel(registerFunctions, (err, registeredUrls) => {
                 if (err) {
-                    console.log('Error in registration functions:');
-                    console.log(err);
+                    // console.log('Error in registration functions:');
+                    // console.log(err);
 
                     this.setState({
                         failure: true,
@@ -592,12 +592,12 @@ var UploadTrackWizard = React.createClass({
                         "Message": "Error uploading track"
                     });
                 } else {
-                    console.log('Registrations successful.');
+                    // console.log('Registrations successful.');
 
-                    console.log('Creating bundle...');
+                    // console.log('Creating bundle...');
 
                     if (this.state.selectedSetIndex == -1) {
-                        console.log('Bundle is for a brand new set.');
+                        // console.log('Bundle is for a brand new set.');
 
                         var setBundle = {
                             id: -1,
@@ -620,26 +620,26 @@ var UploadTrackWizard = React.createClass({
                             ]
                         };
 
-                        console.log('Bundle done.');
-                        console.log(setBundle);
+                        // console.log('Bundle done.');
+                        // console.log(setBundle);
 
-                        console.log('Sending bundle to database...');
+                        // console.log('Sending bundle to database...');
                         this.registerSet(setBundle);
                     } else {
-                        console.log('Set on the database needs to be updated.');
+                        // console.log('Set on the database needs to be updated.');
                         var originalSet = this.state.singlesSets[this.state.selectedSetIndex];
 
-                        console.log('Prepping tracklist...');
+                        // console.log('Prepping tracklist...');
                         var originalSeconds = this.timeStringToSeconds(originalSet.set_length);
-                        console.log('==original seconds==');
-                        console.log(originalSeconds);
+                        // console.log('==original seconds==');
+                        // console.log(originalSeconds);
 
                         originalSeconds += 1;
-                        console.log(originalSeconds);
+                        // console.log(originalSeconds);
 
                         var newStartTime = this.secondsToMinutes(originalSeconds);
-                        console.log('==new start time==');
-                        console.log(newStartTime);
+                        // console.log('==new start time==');
+                        // console.log(newStartTime);
 
                         var newTracklist = update(originalSet.tracklist, {$push: [
                             {
@@ -648,8 +648,8 @@ var UploadTrackWizard = React.createClass({
                                 artistname: this.state.trackArtist
                             }
                         ]});
-                        console.log('Tracklist:');
-                        console.log(newTracklist);
+                        // console.log('Tracklist:');
+                        // console.log(newTracklist);
 
                         var newSetLength = this.secondsToMinutes(   this.timeStringToSeconds(originalSet.set_length) + this.state.setLength
                         );
@@ -659,15 +659,15 @@ var UploadTrackWizard = React.createClass({
                             this.updateTracklist.bind(null, newTracklist)
                         ], (err, results) => {
                             if (err) {
-                                console.log('There was an error when applying changes to this set.');
-                                console.log(err);
+                                // console.log('There was an error when applying changes to this set.');
+                                // console.log(err);
 
                                 // mixpanel.track("Error", {
                                 //     "Page": "Set Editor",
                                 //     "Message": "Error applying changes"
                                 // });
                             } else {
-                                console.log('All changes applied successfully.');
+                                // console.log('All changes applied successfully.');
                             }
                         });
                     }
@@ -677,8 +677,8 @@ var UploadTrackWizard = React.createClass({
     },
 
     updateSetLength: function (newSetLength, callback) {
-        console.log('Updating set length on database...');
-        console.log(newSetLength);
+        // console.log('Updating set length on database...');
+        // console.log(newSetLength);
         var requestUrl = 'https://api.setmine.com/v/10/sets/setLength';
 
         $.ajax({
@@ -694,17 +694,17 @@ var UploadTrackWizard = React.createClass({
             }
         })
         .done((res) => {
-            console.log('Set length updated on database.');
+            // console.log('Set length updated on database.');
             callback(null);
         })
         .fail((err) => {
-            console.log('An error occurred when updating set length on database.');
+            // console.log('An error occurred when updating set length on database.');
             callback(err);
         });
     },
 
     updateTracklist: function (newTracklist, callback) {
-        console.log('Updating tracklist on database...');
+        // console.log('Updating tracklist on database...');
         var requestUrl = 'https://api.setmine.com/v/10/sets/tracklist';
 
         $.ajax({
@@ -720,11 +720,11 @@ var UploadTrackWizard = React.createClass({
             }
         })
         .done( (res) => {
-            console.log('Tracklist updated on database.');
+            // console.log('Tracklist updated on database.');
             callback(null);
         })
         .fail( (err) => {
-            console.log('An error occurred when updating tracklist on database.');
+            // console.log('An error occurred when updating tracklist on database.');
             callback(err);
         });
     },
@@ -742,12 +742,12 @@ var UploadTrackWizard = React.createClass({
             }
         })
         .done((res) => {
-            console.log('Set registered on database.');
-            console.log(res);
+            // console.log('Set registered on database.');
+            // console.log(res);
         })
         .fail((err) => {
-            console.log('An error occurred when updating the database.');
-            console.log(err);
+            // console.log('An error occurred when updating the database.');
+            // console.log(err);
         });
     },
 
@@ -792,7 +792,7 @@ var UploadTrackWizard = React.createClass({
             };
             this.setState(newData);
         } else {
-            console.log('Nice try, hacker.');
+            // console.log('Nice try, hacker.');
         }
     }
 });
