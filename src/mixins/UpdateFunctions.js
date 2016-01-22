@@ -8,7 +8,7 @@ var UpdateFunctions = {
 			cohortType = "?cohortType=" + params;
 		}
 		var artistId = this.state.appState.get("artist_data").id;
-		var setmineRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/setmine/'
+		var setmineRequestUrl = 'https://api.setmine.com/api/v/7/setrecords/metrics/setmine/'
 		+ artistId + cohortType;
 		var setmineMetrics;
 		var timezone = moment().utcOffset();
@@ -31,7 +31,7 @@ var UpdateFunctions = {
 			cohortType = "?cohortType=" + params;
 		}
 		var artistId = this.state.appState.get("artist_data").id;
-		var soundcloudRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/soundcloud/'
+		var soundcloudRequestUrl = 'https://api.setmine.com/api/v/7/setrecords/metrics/soundcloud/'
 		+ artistId + cohortType;
 		var soundcloudMetrics;
 		var timezone = moment().utcOffset();
@@ -53,7 +53,7 @@ var UpdateFunctions = {
 			cohortType = "?cohortType=" + params;
 		}
 		var artistId = this.state.appState.get("artist_data").id;
-		var youtubeRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/youtube/'
+		var youtubeRequestUrl = 'https://api.setmine.com/api/v/7/setrecords/metrics/youtube/'
 		+ artistId + cohortType;
 		var youtubeMetrics;
 		var timezone = moment().utcOffset();
@@ -75,7 +75,7 @@ var UpdateFunctions = {
 			cohortType = "?cohortType=" + params;
 		}
 		var artistId = this.state.appState.get("artist_data").id;
-		var beaconRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/beacons/'
+		var beaconRequestUrl = 'https://api.setmine.com/api/v/7/setrecords/metrics/beacons/'
 		+ artistId + cohortType;
 		var beaconMetrics;
 		var timezone = moment().utcOffset();
@@ -93,7 +93,7 @@ var UpdateFunctions = {
 	},
 	updateSocial: function(callback, params) {
 		var artistId = this.state.appState.get("artist_data").id;
-		var socialRequestUrl = 'http://localhost:3000/api/v/7/setrecords/metrics/social/'
+		var socialRequestUrl = 'https://api.setmine.com/api/v/7/setrecords/metrics/social/'
 		+ artistId;
 		var socialMetrics;
 		var timezone = moment().utcOffset();
@@ -110,7 +110,7 @@ var UpdateFunctions = {
 		});
 	},
 	updateSets: function(callback) {
-		var requestURL = 'http://localhost:3000/api/v/7/setrecords/artist/sets/' + this.state.appState.get("artist_data").id;
+		var requestURL = 'https://api.setmine.com/api/v/7/setrecords/artist/sets/' + this.state.appState.get("artist_data").id;
 		$.ajax({
 			type: 'GET',
 			url: requestURL,
@@ -130,7 +130,7 @@ var UpdateFunctions = {
 		});
 	},
 	updateMisc: function(callback) {
-		var requestUrl = 'http://localhost:3000/api/v/7/setrecords/misc/info';
+		var requestUrl = 'https://api.setmine.com/api/v/7/setrecords/misc/info';
 		$.ajax({
 			type: 'GET',
 			url: requestUrl,
