@@ -47,8 +47,9 @@ var UploadTrackWizard = React.createClass({
             trackName: '',
             trackArtist: '',
             event: '',
-            tags: '',
-            uploadedImage: null
+            tags: [],
+            uploadedImage: null,
+            tagList: []
         };
     },
 
@@ -125,13 +126,17 @@ var UploadTrackWizard = React.createClass({
                     event: this.state.event,
                     setLength: this.state.setLength,
                     tags: this.state.tags,
-                    popularity: 0
+                    popularity: 0,
+                    tagList: this.state.tagList
                 };
             }
 
             stepComponent = (<TrackWizardStep3 stepForward={this.stepForward}
             deepLinkState={this.deepLinkState} {...setData} trackName={this.state.trackName} trackArtist={this.state.trackArtist}
             addImage={this.addImage}
+            addTag={this.addTag}
+            removeTag={this.removeTag}
+            loadDatalists={this.loadDatalists}
             originalArtist={this.props.originalArtist} />);
             break;
 
@@ -156,7 +161,8 @@ var UploadTrackWizard = React.createClass({
                     image: this.state.uploadedImage,
                     event: this.state.event,
                     tags: this.state.tags,
-                    popularity: 0
+                    popularity: 0,
+                    setLength: this.state.setLength
                 };
             }
 
@@ -295,6 +301,18 @@ var UploadTrackWizard = React.createClass({
         });
     },
 
+    addTag: function() {
+        this.setState({
+            tags: update(this.state.tags, {$push: ['']})
+        });
+    },
+
+    removeTag: function(index) {
+        this.setState({
+            tags: update(this.state.tags, {$splice: [[index, 1]]})
+        });
+    },
+
     addImage: function(file) {
         if (file[0].type == "image/png" || file[0].type == "image/jpeg" || file[0].type == "image/gif") {
             this.setState({
@@ -429,6 +447,10 @@ var UploadTrackWizard = React.createClass({
         .fail((err) => {
             callback(err);
         });
+    },
+
+    loadDatalists: function (listObjects) {
+        this.setState(listObjects);
     },
 
     updateS3: function(file, callback) {
@@ -609,7 +631,7 @@ var UploadTrackWizard = React.createClass({
                             set_length: this.secondsToMinutes(this.state.setLength),
                             tracklist_url: '',
                             image_url: registeredUrls[1],
-                            tags: [this.state.tags],
+                            tags: this.state.tags,
                             paid: 0,
                             tracklist: [
                                 {

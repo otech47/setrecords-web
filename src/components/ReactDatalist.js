@@ -7,7 +7,17 @@ var ReactDatalist = React.createClass({
     },
 
     render: function() {
-        var options = _.map(this.props.options, (option, index) => {
+        var optionObjects = this.props.options;
+
+        if (this.props.sort) {
+            optionObjects = _.sortBy(optionObjects, 'optionName');
+
+            if (this.props.sort == 'DESC') {
+                optionObjects.reverse();
+            }
+        }
+
+        var options = _.map(optionObjects, (option, index) => {
             return (<option value={option.optionName} key={option.optionName + '_' + index} />);
         });
 
