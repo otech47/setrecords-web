@@ -265,8 +265,8 @@ var UploadSetWizard = React.createClass({
         var newTrack = {
             'id': -1,
             'starttime': '00:00',
-            'artistname': this.props.originalArtist.artist,
-            'songname': 'untitled'
+            'artistname': '',
+            'songname': ''
         };
 
         this.setState({
@@ -575,8 +575,8 @@ var UploadSetWizard = React.createClass({
                         tracklist.push({
                             'id': -1,
                             'starttime': '00:00',
-                            'artistname': this.props.originalArtist.artist,
-                            'songname': 'untitled'
+                            'artistname': 'unknown artist',
+                            'songname': 'unknown track'
                         });
                     }
                     // console.log('Tracklist done:');
