@@ -52,11 +52,16 @@ var UploadSetWizard = React.createClass({
             tracklist_url: null,
 
             // step 4
+            existingImage: '',
             event: '',
             artists: [this.props.originalArtist],
             episode: '',
             tags: [],
             image: null,
+            tagList: [],
+            eventList: [],
+            eventLookup: {},
+            artistList: [],
 
             // step 5
             paid: 0,
@@ -139,10 +144,15 @@ var UploadSetWizard = React.createClass({
                 image: this.state.image,
                 episode: this.state.episode,
                 setLength: this.state.set_length,
-                type: this.state.type
+                type: this.state.type,
+                tagList: this.state.tagList,
+                eventList: this.state.eventList,
+                eventLookup: this.state.eventLookup,
+                artistList: this.state.artistList
             };
 
             stepComponent = (<WizardStep4 stepForward={this.stepForward}
+            loadDatalists={this.loadDatalists}
             deepLinkState={this.deepLinkState}
             addImage={this.addImage}
             addFeaturedArtist={this.addFeaturedArtist}
@@ -412,7 +422,7 @@ var UploadSetWizard = React.createClass({
                         });
                     } else {
                         // console.log('Join successful.');
-                        var newFilename = this.props.originalArtist + '_joined_' + this.state.songs[0].file.name + moment().unix();
+                        var newFilename = this.props.originalArtist.artist + '_joined_' + this.state.songs[0].file.name + moment().unix();
                         var joinedFile = new File([joinedBlob], newFilename);
                         this.setState({
                             filesize: joinedFile.size,
@@ -483,7 +493,10 @@ var UploadSetWizard = React.createClass({
     },
 
     registerImage: function(callback) {
-        if (this.state.image != null) {
+        if (this.state.existingImage != null) {
+            // console.log('Image exists already on our database.');
+            callback(null, this.state.existingImage);
+        } else if (this.state.image != null) {
             // console.log('Image is new and needs to be registered on S3.');
             this.registerS3(this.state.image, function(err, imageUrl) {
                 if (err) {
@@ -709,6 +722,10 @@ var UploadSetWizard = React.createClass({
 
             callback(err);
         });
+    },
+
+    loadDatalists: function (listObjects) {
+        this.setState(listObjects);
     },
 
     cleanUp: function (err) {
