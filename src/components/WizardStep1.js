@@ -9,8 +9,12 @@ var WizardStep1 = React.createClass({
                 <table>
                     <tbody>
                         <tr>
-                            <td><button name="festival" className="step-button" onClick={stepForward.bind(null, {'type': 'festival'})}>Live</button></td>
-                            <td><p>From a festival, concert, or another live venue.</p></td>
+                            <td><button name="festival" className="step-button" onClick={stepForward.bind(null, {'type': 'festival'})}>Festival</button></td>
+                            <td><p>From a live festival.</p></td>
+                        </tr>
+                        <tr>
+                            <td><button name="show" className="step-button" onClick={stepForward.bind(null, {'type': 'show'})}>Show</button></td>
+                            <td><p>From a live, standalone show.</p></td>
                         </tr>
                         <tr>
                             <td><button name="mix" className="step-button" onClick={stepForward.bind(null, {'type': 'mix'})}>Mix</button></td>

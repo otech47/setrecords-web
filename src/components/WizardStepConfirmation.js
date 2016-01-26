@@ -5,7 +5,7 @@ import _ from 'underscore';
 
 var WizardStepConfirmation = React.createClass({
     render: function() {
-        var {paid, price, image, event, set_length, episode, artists, tags, type, outlets, ...other} = this.props;
+        var {paid, price, image, existingImage, event, set_length, episode, artists, tags, type, outlets, ...other} = this.props;
 
         var outletText = '';
         var releaseType = 'Free';
@@ -17,7 +17,11 @@ var WizardStepConfirmation = React.createClass({
             break;
 
             case 'festival':
-            typeText = 'Live';
+            typeText = 'Festival';
+            break;
+
+            case 'show':
+            typeText = 'Show';
             break;
 
             case 'mix':
@@ -44,7 +48,12 @@ var WizardStepConfirmation = React.createClass({
         }
 
         var mockImage = null;
-        if (image) {
+
+        if (existingImage) {
+            mockImage = {
+                preview: constants.S3_ROOT_FOR_IMAGES + existingImage
+            };
+        } else if (image) {
             mockImage = image;
         }
 
@@ -61,7 +70,7 @@ var WizardStepConfirmation = React.createClass({
                         <table className="step-button-text">
                         <tbody>
                             <tr>
-                                <td><p>Tags:</p></td>
+                                <td><p>Genres:</p></td>
                                 <td><p>{tags.join(', ')}</p></td>
                             </tr>
                             <tr>
