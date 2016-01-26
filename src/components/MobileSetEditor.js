@@ -56,7 +56,7 @@ var MobileSetEditor = React.createClass({
         var episodeComponent;
         var editTitleComponent;
 
-        if (this.state.event && this.state.event.is_radiomix) {
+        if (this.state.event && (this.state.event.type != 'festival')) {
             if (this.state.episode) {
                 episodeComponent = (
                     <div className='center'>
@@ -505,10 +505,10 @@ var MobileSetEditor = React.createClass({
                 },
                 event {
                     event,
-                    is_radiomix,
                     banner_image {
                         imageURL
-                    }
+                    },
+                    type
                 },
                 episode {
                     episode
