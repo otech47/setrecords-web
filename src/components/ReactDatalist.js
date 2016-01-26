@@ -2,20 +2,15 @@ var React = require('react');
 import _ from 'underscore';
 
 var ReactDatalist = React.createClass({
-    shouldComponentUpdate: function() {
-        return false;
+    shouldComponentUpdate: function(nextProps, nextState) {
+        return (nextProps.options.length != this.props.options.length);
     },
+
     render: function() {
-        if (this.props.isArray) {
-            var options = _.map(this.props.options, function(option, index) {
-                return (<option value={option} key={option + '_' + index} />);
-            });
-        } else {
-            var objKey = this.props.objKey;
-            var options = _.map(this.props.options, function(option, index) {
-                return (<option value={option[objKey]} key={option[objKey] + '_' + index} />);
-            });
-        }
+        var options = _.map(this.props.options, (option, index) => {
+            return (<option value={option.optionName} key={option.optionName + '_' + index} />);
+        });
+
         return (
             <datalist id={this.props.listId}>
                 {options}

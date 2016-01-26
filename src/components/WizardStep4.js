@@ -3,8 +3,20 @@ import _ from 'underscore';
 import Dropzone from 'react-dropzone';
 import MockSetTileImproved from './MockSetTileImproved';
 import Icon from './Icon';
+import ReactDatalist from './ReactDatalist';
 
 var WizardStep4 = React.createClass({
+    getInitialState: function () {
+        return {
+            tagList: [],
+            eventList: [],
+            artistList: []
+        }
+    },
+
+    componentDidMount: function() {
+        this.getDatalists();
+    },
 
     render() {
         var deepLinkState = this.props.deepLinkState;
@@ -16,20 +28,21 @@ var WizardStep4 = React.createClass({
         var featuredArtistComponent = '';
         var tagComponent = '';
 
-        console.log(tags);
-        console.log(tags.length);
-
         if (type == 'album') {
             fieldComponents = (
-                <input type='text' valueLink={deepLinkState(['event'])} placeholder='Album Name' />
+                <div>
+                    <h3>Album</h3>
+                    <input type='text' valueLink={deepLinkState(['event'])} placeholder='Album Name' />
+                </div>
             );
         } else {
             if (artists.length > 1) {
                 var featuredArtistFields = _.map(_.rest(artists), (function(artist, index) {
                     return (
                         <div className='flex-row artist-field' key={index + 1}>
-                            <input type='text' list='artist-list' valueLink={deepLinkState(['artists', (index + 1), 'artist'])} placeholder='Featured artist' />
+                            <input type='text' list='artists-datalist' valueLink={deepLinkState(['artists', (index + 1), 'artist'])} placeholder='Featured artist' />
                             <i className='fa fa-times warning center' onClick={this.props.removeFeaturedArtist.bind(null, (index + 1))}/>
+                            <ReactDatalist listId='artists-datalist' options={this.state.artistList} />
                         </div>
                     );
                 }).bind(this));
@@ -42,7 +55,9 @@ var WizardStep4 = React.createClass({
             }
 
             if (type == 'festival') {
-                var placeholder = 'Event Name';
+                var placeholder = 'Festival Name';
+            } else if (type == 'show') {
+                var placeholder = 'Show Name';
             } else {
                 var placeholder = 'Mix Name';
                 var episodeField = (
@@ -52,8 +67,8 @@ var WizardStep4 = React.createClass({
 
             fieldComponents = (
                 <div>
-                    <h3>{placeholder}</h3>
-                    <input type='text' valueLink={deepLinkState(['event'])} />
+                    <h3>{placeholder.split(' ')[0]}</h3>
+                    <input type='text' valueLink={deepLinkState(['event'])} list='events-datalist' placeholder={placeholder} />
                     {episodeField ? episodeField : ''}
                 </div>
             );
@@ -84,7 +99,7 @@ var WizardStep4 = React.createClass({
             var tagFields = _.map(tags, (function(tag, index) {
                 return (
                     <div className='flex-row artist-field' key={index}>
-                        <input type='text' list='artist-list' valueLink={deepLinkState(['tags', index])} placeholder='Genre name' />
+                        <input type='text' list='tags-datalist' valueLink={deepLinkState(['tags', index])} placeholder='Genre Name' />
                         <i className='fa fa-times warning center' onClick={this.props.removeTag.bind(null, index)}/>
                     </div>
                 );
@@ -128,8 +143,59 @@ var WizardStep4 = React.createClass({
                 <button className='step-button' onClick={this.submitStep}>
                     Continue
                 </button>
+
+                <ReactDatalist listId='tags-datalist' options={this.state.tagList} />
+                <ReactDatalist listId='events-datalist' options={this.state.eventList} />
             </div>
         );
+    },
+
+    getDatalists: function () {
+        var query = `{
+            tags {
+                optionName: tag
+            },
+        `;
+
+        if (this.props.type != 'album') {
+            query += `
+                events (type: \"${this.props.type}\") {
+                    optionName: event,
+                    banner_image {
+                        imageURL
+                    }
+                },
+                artists {
+                    optionName: artist
+                },
+            `;
+        }
+
+        query += '}';
+
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
+        $.ajax({
+            type: 'get',
+            url: requestUrl,
+            data: {
+                query: query
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            }
+        })
+        .done( (res) => {
+            console.log(res);
+            this.setState({
+                tagList: res.payload.tags,
+                eventList: res.payload.events,
+                artistList: res.payload.artists
+            });
+        })
+        .fail( (err) => {
+            console.log(err);
+        });
     },
 
     browse: function(event) {
