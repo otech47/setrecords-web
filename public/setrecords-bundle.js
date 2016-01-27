@@ -51692,7 +51692,7 @@
 	        var episodeComponent;
 	        var editTitleComponent;
 
-	        if (this.state.event && this.state.event.is_radiomix) {
+	        if (this.state.event && this.state.event.type != 'festival') {
 	            if (this.state.episode) {
 	                episodeComponent = _react2['default'].createElement(
 	                    'div',
@@ -52165,7 +52165,7 @@
 	    getSetById: function getSetById(setId) {
 	        var _this4 = this;
 
-	        var query = '{\n            set (id: ' + setId + ') {\n                id,\n                icon_image {\n                    imageURL\n                },\n                event {\n                    event,\n                    is_radiomix,\n                    banner_image {\n                        imageURL\n                    }\n                },\n                episode {\n                    episode\n                },\n                tracklist: tracks {\n                    songname,\n                    artistname,\n                    starttime\n                },\n                popularity,\n                set_length,\n                tracklistURL,\n                artists {\n                    id,\n                    artist\n                }\n            }\n        }';
+	        var query = '{\n            set (id: ' + setId + ') {\n                id,\n                icon_image {\n                    imageURL\n                },\n                event {\n                    event,\n                    banner_image {\n                        imageURL\n                    },\n                    type\n                },\n                episode {\n                    episode\n                },\n                tracklist: tracks {\n                    songname,\n                    artistname,\n                    starttime\n                },\n                popularity,\n                set_length,\n                tracklistURL,\n                artists {\n                    id,\n                    artist\n                }\n            }\n        }';
 
 	        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
 	        $.ajax({
@@ -69446,8 +69446,10 @@
 	            image: null,
 	            tagList: [],
 	            eventList: [],
+	            venueList: [],
 	            eventLookup: {},
 	            artistList: [],
+	            venue: '',
 
 	            // step 5
 	            paid: 0,
@@ -69530,9 +69532,12 @@
 	                    setLength: this.state.set_length,
 	                    type: this.state.type,
 	                    tagList: this.state.tagList,
+	                    venue: this.state.venue,
 	                    eventList: this.state.eventList,
 	                    eventLookup: this.state.eventLookup,
-	                    artistList: this.state.artistList
+	                    artistList: this.state.artistList,
+	                    venueList: this.state.venueList,
+	                    venueLookup: this.state.venueLookup
 	                };
 
 	                stepComponent = _react2['default'].createElement(_WizardStep42['default'], _extends({ stepForward: this.stepForward,
@@ -69662,8 +69667,8 @@
 	        var newTrack = {
 	            'id': -1,
 	            'starttime': '00:00',
-	            'artistname': this.props.originalArtist.artist,
-	            'songname': 'untitled'
+	            'artistname': '',
+	            'songname': ''
 	        };
 
 	        this.setState({
@@ -69951,7 +69956,8 @@
 	                        paid: _this3.state.paid,
 	                        additional_artists: additionalArtists,
 	                        image_url: registeredUrls[1],
-	                        tags: _this3.state.tags
+	                        tags: _this3.state.tags,
+	                        venue: _this3.state.venue
 	                    };
 	                    // console.log('Bundle done:');
 	                    // console.log(setBundle);
@@ -69962,8 +69968,8 @@
 	                        tracklist.push({
 	                            'id': -1,
 	                            'starttime': '00:00',
-	                            'artistname': _this3.props.originalArtist.artist,
-	                            'songname': 'untitled'
+	                            'artistname': 'unknown artist',
+	                            'songname': 'unknown track'
 	                        });
 	                    }
 	                    // console.log('Tracklist done:');
@@ -71033,14 +71039,50 @@
 	                        null,
 	                        placeholder.split(' ')[0]
 	                    ),
-	                    _react2['default'].createElement('input', { type: 'text', valueLink: deepLinkState(['event']), list: 'events-datalist', placeholder: placeholder })
+	                    _react2['default'].createElement('input', { type: 'text', valueLink: deepLinkState(['event']), list: 'events-datalist', placeholder: placeholder }),
+	                    _react2['default'].createElement(_ReactDatalist2['default'], { listId: 'events-datalist', options: this.props.eventList, sort: 'ASC' })
 	                );
 	            } else {
 	                if (type == 'show') {
 	                    var placeholder = 'Show Name';
+
+	                    var subPlaceholder = 'Venue Name';
+	                    if (this.props.venue.length == 0 && this.props.event.length > 0 && this.props.eventLookup[this.props.event]) {
+	                        if (this.props.event.split('@').length > 1) {
+	                            subPlaceholder = this.props.event.split('@')[1].trim();
+	                        }
+	                    }
+	                    var subField = _react2['default'].createElement(
+	                        'div',
+	                        null,
+	                        _react2['default'].createElement(
+	                            'h3',
+	                            null,
+	                            'Venue'
+	                        ),
+	                        _react2['default'].createElement('input', { type: 'text', placeholder: subPlaceholder, list: 'venues-datalist', valueLink: deepLinkState(['venue']) }),
+	                        _react2['default'].createElement(_ReactDatalist2['default'], { listId: 'venues-datalist', options: this.props.venueList, sort: 'ASC' })
+	                    );
+
+	                    if (this.props.venue.length > 0 && this.props.venueLookup[this.props.venue]) {
+	                        image = {
+	                            preview: _constantsConstants2['default'].S3_ROOT_FOR_IMAGES + this.props.venueLookup[this.props.venue][0].icon_image.imageURL
+	                        };
+	                        console.log(image);
+	                        showUploadButton = false;
+	                    }
 	                } else {
 	                    var placeholder = 'Mix Name';
-	                    var episodeField = _react2['default'].createElement('input', { type: 'text', placeholder: 'Episode Name', valueLink: deepLinkState(['episode']) });
+	                    var subField = _react2['default'].createElement(
+	                        'div',
+	                        null,
+	                        _react2['default'].createElement(
+	                            'h3',
+	                            null,
+	                            'Episode'
+	                        ),
+	                        _react2['default'].createElement('input', { type: 'text', placeholder: 'Episode Name', valueLink: deepLinkState(['episode']) })
+	                    );
 	                }
 
 	                fieldComponents = _react2['default'].createElement(
@@ -71052,7 +71094,8 @@
 	                        placeholder.split(' ')[0]
 	                    ),
 	                    _react2['default'].createElement('input', { type: 'text', valueLink: deepLinkState(['event']), list: 'events-datalist', placeholder: placeholder }),
-	                    episodeField ? episodeField : ''
+	                    subField ? subField : '',
+	                    _react2['default'].createElement(_ReactDatalist2['default'], { listId: 'events-datalist', options: this.props.eventList, sort: 'DESC' })
 	                );
 	            }
 	        }
@@ -71156,8 +71199,7 @@
 	                { className: 'step-button', onClick: this.submitStep },
 	                'Continue'
 	            ),
-	            _react2['default'].createElement(_ReactDatalist2['default'], { listId: 'tags-datalist', options: this.props.tagList, sort: 'ASC' }),
-	            _react2['default'].createElement(_ReactDatalist2['default'], { listId: 'events-datalist', options: this.props.eventList, sort: 'DESC' })
+	            _react2['default'].createElement(_ReactDatalist2['default'], { listId: 'tags-datalist', options: this.props.tagList, sort: 'ASC' })
 	        );
 	    },
 
@@ -71168,6 +71210,10 @@
 
 	        if (this.props.type != 'album') {
 	            query += '\n                events (type: "' + this.props.type + '") {\n                    optionName: event,\n                    banner_image {\n                        imageURL\n                    }\n                },\n                artists {\n                    optionName: artist\n                },\n            ';
+
+	            if (this.props.type == 'show') {
+	                query += '\n                    venues {\n                        optionName: venue,\n                        icon_image {\n                            imageURL\n                        }\n                    }\n                ';
+	            }
 	        }
 
 	        query += '}';
@@ -71184,16 +71230,22 @@
 	                withCredentials: true
 	            }
 	        }).done(function (res) {
-	            // console.log(res);
+	            console.log(res);
 	            var eventLookup = _underscore2['default'].groupBy(res.payload.events, function (event) {
 	                return event.optionName;
+	            });
+
+	            var venueLookup = _underscore2['default'].groupBy(res.payload.venues, function (venue) {
+	                return venue.optionName;
 	            });
 
 	            _this.props.loadDatalists({
 	                tagList: res.payload.tags,
 	                eventList: res.payload.events,
 	                eventLookup: eventLookup,
-	                artistList: res.payload.artists
+	                venueLookup: venueLookup,
+	                artistList: res.payload.artists,
+	                venueList: res.payload.venues
 	            });
 	        }).fail(function (err) {
 	            // console.log(err);
@@ -71209,6 +71261,8 @@
 	        var nameEmptyErr = false;
 	        var noTagsErr = false;
 	        var tagEmptyErr = false;
+	        var venueEmptyErr = false;
+	        var venueMismatchErr = false;
 	        var errors = [];
 
 	        if (_underscore2['default'].some(_underscore2['default'].rest(this.props.artists), function (artist) {
@@ -71235,11 +71289,27 @@
 	            }
 	        }
 
+	        if (this.props.venue.length < 1) {
+	            venueEmptyErr = true;
+	            errors.push('Venue cannot be empty.');
+	        }
+
+	        if (this.props.type == 'show' && this.props.venueLookup[this.props.venue] == null) {
+	            venueMismatchErr = true;
+	            errors.push('Venue must be from the available venues.');
+	        }
+
 	        if (errors.length == 0) {
 	            if (this.props.eventLookup[this.props.event]) {
-	                this.props.stepForward({
-	                    existingImage: this.props.eventLookup[this.props.event][0].banner_image.imageURL
-	                });
+	                if (this.props.type == 'show') {
+	                    this.props.stepForward({
+	                        existingImage: this.props.venueLookup[this.props.venue][0].icon_image.imageURL
+	                    });
+	                } else {
+	                    this.props.stepForward({
+	                        existingImage: this.props.eventLookup[this.props.event][0].banner_image.imageURL
+	                    });
+	                }
 	            } else {
 	                this.props.stepForward({
 	                    existingImage: null
@@ -71896,6 +71966,7 @@
 	        var image = _props.image;
 	        var existingImage = _props.existingImage;
 	        var event = _props.event;
+	        var venue = _props.venue;
 	        var set_length = _props.set_length;
 	        var episode = _props.episode;
 	        var artists = _props.artists;
@@ -71903,7 +71974,7 @@
 	        var type = _props.type;
 	        var outlets = _props.outlets;
 
-	        var other = _objectWithoutProperties(_props, ['paid', 'price', 'image', 'existingImage', 'event', 'set_length', 'episode', 'artists', 'tags', 'type', 'outlets']);
+	        var other = _objectWithoutProperties(_props, ['paid', 'price', 'image', 'existingImage', 'event', 'venue', 'set_length', 'episode', 'artists', 'tags', 'type', 'outlets']);
 
 	        var outletText = '';
 	        var releaseType = 'Free';
@@ -72040,6 +72111,28 @@
 	                                    )
 	                                )
 	                            ),
+	                            type == 'show' && venue.length > 0 ? _react2['default'].createElement(
+	                                'tr',
+	                                null,
+	                                _react2['default'].createElement(
+	                                    'td',
+	                                    null,
+	                                    _react2['default'].createElement(
+	                                        'p',
+	                                        null,
+	                                        'Venue:'
+	                                    )
+	                                ),
+	                                _react2['default'].createElement(
+	                                    'td',
+	                                    null,
+	                                    _react2['default'].createElement(
+	                                        'p',
+	                                        null,
+	                                        venue
+	                                    )
+	                                )
+	                            ) : null,
 	                            _react2['default'].createElement(
 	                                'tr',
 	                                null,

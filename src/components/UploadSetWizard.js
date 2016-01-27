@@ -60,8 +60,10 @@ var UploadSetWizard = React.createClass({
             image: null,
             tagList: [],
             eventList: [],
+            venueList: [],
             eventLookup: {},
             artistList: [],
+            venue: '',
 
             // step 5
             paid: 0,
@@ -146,9 +148,12 @@ var UploadSetWizard = React.createClass({
                 setLength: this.state.set_length,
                 type: this.state.type,
                 tagList: this.state.tagList,
+                venue: this.state.venue,
                 eventList: this.state.eventList,
                 eventLookup: this.state.eventLookup,
-                artistList: this.state.artistList
+                artistList: this.state.artistList,
+                venueList: this.state.venueList,
+                venueLookup: this.state.venueLookup
             };
 
             stepComponent = (<WizardStep4 stepForward={this.stepForward}
@@ -265,8 +270,8 @@ var UploadSetWizard = React.createClass({
         var newTrack = {
             'id': -1,
             'starttime': '00:00',
-            'artistname': this.props.originalArtist.artist,
-            'songname': 'untitled'
+            'artistname': '',
+            'songname': ''
         };
 
         this.setState({
@@ -564,7 +569,8 @@ var UploadSetWizard = React.createClass({
                         paid: this.state.paid,
                         additional_artists: additionalArtists,
                         image_url: registeredUrls[1],
-                        tags: this.state.tags
+                        tags: this.state.tags,
+                        venue: this.state.venue
                     };
                     // console.log('Bundle done:');
                     // console.log(setBundle);
@@ -575,8 +581,8 @@ var UploadSetWizard = React.createClass({
                         tracklist.push({
                             'id': -1,
                             'starttime': '00:00',
-                            'artistname': this.props.originalArtist.artist,
-                            'songname': 'untitled'
+                            'artistname': 'unknown artist',
+                            'songname': 'unknown track'
                         });
                     }
                     // console.log('Tracklist done:');

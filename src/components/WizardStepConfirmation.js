@@ -5,7 +5,7 @@ import _ from 'underscore';
 
 var WizardStepConfirmation = React.createClass({
     render: function() {
-        var {paid, price, image, existingImage, event, set_length, episode, artists, tags, type, outlets, ...other} = this.props;
+        var {paid, price, image, existingImage, event, venue, set_length, episode, artists, tags, type, outlets, ...other} = this.props;
 
         var outletText = '';
         var releaseType = 'Free';
@@ -77,6 +77,12 @@ var WizardStepConfirmation = React.createClass({
                                 <td><p>Set Type:</p></td>
                                 <td><p>{typeText}</p></td>
                             </tr>
+                            {(type == 'show' && venue.length > 0) ?
+                                <tr>
+                                    <td><p>Venue:</p></td>
+                                    <td><p>{venue}</p></td>
+                                </tr>
+                            : null}
                             <tr>
                                 <td><p>Release:</p></td>
                                 <td><p>{releaseType}</p></td>

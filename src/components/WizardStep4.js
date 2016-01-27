@@ -63,17 +63,43 @@ var WizardStep4 = React.createClass({
                     <div>
                         <h3>{placeholder.split(' ')[0]}</h3>
                         <input type='text' valueLink={deepLinkState(['event'])} list='events-datalist' placeholder={placeholder} />
+                        <ReactDatalist listId='events-datalist' options={this.props.eventList} sort={'ASC'} />
                     </div>
                 );
             } else {
                 if (type == 'show') {
                     var placeholder = 'Show Name';
+
+                    var subPlaceholder = 'Venue Name';
+                    if (this.props.venue.length == 0 && this.props.event.length > 0 && this.props.eventLookup[this.props.event]) {
+                        if ( (this.props.event.split('@')).length > 1) {
+                            subPlaceholder = this.props.event.split('@')[1].trim();
+                        }
+                    }
+                    var subField = (
+                        <div>
+                            <h3>Venue</h3>
+                            <input type='text' placeholder={subPlaceholder} list='venues-datalist' valueLink={deepLinkState(['venue'])} />
+                            <ReactDatalist listId='venues-datalist' options={this.props.venueList} sort={'ASC'} />
+                        </div>
+                    );
+
+                    if (this.props.venue.length > 0 && this.props.venueLookup[this.props.venue]) {
+                        image = {
+                            preview: constants.S3_ROOT_FOR_IMAGES + this.props.venueLookup[this.props.venue][0].icon_image.imageURL
+                        };
+                        console.log(image);
+                        showUploadButton = false;
+                    }
                 }
 
                 else {
                     var placeholder = 'Mix Name';
-                    var episodeField = (
-                        <input type='text' placeholder='Episode Name' valueLink={deepLinkState(['episode'])} />
+                    var subField = (
+                        <div>
+                            <h3>Episode</h3>
+                            <input type='text' placeholder='Episode Name' valueLink={deepLinkState(['episode'])} />
+                        </div>
                     );
                 }
 
@@ -81,7 +107,8 @@ var WizardStep4 = React.createClass({
                     <div>
                         <h3>{placeholder.split(' ')[0]}</h3>
                         <input type='text' valueLink={deepLinkState(['event'])} list='events-datalist' placeholder={placeholder} />
-                        {episodeField ? episodeField : ''}
+                        {subField ? subField : ''}
+                        <ReactDatalist listId='events-datalist' options={this.props.eventList} sort={'DESC'} />
                     </div>
                 );
             }
@@ -158,7 +185,6 @@ var WizardStep4 = React.createClass({
                 </button>
 
                 <ReactDatalist listId='tags-datalist' options={this.props.tagList} sort={'ASC'} />
-                <ReactDatalist listId='events-datalist' options={this.props.eventList} sort={'DESC'} />
             </div>
         );
     },
@@ -182,6 +208,17 @@ var WizardStep4 = React.createClass({
                     optionName: artist
                 },
             `;
+
+            if (this.props.type == 'show') {
+                query += `
+                    venues {
+                        optionName: venue,
+                        icon_image {
+                            imageURL
+                        }
+                    }
+                `;
+            }
         }
 
         query += '}';
@@ -199,16 +236,22 @@ var WizardStep4 = React.createClass({
             }
         })
         .done( (res) => {
-            // console.log(res);
+            console.log(res);
             var eventLookup = _.groupBy(res.payload.events, function (event) {
                 return event.optionName;
+            });
+
+            var venueLookup = _.groupBy(res.payload.venues, function (venue) {
+                return venue.optionName;
             });
 
             this.props.loadDatalists({
                 tagList: res.payload.tags,
                 eventList: res.payload.events,
                 eventLookup: eventLookup,
-                artistList: res.payload.artists
+                venueLookup: venueLookup,
+                artistList: res.payload.artists,
+                venueList: res.payload.venues
             });
         })
         .fail( (err) => {
@@ -225,6 +268,8 @@ var WizardStep4 = React.createClass({
         var nameEmptyErr = false;
         var noTagsErr = false;
         var tagEmptyErr = false;
+        var venueEmptyErr = false;
+        var venueMismatchErr = false;
         var errors = [];
 
         if (_.some(_.rest(this.props.artists), function (artist) {
@@ -251,11 +296,27 @@ var WizardStep4 = React.createClass({
             }
         }
 
+        if (this.props.venue.length < 1) {
+            venueEmptyErr = true;
+            errors.push('Venue cannot be empty.');
+        }
+
+        if (this.props.type == 'show' && (this.props.venueLookup[this.props.venue] == null)) {
+            venueMismatchErr = true;
+            errors.push('Venue must be from the available venues.');
+        }
+
         if (errors.length == 0) {
             if (this.props.eventLookup[this.props.event]) {
-                this.props.stepForward({
-                    existingImage: this.props.eventLookup[this.props.event][0].banner_image.imageURL
-                });
+                if (this.props.type == 'show') {
+                    this.props.stepForward({
+                        existingImage: this.props.venueLookup[this.props.venue][0].icon_image.imageURL
+                    });
+                } else {
+                    this.props.stepForward({
+                        existingImage: this.props.eventLookup[this.props.event][0].banner_image.imageURL
+                    });
+                }
             } else {
                 this.props.stepForward({
                     existingImage: null
