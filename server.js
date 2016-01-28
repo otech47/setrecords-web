@@ -10,6 +10,14 @@ app.get('/soundcloudcallback', function (req, res) {
     res.sendFile(path.resolve(__dirname, 'soundcloudcallback.html'));
 });
 
+app.use(function( req, res, next ) {
+    for(var prop in req.query) {
+        res.redirect('https://www.setmine.com/' + prop);
+        return;
+    }
+    next();
+});
+
 app.get('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
 });
