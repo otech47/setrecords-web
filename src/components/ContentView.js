@@ -17,11 +17,22 @@ var ContentView = React.createClass({
 
     componentDidMount() {
         // mixpanel.track("Content Page Open");
-        this.updateSets();
+        this.updateSets(this.props.artistId);
+    },
+
+    shouldComponentUpdate (nextProps, nextState) {
+        if (nextProps.artistId != this.props.artistId) {
+            this.updateSets(nextProps.artistId);
+        }
+
+        return true;
     },
 
     render() {
         var sets = this.props.sets;
+        console.log('==content view sets==');
+        console.log(this.props.artistId);
+        console.log(this.props.sets);
         var setTiles = _.map(sets, (set) => {
             if (!set.event) {
                 set.event = {
@@ -70,8 +81,7 @@ var ContentView = React.createClass({
         );
     },
 
-    updateSets() {
-        var artistId = this.props.artistId;
+    updateSets(artistId) {
         console.log(artistId);
         var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
 
@@ -126,13 +136,16 @@ var ContentView = React.createClass({
         })
         .done((res) => {
             console.log(res);
-            this.props.push({
-                type: 'SHALLOW_MERGE',
-                data: {
-                    loaded: true,
-                    sets: res.payload.artist.sets
-                }
-            });
+
+            if (res.payload.artist !== null) {
+                this.props.push({
+                    type: 'SHALLOW_MERGE',
+                    data: {
+                        loaded: true,
+                        sets: res.payload.artist.sets
+                    }
+                });
+            }
         })
         .fail(function(err) {
             console.log(err);
