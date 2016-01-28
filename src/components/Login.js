@@ -6,9 +6,17 @@ import ForgotPassword from './ForgotPassword';
 import Icon from './Icon';
 import auth from './auth';
 
-var Login = React.createClass ({
+module.exports = React.createClass ({
 
     mixins: [LinkedStateMixin, History],
+
+    componentWillMount: function() {
+        auth.loggedIn((artistId) => {
+            if (artistId) {
+                this.history.replaceState(null, '/content');
+            }
+        });
+    },
 
     getInitialState: function() {
         return {
@@ -52,66 +60,41 @@ var Login = React.createClass ({
         console.log(this.state.username);
         console.log(this.state.password);
 
-        auth.logIn(this.state.username, this.state.password, (result) => {
-            console.log('Login Result:');
-            console.log(result);
-        });
+        this.props.submitLogIn(this.state.username, this.state.password, (err) => {
+            console.log('Errors?');
+            console.log(err);
 
-        // var self = this;
-        // var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/login';
-        // $.ajax({
-        //     type: 'POST',
-        //     url: requestUrl,
-        //     crossDomain: true,
-        //     xhrFields: {
-        //         withCredentials: true
-        //     },
-        //     data: {
-        //         username: self.state.username,
-        //         password: self.state.password
-        //     },
-        //     success: function(res) {
-        //         console.log(res);
-        //         console.log('Login successful.');
-        //         self.props.push({
-        //             type: 'SHALLOW_MERGE',
-        //             data: {
-        //                 artistId: res.payload.setrecordsuser_login.artist_id,
-        //             }
-        //         });
-        //         self.history.pushState(null, '/content');
-        //     },
-        //     error: function(err) {
-        //         console.log(err);
-        //         switch (err.responseJSON.error) {
-        //             case 'User not found':
-        //             console.log('Username was incorrect.');
-        //             self.setState({
-        //                 username: '',
-        //                 password: '',
-        //                 error: 'User not found.'
-        //             });
-        //             break;
-        //
-        //             case 'Incorrect Password':
-        //             console.log('Password was incorrect.');
-        //             self.setState({
-        //                 password: '',
-        //                 error: 'Incorrect password.'
-        //             });
-        //             break;
-        //
-        //             default:
-        //             console.log('Unknown error.');
-        //             self.setState({
-        //                 username: '',
-        //                 password: '',
-        //                 error: 'User not found.'
-        //             });
-        //             break;
-        //         }
-        //     }
-        // });
-    }
-})
-module.exports = Login;
+            if (err) {
+                switch (err.responseJSON.error) {
+                    case 'User not found':
+                    console.log('Username was incorrect.');
+                    this.setState({
+                        username: '',
+                        password: '',
+                        error: 'User not found.'
+                    });
+                    break;
+
+                    case 'Incorrect Password':
+                    console.log('Password was incorrect.');
+                    this.setState({
+                        password: '',
+                        error: 'Incorrect password.'
+                    });
+                    break;
+
+                    default:
+                    console.log('Unknown error.');
+                    this.setState({
+                        username: '',
+                        password: '',
+                        error: 'User not found.'
+                    });
+                    break;
+                }
+            } else {
+                this.history.pushState(null, '/content');
+            }
+        });
+    },
+});
