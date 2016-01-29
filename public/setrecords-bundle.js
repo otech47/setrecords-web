@@ -79149,15 +79149,30 @@
 	        var email = this.refs.mail.value;
 	        var emailIsValid = this.validateEmail(email);
 	        if (emailIsValid) {
-	            this.setState({
-	                email: true,
-	                value: 'Reset email sent.'
-	            });
-	            setTimeout(function () {
-	                if (_this.isMounted) {
-	                    _this.setState(_this.getInitialState());
+	            var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/password/recover';
+	            $.ajax({
+	                type: 'post',
+	                url: requestUrl,
+	                crossDomain: true,
+	                xhrFields: {
+	                    withCredentials: true
+	                },
+	                data: {
+	                    email: email
 	                }
-	            }, 3000);
+	            }).done(function (res) {
+	                _this.setState({
+	                    email: true,
+	                    value: 'Reset email sent.'
+	                });
+	                setTimeout(function () {
+	                    if (_this.isMounted) {
+	                        _this.setState(_this.getInitialState());
+	                    }
+	                }, 3000);
+	            }).fail(function (err) {
+	                alert('Sorry, we couldn\'t find an account with that email. Please try a different email.');
+	            });
 	        } else {
 	            alert('Please enter a valid email address');
 	        }

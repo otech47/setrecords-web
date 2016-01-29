@@ -32,15 +32,32 @@ var ForgotPassword = React.createClass({
         var email = this.refs.mail.value;
         var emailIsValid = this.validateEmail(email);
         if(emailIsValid) {
-            this.setState({
-                email: true,
-                value: 'Reset email sent.'
-            });
-            setTimeout(() => {
-                if (this.isMounted) {
-                    this.setState(this.getInitialState());
+            var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/password/recover';
+            $.ajax({
+                type: 'post',
+                url: requestUrl,
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                data: {
+                    email: email
                 }
-            }, 3000);
+            })
+            .done( (res) => {
+                this.setState({
+                    email: true,
+                    value: 'Reset email sent.'
+                });
+                setTimeout(() => {
+                    if (this.isMounted) {
+                        this.setState(this.getInitialState());
+                    }
+                }, 3000);
+            })
+            .fail( (err) => {
+                alert('Sorry, we couldn\'t find an account with that email. Please try a different email.');
+            });
         } else {
             alert('Please enter a valid email address');
         }
