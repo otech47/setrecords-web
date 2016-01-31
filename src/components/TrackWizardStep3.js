@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 import Dropzone from 'react-dropzone';
-import MockSetTileImproved from './MockSetTileImproved';
+import MockSetTile from './MockSetTile';
 import Icon from './Icon';
 import ReactDatalist from './ReactDatalist';
 
@@ -75,7 +75,7 @@ var TrackWizardStep3 = React.createClass({
                     </div>
 
                     <div className='flex-column flex-fixed' style={{alignItems: 'center'}}>
-                        <MockSetTileImproved image={this.props.image} artists={[this.props.originalArtist]} event={this.props.event} setLength={this.props.setLength} popularity={this.props.popularity} />
+                        <MockSetTile image={this.props.image} artists={[this.props.originalArtist]} event={this.props.event} setLength={this.props.setLength} popularity={this.props.popularity} />
 
                         <Dropzone
                             ref='dropzone'

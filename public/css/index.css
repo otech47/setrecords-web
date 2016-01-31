@@ -1091,7 +1091,7 @@ header .artist img {
   color: #f7f7f7;
   letter-spacing: 3px;
 }
-#Login section {
+#Login form {
   position: absolute;
   top: 0;
   align-items: center;
@@ -1099,7 +1099,7 @@ header .artist img {
   height: 100% !important;
   z-index: 1;
 }
-#Login section::before {
+#Login form::before {
   content: '';
   opacity: 0.5;
   background-color: #313542;
@@ -1108,7 +1108,7 @@ header .artist img {
   position: absolute;
   z-index: -1;
 }
-#Login section .flex-row {
+#Login form .flex-row {
   margin-bottom: 1rem;
   padding-bottom: .5rem;
   border-bottom: solid 1px;

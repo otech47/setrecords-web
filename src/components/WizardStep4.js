@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 import Dropzone from 'react-dropzone';
-import MockSetTileImproved from './MockSetTileImproved';
+import MockSetTile from './MockSetTile';
 import Icon from './Icon';
 import ReactDatalist from './ReactDatalist';
 import constants from '../constants/constants';
@@ -167,7 +167,7 @@ var WizardStep4 = React.createClass({
                     </div>
 
                     <div className='flex-column flex-fixed' style={{alignItems: 'center'}}>
-                        <MockSetTileImproved image={image} artists={this.props.artists} event={this.props.event} episode={type == 'mix' ? this.props.episode : ''} setLength={this.props.setLength} popularity={0} />
+                        <MockSetTile image={image} artists={this.props.artists} event={this.props.event} episode={type == 'mix' ? this.props.episode : ''} setLength={this.props.setLength} popularity={0} />
 
                         <Dropzone
                             ref='dropzone'
@@ -296,7 +296,7 @@ var WizardStep4 = React.createClass({
             }
         }
 
-        if (this.props.venue.length < 1) {
+        if (this.props.type == 'show' && this.props.venue.length < 1) {
             venueEmptyErr = true;
             errors.push('Venue cannot be empty.');
         }

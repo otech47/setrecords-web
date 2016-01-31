@@ -9,10 +9,9 @@ import _ from 'underscore';
 import async from 'async';
 import constants from '../constants/constants';
 
-import MobileSetEditor from './MobileSetEditor';
+import SetEditor from './SetEditor';
 import Header from './Header';
 import NavBar from './NavBar';
-import ViewContainer from './ViewContainer';
 import Footer from './Footer';
 import ContentView from './ContentView';
 import MetricsView from './MetricsView';
@@ -26,7 +25,7 @@ import SetmineReport from './SetmineReport';
 import SocialReport from './SocialReport';
 import SoundcloudReport from './SoundcloudReport';
 import YoutubeReport from './YoutubeReport';
-import Login from './Login';
+import LoginPage from './LoginPage';
 
 import ForgotPassword from './ForgotPassword';
 import Icon from './Icon';
@@ -356,11 +355,11 @@ module.exports = React.createClass({
                 props = {push: push, loaded: appState.get('loaded'), sets: appState.get('sets'), artistId: appState.get('artistId')};
                 break;
 
-                case Login:
+                case LoginPage:
                 props = {push: push, loggedIn: appState.get('loggedIn'), submitLogIn: logIn};
                 break;
 
-                case MobileSetEditor:
+                case SetEditor:
                 props = {push: push, loaded: appState.get('loaded'), originalArtist: appState.get('artist_data')};
                 break;
 

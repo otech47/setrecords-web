@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'underscore';
 import constants from '../constants/constants';
 
-import MockSetTileImproved from './MockSetTileImproved';
+import MockSetTile from './MockSetTile';
 import UtilityFunctions from '../mixins/UtilityFunctions';
 
 var TrackWizardStep1 = React.createClass({
@@ -25,7 +25,7 @@ var TrackWizardStep1 = React.createClass({
                 popularity: set.popularity
             };
 
-            return (<MockSetTileImproved {...setData} key={set.id} onClick={this.props.stepForward.bind(null, {selectedSetIndex: index})} />);
+            return (<MockSetTile {...setData} key={set.id} onClick={this.props.stepForward.bind(null, {selectedSetIndex: index})} />);
         });
 
         return (
@@ -33,7 +33,7 @@ var TrackWizardStep1 = React.createClass({
                 <p>Select a set to add a track to, or start a new one.</p>
 
                 <div className="flex-row">
-                    <MockSetTileImproved artists={[this.props.originalArtist]}
+                    <MockSetTile artists={[this.props.originalArtist]}
                     event={'Create New...'} popularity={0} setLength={0} onClick={this.props.stepForward.bind(null, {selectedSetIndex: -1})} />
 
                     {setTiles}

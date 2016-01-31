@@ -1,83 +1,101 @@
-/*Login Page for SetRecords */
-/*One Componenet to hold the the Logo , username and password */
-/*Acutal Login information*/
-/*Username and passowrd*/
-/*password*/
-var React = require('react');
-import {Router, Navigation} from 'react-router';
+import React from 'react';
+import {History} from 'react-router';
+import LinkedStateMixin from 'react-addons-linked-state-mixin';
 
-var LoginPage = React.createClass ({
-	mixins: [Navigation],
-	getInitialState: function() {
-    	return {
-      		username: ""
-    	};
-  	},
-  	handleChange: function(event) {
-  		this.setState({username: event.target.value});
-  	},
-  	loginSuccessful:function() {
-  		this.transitionTo("content");
-  	},
-	submitLogin:function(){ 
-		var self = this;
-		var push = this.props.pushFn;
-		var requestURL = "https://setmine.com/api/v/7/artist/" + this.state.username;
-		$.ajax({
-			url: requestURL,
-			success: function(res){
-				$.ajax({
-					url: requestURL,
-					success: function(res){
-						var artistObject = res.payload.artist; 
-						push({
-							type: "SHALLOW_MERGE",
-							data: {
-								loggedIn: true,
-								artistData: artistObject
-							}
-						});
-						self.loginSuccessful();
-					},
-					error: function(err){
-						 console.log("Username or Password Incoreect" + " " + err);
-					}
-				});
-			}
-		});
-	},
-	render: function (){
-		return(
+import ForgotPassword from './ForgotPassword';
+import Icon from './Icon';
+import auth from './auth';
 
-			
-			<div className="view loginContainer">
-				
-					
-					<video id="introvid" autoPlay="auto" loop="loop">
-						<source src="https://www.setmine.com/videos/setrecords-login-compress.mp4" type="video/mp4"/>
-					</video>
-										
+module.exports = React.createClass ({
 
-					<form>
-						<div className="format"> 
-							<div>
-								<label htmlFor="username"></label>
-								<input type="text" className="username-input main-input" id="username" placeholder="Username" onChange={this.handleChange}/>
-							</div>
-				    		<div>
-				    			<label htmlFor="password"></label>
-				    			<input type="text" className="password-input main-input" id="password-input" placeholder="Password"/>
-				    		</div>
-				    		<div>
-				    		<button type="submit" className="setrecords-signin main-input" onClick={this.submitLogin}>
-				    		Sign In
-				    		</button>
-							</div>
-						</div>
-					</form>
-				
-			</div>
-		);
-	}
-})
-module.exports = LoginPage;
+    mixins: [LinkedStateMixin, History],
+
+    componentWillMount: function() {
+        auth.loggedIn((artistId) => {
+            if (artistId) {
+                this.history.replaceState(null, '/content');
+            }
+        });
+    },
+
+    getInitialState: function() {
+        return {
+            username: '',
+            password: '',
+            error: null,
+            changePassword: false
+        }
+    },
+
+    render: function () {
+        var password = this.state.changePassword ? <ForgotPassword /> : <p onClick={() => this.setState({changePassword: true})}>Forgot password?</p>
+        return(
+            <div id='Login'>
+                <video id='introvid' autoPlay='auto' loop='loop'>
+                    <source src='https://setmine.com/videos/setrecords-login-compress.mp4' type='video/mp4'/>
+                </video>
+                <form onSubmit={this.submitLogin} className='flex-container'>
+                    <div className='form center'>
+                        <div className='flex-row' onClick={() => this.setState({changePassword:false})}>
+                            <Icon className='center'>perm_identity</Icon>
+                            <input type='text' placeholder='Username' valueLink={this.linkState('username')} />
+                        </div>
+                        <div className='flex-row' onClick={() => this.setState({changePassword:false})}>
+                            <Icon className='center'>lock_outline</Icon>
+                            <input type='password' placeholder='Password' valueLink={this.linkState('password')} />
+                        </div>
+                        <div className={'set-flex login-error ' + (this.state.error ? '' : 'hidden')}>
+                            {this.state.error}
+                        </div>
+                        <button className='flex-container' onClick={this.submitLogin} disabled={(this.state.username.length > 0 && this.state.password.length > 0 ? false : true)}>Sign In</button>
+                        {password}
+                    </div>
+                </form>
+            </div>
+        );
+    },
+
+    submitLogin: function(e) {
+        e.preventDefault();
+        console.log('Submitting login with:');
+        console.log(this.state.username);
+        console.log(this.state.password);
+
+        this.props.submitLogIn(this.state.username, this.state.password, (err) => {
+            console.log('Errors?');
+            console.log(err);
+
+            if (err) {
+                switch (err.responseJSON.error) {
+                    case 'User not found':
+                    console.log('Username was incorrect.');
+                    this.setState({
+                        username: '',
+                        password: '',
+                        error: 'User not found.'
+                    });
+                    break;
+
+                    case 'Incorrect Password':
+                    console.log('Password was incorrect.');
+                    this.setState({
+                        password: '',
+                        error: 'Incorrect password.'
+                    });
+                    break;
+
+                    default:
+                    console.log('Unknown error.');
+                    this.setState({
+                        username: '',
+                        password: '',
+                        error: 'User not found.'
+                    });
+                    break;
+                }
+            } else {
+                this.history.pushState(null, '/content');
+            }
+        });
+    },
+});

@@ -1,5 +1,4 @@
 import React from 'react';
-import TracklistImproved from './TracklistImproved';
 import Tracklist from './Tracklist';
 import _ from 'underscore';
 import moment from 'moment';
@@ -11,7 +10,7 @@ var WizardStep3 = React.createClass({
     render: function() {
         return (
             <div className='flex-column wizard-step' id='WizardStep3'>
-                <p className='step-info flex-container'>Create the tracklist for your set. We'll automatically generate the tracks from any 1001tracklists URL.</p>
+                <p className='step-info flex-container'>Create the tracklist for your set. Tracks are automatically generated from any 1001tracklists URL.</p>
                 <p className='step-info flex-container'>(This step is optional and can be done at any time)</p>
                 <Tracklist {...this.props} />
                 <button className='step-button' onClick={this.submitStep}>Continue</button>
@@ -25,7 +24,7 @@ var WizardStep3 = React.createClass({
         var timeFormatErr = false;
         var finalTimeErr = false;
         var errors = [];
-        
+
         var tracklist = this.props.tracklist;
         if (tracklist.length > 0) {
             var prevTime = -1;

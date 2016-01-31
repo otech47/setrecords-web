@@ -28,7 +28,8 @@ var ForgotPassword = React.createClass({
         });
     },
 
-    submit() {
+    submit(e) {
+        e.preventDefault();
         var email = this.refs.mail.value;
         var emailIsValid = this.validateEmail(email);
         if(emailIsValid) {
