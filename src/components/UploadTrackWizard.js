@@ -17,10 +17,12 @@ import Joiner from '../services/Joiner';
 import Downloader from '../services/Downloader';
 import async from 'async';
 import Icon from './Icon';
+import {History} from 'react-router';
+import LoadingNotification from './LoadingNotification';
 
 var UploadTrackWizard = React.createClass({
 
-    mixins: [LinkedStateMixin, UtilityFunctions],
+    mixins: [LinkedStateMixin, UtilityFunctions, History],
 
     getInitialState: function() {
         return {
@@ -192,6 +194,8 @@ var UploadTrackWizard = React.createClass({
                     </Loader>
                 </div>
             </div>
+
+            <LoadingNotification title='Uploading...' open={this.state.applying} />
         </div>
         );
     },
@@ -688,8 +692,10 @@ var UploadTrackWizard = React.createClass({
                                     "Page": "Set Editor",
                                     "Message": "Error applying changes"
                                 });
+                                this.history.pushState(null, 'content');
                             } else {
                                 // console.log('All changes applied successfully.');
+                                this.history.pushState(null, '/content');
                             }
                         });
                     }
@@ -766,10 +772,12 @@ var UploadTrackWizard = React.createClass({
         .done((res) => {
             // console.log('Set registered on database.');
             // console.log(res);
+            this.history.pushState(null, '/content');
         })
         .fail((err) => {
             // console.log('An error occurred when updating the database.');
             // console.log(err);
+            this.history.pushState(null, '/content');
         });
     },
 

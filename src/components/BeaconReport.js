@@ -114,8 +114,8 @@ var BeaconReport = React.createClass({
     },
 
     updateBeacon(cohort) {
-        console.log('Updating to cohort: ');
-        console.log(cohort);
+        // console.log('Updating to cohort: ');
+        // console.log(cohort);
 
         var timezoneOffset = moment().utcOffset();
         var query = `{
@@ -164,7 +164,7 @@ var BeaconReport = React.createClass({
                     overtime: overtime.unlocks
                 }
             };
-            console.log(beaconMetrics);
+            // console.log(beaconMetrics);
 
             this.props.push({
                 type: 'SHALLOW_MERGE',
@@ -175,7 +175,7 @@ var BeaconReport = React.createClass({
             });
         })
         .fail((err) => {
-            console.log(err);
+            // console.log(err);
         });
     },
 

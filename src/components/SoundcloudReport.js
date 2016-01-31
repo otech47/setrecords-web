@@ -164,7 +164,7 @@ var SoundcloudReport = React.createClass({
             });
         })
         .fail((err) => {
-            console.log(err);
+            // console.log(err);
         });
     },
 

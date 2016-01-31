@@ -57,18 +57,18 @@ module.exports = React.createClass ({
 
     submitLogin: function(e) {
         e.preventDefault();
-        console.log('Submitting login with:');
-        console.log(this.state.username);
-        console.log(this.state.password);
+        // console.log('Submitting login with:');
+        // console.log(this.state.username);
+        // console.log(this.state.password);
 
         this.props.submitLogIn(this.state.username, this.state.password, (err) => {
-            console.log('Errors?');
-            console.log(err);
+            // console.log('Errors?');
+            // console.log(err);
 
             if (err) {
                 switch (err.responseJSON.error) {
                     case 'User not found':
-                    console.log('Username was incorrect.');
+                    // console.log('Username was incorrect.');
                     this.setState({
                         username: '',
                         password: '',
@@ -77,7 +77,7 @@ module.exports = React.createClass ({
                     break;
 
                     case 'Incorrect Password':
-                    console.log('Password was incorrect.');
+                    // console.log('Password was incorrect.');
                     this.setState({
                         password: '',
                         error: 'Incorrect password.'
@@ -85,7 +85,7 @@ module.exports = React.createClass ({
                     break;
 
                     default:
-                    console.log('Unknown error.');
+                    // console.log('Unknown error.');
                     this.setState({
                         username: '',
                         password: '',

@@ -165,7 +165,7 @@ var YoutubeReport = React.createClass({
             });
         })
         .fail((err) => {
-            console.log(err);
+            // console.log(err);
         });
     },
 
