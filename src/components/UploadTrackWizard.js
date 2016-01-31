@@ -684,10 +684,10 @@ var UploadTrackWizard = React.createClass({
                                 // console.log('There was an error when applying changes to this set.');
                                 // console.log(err);
 
-                                // mixpanel.track("Error", {
-                                //     "Page": "Set Editor",
-                                //     "Message": "Error applying changes"
-                                // });
+                                mixpanel.track("Error", {
+                                    "Page": "Set Editor",
+                                    "Message": "Error applying changes"
+                                });
                             } else {
                                 // console.log('All changes applied successfully.');
                             }

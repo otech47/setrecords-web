@@ -25,7 +25,7 @@ var BeaconReport = React.createClass({
     },
 
     componentDidMount() {
-        // mixpanel.track("Beacon Metrics Open");
+        mixpanel.track("Beacon Metrics Open");
         this.updateBeacon(this.state.cohort);
     },
 

@@ -29,7 +29,7 @@ var SocialReport = React.createClass({
     },
 
     componentDidMount() {
-        // mixpanel.track("Social Metrics Open");
+        mixpanel.track("Social Metrics Open");
         this.updateSocial();
         this.checkSocial();
     },

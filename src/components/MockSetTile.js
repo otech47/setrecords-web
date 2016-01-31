@@ -1,37 +1,49 @@
-var React = require('react');
-var Router = require('react-router')
-var Route = Router.Route;
-var constants = require('../constants/constants');
+import React from 'react';
+import constants from '../constants/constants';
+import UtilityFunctions from '../mixins/UtilityFunctions';
+import _ from 'underscore';
 
-var MockSetTile = React.createClass({
-    render: function() {
-        var setData = this.props.setData;
-        var backgroundImageURL = setData.main_eventimageURL;
-        if (setData.is_radiomix && setData.episode_imageURL) {
-            backgroundImageURL = setData.episode_imageURL;
+var MockSetTileImproved = React.createClass({
+    mixins: [UtilityFunctions],
+    render() {
+        var {image, artists, event, setLength, episode, popularity, ...other} = this.props;
+
+        if (image) {
+            var backgroundImage = image.preview;
+        } else {
+            var backgroundImage = constants.S3_ROOT_FOR_IMAGES + constants.DEFAULT_IMAGE;
         }
-        var episodeImage = this.props.episodeImage;
+
+        var style = {
+            backgroundImage: `url('${backgroundImage}')`,
+            backgroundSize: '100% 100%'
+        };
+
+        var artistText = artists[0].artist;
+        if (artists.length > 1) {
+            artistText += ' feat. ' + _.pluck(_.rest(artists), 'artist').join(', ');
+        }
+
         return (
-        <button className="set-tile" onClick={this.props.onClick} >
-            <img className="event-image" src={(episodeImage.length > 0 ? episodeImage[0].preview : constants.S3_ROOT_FOR_IMAGES+backgroundImageURL)} />
-            <div className="flex-column tile-controls">
-                <div className="flex-column flex-2x set-info">
-                    <div>{setData.artist}</div>
-                    <div>{setData.event}{(setData.episode && setData.episode.length > 0) ? " - " + setData.episode : ""}</div>
-                </div>
-                <div className="divider"></div>
-                <div className="flex-row flex set-stats">
-                    <div className="flex-fixed play-count set-flex">
-                        <i className="fa fa-play"> {setData.popularity}</i>
+            <div className='set-tile' style={style} onClick={this.props.onClick}>
+                <div className='flex-column tile-controls'>
+                    <div className='flex-column flex-2x set-info'>
+                        <div>{artistText}</div>
+                        <div>{event}{(episode && episode.length > 0) ? ' - ' + episode : ''}</div>
                     </div>
-                    <div className="flex-fixed set-length set-flex">
-                        <i className="fa fa-clock-o">{setData.set_length}</i>
+                    <div className='divider'></div>
+                    <div className='flex-row flex set-stats'>
+                        <div className='flex-fixed play-count set-flex'>
+                            <i className='fa fa-play'> {popularity}</i>
+                        </div>
+                        <div className='flex-fixed set-length set-flex'>
+                            <i className='fa fa-clock-o'> {this.secondsToMinutes(setLength)}</i>
+                        </div>
                     </div>
                 </div>
             </div>
-        </button>
         );
     }
 });
 
-module.exports = MockSetTile;
+module.exports = MockSetTileImproved;

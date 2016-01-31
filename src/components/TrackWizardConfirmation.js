@@ -1,5 +1,5 @@
 import React from 'react';
-import MockSetTileImproved from './MockSetTileImproved';
+import MockSetTile from './MockSetTile';
 var constants = require('../constants/constants');
 import _ from 'underscore';
 
@@ -30,7 +30,7 @@ var TrackWizardConfirmation = React.createClass({
                         </table>
                     </div>
                     <div className='flex-column flex-fixed'>
-                        <MockSetTileImproved image={image} artists={[originalArtist]} event={event} setLength={setLength} popularity={popularity} />
+                        <MockSetTile image={image} artists={[originalArtist]} event={event} setLength={setLength} popularity={popularity} />
                     </div>
                 </div>
                 <button className='step-button' onClick={this.props.uploadTrack}>

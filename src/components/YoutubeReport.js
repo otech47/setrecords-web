@@ -26,7 +26,7 @@ var YoutubeReport = React.createClass({
     },
 
     componentDidMount() {
-        // mixpanel.track("Youtube Metrics Open");
+        mixpanel.track("Youtube Metrics Open");
         this.updateYoutube(this.state.cohort);
     },
 

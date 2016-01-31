@@ -2,14 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Route, Router, IndexRoute} from 'react-router';
 import App from './components/App';
-import Login from './components/Login';
+import LoginPage from './components/LoginPage';
 import ContentView from './components/ContentView';
 import SetmineReport from './components/SetmineReport';
 import BeaconReport from './components/BeaconReport';
 import SocialReport from './components/SocialReport';
 import SoundcloudReport from './components/SoundcloudReport';
 import YoutubeReport from './components/YoutubeReport';
-import MobileSetEditor from './components/MobileSetEditor';
+import SetEditor from './components/SetEditor';
 import SettingsEditor from './components/SettingsEditor';
 import Contact from './components/Contact';
 import UploadSetWizard from './components/UploadSetWizard';
@@ -22,7 +22,7 @@ import history from './services/history';
 
 var routes = (
     <Route path='/' component={App} >
-        <IndexRoute component={Login} />
+        <IndexRoute component={LoginPage} />
         <Route path='content' component={ContentView} />
 
         <Route path='metrics/setmine' component={SetmineReport} />
@@ -31,7 +31,7 @@ var routes = (
         <Route path='metrics/soundcloud' component={SoundcloudReport} />
         <Route path='metrics/youtube' component={YoutubeReport} />
 
-        <Route path='edit/:id' component={MobileSetEditor} />
+        <Route path='edit/:id' component={SetEditor} />
         <Route path='account' component={SettingsEditor} />
         <Route path='contact' component={Contact} />
         <Route path='upload-set' component={UploadSetWizard} />

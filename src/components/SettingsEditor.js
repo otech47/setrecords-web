@@ -8,7 +8,6 @@ import constants from '../constants/constants';
 import {History, Lifecycle} from 'react-router';
 import {Motion, spring, presets} from 'react-motion';
 import Icon from './Icon';
-import ConfirmChanges from './ConfirmChanges';
 import Notification from './Notification';
 import moment from 'moment';
 
@@ -41,7 +40,7 @@ var SettingsEditor = React.createClass({
     },
 
     componentDidMount() {
-        // mixpanel.track("Settings Page Open");
+        mixpanel.track("Settings Page Open");
         this.getAccountData();
     },
 
