@@ -133,7 +133,7 @@ var push = evtHandler.push;
 
 
 var loggedIn = function (cb) {
-    console.log('Checking log in status...');
+    // console.log('Checking log in status...');
 
     var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/login';
 
@@ -146,23 +146,23 @@ var loggedIn = function (cb) {
         }
     })
     .done((res) => {
-        console.log('==LOGGED IN==');
-        console.log(res);
+        // console.log('==LOGGED IN==');
+        // console.log(res);
         cb(res.payload.artist_id);
     })
     .fail((err) => {
-        console.log(err);
+        // console.log(err);
         cb();
     });
 }
 
 var logIn = function (user, pass, cb) {
-    console.log('Logging in...');
+    // console.log('Logging in...');
     cb = arguments[arguments.length - 1];
 
     loggedIn((artistId) => {
         if (artistId) {
-            console.log('Session exists!');
+            // console.log('Session exists!');
             onChange(artistId);
             if (cb) {
                 cb();
@@ -170,16 +170,16 @@ var logIn = function (user, pass, cb) {
             return;
         }
 
-        console.log('No session exists, attempting to submit credentials.');
+        // console.log('No session exists, attempting to submit credentials.');
         submitCredentials(user, pass, (res) => {
             if (res.status == 'success') {
-                console.log('Submission successful.');
+                // console.log('Submission successful.');
                 onChange(res.payload.setrecordsuser_login.artist_id);
                 if (cb) {
                     cb();
                 }
             } else {
-                console.log('Submission not successful');
+                // console.log('Submission not successful');
                 onChange();
                 if (cb) {
                     cb(res);
@@ -190,7 +190,7 @@ var logIn = function (user, pass, cb) {
 }
 
 var logOut = function (cb) {
-    console.log('Logging out...');
+    // console.log('Logging out...');
 
     var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/logout';
     $.ajax({
@@ -208,14 +208,14 @@ var logOut = function (cb) {
         onChange(false);
     })
     .fail((err) => {
-        console.log(err);
+        // console.log(err);
     });
 }
 
 var onChange = function () {}
 
 var submitCredentials = function (user, pass, cb) {
-    console.log('==SUBMIT CREDENTIALS==');
+    // console.log('==SUBMIT CREDENTIALS==');
     var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/login';
 
     $.ajax({
@@ -231,11 +231,11 @@ var submitCredentials = function (user, pass, cb) {
         }
     })
     .done((res) => {
-        console.log(res);
+        // console.log(res);
         cb(res);
     })
     .fail((err) => {
-        console.log(err);
+        // console.log(err);
         cb(err);
     });
 }
@@ -252,9 +252,9 @@ module.exports = React.createClass({
     },
 
     updateAuth: function (artistId) {
-        console.log('Update auth: ' + artistId);
+        // console.log('Update auth: ' + artistId);
         if (artistId) {
-            console.log('Updating auth to artist ID: ' + artistId);
+            // console.log('Updating auth to artist ID: ' + artistId);
             push({
                 type: 'SHALLOW_MERGE',
                 data: {
@@ -262,12 +262,12 @@ module.exports = React.createClass({
                     loggedIn: true
                 }
             });
-            console.log('==artist id==');
-            console.log(this.state.appState.get('artistId'));
+            // console.log('==artist id==');
+            // console.log(this.state.appState.get('artistId'));
 
             this.updateArtist();
         } else {
-            console.log('This user not authorized.');
+            // console.log('This user not authorized.');
             push({
                 type: 'SHALLOW_MERGE',
                 data: defaultValues
@@ -293,7 +293,7 @@ module.exports = React.createClass({
             }
         })
         .done((res) => {
-            console.log(res);
+            // console.log(res);
             push({
                 type: 'SHALLOW_MERGE',
                 data: {
@@ -304,8 +304,8 @@ module.exports = React.createClass({
             });
         })
         .fail((err) => {
-            console.log('An error occurred getting artist data.');
-            console.log(err);
+            // console.log('An error occurred getting artist data.');
+            // console.log(err);
         });
     },
 
@@ -320,7 +320,7 @@ module.exports = React.createClass({
     componentWillMount() {
         this._attachStreams(); //global event handler
         onChange = this.updateAuth;
-        console.log('Will mount');
+        // console.log('Will mount');
         logIn();
     },
 

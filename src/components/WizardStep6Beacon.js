@@ -20,7 +20,7 @@ var WizardStep6 = React.createClass({
         var {addOutlet, removeOutlet, outlets, venues, ...other} = this.props;
         var linkState = this.linkState;
         var venueListings = [];
-        console.log(outlets);
+        // console.log(outlets);
 
         var outletListings = _.map(outlets, (outlet, index) => {
             return (

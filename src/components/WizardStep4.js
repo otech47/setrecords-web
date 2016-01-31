@@ -88,7 +88,7 @@ var WizardStep4 = React.createClass({
                         image = {
                             preview: constants.S3_ROOT_FOR_IMAGES + this.props.venueLookup[this.props.venue][0].icon_image.imageURL
                         };
-                        console.log(image);
+                        // console.log(image);
                         showUploadButton = false;
                     }
                 }
@@ -236,7 +236,7 @@ var WizardStep4 = React.createClass({
             }
         })
         .done( (res) => {
-            console.log(res);
+            // console.log(res);
             var eventLookup = _.groupBy(res.payload.events, function (event) {
                 return event.optionName;
             });

@@ -9,7 +9,7 @@ var TrackWizardStep1 = React.createClass({
     mixins: [UtilityFunctions],
 
     render: function() {
-        console.log(this.props.originalArtist);
+        // console.log(this.props.originalArtist);
         var stepForward = this.props.stepForward;
         var setTiles = _.map(this.props.singlesSets, (set, index) => {
             var setImage = {

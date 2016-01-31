@@ -57,11 +57,11 @@ var SocialReport = React.createClass({
             }
         })
         .done( (res) => {
-            console.log(res);
+            // console.log(res);
             this.setState(res.payload.artist);
         })
         .fail( (err) => {
-            console.error(err);
+            // console.error(err);
         });
     },
 
@@ -100,7 +100,7 @@ var SocialReport = React.createClass({
             });
         })
         .fail( (err) => {
-            console.log(err);
+            // console.log(err);
         });
     },
 

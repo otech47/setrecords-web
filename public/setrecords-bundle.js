@@ -24919,7 +24919,7 @@
 	var push = evtHandler.push;
 
 	var loggedIn = function loggedIn(cb) {
-	    console.log('Checking log in status...');
+	    // console.log('Checking log in status...');
 
 	    var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/login';
 
@@ -24931,22 +24931,22 @@
 	            withCredentials: true
 	        }
 	    }).done(function (res) {
-	        console.log('==LOGGED IN==');
-	        console.log(res);
+	        // console.log('==LOGGED IN==');
+	        // console.log(res);
 	        cb(res.payload.artist_id);
 	    }).fail(function (err) {
-	        console.log(err);
+	        // console.log(err);
 	        cb();
 	    });
 	};
 
 	var logIn = function logIn(user, pass, cb) {
-	    console.log('Logging in...');
+	    // console.log('Logging in...');
 	    cb = arguments[arguments.length - 1];
 
 	    loggedIn(function (artistId) {
 	        if (artistId) {
-	            console.log('Session exists!');
+	            // console.log('Session exists!');
 	            onChange(artistId);
 	            if (cb) {
 	                cb();
@@ -24954,16 +24954,16 @@
 	            return;
 	        }
 
-	        console.log('No session exists, attempting to submit credentials.');
+	        // console.log('No session exists, attempting to submit credentials.');
 	        submitCredentials(user, pass, function (res) {
 	            if (res.status == 'success') {
-	                console.log('Submission successful.');
+	                // console.log('Submission successful.');
 	                onChange(res.payload.setrecordsuser_login.artist_id);
 	                if (cb) {
 	                    cb();
 	                }
 	            } else {
-	                console.log('Submission not successful');
+	                // console.log('Submission not successful');
 	                onChange();
 	                if (cb) {
 	                    cb(res);
@@ -24974,7 +24974,7 @@
 	};
 
 	var _logOut = function _logOut(cb) {
-	    console.log('Logging out...');
+	    // console.log('Logging out...');
 
 	    var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/logout';
 	    $.ajax({
@@ -24990,14 +24990,14 @@
 	        }
 	        onChange(false);
 	    }).fail(function (err) {
-	        console.log(err);
+	        // console.log(err);
 	    });
 	};
 
 	var onChange = function onChange() {};
 
 	var submitCredentials = function submitCredentials(user, pass, cb) {
-	    console.log('==SUBMIT CREDENTIALS==');
+	    // console.log('==SUBMIT CREDENTIALS==');
 	    var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/login';
 
 	    $.ajax({
@@ -25012,10 +25012,10 @@
 	            password: pass
 	        }
 	    }).done(function (res) {
-	        console.log(res);
+	        // console.log(res);
 	        cb(res);
 	    }).fail(function (err) {
-	        console.log(err);
+	        // console.log(err);
 	        cb(err);
 	    });
 	};
@@ -25032,9 +25032,9 @@
 	    },
 
 	    updateAuth: function updateAuth(artistId) {
-	        console.log('Update auth: ' + artistId);
+	        // console.log('Update auth: ' + artistId);
 	        if (artistId) {
-	            console.log('Updating auth to artist ID: ' + artistId);
+	            // console.log('Updating auth to artist ID: ' + artistId);
 	            push({
 	                type: 'SHALLOW_MERGE',
 	                data: {
@@ -25042,12 +25042,12 @@
 	                    loggedIn: true
 	                }
 	            });
-	            console.log('==artist id==');
-	            console.log(this.state.appState.get('artistId'));
+	            // console.log('==artist id==');
+	            // console.log(this.state.appState.get('artistId'));
 
 	            this.updateArtist();
 	        } else {
-	            console.log('This user not authorized.');
+	            // console.log('This user not authorized.');
 	            push({
 	                type: 'SHALLOW_MERGE',
 	                data: defaultValues
@@ -25072,7 +25072,7 @@
 	                withCredentials: true
 	            }
 	        }).done(function (res) {
-	            console.log(res);
+	            // console.log(res);
 	            push({
 	                type: 'SHALLOW_MERGE',
 	                data: {
@@ -25082,8 +25082,8 @@
 	                }
 	            });
 	        }).fail(function (err) {
-	            console.log('An error occurred getting artist data.');
-	            console.log(err);
+	            // console.log('An error occurred getting artist data.');
+	            // console.log(err);
 	        });
 	    },
 
@@ -25098,7 +25098,7 @@
 	    componentWillMount: function componentWillMount() {
 	        this._attachStreams(); //global event handler
 	        onChange = this.updateAuth;
-	        console.log('Will mount');
+	        // console.log('Will mount');
 	        logIn();
 	    },
 
@@ -68102,9 +68102,7 @@
 
 	    render: function render() {
 	        var sets = this.props.sets;
-	        console.log('==content view sets==');
-	        console.log(this.props.artistId);
-	        console.log(this.props.sets);
+
 	        var setTiles = _underscore2['default'].map(sets, function (set) {
 	            if (!set.event) {
 	                set.event = {
@@ -68158,7 +68156,7 @@
 	    updateSets: function updateSets(artistId) {
 	        var _this = this;
 
-	        console.log(artistId);
+	        // console.log(artistId);
 	        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
 
 	        var query = '{\n            artist (id: ' + artistId + ') {\n                sets {\n                    id,\n                    icon_image {\n                        imageURL\n                    },\n                    event {\n                        event,\n                        is_radiomix,\n                        banner_image {\n                            imageURL\n                        }\n                    },\n                    episode {\n                        episode,\n                        icon_image {\n                            imageURL\n                        }\n                    },\n                    datetime,\n                    popularity,\n                    set_length,\n                    tracklistURL,\n                    artists {\n                        id,\n                        artist\n                    },\n                    tracks {\n                        id,\n                        starttime,\n                        artistname,\n                        songname\n                    }\n                }\n            }\n        }';
@@ -68174,7 +68172,7 @@
 	                query: query
 	            }
 	        }).done(function (res) {
-	            console.log(res);
+	            // console.log(res);
 
 	            if (res.payload.artist !== null) {
 	                _this.props.push({
@@ -68186,7 +68184,7 @@
 	                });
 	            }
 	        }).fail(function (err) {
-	            console.log(err);
+	            // console.log(err);
 	        });
 	    }
 	});
@@ -68493,7 +68491,7 @@
 	        });
 	        this.getVenues();
 
-	        console.log('Initializing soundcloud...');
+	        // console.log('Initializing soundcloud...');
 	        SC.initialize({
 	            client_id: 'c00cb419a074ad09052ef2d44fdc65ff',
 	            redirect_uri: 'https://setrecords.setmine.com/soundcloudcallback'
@@ -68668,7 +68666,7 @@
 	    },
 
 	    addSong: function addSong(file) {
-	        console.log(file);
+	        // console.log(file);
 	        if (file[0].type == 'audio/mp3' || file[0].type == 'audio/mp4' || file[0].type == 'audio/x-m4a' || file[0].type == 'audio/mpeg' || file[0].type == 'audio/wav') {
 	            var tempAudio = URL.createObjectURL(file[0]);
 	            this.setState({
@@ -68761,14 +68759,14 @@
 	    },
 
 	    addOutlet: function addOutlet(venueName) {
-	        console.log('Add venue ' + venueName);
+	        // console.log('Add venue ' + venueName);
 	        this.setState({
 	            outlets: (0, _reactAddonsUpdate2['default'])(this.state.outlets, { $push: [_underscore2['default'].findWhere(this.state.venues, { venue: venueName })] })
 	        });
 	    },
 
 	    removeOutlet: function removeOutlet(index) {
-	        console.log('Remove index ' + index);
+	        // console.log('Remove index ' + index);
 	        this.setState({
 	            outlets: (0, _reactAddonsUpdate2['default'])(this.state.outlets, { $splice: [[index, 1]] })
 	        });
@@ -68798,19 +68796,19 @@
 	    },
 
 	    registerAudio: function registerAudio(callback) {
-	        console.log('Registering audio...');
+	        // console.log('Registering audio...');
 	        _async2['default'].waterfall([this.joinFiles, this.registerS3], function (err, audioUrl) {
 	            if (err) {
-	                console.log('An error occurred with registering audio.');
-	                console.log(err);
+	                // console.log('An error occurred with registering audio.');
+	                // console.log(err);
 	                callback(err);
 	                mixpanel.track("Error", {
 	                    "Page": "Upload Wizard",
 	                    "Message": "Error registering audio"
 	                });
 	            } else {
-	                console.log('Audio registered on S3.');
-	                console.log(audioUrl);
+	                // console.log('Audio registered on S3.');
+	                // console.log(audioUrl);
 	                callback(null, audioUrl);
 	            }
 	        });
@@ -68820,7 +68818,7 @@
 	        var _this2 = this;
 
 	        if (this.state.songs.length > 1) {
-	            console.log('More than one audio file detected. Running joiner...');
+	            // console.log('More than one audio file detected. Running joiner...');
 	            this.setState({
 	                joining: true
 	            }, function () {
@@ -68830,7 +68828,7 @@
 
 	                _servicesJoiner2['default'].combineAudioFiles(toJoin, function (err, joinedBlob) {
 	                    if (err) {
-	                        console.log('Join unsuccessful');
+	                        // console.log('Join unsuccessful');
 	                        _this2.setState({
 	                            joining: false
 	                        }, function () {
@@ -68841,7 +68839,7 @@
 	                            "Message": "Error joining files"
 	                        });
 	                    } else {
-	                        console.log('Join successful.');
+	                        // console.log('Join successful.');
 	                        var newFilename = _this2.props.originalArtist.artist + '_joined_' + _this2.state.songs[0].file.name + (0, _moment2['default'])().unix();
 	                        var joinedFile = new File([joinedBlob], newFilename);
 	                        _this2.setState({
@@ -68855,7 +68853,7 @@
 	                });
 	            });
 	        } else {
-	            console.log('Only one file detected. No join needed.');
+	            // console.log('Only one file detected. No join needed.');
 	            this.setState({
 	                filesize: this.state.songs[0].file.size,
 	                finalFile: this.state.songs[0].file
@@ -68895,7 +68893,7 @@
 	            upload.on("httpUploadProgress", function (event) {
 	                var percentage = event.loaded / filesize * 100;
 	                var percent = parseInt(percentage).toString() + "%";
-	                console.log('Uploading ' + file.type + ' file: ' + percent);
+	                // console.log('Uploading ' + file.type + ' file: ' + percent);
 	            });
 
 	            upload.send(function (err, data) {
@@ -68912,25 +68910,25 @@
 
 	    registerImage: function registerImage(callback) {
 	        if (this.state.existingImage != null) {
-	            console.log('Image exists already on our database.');
+	            // console.log('Image exists already on our database.');
 	            callback(null, this.state.existingImage);
 	        } else if (this.state.image != null) {
-	            console.log('Image is new and needs to be registered on S3.');
+	            // console.log('Image is new and needs to be registered on S3.');
 	            this.registerS3(this.state.image, function (err, imageUrl) {
 	                if (err) {
-	                    console.log('An error occurred with registering image.');
+	                    // console.log('An error occurred with registering image.');
 	                    callback(err);
 	                    mixpanel.track("Error", {
 	                        "Page": "Upload Wizard",
 	                        "Message": "Error registering image to S3"
 	                    });
 	                } else {
-	                    console.log('Image successfully registered on S3.');
+	                    // console.log('Image successfully registered on S3.');
 	                    callback(null, imageUrl);
 	                }
 	            });
 	        } else {
-	            console.log('No image has been uploaded. Will use the default URL.');
+	            // console.log('No image has been uploaded. Will use the default URL.');
 	            var defaultUrl = constants.DEFAULT_IMAGE;
 	            callback(null, defaultUrl);
 	        }
@@ -68939,7 +68937,7 @@
 	    uploadSet: function uploadSet() {
 	        var _this3 = this;
 
-	        console.log('Beginning upload process.');
+	        // console.log('Beginning upload process.');
 	        this.setState({
 	            busy: true,
 	            applying: true
@@ -68947,11 +68945,11 @@
 	            var pendingSet = _this3.state;
 	            var registerFunctions = [_this3.registerAudio, _this3.registerImage];
 
-	            console.log('Performing register functions...');
+	            // console.log('Performing register functions...');
 	            _async2['default'].parallel(registerFunctions, function (err, registeredUrls) {
 	                if (err) {
-	                    console.log('Error in registration functions:');
-	                    console.log(err);
+	                    // console.log('Error in registration functions:');
+	                    // console.log(err);
 
 	                    _this3.setState({
 	                        failure: true,
@@ -68965,9 +68963,9 @@
 	                        "Message": "Error uploading set"
 	                    });
 	                } else {
-	                    console.log('Registrations successful.');
+	                    // console.log('Registrations successful.');
 
-	                    console.log('Creating bundle...');
+	                    // console.log('Creating bundle...');
 	                    var additionalArtists = _underscore2['default'].pluck(_underscore2['default'].rest(_this3.state.artists), 'artist');
 
 	                    var setBundle = {
@@ -68984,10 +68982,10 @@
 	                        tags: _this3.state.tags,
 	                        venue: _this3.state.venue
 	                    };
-	                    console.log('Bundle done:');
-	                    console.log(setBundle);
+	                    // console.log('Bundle done:');
+	                    // console.log(setBundle);
 
-	                    console.log('Prepping tracklist...');
+	                    // console.log('Prepping tracklist...');
 	                    var tracklist = (0, _reactAddonsUpdate2['default'])(_this3.state.tracklist, { $push: [] });
 	                    if (tracklist.length == 0) {
 	                        tracklist.push({
@@ -68997,8 +68995,8 @@
 	                            'songname': 'unknown track'
 	                        });
 	                    }
-	                    console.log('Tracklist done:');
-	                    console.log(tracklist);
+	                    // console.log('Tracklist done:');
+	                    // console.log(tracklist);
 
 	                    setBundle.tracklist = tracklist;
 
@@ -69006,19 +69004,19 @@
 
 	                    _this3.updateDatabase(setBundle, function (err, newSetId) {
 	                        if (err) {
-	                            console.log('An error occurred.');
-	                            console.log(err);
+	                            // console.log('An error occurred.');
+	                            // console.log(err);
 	                        } else {
-	                            console.log('Running release function...');
+	                                // console.log('Running release function...');
 
-	                            if (_this3.state.paid == 1) {
-	                                console.log('Release to beacon.');
-	                                _this3.beaconRelease(newSetId, _this3.cleanUp);
-	                            } else {
-	                                console.log('Free release.');
-	                                _this3.freeRelease(_this3.state.finalFile, _this3.cleanUp);
+	                                if (_this3.state.paid == 1) {
+	                                    // console.log('Release to beacon.');
+	                                    _this3.beaconRelease(newSetId, _this3.cleanUp);
+	                                } else {
+	                                    // console.log('Free release.');
+	                                    _this3.freeRelease(_this3.state.finalFile, _this3.cleanUp);
+	                                }
 	                            }
-	                        }
 	                    });
 	                }
 	            });
@@ -69026,8 +69024,8 @@
 	    },
 
 	    updateDatabase: function updateDatabase(bundle, callback) {
-	        console.log('Sending bundle to database:');
-	        console.log(bundle);
+	        // console.log('Sending bundle to database:');
+	        // console.log(bundle);
 
 	        var requestUrl = 'https://api.setmine.com/v/10/sets/register';
 
@@ -69040,70 +69038,70 @@
 	                withCredentials: true
 	            }
 	        }).done(function (res) {
-	            console.log('Set registered on database.');
-	            console.log(res);
+	            // console.log('Set registered on database.');
+	            // console.log(res);
 	            callback(null, res.payload.new_set);
 	        }).fail(function (err) {
-	            console.log('An error occurred when updating the database.');
-	            console.log(err);
+	            // console.log('An error occurred when updating the database.');
+	            // console.log(err);
 	            callback(err);
 	        });
 	    },
 
 	    freeRelease: function freeRelease(setFile, callback) {
-	        console.log('Free release for file:');
-	        console.log(setFile);
+	        // console.log('Free release for file:');
+	        // console.log(setFile);
 
 	        if (this.state.outlets.indexOf('Soundcloud') > -1) {
 	            var uploadName = this.state.event;
 	            if (this.state.episode && this.state.episode.length > 0) {
 	                uploadName += ' - ' + this.state.episode;
 	            }
-	            console.log('Upload name is ' + uploadName);
+	            // console.log('Upload name is ' + uploadName);
 
-	            console.log('Authenticating...');
+	            // console.log('Authenticating...');
 	            SC.connect().then(function () {
-	                console.log('Successfully authenticated.');
+	                // console.log('Successfully authenticated.');
 
-	                console.log('Uploading file to Soundcloud...');
+	                // console.log('Uploading file to Soundcloud...');
 	                var upload = SC.upload({
 	                    file: setFile,
 	                    title: uploadName
 	                });
 
 	                upload.request.addEventListener('progress', function (e) {
-	                    console.log('Soundcloud ', e.loaded / e.total * 100, '%');
+	                    // console.log('Soundcloud ', (e.loaded / e.total) * 100, '%');
 	                });
 
 	                upload.then(function (track) {
-	                    console.log('Soundcloud complete. Link: ', track.permalink_url);
+	                    // console.log('Soundcloud complete. Link: ', track.permalink_url);
 	                    callback(null);
 	                })['catch'](function (err) {
-	                    console.log('Error uploading to Soundcloud.');
-	                    console.log(err);
+	                    // console.log('Error uploading to Soundcloud.');
+	                    // console.log(err);
 	                    callback(err);
 	                });
 	            })['catch'](function (err) {
-	                console.log('Error authenticating.');
-	                console.log(err);
+	                // console.log('Error authenticating.');
+	                // console.log(err);
 	                callback(err);
 	            });
 	        } else {
-	            console.log('Done.');
+	            // console.log('Done.');
 	            callback(null);
 	        }
 	    },
 
 	    beaconRelease: function beaconRelease(setId, callback) {
-	        console.log('Beacon release for set ID ' + setId);
+	        // console.log('Beacon release for set ID ' + setId);
 
 	        var venueIds = _underscore2['default'].pluck(this.state.outlets, 'id');
-	        console.log('Venue IDs:');
-	        console.log(venueIds);
+	        // console.log('Venue IDs:');
+	        // console.log(venueIds);
 
 	        var price = this.state.price.replace(".", "");
-	        console.log('==price==');
-	        console.log(price);
+	        // console.log('==price==');
+	        // console.log(price);
 
 	        var requestUrl = 'https://api.setmine.com/v/10/offers/beaconRelease';
 
@@ -69121,13 +69119,13 @@
 	                artist_id: this.props.originalArtist.id
 	            }
 	        }).done(function (res) {
-	            console.log('Set released to beacons.');
-	            console.log(res);
+	            // console.log('Set released to beacons.');
+	            // console.log(res);
 
 	            callback(null);
 	        }).fail(function (err) {
-	            console.log('Error releasing sets to beacons.');
-	            console.log(err);
+	            // console.log('Error releasing sets to beacons.');
+	            // console.log(err);
 
 	            callback(err);
 	        });
@@ -69138,7 +69136,7 @@
 	    },
 
 	    cleanUp: function cleanUp(err) {
-	        console.log('Set registration and uploads complete. Returning to content...');
+	        // console.log('Set registration and uploads complete. Returning to content...');
 	        this.history.pushState(null, '/content');
 	    },
 
@@ -69175,7 +69173,7 @@
 	    loadTracksFromUrl: function loadTracksFromUrl(url) {
 	        var _this4 = this;
 
-	        console.log('Requested to load ' + url);
+	        // console.log('Requested to load ' + url);
 
 	        var requestUrl = 'https://api.setmine.com/v/10/sets/1001tracklist';
 
@@ -69191,12 +69189,12 @@
 	                withCredentials: true
 	            }
 	        }).done(function (res) {
-	            console.log(res);
+	            // console.log(res);
 	            _this4.setState({
 	                tracklist: res.payload
 	            });
 	        }).fail(function (err) {
-	            console.log(err);
+	            // console.log(err);
 	            alert('Please enter a valid 1001 tracklists URL.');
 	        });
 	    },
@@ -69219,7 +69217,7 @@
 	            };
 	            this.setState(newData);
 	        } else {
-	            console.log('Nice try, hacker.');
+	            // console.log('Nice try, hacker.');
 	        }
 	    }
 	});
@@ -69909,7 +69907,7 @@
 	                        image = {
 	                            preview: _constantsConstants2['default'].S3_ROOT_FOR_IMAGES + this.props.venueLookup[this.props.venue][0].icon_image.imageURL
 	                        };
-	                        console.log(image);
+	                        // console.log(image);
 	                        showUploadButton = false;
 	                    }
 	                } else {
@@ -70071,7 +70069,7 @@
 	                withCredentials: true
 	            }
 	        }).done(function (res) {
-	            console.log(res);
+	            // console.log(res);
 	            var eventLookup = _underscore2['default'].groupBy(res.payload.events, function (event) {
 	                return event.optionName;
 	            });
@@ -70466,7 +70464,7 @@
 
 	        var linkState = this.linkState;
 	        var venueListings = [];
-	        console.log(outlets);
+	        // console.log(outlets);
 
 	        var outletListings = _underscore2['default'].map(outlets, function (outlet, index) {
 	            return _react2['default'].createElement(_VenueListing2['default'], { venue: outlet, isOutlet: true, toggleOutlet: removeOutlet.bind(null, index), focusVenue: _this.focusVenue.bind(null, outlet.latitude, outlet.longitude), key: outlet.venue + 'outlet' + outlet.id });
@@ -80279,12 +80277,18 @@
 
 	var _Icon2 = _interopRequireDefault(_Icon);
 
+	var _reactRouter = __webpack_require__(/*! react-router */ 159);
+
+	var _LoadingNotification = __webpack_require__(/*! ./LoadingNotification */ 368);
+
+	var _LoadingNotification2 = _interopRequireDefault(_LoadingNotification);
+
 	var constants = __webpack_require__(/*! ../constants/constants */ 219);
 
 	var UploadTrackWizard = _react2['default'].createClass({
 	    displayName: 'UploadTrackWizard',
 
-	    mixins: [_reactAddonsLinkedStateMixin2['default'], _mixinsUtilityFunctions2['default']],
+	    mixins: [_reactAddonsLinkedStateMixin2['default'], _mixinsUtilityFunctions2['default'], _reactRouter.History],
 
 	    getInitialState: function getInitialState() {
 	        return {
@@ -80472,7 +80476,8 @@
 	                        stepComponent
 	                    )
 	                )
-	            )
+	            ),
+	            _react2['default'].createElement(_LoadingNotification2['default'], { title: 'Uploading...', open: this.state.applying })
 	        );
 	    },
 
@@ -80933,8 +80938,10 @@
 	                                    "Page": "Set Editor",
 	                                    "Message": "Error applying changes"
 	                                });
+	                                _this3.history.pushState(null, 'content');
 	                            } else {
 	                                // console.log('All changes applied successfully.');
+	                                _this3.history.pushState(null, '/content');
 	                            }
 	                        });
 	                    }
@@ -80993,6 +81000,8 @@
 	    },
 
 	    registerSet: function registerSet(bundle) {
+	        var _this4 = this;
+
 	        var requestUrl = 'https://api.setmine.com/v/10/sets/register';
 
 	        $.ajax({
@@ -81006,9 +81015,11 @@
 	        }).done(function (res) {
 	            // console.log('Set registered on database.');
 	            // console.log(res);
+	            _this4.history.pushState(null, '/content');
 	        }).fail(function (err) {
 	            // console.log('An error occurred when updating the database.');
 	            // console.log(err);
+	            _this4.history.pushState(null, '/content');
 	        });
 	    },
 
@@ -81101,7 +81112,7 @@
 	    render: function render() {
 	        var _this = this;
 
-	        console.log(this.props.originalArtist);
+	        // console.log(this.props.originalArtist);
 	        var stepForward = this.props.stepForward;
 	        var setTiles = _underscore2['default'].map(this.props.singlesSets, function (set, index) {
 	            var setImage = {
@@ -82124,7 +82135,7 @@
 	                withCredentials: true
 	            }
 	        }).done(function (res) {
-	            console.log(res);
+	            // console.log(res);
 	            _this2.props.push({
 	                type: 'SHALLOW_MERGE',
 	                data: {
@@ -82134,8 +82145,8 @@
 	            });
 	            _this2.setState(res.payload.artist);
 	        }).fail(function (err) {
-	            console.log('An error occurred.');
-	            console.log(err);
+	            // console.log('An error occurred.');
+	            // console.log(err);
 	        });
 	    },
 
@@ -82229,9 +82240,9 @@
 	                    break;
 	            }
 
-	            console.log('Changes to do');
-	            console.log(changeFunctions);
-	            console.log('Applying changes...');
+	            // console.log('Changes to do');
+	            // console.log(changeFunctions);
+	            // console.log('Applying changes...');
 
 	            this.setState({
 	                busy: true,
@@ -82239,8 +82250,8 @@
 	            }, function () {
 	                _async2['default'].parallel(changeFunctions, function (err, results) {
 	                    if (err) {
-	                        console.log('There was an error when applying changes to your settings.');
-	                        console.log(err);
+	                        // console.log('There was an error when applying changes to your settings.');
+	                        // console.log(err);
 	                        _this4.setState({
 	                            failure: true,
 	                            applying: false,
@@ -82252,7 +82263,7 @@
 	                            "Message": "Error applying changes"
 	                        });
 	                    } else {
-	                        console.log('All changes applied successfully.');
+	                        // console.log('All changes applied successfully.');
 	                        _this4.setState({
 	                            applying: false,
 	                            success: true,
@@ -82265,15 +82276,15 @@
 	    },
 
 	    newImage: function newImage(callback) {
-	        console.log('New artist image pending:');
-	        console.log(this.state.uploadedImage);
+	        // console.log('New artist image pending:')
+	        // console.log(this.state.uploadedImage);
 
 	        _async2['default'].waterfall([this.registerImageS3, this.updateImageDatabase], function (err, results) {
 	            if (err) {
-	                console.log('Error occurred while updating image. ', err);
+	                // console.log('Error occurred while updating image. ', err);
 	                callback(err);
 	            } else {
-	                console.log('Artist image updated.');
+	                // console.log('Artist image updated.');
 	                callback(null);
 	            }
 	        });
@@ -82310,7 +82321,7 @@
 	            }).done(function (res) {
 	                callback(null);
 	            }).fail(function (err) {
-	                console.log(err);
+	                // console.log(err);
 	                callback(err);
 	            });
 	        }, function (err) {
@@ -82354,7 +82365,7 @@
 	    },
 
 	    registerImageS3: function registerImageS3(callback) {
-	        console.log('Requesting encoding from AWS...');
+	        // console.log('Requesting encoding from AWS...');
 	        var file = this.state.uploadedImage[0];
 	        var uniqueFilename = (0, _moment2['default'])().unix() + file.name;
 
@@ -82369,7 +82380,7 @@
 	                withCredentials: true
 	            }
 	        }).done(function (res) {
-	            console.log('Encoding successful.');
+	            // console.log('Encoding successful.');
 	            AWS.config.update(res.payload.settings);
 	            var encodedFilename = res.payload.encoded;
 	            var filesize = file.size;
@@ -82388,21 +82399,21 @@
 	            upload.on('httpUploadProgress', function (event) {
 	                var percentage = event.loaded / filesize * 100;
 	                var percent = parseInt(percentage).toString() + '%';
-	                console.log('Uploading image: ' + percent);
+	                // console.log('Uploading image: ' + percent);
 	            });
 
-	            console.log('Uploading file to S3...');
+	            // console.log('Uploading file to S3...');
 	            upload.send(function (err, data) {
 	                if (err) {
-	                    console.log('An error occurred uploading the file to S3.');
+	                    // console.log('An error occurred uploading the file to S3.');
 	                    callback(err);
 	                } else {
-	                    console.log('Upload successful. File located at: ' + data.Location);
+	                    // console.log('Upload successful. File located at: ' + data.Location);
 	                    callback(null, res.payload.encoded);
 	                }
 	            });
 	        }).fail(function (err) {
-	            console.log('There was an error encoding the file.');
+	            // console.log('There was an error encoding the file.');
 	            callback(err);
 	        });
 	    },
@@ -82420,7 +82431,7 @@
 	    },
 
 	    updateImageDatabase: function updateImageDatabase(imageURL, callback) {
-	        console.log('Adding image to databases...');
+	        // console.log('Adding image to databases...');
 	        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/artist/image';
 
 	        $.ajax({
@@ -82435,10 +82446,10 @@
 	                withCredentials: true
 	            }
 	        }).done(function (res) {
-	            console.log('Image successfully added to database.');
+	            // console.log('Image successfully added to database.')
 	            callback(null);
 	        }).fail(function (err) {
-	            console.log('An error occurred when updating the database.');
+	            // console.log('An error occurred when updating the database.');
 	            callback(err);
 	        });
 	    }
@@ -82643,8 +82654,8 @@
 	    updateBeacon: function updateBeacon(cohort) {
 	        var _this = this;
 
-	        console.log('Updating to cohort: ');
-	        console.log(cohort);
+	        // console.log('Updating to cohort: ');
+	        // console.log(cohort);
 
 	        var timezoneOffset = moment().utcOffset();
 	        var query = '{\n            beacon_metrics (artist_id: ' + this.props.artistId + ') {\n                unlocks (cohort: "' + cohort + '", timezoneOffset: ' + timezoneOffset + ') {\n                    date,\n                    count\n                },\n                revenue (cohort: "' + cohort + '", timezoneOffset: ' + timezoneOffset + ') {\n                    date,\n                    count\n                }\n            },\n            artist (id: ' + this.props.artistId + ') {\n                unlocks,\n                revenue\n            }\n        }';
@@ -82677,7 +82688,7 @@
 	                    overtime: overtime.unlocks
 	                }
 	            };
-	            console.log(beaconMetrics);
+	            // console.log(beaconMetrics);
 
 	            _this.props.push({
 	                type: 'SHALLOW_MERGE',
@@ -82687,7 +82698,7 @@
 	                }
 	            });
 	        }).fail(function (err) {
-	            console.log(err);
+	            // console.log(err);
 	        });
 	    },
 
@@ -86697,7 +86708,7 @@
 	                }
 	            };
 
-	            console.log(setmineMetrics);
+	            // console.log(setmineMetrics);
 
 	            _this.props.push({
 	                type: 'SHALLOW_MERGE',
@@ -86707,7 +86718,7 @@
 	                }
 	            });
 	        }).fail(function (err) {
-	            console.log(err);
+	            // console.log(err);
 	        });
 	    },
 
@@ -86908,10 +86919,10 @@
 	                withCredentials: true
 	            }
 	        }).done(function (res) {
-	            console.log(res);
+	            // console.log(res);
 	            _this.setState(res.payload.artist);
 	        }).fail(function (err) {
-	            console.error(err);
+	            // console.error(err);
 	        });
 	    },
 
@@ -86941,7 +86952,7 @@
 	                }
 	            });
 	        }).fail(function (err) {
-	            console.log(err);
+	            // console.log(err);
 	        });
 	    },
 
@@ -87287,7 +87298,7 @@
 	                }
 	            });
 	        }).fail(function (err) {
-	            console.log(err);
+	            // console.log(err);
 	        });
 	    },
 
@@ -87555,7 +87566,7 @@
 	                }
 	            });
 	        }).fail(function (err) {
-	            console.log(err);
+	            // console.log(err);
 	        });
 	    },
 
@@ -87764,18 +87775,18 @@
 	        var _this3 = this;
 
 	        e.preventDefault();
-	        console.log('Submitting login with:');
-	        console.log(this.state.username);
-	        console.log(this.state.password);
+	        // console.log('Submitting login with:');
+	        // console.log(this.state.username);
+	        // console.log(this.state.password);
 
 	        this.props.submitLogIn(this.state.username, this.state.password, function (err) {
-	            console.log('Errors?');
-	            console.log(err);
+	            // console.log('Errors?');
+	            // console.log(err);
 
 	            if (err) {
 	                switch (err.responseJSON.error) {
 	                    case 'User not found':
-	                        console.log('Username was incorrect.');
+	                        // console.log('Username was incorrect.');
 	                        _this3.setState({
 	                            username: '',
 	                            password: '',
@@ -87784,7 +87795,7 @@
 	                        break;
 
 	                    case 'Incorrect Password':
-	                        console.log('Password was incorrect.');
+	                        // console.log('Password was incorrect.');
 	                        _this3.setState({
 	                            password: '',
 	                            error: 'Incorrect password.'
@@ -87792,7 +87803,7 @@
 	                        break;
 
 	                    default:
-	                        console.log('Unknown error.');
+	                        // console.log('Unknown error.');
 	                        _this3.setState({
 	                            username: '',
 	                            password: '',

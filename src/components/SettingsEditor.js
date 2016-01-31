@@ -215,7 +215,7 @@ var SettingsEditor = React.createClass({
             }
         })
         .done((res) => {
-            console.log(res);
+            // console.log(res);
             this.props.push({
                 type: 'SHALLOW_MERGE',
                 data: {
@@ -226,8 +226,8 @@ var SettingsEditor = React.createClass({
             this.setState(res.payload.artist);
         })
         .fail((err) => {
-            console.log('An error occurred.');
-            console.log(err);
+            // console.log('An error occurred.');
+            // console.log(err);
         });
     },
 
@@ -317,9 +317,9 @@ var SettingsEditor = React.createClass({
                     break;
             }
 
-            console.log('Changes to do');
-            console.log(changeFunctions);
-            console.log('Applying changes...');
+            // console.log('Changes to do');
+            // console.log(changeFunctions);
+            // console.log('Applying changes...');
 
             this.setState({
                 busy: true,
@@ -327,8 +327,8 @@ var SettingsEditor = React.createClass({
             }, () => {
                 async.parallel(changeFunctions, (err, results) => {
                     if(err) {
-                        console.log('There was an error when applying changes to your settings.');
-                        console.log(err);
+                        // console.log('There was an error when applying changes to your settings.');
+                        // console.log(err);
                         this.setState({
                             failure: true,
                             applying: false,
@@ -340,7 +340,7 @@ var SettingsEditor = React.createClass({
                             "Message": "Error applying changes"
                         });
                     } else {
-                            console.log('All changes applied successfully.');
+                            // console.log('All changes applied successfully.');
                             this.setState({
                                 applying: false,
                                 success: true,
@@ -353,16 +353,16 @@ var SettingsEditor = React.createClass({
     },
 
     newImage(callback) {
-        console.log('New artist image pending:')
-        console.log(this.state.uploadedImage);
+        // console.log('New artist image pending:')
+        // console.log(this.state.uploadedImage);
 
         async.waterfall([this.registerImageS3, this.updateImageDatabase],
             (err, results) => {
                 if (err) {
-                    console.log('Error occurred while updating image. ', err);
+                    // console.log('Error occurred while updating image. ', err);
                     callback(err);
                 } else {
-                    console.log('Artist image updated.');
+                    // console.log('Artist image updated.');
                     callback(null);
                 }
         });
@@ -399,7 +399,7 @@ var SettingsEditor = React.createClass({
                 callback(null);
             })
             .fail((err) => {
-                console.log(err);
+                // console.log(err);
                 callback(err);
             })
         }, (err) => {
@@ -445,7 +445,7 @@ var SettingsEditor = React.createClass({
     },
 
     registerImageS3(callback) {
-        console.log('Requesting encoding from AWS...');
+        // console.log('Requesting encoding from AWS...');
         var file = this.state.uploadedImage[0];
         var uniqueFilename = moment().unix() + file.name;
 
@@ -461,7 +461,7 @@ var SettingsEditor = React.createClass({
             }
         })
         .done((res) => {
-            console.log('Encoding successful.');
+            // console.log('Encoding successful.');
             AWS.config.update(res.payload.settings);
             var encodedFilename = res.payload.encoded;
             var filesize = file.size;
@@ -480,22 +480,22 @@ var SettingsEditor = React.createClass({
             upload.on('httpUploadProgress', function(event) {
                 var percentage = (event.loaded / filesize) * 100;
                 var percent = parseInt(percentage).toString() + '%';
-                console.log('Uploading image: ' + percent);
+                // console.log('Uploading image: ' + percent);
             });
 
-            console.log('Uploading file to S3...');
+            // console.log('Uploading file to S3...');
             upload.send((err, data) => {
                 if (err) {
-                    console.log('An error occurred uploading the file to S3.');
+                    // console.log('An error occurred uploading the file to S3.');
                     callback(err);
                 } else {
-                    console.log('Upload successful. File located at: ' + data.Location);
+                    // console.log('Upload successful. File located at: ' + data.Location);
                     callback(null, res.payload.encoded);
                 }
             });
         })
         .fail((err) => {
-            console.log('There was an error encoding the file.');
+            // console.log('There was an error encoding the file.');
             callback(err);
         });
     },
@@ -513,7 +513,7 @@ var SettingsEditor = React.createClass({
     },
 
     updateImageDatabase(imageURL, callback) {
-        console.log('Adding image to databases...');
+        // console.log('Adding image to databases...');
         var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/artist/image';
 
         $.ajax({
@@ -529,11 +529,11 @@ var SettingsEditor = React.createClass({
             }
         })
         .done((res) => {
-                console.log('Image successfully added to database.')
+                // console.log('Image successfully added to database.')
                 callback(null);
         })
         .fail((err) => {
-                console.log('An error occurred when updating the database.');
+                // console.log('An error occurred when updating the database.');
                 callback(err);
         });
     }

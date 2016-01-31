@@ -178,7 +178,7 @@ var SetmineReport = React.createClass({
                 }
             }
 
-            console.log(setmineMetrics);
+            // console.log(setmineMetrics);
 
             this.props.push({
                 type: 'SHALLOW_MERGE',
@@ -189,7 +189,7 @@ var SetmineReport = React.createClass({
             });
         })
         .fail((err) => {
-            console.log(err);
+            // console.log(err);
         });
     },
 

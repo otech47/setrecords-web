@@ -30,9 +30,7 @@ var ContentView = React.createClass({
 
     render() {
         var sets = this.props.sets;
-        console.log('==content view sets==');
-        console.log(this.props.artistId);
-        console.log(this.props.sets);
+
         var setTiles = _.map(sets, (set) => {
             if (!set.event) {
                 set.event = {
@@ -82,7 +80,7 @@ var ContentView = React.createClass({
     },
 
     updateSets(artistId) {
-        console.log(artistId);
+        // console.log(artistId);
         var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
 
         var query = `{
@@ -135,7 +133,7 @@ var ContentView = React.createClass({
             }
         })
         .done((res) => {
-            console.log(res);
+            // console.log(res);
 
             if (res.payload.artist !== null) {
                 this.props.push({
@@ -148,7 +146,7 @@ var ContentView = React.createClass({
             }
         })
         .fail(function(err) {
-            console.log(err);
+            // console.log(err);
         });
     }
 });
