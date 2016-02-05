@@ -82028,9 +82028,17 @@
 	        });
 	    },
 
+	    shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+	        if (nextProps.artistId != this.props.artistId) {
+	            this.getAccountData(nextProps.artistId);
+	        }
+
+	        return true;
+	    },
+
 	    componentDidMount: function componentDidMount() {
 	        mixpanel.track("Settings Page Open");
-	        this.getAccountData();
+	        this.getAccountData(this.props.artistId);
 	    },
 
 	    routerWillLeave: function routerWillLeave(nextLocation) {
@@ -82098,7 +82106,7 @@
 	                                        }
 	                                    });
 	                                    _this.setState(_this.getInitialState());
-	                                    _this.getAccountData();
+	                                    _this.getAccountData(_this.props.artistId);
 	                                },
 	                                style: {
 	                                    opacity: '' + opacity,
@@ -82289,10 +82297,10 @@
 	        this.refs.dropzone.open();
 	    },
 
-	    getAccountData: function getAccountData() {
+	    getAccountData: function getAccountData(artistId) {
 	        var _this2 = this;
 
-	        var query = '{\n            artist (id: ' + this.props.artistId + ') {\n                artist,\n                icon_image {\n                    imageURL\n                },\n                web_link,\n                twitter_link,\n                fb_link,\n                soundcloud_link,\n                youtube_link,\n                instagram_link\n            }\n        }';
+	        var query = '{\n            artist (id: ' + artistId + ') {\n                artist,\n                icon_image {\n                    imageURL\n                },\n                web_link,\n                twitter_link,\n                fb_link,\n                soundcloud_link,\n                youtube_link,\n                instagram_link\n            }\n        }';
 
 	        $.ajax({
 	            type: 'get',
@@ -82305,15 +82313,18 @@
 	                withCredentials: true
 	            }
 	        }).done(function (res) {
-	            // console.log(res);
-	            _this2.props.push({
-	                type: 'SHALLOW_MERGE',
-	                data: {
-	                    loaded: true,
-	                    artist_data: res.payload.artist
-	                }
-	            });
-	            _this2.setState(res.payload.artist);
+	            if (res.payload.artist !== null) {
+	                // console.log(res);
+	                _this2.props.push({
+	                    type: 'SHALLOW_MERGE',
+	                    data: {
+	                        loaded: true,
+	                        artist_data: res.payload.artist
+	                    }
+	                });
+
+	                _this2.setState(res.payload.artist);
+	            }
 	        }).fail(function (err) {
 	            // console.log('An error occurred.');
 	            // console.log(err);
@@ -82596,7 +82607,7 @@
 	            }
 	        });
 
-	        this.getAccountData();
+	        this.getAccountData(this.props.artistId);
 	        this.setState(this.getInitialState());
 	    },
 

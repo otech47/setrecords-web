@@ -39,9 +39,17 @@ var SettingsEditor = React.createClass({
         });
     },
 
+    shouldComponentUpdate (nextProps, nextState) {
+        if (nextProps.artistId != this.props.artistId) {
+            this.getAccountData(nextProps.artistId);
+        }
+
+        return true;
+    },
+
     componentDidMount() {
         mixpanel.track("Settings Page Open");
-        this.getAccountData();
+        this.getAccountData(this.props.artistId);
     },
 
     routerWillLeave: function (nextLocation) {
@@ -100,7 +108,7 @@ var SettingsEditor = React.createClass({
                                         }
                                     });
                                     this.setState(this.getInitialState());
-                                    this.getAccountData();
+                                    this.getAccountData(this.props.artistId);
                                 }}
                                 style={{
                                 opacity: `${opacity}`,
@@ -187,9 +195,9 @@ var SettingsEditor = React.createClass({
         this.refs.dropzone.open();
     },
 
-    getAccountData: function() {
+    getAccountData: function(artistId) {
         var query = `{
-            artist (id: ${this.props.artistId}) {
+            artist (id: ${artistId}) {
                 artist,
                 icon_image {
                     imageURL
@@ -215,15 +223,18 @@ var SettingsEditor = React.createClass({
             }
         })
         .done((res) => {
-            // console.log(res);
-            this.props.push({
-                type: 'SHALLOW_MERGE',
-                data: {
-                    loaded: true,
-                    artist_data: res.payload.artist
-                }
-            });
-            this.setState(res.payload.artist);
+            if (res.payload.artist !== null) {
+                // console.log(res);
+                this.props.push({
+                    type: 'SHALLOW_MERGE',
+                    data: {
+                        loaded: true,
+                        artist_data: res.payload.artist
+                    }
+                });
+
+                this.setState(res.payload.artist);
+            }
         })
         .fail((err) => {
             // console.log('An error occurred.');
@@ -508,7 +519,7 @@ var SettingsEditor = React.createClass({
             }
         });
 
-        this.getAccountData();
+        this.getAccountData(this.props.artistId);
         this.setState(this.getInitialState());
     },
 

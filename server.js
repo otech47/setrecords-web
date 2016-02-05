@@ -11,13 +11,10 @@ var app = express();
 app.use(express.static(__dirname + '/public'));
 
 app.get('/soundcloudcallback', function (req, res) {
-    console.log('Soundcloud callback requested.');
     res.sendFile(path.resolve(__dirname, 'soundcloudcallback.html'));
 });
 
 app.get('*', function (req, res) {
-    console.log('Sending');
-    console.log(path.join(__dirname, 'public', 'index.html'));
 
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
