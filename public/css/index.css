@@ -360,7 +360,6 @@ input:focus {
   flex-wrap: nowrap;
 }
 #App .view-container .view {
-  max-width: 85%;
   overflow-y: scroll!important;
 }
 #App .view-container .view > .loader {
@@ -1091,9 +1090,9 @@ header .artist img {
   position: relative;
   height: 90vh;
   width: 100%;
-  z-index: 100000;
   color: #f7f7f7;
   letter-spacing: 3px;
+  align-items: center;
 }
 #Login form {
   position: absolute;
@@ -1101,26 +1100,24 @@ header .artist img {
   align-items: center;
   width: 100% !important;
   height: 100% !important;
-  z-index: 1;
-}
-#Login form::before {
-  content: '';
-  opacity: 0.5;
-  background-color: #313542;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  z-index: -1;
 }
 #Login form .flex-row {
   margin-bottom: 1rem;
   padding-bottom: .5rem;
   border-bottom: solid 1px;
 }
+#Login form p {
+  text-align: center;
+  letter-spacing: initial;
+  cursor: pointer;
+}
+#Login form p:hover {
+  color: #b9b9b9;
+}
 #Login video {
-  display: inline-block;
+  position: absolute;
   vertical-align: baseline;
-  object-fit: initial;
+  object-fit: fill;
   height: 100%;
   width: 100%;
 }
@@ -1150,17 +1147,20 @@ header .artist img {
   background-color: #1f96d8;
   color: #f7f7f7;
 }
-#Login p {
-  text-align: center;
-  letter-spacing: initial;
-  cursor: pointer;
-}
-#Login p:hover {
-  color: #b9b9b9;
-}
 #Login .login-error {
   justify-content: center;
   color: #ff4e4e;
+}
+#CreateAccount {
+  margin: 1rem auto;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+#CreateAccount a {
+  color: #22a7f0;
+  text-decoration: underline !important;
 }
 #ForgotPassword {
   justify-content: space-around;

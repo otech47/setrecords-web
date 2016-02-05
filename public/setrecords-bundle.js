@@ -113,7 +113,7 @@
 
 	var _componentsUploadTrackWizard2 = _interopRequireDefault(_componentsUploadTrackWizard);
 
-	var _servicesHistory = __webpack_require__(/*! ./services/history */ 480);
+	var _servicesHistory = __webpack_require__(/*! ./services/history */ 481);
 
 	var _servicesHistory2 = _interopRequireDefault(_servicesHistory);
 
@@ -24804,7 +24804,7 @@
 
 	var _LoginPage2 = _interopRequireDefault(_LoginPage);
 
-	var _ForgotPassword = __webpack_require__(/*! ./ForgotPassword */ 477);
+	var _ForgotPassword = __webpack_require__(/*! ./ForgotPassword */ 478);
 
 	var _ForgotPassword2 = _interopRequireDefault(_ForgotPassword);
 
@@ -24812,7 +24812,7 @@
 
 	var _Icon2 = _interopRequireDefault(_Icon);
 
-	var _mixinsUpdateFunctions = __webpack_require__(/*! ../mixins/UpdateFunctions */ 479);
+	var _mixinsUpdateFunctions = __webpack_require__(/*! ../mixins/UpdateFunctions */ 480);
 
 	var _mixinsUpdateFunctions2 = _interopRequireDefault(_mixinsUpdateFunctions);
 
@@ -67730,7 +67730,7 @@
 	            ),
 	            _react2['default'].createElement(
 	                'div',
-	                { className: 'header-main flex-row' },
+	                { className: 'header-main flex flex-row' },
 	                _react2['default'].createElement(
 	                    'h1',
 	                    null,
@@ -69587,7 +69587,7 @@
 	            }
 	            var duration = this.secondsToMinutes(song.duration);
 	            return React.createElement(_PreviewTrack2['default'], {
-	                title: song.name,
+	                title: song.file.name,
 	                duration: duration,
 	                key: song.name + '_' + song.file.size, isPlaying: isPlaying,
 	                removeSong: this.props.removeSong.bind(null, index), play: this.props.play.bind(null, index),
@@ -80513,6 +80513,7 @@
 	            var processedSong = {};
 	            processedSong.file = this.state.pending_file;
 	            processedSong.duration = duration;
+	            processedSong.name = (0, _moment2['default'])().unix() + this.state.pending_file.name;
 	            URL.revokeObjectURL(this.state.temp_url);
 	            this.setState({
 	                pending_file: null,
@@ -87904,7 +87905,11 @@
 
 	var _reactAddonsLinkedStateMixin2 = _interopRequireDefault(_reactAddonsLinkedStateMixin);
 
-	var _ForgotPassword = __webpack_require__(/*! ./ForgotPassword */ 477);
+	var _CreateAccount = __webpack_require__(/*! ./CreateAccount */ 477);
+
+	var _CreateAccount2 = _interopRequireDefault(_CreateAccount);
+
+	var _ForgotPassword = __webpack_require__(/*! ./ForgotPassword */ 478);
 
 	var _ForgotPassword2 = _interopRequireDefault(_ForgotPassword);
 
@@ -87912,7 +87917,7 @@
 
 	var _Icon2 = _interopRequireDefault(_Icon);
 
-	var _auth = __webpack_require__(/*! ./auth */ 478);
+	var _auth = __webpack_require__(/*! ./auth */ 479);
 
 	var _auth2 = _interopRequireDefault(_auth);
 
@@ -87952,11 +87957,11 @@
 	        );
 	        return _react2['default'].createElement(
 	            'div',
-	            { id: 'Login' },
+	            { id: 'Login', className: 'flex-column' },
 	            _react2['default'].createElement(
 	                'video',
-	                { id: 'introvid', autoPlay: 'auto', loop: 'loop' },
-	                _react2['default'].createElement('source', { src: 'https://setmine.com/videos/setrecords-login-compress.mp4', type: 'video/mp4' })
+	                { id: 'introvid', autoPlay: 'auto', loop: 'loop', muted: true },
+	                _react2['default'].createElement('source', { src: '/images/recordplayer_clipped.mp4', type: 'video/mp4' })
 	            ),
 	            _react2['default'].createElement(
 	                'form',
@@ -87999,6 +88004,20 @@
 	                        'Sign In'
 	                    ),
 	                    password
+	                )
+	            ),
+	            _react2['default'].createElement(
+	                'div',
+	                { id: 'CreateAccount' },
+	                _react2['default'].createElement(
+	                    'h3',
+	                    null,
+	                    'Don\'t have an account? ',
+	                    _react2['default'].createElement(
+	                        'a',
+	                        { href: 'https://docs.google.com/forms/d/1kiid-YjKkzsatkXf3m6ZYJA4McHI3VHD66SO0wRe_V0/viewform?c=0&w=1&usp=send_form', target: '_blank' },
+	                        'Create one now'
+	                    )
 	                )
 	            )
 	        );
@@ -88053,6 +88072,40 @@
 
 /***/ },
 /* 477 */
+/*!*****************************************!*\
+  !*** ./src/components/CreateAccount.js ***!
+  \*****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _react = __webpack_require__(/*! react */ 1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var CreateAccount = _react2['default'].createClass({
+	    displayName: 'CreateAccount',
+
+	    render: function render() {
+	        return _react2['default'].createElement(
+	            'div',
+	            { id: 'CreateAccount', className: 'flex-column center' },
+	            'Don\'t have an account?',
+	            _react2['default'].createElement(
+	                'button',
+	                { onClick: console.log('Hey') },
+	                'Sign Up'
+	            )
+	        );
+	    }
+	});
+
+	module.exports = CreateAccount;
+
+/***/ },
+/* 478 */
 /*!******************************************!*\
   !*** ./src/components/ForgotPassword.js ***!
   \******************************************/
@@ -88171,7 +88224,7 @@
 	module.exports = ForgotPassword;
 
 /***/ },
-/* 478 */
+/* 479 */
 /*!********************************!*\
   !*** ./src/components/auth.js ***!
   \********************************/
@@ -88290,7 +88343,7 @@
 	module.exports = auth;
 
 /***/ },
-/* 479 */
+/* 480 */
 /*!***************************************!*\
   !*** ./src/mixins/UpdateFunctions.js ***!
   \***************************************/
@@ -88443,7 +88496,7 @@
 	module.exports = UpdateFunctions;
 
 /***/ },
-/* 480 */
+/* 481 */
 /*!*********************************!*\
   !*** ./src/services/history.js ***!
   \*********************************/
@@ -88457,7 +88510,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _historyLibCreateBrowserHistory = __webpack_require__(/*! history/lib/createBrowserHistory */ 481);
+	var _historyLibCreateBrowserHistory = __webpack_require__(/*! history/lib/createBrowserHistory */ 482);
 
 	var _historyLibCreateBrowserHistory2 = _interopRequireDefault(_historyLibCreateBrowserHistory);
 
@@ -88469,7 +88522,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 481 */
+/* 482 */
 /*!***********************************************!*\
   !*** ./~/history/lib/createBrowserHistory.js ***!
   \***********************************************/
