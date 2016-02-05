@@ -18,6 +18,14 @@ var SocialReport = React.createClass({
         }
     },
 
+    shouldComponentUpdate (nextProps, nextState) {
+        if (nextProps.artistId != this.props.artistId) {
+            this.updateSocial(nextProps.artistId);
+        }
+
+        return true;
+    },
+
     componentWillMount() {
         this.props.push({
             type: 'SHALLOW_MERGE',
@@ -30,7 +38,7 @@ var SocialReport = React.createClass({
 
     componentDidMount() {
         mixpanel.track("Social Metrics Open");
-        this.updateSocial();
+        this.updateSocial(this.props.artistId);
         this.checkSocial();
     },
 
@@ -58,18 +66,20 @@ var SocialReport = React.createClass({
         })
         .done( (res) => {
             // console.log(res);
-            this.setState(res.payload.artist);
+            if (res.payload.artist !== null) {
+                this.setState(res.payload.artist);
+            }
         })
         .fail( (err) => {
             // console.error(err);
         });
     },
 
-    updateSocial() {
+    updateSocial(artistId) {
         var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
 
         var query = `{
-            social_metrics (artist_id: ${this.props.artistId}) {
+            social_metrics (artist_id: ${artistId}) {
                 twitter_current,
                 twitter_last,
                 facebook_current,
@@ -91,13 +101,15 @@ var SocialReport = React.createClass({
             }
         })
         .done( (res) => {
-            this.props.push({
-                type: 'SHALLOW_MERGE',
-                data: {
-                    socialMetrics: res.payload.social_metrics,
-                    loaded: true
-                }
-            });
+            if (res.payload.social_metrics !== null) {
+                this.props.push({
+                    type: 'SHALLOW_MERGE',
+                    data: {
+                        socialMetrics: res.payload.social_metrics,
+                        loaded: true
+                    }
+                });
+            }
         })
         .fail( (err) => {
             // console.log(err);

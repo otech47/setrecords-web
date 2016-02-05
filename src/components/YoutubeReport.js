@@ -15,6 +15,14 @@ var YoutubeReport = React.createClass({
         }
     },
 
+    shouldComponentUpdate (nextProps, nextState) {
+        if (nextProps.artistId != this.props.artistId) {
+            this.updateYoutube(nextProps.artistId, this.state.cohort);
+        }
+
+        return true;
+    },
+
     componentWillMount() {
         this.props.push({
             type: 'SHALLOW_MERGE',
@@ -27,7 +35,7 @@ var YoutubeReport = React.createClass({
 
     componentDidMount() {
         mixpanel.track("Youtube Metrics Open");
-        this.updateYoutube(this.state.cohort);
+        this.updateYoutube(this.props.artistId, this.state.cohort);
     },
 
     toggleData(metricType) {
@@ -48,7 +56,7 @@ var YoutubeReport = React.createClass({
 
             this.setState({
                 cohort: newCohort
-            }, this.updateYoutube(newCohort));
+            }, this.updateYoutube(this.props.artistId, newCohort));
         }
     },
 
@@ -114,10 +122,10 @@ var YoutubeReport = React.createClass({
         }
     },
 
-    updateYoutube(cohort) {
+    updateYoutube(artistId, cohort) {
         var timezoneOffset = moment().utcOffset();
         var query = `{
-            youtube_metrics (artist_id: ${this.props.artistId}) {
+            youtube_metrics (artist_id: ${artistId}) {
                 plays_overtime (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
                     date,
                     count
@@ -145,24 +153,26 @@ var YoutubeReport = React.createClass({
             }
         })
         .done((res) => {
-            var metrics = res.payload.youtube_metrics;
+            if (res.payload.youtube_metrics !== null) {
+                var metrics = res.payload.youtube_metrics;
 
-            this.props.push({
-                type: 'SHALLOW_MERGE',
-                data: {
-                    youtubeMetrics: {
-                        followers: {
-                            current: metrics.followers_current,
-                            overtime: metrics.followers_overtime
+                this.props.push({
+                    type: 'SHALLOW_MERGE',
+                    data: {
+                        youtubeMetrics: {
+                            followers: {
+                                current: metrics.followers_current,
+                                overtime: metrics.followers_overtime
+                            },
+                            plays: {
+                                current: metrics.plays_current,
+                                overtime: metrics.plays_overtime
+                            }
                         },
-                        plays: {
-                            current: metrics.plays_current,
-                            overtime: metrics.plays_overtime
-                        }
-                    },
-                    loaded: true
-                }
-            });
+                        loaded: true
+                    }
+                });
+            }
         })
         .fail((err) => {
             // console.log(err);

@@ -15,6 +15,14 @@ var SetmineReport = React.createClass({
         }
     },
 
+    shouldComponentUpdate (nextProps, nextState) {
+        if (nextProps.artistId != this.props.artistId) {
+            this.updateSetmine(nextProps.artistId, this.state.cohort);
+        }
+
+        return true;
+    },
+
     componentWillMount() {
         this.props.push({
             type: 'SHALLOW_MERGE',
@@ -27,7 +35,7 @@ var SetmineReport = React.createClass({
 
     componentDidMount() {
         mixpanel.track("Setmine Metrics Open");
-        this.updateSetmine(this.state.cohort);
+        this.updateSetmine(this.props.artistId, this.state.cohort);
     },
 
     toggleData(metricType) {
@@ -48,7 +56,7 @@ var SetmineReport = React.createClass({
 
             this.setState({
                 cohort: newCohort
-            }, this.updateSetmine(newCohort));
+            }, this.updateSetmine(this.props.artistId, newCohort));
         }
     },
 
@@ -119,10 +127,10 @@ var SetmineReport = React.createClass({
         }
     },
 
-    updateSetmine(cohort) {
+    updateSetmine(artistId, cohort) {
         var timezoneOffset = moment().utcOffset();
         var query = `{
-            setmine_metrics (artist_id: ${this.props.artistId}) {
+            setmine_metrics (artist_id: ${artistId}) {
                 plays (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
                     date,
                     count
@@ -136,7 +144,7 @@ var SetmineReport = React.createClass({
                     count
                 }
             },
-            artist (id: ${this.props.artistId}) {
+            artist (id: ${artistId}) {
                 views,
                 favorites,
                 plays
@@ -157,36 +165,38 @@ var SetmineReport = React.createClass({
             }
         })
         .done((res) => {
-            var overtime = res.payload.setmine_metrics;
-            var artist = res.payload.artist;
+            if (res.payload.artist !== null && res.payload.setmine_metrics !== null) {
+                var overtime = res.payload.setmine_metrics;
+                var artist = res.payload.artist;
 
-            var setmineMetrics = {
-                plays: {
-                    current: artist.plays,
-                    last: artist.plays - _.last(overtime.plays).count,
-                    overtime: overtime.plays
-                },
-                views: {
-                    current: artist.views,
-                    last: artist.views - _.last(overtime.views).count,
-                    overtime: overtime.views
-                },
-                favorites: {
-                    current: artist.favorites,
-                    last: artist.favorites - _.last(overtime.favorites).count,
-                    overtime: overtime.favorites
+                var setmineMetrics = {
+                    plays: {
+                        current: artist.plays,
+                        last: artist.plays - _.last(overtime.plays).count,
+                        overtime: overtime.plays
+                    },
+                    views: {
+                        current: artist.views,
+                        last: artist.views - _.last(overtime.views).count,
+                        overtime: overtime.views
+                    },
+                    favorites: {
+                        current: artist.favorites,
+                        last: artist.favorites - _.last(overtime.favorites).count,
+                        overtime: overtime.favorites
+                    }
                 }
+
+                // console.log(setmineMetrics);
+
+                this.props.push({
+                    type: 'SHALLOW_MERGE',
+                    data: {
+                        setmineMetrics: setmineMetrics,
+                        loaded: true
+                    }
+                });
             }
-
-            // console.log(setmineMetrics);
-
-            this.props.push({
-                type: 'SHALLOW_MERGE',
-                data: {
-                    setmineMetrics: setmineMetrics,
-                    loaded: true
-                }
-            });
         })
         .fail((err) => {
             // console.log(err);
