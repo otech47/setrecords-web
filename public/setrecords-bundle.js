@@ -88238,7 +88238,7 @@
 
 	var auth = {
 	    loggedIn: function loggedIn(cb) {
-	        console.log('Checking log in status...');
+	        // console.log('Checking log in status...');
 
 	        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/login';
 
@@ -88250,11 +88250,11 @@
 	                withCredentials: true
 	            }
 	        }).done(function (res) {
-	            console.log('==LOGGED IN==');
-	            console.log(res);
+	            // console.log('==LOGGED IN==');
+	            // console.log(res);
 	            cb(res.payload.artist_id);
 	        }).fail(function (err) {
-	            console.log(err);
+	            // console.log(err);
 	            cb();
 	        });
 	    },
@@ -88262,12 +88262,12 @@
 	    logIn: function logIn(user, pass, cb) {
 	        var _this = this;
 
-	        console.log('Logging in...');
+	        // console.log('Logging in...');
 	        cb = arguments[arguments.length - 1];
 
 	        this.loggedIn(function (artistId) {
 	            if (artistId) {
-	                console.log('Session exists!');
+	                // console.log('Session exists!');
 	                _this.onChange(artistId);
 	                if (cb) {
 	                    cb();
@@ -88275,16 +88275,16 @@
 	                return;
 	            }
 
-	            console.log('No session exists, attempting to submit credentials.');
+	            // console.log('No session exists, attempting to submit credentials.');
 	            _this.submitCredentials(user, pass, function (res) {
 	                if (res.status == 'success') {
-	                    console.log('Submission successful.');
+	                    // console.log('Submission successful.');
 	                    _this.onChange(res.payload.setrecordsuser_login.artist_id);
 	                    if (cb) {
 	                        cb();
 	                    }
 	                } else {
-	                    console.log('Submission not successful');
+	                    // console.log('Submission not successful');
 	                    _this.onChange();
 	                    if (cb) {
 	                        cb(res);
@@ -88297,7 +88297,7 @@
 	    logOut: function logOut(cb) {
 	        var _this2 = this;
 
-	        console.log('Logging out...');
+	        // console.log('Logging out...');
 
 	        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/logout';
 	        $.ajax({
@@ -88313,14 +88313,14 @@
 	            }
 	            _this2.onChange(false);
 	        }).fail(function (err) {
-	            console.log(err);
+	            // console.log(err);
 	        });
 	    },
 
 	    onChange: function onChange() {},
 
 	    submitCredentials: function submitCredentials(user, pass, cb) {
-	        console.log('==SUBMIT CREDENTIALS==');
+	        // console.log('==SUBMIT CREDENTIALS==');
 	        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/login';
 
 	        $.ajax({
@@ -88335,10 +88335,10 @@
 	                password: pass
 	            }
 	        }).done(function (res) {
-	            console.log(res);
+	            // console.log(res);
 	            cb(res);
 	        }).fail(function (err) {
-	            console.log(err);
+	            // console.log(err);
 	            cb(err);
 	        });
 	    }
