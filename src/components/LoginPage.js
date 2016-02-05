@@ -2,6 +2,7 @@ import React from 'react';
 import {History} from 'react-router';
 import LinkedStateMixin from 'react-addons-linked-state-mixin';
 
+import CreateAccount from './CreateAccount';
 import ForgotPassword from './ForgotPassword';
 import Icon from './Icon';
 import auth from './auth';
@@ -30,9 +31,9 @@ module.exports = React.createClass ({
     render: function () {
         var password = this.state.changePassword ? <ForgotPassword /> : <p onClick={() => this.setState({changePassword: true})}>Forgot password?</p>
         return(
-            <div id='Login'>
-                <video id='introvid' autoPlay='auto' loop='loop'>
-                    <source src='https://setmine.com/videos/setrecords-login-compress.mp4' type='video/mp4'/>
+            <div id='Login' className='flex-column'>
+                <video id='introvid' autoPlay='auto' loop='loop' muted>
+                    <source src='/images/recordplayer_clipped.mp4' type='video/mp4'/>
                 </video>
                 <form onSubmit={this.submitLogin} className='flex-container'>
                     <div className='form center'>
@@ -51,6 +52,10 @@ module.exports = React.createClass ({
                         {password}
                     </div>
                 </form>
+
+                <div id='CreateAccount'>
+                    <h3>Don't have an account? <a href='https://docs.google.com/forms/d/1kiid-YjKkzsatkXf3m6ZYJA4McHI3VHD66SO0wRe_V0/viewform?c=0&w=1&usp=send_form' target='_blank'>Create one now</a></h3>
+                </div>
             </div>
         );
     },

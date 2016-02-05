@@ -14,6 +14,14 @@ var BeaconReport = React.createClass({
         }
     },
 
+    shouldComponentUpdate (nextProps, nextState) {
+        if (nextProps.artistId != this.props.artistId) {
+            this.updateBeacon(nextProps.artistId, this.state.cohort);
+        }
+
+        return true;
+    },
+
     componentWillMount() {
         this.props.push({
             type: 'SHALLOW_MERGE',
@@ -26,7 +34,7 @@ var BeaconReport = React.createClass({
 
     componentDidMount() {
         mixpanel.track("Beacon Metrics Open");
-        this.updateBeacon(this.state.cohort);
+        this.updateBeacon(this.props.artistId, this.state.cohort);
     },
 
     toggleData(metricType) {
@@ -47,7 +55,7 @@ var BeaconReport = React.createClass({
 
             this.setState({
                 cohort: newCohort
-            }, this.updateBeacon(newCohort));
+            }, this.updateBeacon(this.props.artistId, newCohort));
         }
     },
 
@@ -113,13 +121,13 @@ var BeaconReport = React.createClass({
         }
     },
 
-    updateBeacon(cohort) {
+    updateBeacon(artistId, cohort) {
         // console.log('Updating to cohort: ');
         // console.log(cohort);
 
         var timezoneOffset = moment().utcOffset();
         var query = `{
-            beacon_metrics (artist_id: ${this.props.artistId}) {
+            beacon_metrics (artist_id: ${artistId}) {
                 unlocks (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
                     date,
                     count
@@ -129,7 +137,7 @@ var BeaconReport = React.createClass({
                     count
                 }
             },
-            artist (id: ${this.props.artistId}) {
+            artist (id: ${artistId}) {
                 unlocks,
                 revenue
             }
@@ -149,30 +157,32 @@ var BeaconReport = React.createClass({
             }
         })
         .done((res) => {
-            var overtime = res.payload.beacon_metrics;
-            var artist = res.payload.artist;
+            if (res.payload.artist !== null && res.payload.beacon_metrics !== null) {
+                var overtime = res.payload.beacon_metrics;
+                var artist = res.payload.artist;
 
-            var beaconMetrics = {
-                revenue: {
-                    current: artist.revenue,
-                    last: artist.revenue - _.last(overtime.revenue).count,
-                    overtime: overtime.revenue
-                },
-                unlocks: {
-                    current: artist.unlocks,
-                    last: artist.unlocks - _.last(overtime.unlocks).count,
-                    overtime: overtime.unlocks
-                }
-            };
-            // console.log(beaconMetrics);
+                var beaconMetrics = {
+                    revenue: {
+                        current: artist.revenue,
+                        last: artist.revenue - _.last(overtime.revenue).count,
+                        overtime: overtime.revenue
+                    },
+                    unlocks: {
+                        current: artist.unlocks,
+                        last: artist.unlocks - _.last(overtime.unlocks).count,
+                        overtime: overtime.unlocks
+                    }
+                };
+                // console.log(beaconMetrics);
 
-            this.props.push({
-                type: 'SHALLOW_MERGE',
-                data: {
-                    beaconMetrics: beaconMetrics,
-                    loaded: true
-                }
-            });
+                this.props.push({
+                    type: 'SHALLOW_MERGE',
+                    data: {
+                        beaconMetrics: beaconMetrics,
+                        loaded: true
+                    }
+                });
+            }
         })
         .fail((err) => {
             // console.log(err);

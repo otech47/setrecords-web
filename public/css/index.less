@@ -42,14 +42,15 @@ input:focus {
 }
 
 #App {
-    height: @windowHeight;
+    min-height: @windowHeight;
     background: @white;
     .view-container {
         margin-top: @headerHeight;
         min-height: @pageHeight;
+        flex-wrap: nowrap;
         .view {
-            width: 85%;
             .scrollable;
+            min-height: 80vh;
             >.loader {
                 position: relative;
                 height: @pageHeight;
@@ -141,8 +142,8 @@ input:focus {
 
 footer {
     .flex-column;
+    background-color: @gray;
     position: relative;
-    .background(@gray, @dark-gray);
     padding: 3vh;
     h4 {
         margin: 0;
@@ -203,10 +204,10 @@ header {
     position: fixed;
     width: 100%;
     z-index: 21;
+    flex-wrap: nowrap;
     .background(@white, @dark-gray);
     justify-content: space-between;
     .header-main {
-        width: 85%;
         .card(2);
         h1 {
             font-size: 1.5rem;
@@ -221,6 +222,8 @@ header {
         font-family: @regular;
         letter-spacing: 0.1rem;
         width: 15%;
+        flex-wrap: nowrap;
+        min-width: 205px;
         img {
             width: 3rem;
         }
@@ -255,12 +258,16 @@ header {
     }
 }
 
+.nav-bar-wrapper {
+    background-color: @dark-gray;
+}
+
 #NavBar {
-    height: @pageHeight;
+    min-height: @pageHeight;
     width: 15%;
+    min-width: 205px;
     font-size: .8rem;
     .background(@dark-gray, @white);
-    .card(3);
     a {
         align-items: center;
         cursor: pointer;
@@ -653,25 +660,32 @@ header {
     position: relative;
     height: @pageHeight;
     width: 100%;
-    z-index: 100000;
     color: @white;
     letter-spacing: 3px;
+    align-items: center;
     form {
         position: absolute;
         top: 0;
         align-items: center;
         .size(100%, 100%);
-        .createOverlay(0.5);
         .flex-row {
             margin-bottom: 1rem;
             padding-bottom: .5rem;
             border-bottom: solid 1px;
         }
+        p {
+            text-align: center;
+            letter-spacing: initial;
+            cursor: pointer;
+            &:hover {
+                color: @white*0.75;
+            }
+        }
     }
     video {
-        display: inline-block;
+        position: absolute;
         vertical-align: baseline;
-        object-fit: initial;
+        object-fit: fill;
         height: 100%;
         width: 100%;
     }
@@ -698,17 +712,22 @@ header {
             .background(@blue*0.9, @white);
         }
     }
-    p {
-        text-align: center;
-        letter-spacing: initial;
-        cursor: pointer;
-        &:hover {
-            color: @white*0.75;
-        }
-    }
     .login-error {
         justify-content: center;
         color: @red;
+    }
+}
+
+#CreateAccount {
+    margin: 1rem auto;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+
+    a {
+        color: @blue;
+        text-decoration: underline !important;
     }
 }
 
@@ -766,6 +785,7 @@ header {
 
 #UploadSetWizard {
     background-color: @light-gray;
+    min-height: 80vh;
     padding: 4rem;
     audio {
         display: none;

@@ -77,6 +77,7 @@ var UploadTrackWizard = React.createClass({
             var processedSong = {};
             processedSong.file = this.state.pending_file;
             processedSong.duration = duration;
+            processedSong.name = moment().unix() + this.state.pending_file.name;
             URL.revokeObjectURL(this.state.temp_url);
             this.setState({
                 pending_file: null,

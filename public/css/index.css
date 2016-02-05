@@ -351,16 +351,17 @@ input:focus {
   outline: none;
 }
 #App {
-  height: 100vh;
+  min-height: 100vh;
   background: #f7f7f7;
 }
 #App .view-container {
   margin-top: 10vh;
   min-height: 90vh;
+  flex-wrap: nowrap;
 }
 #App .view-container .view {
-  width: 85%;
   overflow-y: scroll!important;
+  min-height: 80vh;
 }
 #App .view-container .view > .loader {
   position: relative;
@@ -482,9 +483,8 @@ footer {
   -webkit-flex-wrap: nowrap;
   -moz-flex-wrap: nowrap;
   -ms-flex-wrap: nowrap;
-  position: relative;
   background-color: #bdc3c7;
-  color: #313542;
+  position: relative;
   padding: 3vh;
 }
 footer h4 {
@@ -569,12 +569,12 @@ header {
   position: fixed;
   width: 100%;
   z-index: 21;
+  flex-wrap: nowrap;
   background-color: #f7f7f7;
   color: #313542;
   justify-content: space-between;
 }
 header .header-main {
-  width: 85%;
   box-shadow: 0 6px 10px 0 rgba(49, 53, 66, 0.3), 0 2px 2px 0 rgba(49, 53, 66, 0.2);
   flex-wrap: nowrap;
 }
@@ -590,6 +590,8 @@ header .logo {
   font-family: Avenir Regular;
   letter-spacing: 0.1rem;
   width: 15%;
+  flex-wrap: nowrap;
+  min-width: 205px;
 }
 header .logo img {
   width: 3rem;
@@ -623,13 +625,16 @@ header .artist img {
   margin: 0 1rem;
   border: solid 3px #22a7f0;
 }
+.nav-bar-wrapper {
+  background-color: #313542;
+}
 #NavBar {
-  height: 90vh;
+  min-height: 90vh;
   width: 15%;
+  min-width: 205px;
   font-size: .8rem;
   background-color: #313542;
   color: #f7f7f7;
-  box-shadow: 0 13px 25px 0 rgba(49, 53, 66, 0.3), 0 11px 7px 0 rgba(0, 0, 0, 0.19);
 }
 #NavBar a {
   align-items: center;
@@ -1087,9 +1092,9 @@ header .artist img {
   position: relative;
   height: 90vh;
   width: 100%;
-  z-index: 100000;
   color: #f7f7f7;
   letter-spacing: 3px;
+  align-items: center;
 }
 #Login form {
   position: absolute;
@@ -1097,26 +1102,24 @@ header .artist img {
   align-items: center;
   width: 100% !important;
   height: 100% !important;
-  z-index: 1;
-}
-#Login form::before {
-  content: '';
-  opacity: 0.5;
-  background-color: #313542;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  z-index: -1;
 }
 #Login form .flex-row {
   margin-bottom: 1rem;
   padding-bottom: .5rem;
   border-bottom: solid 1px;
 }
+#Login form p {
+  text-align: center;
+  letter-spacing: initial;
+  cursor: pointer;
+}
+#Login form p:hover {
+  color: #b9b9b9;
+}
 #Login video {
-  display: inline-block;
+  position: absolute;
   vertical-align: baseline;
-  object-fit: initial;
+  object-fit: fill;
   height: 100%;
   width: 100%;
 }
@@ -1146,17 +1149,20 @@ header .artist img {
   background-color: #1f96d8;
   color: #f7f7f7;
 }
-#Login p {
-  text-align: center;
-  letter-spacing: initial;
-  cursor: pointer;
-}
-#Login p:hover {
-  color: #b9b9b9;
-}
 #Login .login-error {
   justify-content: center;
   color: #ff4e4e;
+}
+#CreateAccount {
+  margin: 1rem auto;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+#CreateAccount a {
+  color: #22a7f0;
+  text-decoration: underline !important;
 }
 #ForgotPassword {
   justify-content: space-around;
@@ -1211,6 +1217,7 @@ header .artist img {
 }
 #UploadSetWizard {
   background-color: #dadfe1;
+  min-height: 80vh;
   padding: 4rem;
 }
 #UploadSetWizard audio {

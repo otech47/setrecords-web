@@ -14,6 +14,14 @@ var SoundcloudReport = React.createClass({
         }
     },
 
+    shouldComponentUpdate (nextProps, nextState) {
+        if (nextProps.artistId != this.props.artistId) {
+            this.updateSoundcloud(nextProps.artistId, this.state.cohort);
+        }
+
+        return true;
+    },
+
     componentWillMount() {
         this.props.push({
             type: 'SHALLOW_MERGE',
@@ -26,7 +34,7 @@ var SoundcloudReport = React.createClass({
 
     componentDidMount() {
         mixpanel.track("Soundcloud Metrics Open");
-        this.updateSoundcloud(this.state.cohort);
+        this.updateSoundcloud(this.props.artistId, this.state.cohort);
     },
 
     toggleData(metricType) {
@@ -47,7 +55,7 @@ var SoundcloudReport = React.createClass({
 
             this.setState({
                 cohort: newCohort
-            }, this.updateSoundcloud(newCohort));
+            }, this.updateSoundcloud(this.props.artistId, newCohort));
         }
     },
 
@@ -113,10 +121,10 @@ var SoundcloudReport = React.createClass({
         }
     },
 
-    updateSoundcloud(cohort) {
+    updateSoundcloud(artistId, cohort) {
         var timezoneOffset = moment().utcOffset();
         var query = `{
-            soundcloud_metrics (artist_id: ${this.props.artistId}) {
+            soundcloud_metrics (artist_id: ${artistId}) {
                 plays_overtime (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
                     date,
                     count
@@ -144,24 +152,26 @@ var SoundcloudReport = React.createClass({
             }
         })
         .done((res) => {
-            var metrics = res.payload.soundcloud_metrics;
+            if (res.payload.soundcloud_metrics !== null) {
+                var metrics = res.payload.soundcloud_metrics;
 
-            this.props.push({
-                type: 'SHALLOW_MERGE',
-                data: {
-                    soundcloudMetrics: {
-                        followers: {
-                            current: metrics.followers_current,
-                            overtime: metrics.followers_overtime
+                this.props.push({
+                    type: 'SHALLOW_MERGE',
+                    data: {
+                        soundcloudMetrics: {
+                            followers: {
+                                current: metrics.followers_current,
+                                overtime: metrics.followers_overtime
+                            },
+                            plays: {
+                                current: metrics.plays_current,
+                                overtime: metrics.plays_overtime
+                            }
                         },
-                        plays: {
-                            current: metrics.plays_current,
-                            overtime: metrics.plays_overtime
-                        }
-                    },
-                    loaded: true
-                }
-            });
+                        loaded: true
+                    }
+                });
+            }
         })
         .fail((err) => {
             // console.log(err);
