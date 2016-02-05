@@ -12,7 +12,7 @@ var Header = React.createClass({
                     <img src='/images/setrecords-logo-white.png' />
                     setrecords
                 </div>
-                <div className='header-main flex-row'>
+                <div className='header-main flex flex-row'>
                     <h1>{this.props.headerText}</h1>
                     <div className='buffer'/>
                     <div className='artist flex-row'>

@@ -13,7 +13,7 @@ var PreviewPlayer = React.createClass({
             }
             var duration = this.secondsToMinutes(song.duration);
             return (<PreviewTrack
-                title={song.name}
+                title={song.file.name}
                 duration={duration}
                 key={song.name + '_' + song.file.size} isPlaying={isPlaying}
                 removeSong={this.props.removeSong.bind(null, index)} play={this.props.play.bind(null, index)}

@@ -47,8 +47,9 @@ input:focus {
     .view-container {
         margin-top: @headerHeight;
         min-height: @pageHeight;
+        flex-wrap: nowrap;
         .view {
-            width: 85%;
+            max-width: 85%;
             .scrollable;
             >.loader {
                 position: relative;
@@ -203,10 +204,10 @@ header {
     position: fixed;
     width: 100%;
     z-index: 21;
+    flex-wrap: nowrap;
     .background(@white, @dark-gray);
     justify-content: space-between;
     .header-main {
-        width: 85%;
         .card(2);
         h1 {
             font-size: 1.5rem;
@@ -221,6 +222,8 @@ header {
         font-family: @regular;
         letter-spacing: 0.1rem;
         width: 15%;
+        flex-wrap: nowrap;
+        min-width: 205px;
         img {
             width: 3rem;
         }
@@ -258,6 +261,7 @@ header {
 #NavBar {
     height: @pageHeight;
     width: 15%;
+    min-width: 205px;
     font-size: .8rem;
     .background(@dark-gray, @white);
     .card(3);

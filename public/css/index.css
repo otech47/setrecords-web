@@ -357,9 +357,10 @@ input:focus {
 #App .view-container {
   margin-top: 10vh;
   min-height: 90vh;
+  flex-wrap: nowrap;
 }
 #App .view-container .view {
-  width: 85%;
+  max-width: 85%;
   overflow-y: scroll!important;
 }
 #App .view-container .view > .loader {
@@ -569,12 +570,12 @@ header {
   position: fixed;
   width: 100%;
   z-index: 21;
+  flex-wrap: nowrap;
   background-color: #f7f7f7;
   color: #313542;
   justify-content: space-between;
 }
 header .header-main {
-  width: 85%;
   box-shadow: 0 6px 10px 0 rgba(49, 53, 66, 0.3), 0 2px 2px 0 rgba(49, 53, 66, 0.2);
   flex-wrap: nowrap;
 }
@@ -590,6 +591,8 @@ header .logo {
   font-family: Avenir Regular;
   letter-spacing: 0.1rem;
   width: 15%;
+  flex-wrap: nowrap;
+  min-width: 205px;
 }
 header .logo img {
   width: 3rem;
@@ -626,6 +629,7 @@ header .artist img {
 #NavBar {
   height: 90vh;
   width: 15%;
+  min-width: 205px;
   font-size: .8rem;
   background-color: #313542;
   color: #f7f7f7;
