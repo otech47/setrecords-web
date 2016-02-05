@@ -330,13 +330,15 @@ module.exports = React.createClass({
         return (
             <div className='flex-column' id='App'>
                 <Header artistImage={appState.get('artist_data').icon_image.imageURL} artistName={appState.get('artist_data').artist} headerText={appState.get('header')} logOut={this.logOut} loggedIn={appState.get('loggedIn')} />
+
                 <div className='flex-row view-container'>
-                    {this.props.location.pathname == '/' ? '' : <NavBar push={push} /> }
+                    {this.props.location.pathname == '/' ? '' : <div className='nav-bar-wrapper'><NavBar push={push} /></div> }
                     <div className='view flex-column flex'>
                         {this.renderChildren()}
-                        <Footer/>
                     </div>
                 </div>
+
+                <Footer/>
             </div>
         );
     },

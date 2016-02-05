@@ -42,7 +42,7 @@ input:focus {
 }
 
 #App {
-    height: @windowHeight;
+    min-height: @windowHeight;
     background: @white;
     .view-container {
         margin-top: @headerHeight;
@@ -50,6 +50,7 @@ input:focus {
         flex-wrap: nowrap;
         .view {
             .scrollable;
+            min-height: 80vh;
             >.loader {
                 position: relative;
                 height: @pageHeight;
@@ -141,8 +142,8 @@ input:focus {
 
 footer {
     .flex-column;
+    background-color: @gray;
     position: relative;
-    .background(@gray, @dark-gray);
     padding: 3vh;
     h4 {
         margin: 0;
@@ -257,13 +258,16 @@ header {
     }
 }
 
+.nav-bar-wrapper {
+    background-color: @dark-gray;
+}
+
 #NavBar {
-    height: @pageHeight;
+    min-height: @pageHeight;
     width: 15%;
     min-width: 205px;
     font-size: .8rem;
     .background(@dark-gray, @white);
-    .card(3);
     a {
         align-items: center;
         cursor: pointer;
@@ -781,6 +785,7 @@ header {
 
 #UploadSetWizard {
     background-color: @light-gray;
+    min-height: 80vh;
     padding: 4rem;
     audio {
         display: none;

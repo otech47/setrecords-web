@@ -25112,14 +25112,18 @@
 	            _react2['default'].createElement(
 	                'div',
 	                { className: 'flex-row view-container' },
-	                this.props.location.pathname == '/' ? '' : _react2['default'].createElement(_NavBar2['default'], { push: push }),
+	                this.props.location.pathname == '/' ? '' : _react2['default'].createElement(
+	                    'div',
+	                    { className: 'nav-bar-wrapper' },
+	                    _react2['default'].createElement(_NavBar2['default'], { push: push })
+	                ),
 	                _react2['default'].createElement(
 	                    'div',
 	                    { className: 'view flex-column flex' },
-	                    this.renderChildren(),
-	                    _react2['default'].createElement(_Footer2['default'], null)
+	                    this.renderChildren()
 	                )
-	            )
+	            ),
+	            _react2['default'].createElement(_Footer2['default'], null)
 	        );
 	    },
 

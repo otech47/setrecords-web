@@ -351,7 +351,7 @@ input:focus {
   outline: none;
 }
 #App {
-  height: 100vh;
+  min-height: 100vh;
   background: #f7f7f7;
 }
 #App .view-container {
@@ -361,6 +361,7 @@ input:focus {
 }
 #App .view-container .view {
   overflow-y: scroll!important;
+  min-height: 80vh;
 }
 #App .view-container .view > .loader {
   position: relative;
@@ -482,9 +483,8 @@ footer {
   -webkit-flex-wrap: nowrap;
   -moz-flex-wrap: nowrap;
   -ms-flex-wrap: nowrap;
-  position: relative;
   background-color: #bdc3c7;
-  color: #313542;
+  position: relative;
   padding: 3vh;
 }
 footer h4 {
@@ -625,14 +625,16 @@ header .artist img {
   margin: 0 1rem;
   border: solid 3px #22a7f0;
 }
+.nav-bar-wrapper {
+  background-color: #313542;
+}
 #NavBar {
-  height: 90vh;
+  min-height: 90vh;
   width: 15%;
   min-width: 205px;
   font-size: .8rem;
   background-color: #313542;
   color: #f7f7f7;
-  box-shadow: 0 13px 25px 0 rgba(49, 53, 66, 0.3), 0 11px 7px 0 rgba(0, 0, 0, 0.19);
 }
 #NavBar a {
   align-items: center;
@@ -1215,6 +1217,7 @@ header .artist img {
 }
 #UploadSetWizard {
   background-color: #dadfe1;
+  min-height: 80vh;
   padding: 4rem;
 }
 #UploadSetWizard audio {
