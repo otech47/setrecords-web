@@ -1,30 +1,32 @@
-var HtmlWebpackPlugin = require('html-webpack-plugin');
 var path = require('path');
+var webpack = require('webpack');
 
 var buildPath = path.resolve(__dirname, 'public');
 var mainPath = path.resolve(__dirname, 'src', 'index.jsx');
 
 module.exports = {
-    entry: {
-        setrecords: mainPath
-    },
+    entry: [
+        'babel-polyfill',
+        mainPath
+    ],
     output: {
         path: buildPath,
-        filename: '[name]-bundle.js',
+        filename: 'bundle.js',
         pathinfo: true,
         historyApiFallback: true
     },
     resolve: {
-        extensions: ['', '.jsx', '.es6', '.js', '.scss'],
-        moduleDirectories: ['node_modules']
+        extensions: ['', '.jsx', '.es6', '.js', '.scss']
     },
     devtool: 'cheap-source-map',
     module: {
         loaders: [
             {
-                test: /.jsx?$/,
-                loader: 'babel-loader',
-                exclude: /node_modules/
+                test: /\.jsx?$/,
+                loaders: ['babel'],
+                include: [
+                    path.resolve(__dirname, 'src')
+                ]
             }
         ]
     }
