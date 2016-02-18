@@ -55,9 +55,6 @@ input:focus {
                 position: relative;
                 height: @pageHeight;
             }
-            >.loadedContent {
-                .flex;
-            }
         }
     }
 }
@@ -657,17 +654,15 @@ header {
 *************/
 
 #Login {
-    position: relative;
+    align-items: center;
+    position: static;
+    justify-content: center;
     height: @pageHeight;
-    width: 100%;
     color: @white;
     letter-spacing: 3px;
-    align-items: center;
     form {
-        position: absolute;
-        top: 0;
         align-items: center;
-        .size(100%, 100%);
+        z-index: 3;
         .flex-row {
             margin-bottom: 1rem;
             padding-bottom: .5rem;
@@ -684,10 +679,13 @@ header {
     }
     video {
         position: absolute;
+        left: 0px;
+        top: 0px;
         vertical-align: baseline;
         object-fit: fill;
         height: 100%;
         width: 100%;
+        z-index: 2;
     }
     input {
         background: transparent;
@@ -720,10 +718,10 @@ header {
 
 #CreateAccount {
     margin: 1rem auto;
-    position: absolute;
     bottom: 0;
     width: 100%;
     text-align: center;
+    z-index: 3;
 
     a {
         color: @blue;
@@ -741,8 +739,6 @@ header {
         }
     }
     .flex-row {
-        position: relative;
-        width: 100%;
         input {
             margin-right: 30px;
             width: 100%;

@@ -367,18 +367,6 @@ input:focus {
   position: relative;
   height: 90vh;
 }
-#App .view-container .view > .loadedContent {
-  -webkit-box-flex: 1 1 auto;
-  -moz-box-flex: 1 1 auto;
-  -webkit-flex: 1 1 auto;
-  -ms-flex: 1 1 auto;
-  flex: 1 1 auto;
-  -webkit-box-flex: 1 1 auto !important;
-  -moz-box-flex: 1 1 auto !important;
-  -webkit-flex: 1 1 auto !important;
-  -ms-flex: 1 1 auto !important;
-  flex: 1 1 auto !important;
-}
 #apply-changes {
   height: 5vh;
   align-items: stretch;
@@ -1089,19 +1077,16 @@ header .artist img {
 
 *************/
 #Login {
-  position: relative;
+  align-items: center;
+  position: static;
+  justify-content: center;
   height: 90vh;
-  width: 100%;
   color: #f7f7f7;
   letter-spacing: 3px;
-  align-items: center;
 }
 #Login form {
-  position: absolute;
-  top: 0;
   align-items: center;
-  width: 100% !important;
-  height: 100% !important;
+  z-index: 3;
 }
 #Login form .flex-row {
   margin-bottom: 1rem;
@@ -1118,10 +1103,13 @@ header .artist img {
 }
 #Login video {
   position: absolute;
+  left: 0px;
+  top: 0px;
   vertical-align: baseline;
   object-fit: fill;
   height: 100%;
   width: 100%;
+  z-index: 2;
 }
 #Login input {
   background: transparent;
@@ -1155,10 +1143,10 @@ header .artist img {
 }
 #CreateAccount {
   margin: 1rem auto;
-  position: absolute;
   bottom: 0;
   width: 100%;
   text-align: center;
+  z-index: 3;
 }
 #CreateAccount a {
   color: #22a7f0;
@@ -1177,10 +1165,6 @@ header .artist img {
   -ms-transform: rotate(-30deg);
   -o-transform: rotate(-30deg);
   transform: rotate(-30deg);
-}
-#ForgotPassword .flex-row {
-  position: relative;
-  width: 100%;
 }
 #ForgotPassword .flex-row input {
   margin-right: 30px;
