@@ -14,7 +14,11 @@ var defaultValues = {
 var initialAppState = Immutable.Map(defaultValues);
 var evtHandler = GlobalEventHandler(initialAppState);
 var evtTypes = evtHandler.types;
-var push = evtHandler.push;
+var pushFn = evtHandler.push;
+var push = (update) => pushFn({
+    type: 'SHALLOW_MERGE',
+    data: update
+});
 
 export default class App extends Base {
     getChildContext() {
