@@ -40,6 +40,7 @@ export default class App extends Base {
     render() {
         return (
             <div id='App'>
+                Hey it's the app!
                 {
                     React.Children.map(this.props.children, (child) => {
                         return React.cloneElement(child, {appState: this.state.appState});
@@ -57,4 +58,9 @@ export default class App extends Base {
             });
         });
     }
+};
+
+App.childContextTypes = {
+    push: React.PropTypes.func,
+    artistId: React.PropTypes.number
 };

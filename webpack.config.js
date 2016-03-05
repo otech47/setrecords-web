@@ -1,3 +1,4 @@
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var path = require('path');
 var webpack = require('webpack');
@@ -7,7 +8,7 @@ module.exports = {
         contentBase: 'public/'
     },
 
-    devtool: 'eval',
+    devtool: 'cheap-source-map',
 
     entry: [
         'babel-polyfill',
@@ -23,11 +24,13 @@ module.exports = {
                 loaders: ['react-hot', 'babel'],
                 include: [
                     path.resolve(__dirname, 'src')
-                ]
+                ],
+                exclude: /node_modules/
             },
             {
                 test: /\.less/,
-                loader: 'style!css!postcss!less'
+                loader: ExtractTextPlugin.extract('style', 'css!postcss!less'),
+                exclude: /node_modules/
             }
         ]
     },
@@ -42,7 +45,8 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: path.resolve(__dirname, 'src', 'index.html')
-        })
+        }),
+        new ExtractTextPlugin('index.css')
     ],
 
     resolve: {
