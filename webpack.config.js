@@ -1,33 +1,46 @@
 var path = require('path');
 var webpack = require('webpack');
 
-var buildPath = path.resolve(__dirname, 'public');
-var mainPath = path.resolve(__dirname, 'src', 'index.jsx');
-
 module.exports = {
+    devServer: {
+        contentBase: 'public/'
+    },
+
+    devtool: 'eval',
+
     entry: [
         'babel-polyfill',
-        mainPath
+        path.resolve(__dirname, 'src', 'styles', 'index.less'),
+        path.resolve(__dirname, 'src', 'index.jsx'),
+        'webpack-dev-server/client?http://localhost:8080'
     ],
-    output: {
-        path: buildPath,
-        filename: 'bundle.js',
-        pathinfo: true,
-        historyApiFallback: true
-    },
-    resolve: {
-        extensions: ['', '.jsx', '.es6', '.js', '.scss']
-    },
-    devtool: 'cheap-source-map',
+
     module: {
         loaders: [
             {
                 test: /\.jsx?$/,
-                loaders: ['babel'],
+                loaders: ['react-hot', 'babel'],
                 include: [
                     path.resolve(__dirname, 'src')
                 ]
+            },
+            {
+                test: /\.less/,
+                loader: 'style!css!postcss!less'
             }
         ]
+    },
+
+    output: {
+        path: path.resolve(__dirname, 'public'),
+        filename: 'bundle.js'
+    },
+
+    plugins: [
+        new webpack.HotModuleReplacementPlugin()
+    ],
+
+    resolve: {
+        extensions: ['', '.jsx', '.js']
     }
 };
