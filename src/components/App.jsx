@@ -1,6 +1,8 @@
 import Immutable from 'immutable';
 import React from 'react';
 
+import api from '../lib/api';
+import auth from '../lib/auth';
 import Base from './Base';
 import GlobalEventHandler from '../lib/globalEventHandler';
 
@@ -23,11 +25,13 @@ var push = (update) => pushFn({
 export default class App extends Base {
     getChildContext() {
         return {
-            push: push,
-            artistId: this.state.appState.get('artistId')
+            api: api,
+            artistId: this.state.appState.get('artistId'),
+            auth: auth,
+            push: push
         };
-
     }
+
     constructor (props) {
         super(props);
         this.autoBind('_attachStreams');
@@ -39,6 +43,14 @@ export default class App extends Base {
 
     componentWillMount() {
         this._attachStreams();
+        auth.logIn( (err, artistId) => {
+            if (err) {
+                console.log(err);
+            }
+            if (artistId) {
+                console.log(artistId);
+            }
+        });
     }
 
     render() {
@@ -65,6 +77,8 @@ export default class App extends Base {
 };
 
 App.childContextTypes = {
-    push: React.PropTypes.func,
-    artistId: React.PropTypes.number
+    api: React.PropTypes.object,
+    artistId: React.PropTypes.number,
+    auth: React.PropTypes.object,
+    push: React.PropTypes.func
 };

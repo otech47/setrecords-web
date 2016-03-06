@@ -1,27 +1,45 @@
-var api = {
-    get: function(url, data) {
-        return {
-            type: "GET",
-            url: url,
-            dataType: "jsonp",
-            crossDomain: true,
-            data: data
-        };
+import {API_GRAPH, API_ROOT} from '../constants/constants';
+
+module.exports = {
+    graph(query) {
+        return (
+            $.ajax({
+                type: 'get',
+                url: API_GRAPH,
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                data: {
+                    query: query
+                }
+            })
+            .done(res => {
+                return res;
+            })
+            .fail(err => {
+                return err;
+            })
+        )
     },
 
-    post: function(url, data) {
-        return {
-            type: "POST",
-            url: url,
-            dataType: "jsonp",
-            crossDomain: true,
-            xhrFields: {
-                withCredentials: true
-            },
-            data: data
-        };
+    post(route, data) {
+        return (
+            $.ajax({
+                type: 'post',
+                url: API_ROOT + route,
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                data: data
+            })
+            .done(res => {
+                return res;
+            })
+            .fail(err => {
+                return err;
+            })
+        )
     }
 };
-
-module.exports = api;
-

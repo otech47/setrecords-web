@@ -1,55 +1,55 @@
+import api from './api';
+
 var auth = {
     loggedIn: function (cb) {
-        // console.log('Checking log in status...');
-
-        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/login';
-
-        $.ajax({
-            type: 'post',
-            url: requestUrl,
-            crossDomain: true,
-            xhrFields: {
-                withCredentials: true
-            }
-        })
-        .done((res) => {
-            // console.log('==LOGGED IN==');
-            // console.log(res);
-            cb(res.payload.artist_id);
-        })
-        .fail((err) => {
-            // console.log(err);
-            cb();
-        });
+        console.log('Checking logged in status...');
+        api.post('setrecordsuser/login', {})
+            .then( (res) => {
+                console.log(res);
+                cb('fake error', 'fake artistId');
+            });
+        // $.ajax({
+        //     type: 'post',
+        //     url: requestUrl,
+        //     crossDomain: true,
+        //     xhrFields: {
+        //         withCredentials: true
+        //     }
+        // })
+        // .done((res) => {
+        //     cb(null, res.payload.artist_id);
+        // })
+        // .fail((err) => {
+        //     cb(err);
+        // });
     },
 
     logIn: function (user, pass, cb) {
-        // console.log('Logging in...');
+        console.log('Logging in...');
         cb = arguments[arguments.length - 1];
 
-        this.loggedIn((artistId) => {
+        this.loggedIn((err, artistId) => {
+            console.log('Result');
+            console.log(err);
+            console.log(artistId);
             if (artistId) {
-                // console.log('Session exists!');
-                this.onChange(artistId);
+                // this.onChange(artistId);
                 if (cb) {
-                    cb();
+                    cb(null, artistId);
                 }
                 return;
             }
 
-            // console.log('No session exists, attempting to submit credentials.');
             this.submitCredentials(user, pass, (res) => {
                 if (res.status == 'success') {
-                    // console.log('Submission successful.');
-                    this.onChange(res.payload.setrecordsuser_login.artist_id);
+                    // this.onChange(res.payload.setrecordsuser_login.artist_id);
                     if (cb) {
-                        cb();
+                        cb(null, res.payload.setrecordsuser_login.artist_id);
                     }
                 } else {
-                    // console.log('Submission not successful');
-                    this.onChange();
+                    // this.onChange();
                     if (cb) {
-                        cb(res);
+                        cb(res.responseJSON.error);
                     }
                 }
             });
@@ -57,9 +57,8 @@ var auth = {
     },
 
     logOut: function (cb) {
-        // console.log('Logging out...');
-
         var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/logout';
+
         $.ajax({
             type: 'get',
             url: requestUrl,
@@ -75,16 +74,14 @@ var auth = {
             this.onChange(false);
         })
         .fail((err) => {
-            // console.log(err);
+            console.log(err);
         });
     },
 
     onChange: function () {},
 
     submitCredentials: function (user, pass, cb) {
-        // console.log('==SUBMIT CREDENTIALS==');
         var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/login';
-
         $.ajax({
             type: 'POST',
             url: requestUrl,
@@ -98,11 +95,9 @@ var auth = {
             }
         })
         .done((res) => {
-            // console.log(res);
             cb(res);
         })
         .fail((err) => {
-            // console.log(err);
             cb(err);
         });
     },
