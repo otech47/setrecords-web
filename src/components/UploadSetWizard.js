@@ -136,6 +136,7 @@ var UploadSetWizard = React.createClass({
             addTrack={this.addTrack}
             tracklistUrl={this.state.tracklist_url}
             deleteTrack={this.deleteTrack}
+            estimateStartTimes={this.estimateStartTimes}
             tracklist={this.state.tracklist}
             loadTracksFromUrl={this.loadTracksFromUrl} />);
             break;
@@ -263,6 +264,29 @@ var UploadSetWizard = React.createClass({
         this.setState({
             songs: update(this.state.songs, {$splice: [[index, 1]]})
         });
+    },
+
+    estimateStartTimes: function(e) {
+        e.preventDefault();
+        var tracklist = this.state.tracklist;
+        var setLength = this.state.set_length;
+
+        if (tracklist.length > 0) {
+            _.each(tracklist, (track, index) => {
+                var updateObj = {};
+
+                updateObj[index] = {$apply: (track) => {
+                    var newTime = index/tracklist.length * setLength;
+                    track.starttime = this.secondsToMinutes(newTime);
+                    return track;
+                }};
+                tracklist = update(tracklist, updateObj);
+            });
+
+            this.setState({
+                tracklist: tracklist
+            });
+        }
     },
 
     addTrack: function() {

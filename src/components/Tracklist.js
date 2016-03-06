@@ -8,7 +8,7 @@ var Tracklist = React.createClass({
     mixins: [UtilityFunctions],
 
     render: function() {
-        var {tracklist, tracklistUrl, deepLinkState, deleteTrack, addTrack, ...other} = this.props;
+        var {tracklist, tracklistUrl, deepLinkState, deleteTrack, estimateStartTimes, addTrack, ...other} = this.props;
 
         if(tracklist.length > 0) {
             var trackRows = _.map(tracklist, (track, index) => {
@@ -53,7 +53,10 @@ var Tracklist = React.createClass({
                 <div className='tracks flex-column form-panel'>
                     <h1>Edit Tracks</h1>
                     {trackComponents}
-                    <button onClick={addTrack}>Add Track</button>
+                    <div className='flex-row'>
+                        <button className='tracklist-buttons' onClick={estimateStartTimes}>Estimate Start Times</button>
+                        <button className='tracklist-buttons' onClick={addTrack}>Add Track</button>
+                    </div>
                 </div>
             </div>
         );
