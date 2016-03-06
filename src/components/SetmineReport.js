@@ -19,7 +19,6 @@ var SetmineReport = React.createClass({
         if (nextProps.artistId != this.props.artistId) {
             this.updateSetmine(nextProps.artistId, this.state.cohort);
         }
-
         return true;
     },
 
