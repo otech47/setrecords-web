@@ -79,8 +79,6 @@ var SetmineReport = React.createClass({
                     break;
             }
             var metrics = this.props.setmineMetrics;
-            console.log('Data for setmine graph');
-            console.log(metrics);
             var labels = [];
             var datasets = [];
             for (var i = 0; i < metrics.plays.overtime.length; i++) {
