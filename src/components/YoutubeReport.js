@@ -82,7 +82,7 @@ var YoutubeReport = React.createClass({
             var labels = [];
             var datasets = [];
             for (var i = 0; i < metrics.followers.overtime.length; i++) {
-                labels.push(moment(metrics.followers.overtime[i].date, dateGrouping).format(dateFormat));
+                labels.push(moment(metrics.followers.overtime[i].date).format(dateFormat));
             }
             var colors = ['#ff4e4e', '#22a7f0'];
             var counter = 0;

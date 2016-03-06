@@ -81,7 +81,7 @@ var BeaconReport = React.createClass({
             var labels = [];
             var datasets = [];
             for (var i = 0; i < metrics.revenue.overtime.length; i++) {
-                labels.push(moment(metrics.revenue.overtime[i].date, dateGrouping).format(dateFormat));
+                labels.push(moment(metrics.revenue.overtime[i].date).format(dateFormat));
             }
             var colors = ['#9b59b6', '#22a7f0', '#ffffff'];
             var counter = 0;
@@ -122,9 +122,6 @@ var BeaconReport = React.createClass({
     },
 
     updateBeacon(artistId, cohort) {
-        // console.log('Updating to cohort: ');
-        // console.log(cohort);
-
         var timezoneOffset = moment().utcOffset();
         var query = `{
             beacon_metrics (artist_id: ${artistId}) {
@@ -185,7 +182,7 @@ var BeaconReport = React.createClass({
             }
         })
         .fail((err) => {
-            // console.log(err);
+            console.log(err);
         });
     },
 
