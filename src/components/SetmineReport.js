@@ -83,7 +83,7 @@ var SetmineReport = React.createClass({
             var labels = [];
             var datasets = [];
             for (var i = 0; i < metrics.plays.overtime.length; i++) {
-                labels.push(moment(metrics.plays.overtime[i].date, dateGrouping).format(dateFormat));
+                labels.push(moment(metrics.plays.overtime[i].date).format(dateFormat));
             }
             var colors = ['#9b59b6', '#22a7f0', '#36d7b7'];
             var counter = 0;
