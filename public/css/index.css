@@ -758,6 +758,9 @@ header .artist img {
 #Tracklist button:active {
   background: #1f96d8;
 }
+#Tracklist .tracklist-buttons {
+  margin: 1rem;
+}
 #Tracklist table {
   color: #313542;
   margin: 2rem 0;
