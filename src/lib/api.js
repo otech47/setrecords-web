@@ -1,7 +1,26 @@
 import {API_GRAPH, API_ROOT} from '../constants/constants';
 
 module.exports = {
-    graph(query) {
+    get(route, callback) {
+        return (
+            $.ajax({
+                type: 'get',
+                url: API_ROOT + route,
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                }
+            })
+            .done(res => {
+                return callback(null, res);
+            })
+            .fail(err => {
+                return callback(err);
+            });
+        )
+    }
+
+    graph(query, callback) {
         return (
             $.ajax({
                 type: 'get',
@@ -15,15 +34,15 @@ module.exports = {
                 }
             })
             .done(res => {
-                return res;
+                return callback(null, res);
             })
             .fail(err => {
-                return err;
-            })
+                return callback(err);
+            });
         )
-    },
+    }
 
-    post(route, data) {
+    post(route, data, callback) {
         return (
             $.ajax({
                 type: 'post',
@@ -35,10 +54,10 @@ module.exports = {
                 data: data
             })
             .done(res => {
-                return res;
+                return callback(null, res);
             })
             .fail(err => {
-                return err;
+                return callback(err);
             })
         )
     }
