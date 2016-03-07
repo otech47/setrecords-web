@@ -9,6 +9,7 @@ export default class LoadingNotification extends Base {
     }
 
     render() {
+        console.log('Loading notification!');
         return (
             <Dialog title={this.props.title} modal={true} open={this.props.open} contentStyle={{width: '50%'}} bodyStyle={{textAlign: 'center'}} >
                 <CircularProgress />

@@ -5,13 +5,15 @@ import api from '../lib/api';
 import auth from '../lib/auth';
 import Base from './Base';
 import GlobalEventHandler from '../lib/globalEventHandler';
+import NotificationLayer from './NotificationLayer';
 
 var defaultValues = {
     artistId: 0,
     headerText: '',
     loaded: false,
     loggedIn: false,
-    notification: null
+    notification: 'loading',
+    notificationMessage: 'Checking login status...'
 };
 var initialAppState = Immutable.Map(defaultValues);
 var evtHandler = GlobalEventHandler(initialAppState);
@@ -43,12 +45,18 @@ export default class App extends Base {
 
     componentWillMount() {
         this._attachStreams();
-        auth.logIn( (err, artistId) => {
+        auth.logIn((err, artistId) => {
             if (err) {
                 console.log(err);
-            }
-            if (artistId) {
+                push({
+                    notification: null
+                });
+            } else {
                 console.log(artistId);
+                push({
+                    artistId: artistId,
+                    notification: null
+                });
             }
         });
     }
@@ -56,12 +64,14 @@ export default class App extends Base {
     render() {
         return (
             <div id='App'>
-                Hey it's the app!
+                App
                 {
                     React.Children.map(this.props.children, (child) => {
                         return React.cloneElement(child, {appState: this.state.appState});
                     })
                 }
+
+                <NotificationLayer appState={this.state.appState} />
             </div>
         );
     }

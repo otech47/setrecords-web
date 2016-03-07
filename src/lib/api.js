@@ -16,9 +16,9 @@ module.exports = {
             })
             .fail(err => {
                 return callback(err);
-            });
+            })
         )
-    }
+    },
 
     graph(query, callback) {
         return (
@@ -38,9 +38,9 @@ module.exports = {
             })
             .fail(err => {
                 return callback(err);
-            });
+            })
         )
-    }
+    },
 
     post(route, data, callback) {
         return (

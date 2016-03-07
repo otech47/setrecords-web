@@ -9,7 +9,7 @@ module.exports = {
                 cb(null, res.artist_id);
             }
         });
-    }
+    },
 
     logIn: function (user, pass, cb) {
         cb = arguments[arguments.length - 1];
@@ -21,7 +21,7 @@ module.exports = {
                 cb(null, res.payload.setrecordsuser_login.artist_id);
                 return;
             }
-        }
+        });
 
         this.submitCredentials(user, pass, (err, artistId) => {
             if (err) {
@@ -30,13 +30,13 @@ module.exports = {
                 cb(null, artistId);
             }
         });
-    }
+    },
 
     logOut: function (cb) {
         api.get('setrecordsuser/logout', (err) => {
             cb(err);
         });
-    }
+    },
 
     submitCredentials: function (user, pass, cb) {
         api.post('setrecordsuser/login', {username: user, password: pass}, (err, res) => {
