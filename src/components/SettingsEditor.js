@@ -18,6 +18,7 @@ var SettingsEditor = React.createClass({
     getInitialState() {
         return {
             uploadedImage: [],
+            newEmail: '',
             newPass: '',
             confirmPass: '',
             busy: false,
@@ -140,6 +141,14 @@ var SettingsEditor = React.createClass({
                             <p>Confirm New Password <i className={passwordIcon}></i></p>
                             <p className={passwordWarning}>Passwords must match.</p>
                             <input type='password' name='confirm_pass' valueLink={deepLinkState(['confirmPass'])} />
+                        </div>
+                    </div>
+
+                    <div className='password-change form-panel flex-column center'>
+                        <h1>Change Email</h1>
+                        <div>
+                            <p>New Email {((this.state.newEmail.length > 0) ? <span className='warning'>*</span> : '')}</p>
+                            <input name='new_email' valueLink={deepLinkState(['newEmail'])} />
                         </div>
                     </div>
 
@@ -299,6 +308,12 @@ var SettingsEditor = React.createClass({
                 changeFunctions.push(this.newPassword);
             }
 
+            var emailRegex = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+            if ((this.state.newEmail.length > 0) && emailRegex.test(this.state.newEmail)) {
+                console.log('email good to go');
+                changeFunctions.push(this.newEmail);
+            }
+
             switch(true) {
                 case pendingSettings.fb_link != originalSettings.fb_link:
                     changeFunctions.push(this.newLinks);
@@ -422,6 +437,29 @@ var SettingsEditor = React.createClass({
         });
     },
 
+    newEmail(callback) {
+        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/email/update';
+
+        $.ajax({
+            type: 'post',
+            url: requestUrl,
+            data: {
+                new_email: this.state.newEmail,
+                artist_id: this.props.artistId
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            }
+        })
+        .done((res) => {
+            callback(null);
+        })
+        .fail((err) => {
+            callback(err);
+        });
+    },
+
     newPassword(callback) {
         var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/password/update';
 
@@ -430,7 +468,7 @@ var SettingsEditor = React.createClass({
             url: requestUrl,
             data: {
                 new_password: this.state.newPass,
-                artist_id: 155
+                artist_id: this.props.artistId
             },
             crossDomain: true,
             xhrFields: {
@@ -438,10 +476,10 @@ var SettingsEditor = React.createClass({
             }
         })
         .done((res) => {
-                callback(null);
+            callback(null);
         })
         .fail((err) => {
-                callback(err);
+            callback(err);
         });
     },
 
