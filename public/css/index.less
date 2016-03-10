@@ -181,7 +181,7 @@ footer {
     .border-radius(3px);
     .card(1);
     width: 90%;
-    margin: 0 auto 4rem;
+    margin: 4rem auto;
     padding: 5%;
     font-size: 1rem;
     input{
@@ -374,6 +374,17 @@ header {
             border: 5px solid @blue;
             box-sizing: border-box;
         }
+    }
+}
+
+.delete-button {
+    .background(@red, white);
+    font-size: 1rem;
+    margin: 1rem;
+    padding: 1rem 2rem;
+    width: 12vw!important;
+    &:active {
+        background: @blue*0.9;
     }
 }
 
