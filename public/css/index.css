@@ -535,7 +535,7 @@ footer .social {
   border-radius: 3px;
   box-shadow: 0 1px 4px 0 rgba(49, 53, 66, 0.37);
   width: 90%;
-  margin: 0 auto 4rem;
+  margin: 4rem auto;
   padding: 5%;
   font-size: 1rem;
 }
@@ -744,6 +744,17 @@ header .artist img {
   border-radius: 50%;
   border: 5px solid #22a7f0;
   box-sizing: border-box;
+}
+.delete-button {
+  background-color: #ff4e4e;
+  color: white;
+  font-size: 1rem;
+  margin: 1rem;
+  padding: 1rem 2rem;
+  width: 12vw!important;
+}
+.delete-button:active {
+  background: #1f96d8;
 }
 #Tracklist .urlTracklist input {
   margin: 2rem auto;

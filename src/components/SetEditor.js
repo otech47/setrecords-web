@@ -1,3 +1,5 @@
+import Dialog from 'material-ui/lib/dialog';
+import FlatButton from 'material-ui/lib/flat-button';
 import React from 'react';
 import moment from 'moment';
 import update from 'react-addons-update';
@@ -22,6 +24,7 @@ var MobileSetEditor = React.createClass({
         return {
             uploadedImage: [],
             busy: false,
+            delete: false,
             applying: false,
             success: false,
             failure: false,
@@ -51,6 +54,11 @@ var MobileSetEditor = React.createClass({
     },
 
     render: function() {
+        const deleteActions = [
+            <FlatButton label='Cancel' secondary={true} keyboardFocused={true} onClick={this.closeDeleteDialog} onTouchTap={this.closeDeleteDialog} />,
+            <FlatButton label='Delete Set' primary={true} onClick={this.confirmDeletion} onTouchTap={this.confirmDeletion} />
+        ];
+
         var deepLinkState = this.deepLinkState;
         var episodeComponent;
         var editTitleComponent;
@@ -138,6 +146,11 @@ var MobileSetEditor = React.createClass({
                         tracklist={this.state.tracklist || []}
                         loadTracksFromUrl={this.loadTracksFromUrl} />
 
+                    <button className='delete-button' onClick={this.deleteSet}>Delete Set</button>
+                    <Dialog title='Delete Set' actions={deleteActions} modal={false} open={this.state.delete} onRequestClose={this.closeDeleteDialog}>
+                        Deleting this set will remove it from Setmine and any active Beacon offers. Are you sure you want to delete this set?
+                    </Dialog>
+
                     <div className='flex-row form-panel center' id='apply-changes'>
                         <div className='flex-fixed apply flex-container' onClick={this.applyChanges}>
                             Apply
@@ -149,7 +162,6 @@ var MobileSetEditor = React.createClass({
                             Cancel
                         </div>
                     </div>
-
                 </div>
             </Loader>
         );
@@ -172,6 +184,48 @@ var MobileSetEditor = React.createClass({
 
         this.setState({
             tracklist: update(this.state.tracklist, {$push: [newTrack]}),
+        });
+    },
+
+    deleteSet: function(e) {
+        // console.log('Delete set ', this.props.params.id);
+        this.setState({
+            delete: true
+        });
+    },
+
+    closeDeleteDialog: function(e) {
+        // console.log('Deletion aborted.');
+        this.setState({
+            delete: false
+        });
+    },
+
+    confirmDeletion: function(e) {
+        // console.log('Deletion confirmed!');
+        var requestUrl = 'https://api.setmine.com/v/10/sets/delete';
+        $.ajax({
+            type: 'delete',
+            url: requestUrl,
+            data: {
+                artist_id: this.props.originalArtist.id,
+                set_id: this.props.params.id
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            }
+        })
+        .done((res) => {
+            // console.log(res);
+            this.history.pushState(null, '/content');
+        })
+        .fail((err) => {
+            // console.log(err);
+            alert('Failed to delete the set. If the problem persists, please contact us at support@setmine.com');
+            this.setState({
+                delete: false
+            });
         });
     },
 
@@ -580,7 +634,7 @@ var MobileSetEditor = React.createClass({
                 set_id: this.props.params.id,
                 tracklist_url: url
             },
-            crossDoman: true,
+            crossDomain: true,
             xhrFields: {
                 withCredentials: true
             }
