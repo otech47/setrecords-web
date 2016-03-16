@@ -14,7 +14,7 @@ module.exports = React.createClass ({
     componentWillMount: function() {
         auth.loggedIn((artistId) => {
             if (artistId) {
-                this.history.replaceState(null, '/content');
+                this.history.replaceState(null, '/dashboard');
             }
         });
     },
@@ -99,7 +99,7 @@ module.exports = React.createClass ({
                     break;
                 }
             } else {
-                this.history.pushState(null, '/content');
+                this.history.pushState(null, '/dashboard');
             }
         });
     },

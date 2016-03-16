@@ -620,7 +620,7 @@ header .artist img {
   min-height: 90vh;
   width: 15%;
   min-width: 205px;
-  font-size: .8rem;
+  font-size: 1rem;
   background-color: #313542;
   color: #f7f7f7;
 }
@@ -644,7 +644,7 @@ header .artist img {
 }
 #NavBar i {
   margin: auto 1vw auto 1rem;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
 }
 .overlay {
   position: absolute;
@@ -816,7 +816,8 @@ header .artist img {
 }
 .metrics-panel {
   background: #dadfe1;
-  width: 75%;
+  height: 30rem;
+  width: 45%;
   margin: 5vw auto;
   position: relative;
   box-shadow: 0 6px 10px 0 rgba(49, 53, 66, 0.3), 0 2px 2px 0 rgba(49, 53, 66, 0.2);
@@ -852,11 +853,11 @@ header .artist img {
   flex: 1 1 auto !important;
 }
 .metrics-panel .numbers {
-  width: 40%;
+  width: 60%;
   height: 5rem;
   text-transform: uppercase;
   background: #f7f7f7;
-  margin-top: 5rem;
+  margin-top: 6rem;
   margin-left: 2rem;
   cursor: pointer;
   box-shadow: 0 1px 4px 0 rgba(49, 53, 66, 0.37);
@@ -907,7 +908,7 @@ header .artist img {
   position: absolute;
   height: 5rem;
   top: -2.5rem;
-  left: 2rem;
+  left: 1rem;
   padding-right: 1rem;
   cursor: default;
   box-shadow: 0 6px 10px 0 rgba(49, 53, 66, 0.3), 0 2px 2px 0 rgba(49, 53, 66, 0.2);
@@ -935,8 +936,8 @@ header .artist img {
   background-color: #f7f7f7;
   color: #313542;
   position: absolute;
-  right: 2.5rem;
-  top: 2.5rem;
+  right: 1rem;
+  top: -1.25rem;
   z-index: 9;
   height: 2.5rem;
   text-transform: uppercase;
@@ -1000,6 +1001,9 @@ header .artist img {
 }
 #YoutubeReport .numbers .followers {
   color: #22a7f0;
+}
+#SocialReport {
+  width: 90% !important;
 }
 #SocialReport .title {
   color: #313542;

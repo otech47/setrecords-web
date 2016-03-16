@@ -8,28 +8,25 @@ import {numberWithSuffix} from '../mixins/UtilityFunctions';
 var BeaconReport = React.createClass({
     getInitialState() {
         return {
+            cohort: 'daily',
+            loaded: false,
             revenue: true,
-            unlocks: true,
-            cohort: 'daily'
+            unlocks: true
         }
     },
 
     shouldComponentUpdate (nextProps, nextState) {
         if (nextProps.artistId != this.props.artistId) {
             this.updateBeacon(nextProps.artistId, this.state.cohort);
+
+            return true;
         }
 
-        return true;
-    },
+        if (!_.isEqual(nextState, this.state)) {
+            return true;
+        }
 
-    componentWillMount() {
-        this.props.push({
-            type: 'SHALLOW_MERGE',
-            data: {
-                header: 'Metrics',
-                loaded: false
-            }
-        });
+        return false;
     },
 
     componentDidMount() {
@@ -45,22 +42,16 @@ var BeaconReport = React.createClass({
     },
 
     changeCohort(newCohort) {
-        if (this.props.loaded && (newCohort != this.state.cohort)) {
-            this.props.push({
-                type: 'SHALLOW_MERGE',
-                data: {
-                    loaded: false
-                }
-            });
-
+        if (this.state.loaded && (newCohort != this.state.cohort)) {
             this.setState({
-                cohort: newCohort
+                cohort: newCohort,
+                loaded: false
             }, this.updateBeacon(this.props.artistId, newCohort));
         }
     },
 
     lineGraph() {
-        if ((this.state.revenue || this.state.unlocks) && this.props.loaded) {
+        if ((this.state.revenue || this.state.unlocks) && this.state.loaded) {
             var dateGrouping;
             var dateFormat;
             switch (this.state.cohort) {
@@ -175,9 +166,12 @@ var BeaconReport = React.createClass({
                 this.props.push({
                     type: 'SHALLOW_MERGE',
                     data: {
-                        beaconMetrics: beaconMetrics,
-                        loaded: true
+                        beaconMetrics: beaconMetrics
                     }
+                });
+
+                this.setState({
+                    loaded: true
                 });
             }
         })
@@ -226,7 +220,7 @@ var BeaconReport = React.createClass({
                     <p>unlocks</p>
                 </div>
             </div>
-            <Loader loaded={this.props.loaded}>
+            <Loader loaded={this.state.loaded}>
                 <div className='graph'>
                     {this.lineGraph()}
                 </div>

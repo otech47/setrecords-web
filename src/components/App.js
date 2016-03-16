@@ -349,10 +349,6 @@ module.exports = React.createClass({
             var props = {};
 
             switch (child.type) {
-                case BeaconReport:
-                props = {push: push, loaded: appState.get('loaded'), beaconMetrics: appState.get('beaconMetrics'), artistId: appState.get('artistId')};
-                break;
-
                 case ContentView:
                 props = {push: push, loaded: appState.get('loaded'), sets: appState.get('sets'), artistId: appState.get('artistId')};
                 break;
@@ -365,29 +361,13 @@ module.exports = React.createClass({
                 props = {push: push, loaded: appState.get('loaded'), originalArtist: appState.get('artist_data')};
                 break;
 
-                case SetmineReport:
-                props = {push: push, loaded: appState.get('loaded'), setmineMetrics: appState.get('setmineMetrics'), artistId: appState.get('artistId')};
-                break;
-
                 case SettingsEditor:
                 props = {push: push, artistId: appState.get('artistId'), loaded: appState.get('loaded'), artistData: appState.get('artist_data')};
-                break;
-
-                case SocialReport:
-                props = {push: push, loaded: appState.get('loaded'), socialMetrics: appState.get('socialMetrics'), artistId: appState.get('artistId')};
-                break;
-
-                case SoundcloudReport:
-                props = {push: push, loaded: appState.get('loaded'), soundcloudMetrics: appState.get('soundcloudMetrics'), artistId: appState.get('artistId')};
                 break;
 
                 case UploadSetWizard:
                 case UploadTrackWizard:
                 props = {push: push, originalArtist: appState.get('artist_data'), loaded: appState.get('loaded')};
-                break;
-
-                case YoutubeReport:
-                props = {push: push, loaded: appState.get('loaded'), youtubeMetrics: appState.get('youtubeMetrics'), artistId: appState.get('artistId')};
                 break;
 
                 default:

@@ -263,7 +263,7 @@ header {
     min-height: @pageHeight;
     width: 15%;
     min-width: 205px;
-    font-size: .8rem;
+    font-size: 1rem;
     .background(@dark-gray, @white);
     a {
         align-items: center;
@@ -282,7 +282,7 @@ header {
     }
     i {
         margin: auto 1vw auto 1rem;
-        font-size: 1.25rem;
+        font-size: 1.5rem;
     }
 }
 
@@ -454,7 +454,8 @@ header {
 }
 .metrics-panel {
     background: @light-gray;
-    width: 75%;
+    height: 30rem;
+    width: 45%;
     margin: 5vw auto;
     position: relative;
     .card(2);
@@ -462,12 +463,13 @@ header {
         .flex-column;
         .flex;
     }
+
     .numbers {
-        width: 40%;
+        width: 60%;
         height: 5rem;
         text-transform: uppercase;
         background: @white;
-        margin-top: 5rem;
+        margin-top: 6rem;
         margin-left: 2rem;
         cursor: pointer;
         .card(1);
@@ -514,7 +516,7 @@ header {
         position: absolute;
         height: 5rem;
         top: -2.5rem;
-        left: 2rem;
+        left: 1rem;
         padding-right: 1rem;
         cursor: default;
         .card(2);
@@ -540,8 +542,8 @@ header {
 .time-selector {
     .background(@white, @dark-gray);
     position: absolute;
-    right: 2.5rem;
-    top: 2.5rem;
+    right: 1rem;
+    top: -1.25rem;
     z-index: 9;
     height: 2.5rem;
     text-transform: uppercase;
@@ -612,6 +614,7 @@ header {
 }
 
 #SocialReport {
+    width: 90% !important;
     .title {
         color: @dark-gray;
     }

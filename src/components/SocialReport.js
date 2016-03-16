@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import React from 'react';
 import moment from 'moment';
 import R from 'ramda';
@@ -12,28 +13,25 @@ import Overlay from './Overlay';
 var SocialReport = React.createClass({
     getInitialState: function() {
         return {
-            twitter: true,
             facebook: true,
-            instagram: true
+            instagram: true,
+            loaded: false,
+            twitter: true
         }
     },
 
     shouldComponentUpdate (nextProps, nextState) {
         if (nextProps.artistId != this.props.artistId) {
             this.updateSocial(nextProps.artistId);
+
+            return true;
         }
 
-        return true;
-    },
+        if (!_.isEqual(nextState, this.state)) {
+            return true;
+        }
 
-    componentWillMount() {
-        this.props.push({
-            type: 'SHALLOW_MERGE',
-            data: {
-                loaded: false,
-                header: 'Metrics'
-            }
-        })
+        return false;
     },
 
     componentDidMount() {
@@ -67,7 +65,9 @@ var SocialReport = React.createClass({
         .done( (res) => {
             // console.log(res);
             if (res.payload.artist !== null) {
-                this.setState(res.payload.artist);
+                var links = res.payload.artist;
+                links.loaded = true;
+                this.setState(links);
             }
         })
         .fail( (err) => {
@@ -105,9 +105,12 @@ var SocialReport = React.createClass({
                 this.props.push({
                     type: 'SHALLOW_MERGE',
                     data: {
-                        socialMetrics: res.payload.social_metrics,
-                        loaded: true
+                        socialMetrics: res.payload.social_metrics
                     }
+                });
+
+                this.setState({
+                    loaded: true
                 });
             }
         })
@@ -134,7 +137,7 @@ var SocialReport = React.createClass({
                     <i className='fa fa-users'/>
                     social
                 </div>
-                <Loader loaded={this.props.loaded}>
+                <Loader loaded={this.state.loaded}>
                     <div className='panel twitter flex-column flex'>
                         <Overlay icon='plus' hidden={this.state.twitter_link}>
                             Add Link
