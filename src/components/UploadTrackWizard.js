@@ -591,6 +591,7 @@ var UploadTrackWizard = React.createClass({
 
     uploadTrack: function() {
         // console.log('Beginning upload process.');
+        mixpanel.track("Upload initiated");
         this.setState({
             busy: true,
             applying: true
@@ -690,12 +691,13 @@ var UploadTrackWizard = React.createClass({
                                 // console.log(err);
 
                                 mixpanel.track("Error", {
-                                    "Page": "Set Editor",
-                                    "Message": "Error applying changes"
+                                    "Page": "Upload Track",
+                                    "Message": err
                                 });
                                 this.history.pushState(null, 'content');
                             } else {
                                 // console.log('All changes applied successfully.');
+                                mixpanel.track('Track uploaded successfully');
                                 this.history.pushState(null, '/content');
                             }
                         });

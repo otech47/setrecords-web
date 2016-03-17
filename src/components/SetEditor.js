@@ -218,10 +218,15 @@ var MobileSetEditor = React.createClass({
         })
         .done((res) => {
             // console.log(res);
+            mixpanel.track('Set deleted successfully');
             this.history.pushState(null, '/content');
         })
         .fail((err) => {
             // console.log(err);
+            mixpanel.track("Error", {
+                "Page": "Set Editor",
+                "Message": "Error deleting set"
+            });
             alert('Failed to delete the set. If the problem persists, please contact us at support@setmine.com');
             this.setState({
                 delete: false
@@ -400,10 +405,15 @@ var MobileSetEditor = React.createClass({
         })
         .done((res) => {
             // console.log('Image successfully added to database.')
+            mixpanel.track('Image uploaded successfully');
             callback(null);
         })
         .fail((err) => {
             // console.log('Error adding image to database.');
+            mixpanel.track("Error", {
+                "Page": "Set Editor",
+                "Message": "Error changing set image"
+            });
             callback(err);
         });
     },
@@ -427,10 +437,15 @@ var MobileSetEditor = React.createClass({
         })
         .done((res) => {
             // console.log('Set title updated on database.');
+            mixpanel.track('Set title changed successfully');
             callback(null);
         })
         .fail((err) => {
             // console.log('Error updating set title on database.');
+            mixpanel.track("Error", {
+                "Page": "Set Editor",
+                "Message": "Error updating set title"
+            });
             callback(err);
         });
     },
@@ -485,12 +500,13 @@ var MobileSetEditor = React.createClass({
 
                         mixpanel.track("Error", {
                             "Page": "Set Editor",
-                            "Message": "Error applying changes"
+                            "Message": err
                         });
                     } else {
                         // console.log('All changes applied successfully.');
 
                         this.getSetById(this.props.params.id);
+                        mixpanel.track('Set edited successfully');
 
                         this.setState({
                             applying: false,
@@ -523,10 +539,15 @@ var MobileSetEditor = React.createClass({
         })
         .done((res) => {
             // console.log('Episode title updated on database.');
+            mixpanel.track('Episode title changed successfully');
             callback(null);
         })
         .fail((err) => {
             // console.log('An error occurred when updating episode title on database.');
+            mixpanel.track("Error", {
+                "Page": "Set Editor",
+                "Message": "Error updating episode title"
+            });
             callback(err);
         });
     },
@@ -551,10 +572,15 @@ var MobileSetEditor = React.createClass({
         })
         .done((res) => {
             // console.log('Tracklist updated on database.');
+            mixpanel.track('Tracklist changed successfully');
             callback(null);
         })
         .fail((err) => {
             // console.log('An error occurred updating the tracks on the database.');
+            mixpanel.track("Error", {
+                "Page": "Set Editor",
+                "Message": "Error updating tracklist"
+            });
             callback(err);
         });
     },

@@ -8,32 +8,29 @@ import {numberWithSuffix} from '../mixins/UtilityFunctions';
 var SetmineReport = React.createClass({
     getInitialState() {
         return {
-            plays: true,
-            views: true,
+            cohort: 'daily',
             favorites: true,
-            cohort: 'daily'
+            loaded: false,
+            plays: true,
+            views: true
         }
     },
 
     shouldComponentUpdate (nextProps, nextState) {
         if (nextProps.artistId != this.props.artistId) {
             this.updateSetmine(nextProps.artistId, this.state.cohort);
-        }
-        return true;
-    },
 
-    componentWillMount() {
-        this.props.push({
-            type: 'SHALLOW_MERGE',
-            data: {
-                header: 'Metrics',
-                loaded: false
-            }
-        });
+            return true;
+        }
+
+        if (!_.isEqual(nextState, this.state)) {
+            return true;
+        }
+
+        return false;
     },
 
     componentDidMount() {
-        mixpanel.track("Setmine Metrics Open");
         this.updateSetmine(this.props.artistId, this.state.cohort);
     },
 
@@ -45,22 +42,16 @@ var SetmineReport = React.createClass({
     },
 
     changeCohort(newCohort) {
-        if (this.props.loaded && (newCohort != this.state.cohort)) {
-            this.props.push({
-                type: 'SHALLOW_MERGE',
-                data: {
-                    loaded: false
-                }
-            });
-
+        if (this.state.loaded && (newCohort != this.state.cohort)) {
             this.setState({
-                cohort: newCohort
+                cohort: newCohort,
+                loaded: false
             }, this.updateSetmine(this.props.artistId, newCohort));
         }
     },
 
     lineGraph() {
-        if ((this.state.plays || this.state.views || this.state.favorites) && this.props.loaded) {
+        if ((this.state.plays || this.state.views || this.state.favorites) && this.state.loaded) {
             var dateGrouping;
             var dateFormat;
 
@@ -191,9 +182,12 @@ var SetmineReport = React.createClass({
                 this.props.push({
                     type: 'SHALLOW_MERGE',
                     data: {
-                        setmineMetrics: setmineMetrics,
-                        loaded: true
+                        setmineMetrics: setmineMetrics
                     }
+                });
+
+                this.setState({
+                    loaded: true
                 });
             }
         })
@@ -241,7 +235,7 @@ var SetmineReport = React.createClass({
                         <p>favorites</p>
                     </div>
                 </div>
-                <Loader loaded={this.props.loaded}>
+                <Loader loaded={this.state.loaded}>
                     <div className='graph'>
                         {this.lineGraph()}
                     </div>

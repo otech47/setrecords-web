@@ -9,32 +9,28 @@ import {numberWithSuffix} from '../mixins/UtilityFunctions';
 var YoutubeReport = React.createClass({
     getInitialState() {
         return {
-            plays: true,
+            cohort: 'daily',
             followers: true,
-            cohort: 'daily'
+            loaded: false,
+            plays: true
         }
     },
 
     shouldComponentUpdate (nextProps, nextState) {
         if (nextProps.artistId != this.props.artistId) {
             this.updateYoutube(nextProps.artistId, this.state.cohort);
+
+            return true;
         }
 
-        return true;
-    },
+        if (!_.isEqual(nextState, this.state)) {
+            return true;
+        }
 
-    componentWillMount() {
-        this.props.push({
-            type: 'SHALLOW_MERGE',
-            data: {
-                header: 'Metrics',
-                loaded: false
-            }
-        });
+        return false;
     },
 
     componentDidMount() {
-        mixpanel.track("Youtube Metrics Open");
         this.updateYoutube(this.props.artistId, this.state.cohort);
     },
 
@@ -46,22 +42,16 @@ var YoutubeReport = React.createClass({
     },
 
     changeCohort(newCohort) {
-        if (this.props.loaded && (newCohort != this.state.cohort)) {
-            this.props.push({
-                type: 'SHALLOW_MERGE',
-                data: {
-                    loaded: false
-                }
-            });
-
+        if (this.state.loaded && (newCohort != this.state.cohort)) {
             this.setState({
-                cohort: newCohort
+                cohort: newCohort,
+                loaded: false
             }, this.updateYoutube(this.props.artistId, newCohort));
         }
     },
 
     lineGraph() {
-        if ((this.state.plays || this.state.followers) && this.props.loaded) {
+        if ((this.state.plays || this.state.followers) && this.state.loaded) {
             var dateGrouping;
             var dateFormat;
             switch (this.state.cohort) {
@@ -168,9 +158,12 @@ var YoutubeReport = React.createClass({
                                 current: metrics.plays_current,
                                 overtime: metrics.plays_overtime
                             }
-                        },
-                        loaded: true
+                        }
                     }
+                });
+
+                this.setState({
+                    loaded: true
                 });
             }
         })
@@ -205,7 +198,7 @@ var YoutubeReport = React.createClass({
                         <p>followers</p>
                     </div>
                 </div>
-                <Loader loaded={this.props.loaded}>
+                <Loader loaded={this.state.loaded}>
                     <div className='graph'>
                         {this.lineGraph()}
                     </div>

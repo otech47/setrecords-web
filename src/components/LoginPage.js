@@ -14,7 +14,7 @@ module.exports = React.createClass ({
     componentWillMount: function() {
         auth.loggedIn((artistId) => {
             if (artistId) {
-                this.history.replaceState(null, '/content');
+                this.history.replaceState(null, '/dashboard');
             }
         });
     },
@@ -54,10 +54,15 @@ module.exports = React.createClass ({
                 </form>
 
                 <div id='CreateAccount'>
-                    <h3>Don't have an account? <a href='https://docs.google.com/forms/d/1kiid-YjKkzsatkXf3m6ZYJA4McHI3VHD66SO0wRe_V0/viewform?c=0&w=1&usp=send_form' target='_blank'>Create one now</a></h3>
+                    <h3>Don't have an account? <a onClick={this.trackSignUp} href='https://docs.google.com/forms/d/1kiid-YjKkzsatkXf3m6ZYJA4McHI3VHD66SO0wRe_V0/viewform?c=0&w=1&usp=send_form' target='_blank'>Create one now</a></h3>
                 </div>
             </div>
         );
+    },
+
+    trackSignUp: function(e) {
+        e.preventDefault();
+        mixpanel.track('Sign Up link clicked');
     },
 
     submitLogin: function(e) {
@@ -98,8 +103,13 @@ module.exports = React.createClass ({
                     });
                     break;
                 }
+                mixpanel.track("Error", {
+                    "Page": "Login Page",
+                    "Message": err.responseJSON.error
+                });
             } else {
-                this.history.pushState(null, '/content');
+                mixpanel.track('Successfully logged in');
+                this.history.pushState(null, '/dashboard');
             }
         });
     },
