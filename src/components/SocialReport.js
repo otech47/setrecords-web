@@ -35,7 +35,6 @@ var SocialReport = React.createClass({
     },
 
     componentDidMount() {
-        mixpanel.track("Social Metrics Open");
         this.updateSocial(this.props.artistId);
         this.checkSocial();
     },

@@ -46,6 +46,7 @@ var ForgotPassword = React.createClass({
                 }
             })
             .done( (res) => {
+                mixpanel.track('Password recovery email sent');
                 this.setState({
                     email: true,
                     value: 'Reset email sent.'
@@ -57,6 +58,10 @@ var ForgotPassword = React.createClass({
                 }, 3000);
             })
             .fail( (err) => {
+                mixpanel.track("Error", {
+                    "Page": "Forgot Password",
+                    "Message": "Error sending password recovery email"
+                });
                 alert('Sorry, we couldn\'t find an account with that email. Please try a different email.');
             });
         } else {

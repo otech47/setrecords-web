@@ -31,7 +31,6 @@ var SetmineReport = React.createClass({
     },
 
     componentDidMount() {
-        mixpanel.track("Setmine Metrics Open");
         this.updateSetmine(this.props.artistId, this.state.cohort);
     },
 

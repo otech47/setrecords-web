@@ -550,6 +550,7 @@ var UploadSetWizard = React.createClass({
 
     uploadSet: function() {
         // console.log('Beginning upload process.');
+        mixpanel.track("Upload initiated");
         this.setState({
             busy: true,
             applying: true
@@ -623,6 +624,10 @@ var UploadSetWizard = React.createClass({
                         if (err) {
                             // console.log('An error occurred.');
                             // console.log(err);
+                            mixpanel.track("Error", {
+                                "Page": "Upload Set",
+                                "Message": err
+                            });
                         } else {
                             // console.log('Running release function...');
 
@@ -761,6 +766,7 @@ var UploadSetWizard = React.createClass({
 
     cleanUp: function (err) {
         // console.log('Set registration and uploads complete. Returning to content...');
+        mixpanel.track('Set upload successful');
         this.history.pushState(null, '/content');
     },
 

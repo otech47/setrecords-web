@@ -30,7 +30,6 @@ var SoundcloudReport = React.createClass({
     },
 
     componentDidMount() {
-        mixpanel.track("Soundcloud Metrics Open");
         this.updateSoundcloud(this.props.artistId, this.state.cohort);
     },
 

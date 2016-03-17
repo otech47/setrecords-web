@@ -202,12 +202,17 @@ var logOut = function (cb) {
         }
     })
     .done((res) => {
+        mixpanel.log('Logged out');
         if (cb) {
             cb();
         }
         onChange(false);
     })
     .fail((err) => {
+        mixpanel.track("Error", {
+            "Page": "Login Page",
+            "Message": "Error logging out"
+        });
         // console.log(err);
     });
 }

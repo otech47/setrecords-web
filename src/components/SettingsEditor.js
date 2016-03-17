@@ -49,7 +49,6 @@ var SettingsEditor = React.createClass({
     },
 
     componentDidMount() {
-        mixpanel.track("Settings Page Open");
         this.getAccountData(this.props.artistId);
     },
 
@@ -367,6 +366,7 @@ var SettingsEditor = React.createClass({
                         });
                     } else {
                             // console.log('All changes applied successfully.');
+                            mixpanel.track('Set edited successfully');
                             this.setState({
                                 applying: false,
                                 success: true,
@@ -386,9 +386,14 @@ var SettingsEditor = React.createClass({
             (err, results) => {
                 if (err) {
                     // console.log('Error occurred while updating image. ', err);
+                    mixpanel.track("Error", {
+                        "Page": "Settings Editor",
+                        "Message": "Error updating artist image"
+                    });
                     callback(err);
                 } else {
                     // console.log('Artist image updated.');
+                    mixpanel.track('Artist image changed successfully');
                     callback(null);
                 }
         });
@@ -422,10 +427,15 @@ var SettingsEditor = React.createClass({
                 }
             })
             .done((res) => {
+                mixpanel.track('Updated ' + key + ' successfully');
                 callback(null);
             })
             .fail((err) => {
                 // console.log(err);
+                mixpanel.track("Error", {
+                    "Page": "Settings Editor",
+                    "Message": "Error updating " + key + "."
+                });
                 callback(err);
             })
         }, (err) => {
@@ -453,9 +463,14 @@ var SettingsEditor = React.createClass({
             }
         })
         .done((res) => {
+            mixpanel.track('Email updated successfully');
             callback(null);
         })
         .fail((err) => {
+            mixpanel.track("Error", {
+                "Page": "Settings Editor",
+                "Message": "Error updating email"
+            });
             callback(err);
         });
     },
@@ -476,9 +491,14 @@ var SettingsEditor = React.createClass({
             }
         })
         .done((res) => {
+            mixpanel.track('Password changed successfully');
             callback(null);
         })
         .fail((err) => {
+            mixpanel.track("Error", {
+                "Page": "Settings Editor",
+                "Message": "Error changing password"
+            });
             callback(err);
         });
     },

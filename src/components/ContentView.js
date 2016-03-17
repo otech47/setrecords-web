@@ -16,7 +16,6 @@ var ContentView = React.createClass({
     },
 
     componentDidMount() {
-        mixpanel.track("Content Page Open");
         this.updateSets(this.props.artistId);
     },
 
