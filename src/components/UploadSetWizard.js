@@ -584,6 +584,8 @@ var UploadSetWizard = React.createClass({
                     // console.log('Creating bundle...');
                     var additionalArtists = _.pluck(_.rest(this.state.artists), 'artist');
 
+                    console.log(this.props.originalArtist.id)
+
                     var setBundle = {
                         event_name: this.state.event,
                         event_type: this.state.type.toLowerCase(),
@@ -596,7 +598,8 @@ var UploadSetWizard = React.createClass({
                         additional_artists: additionalArtists,
                         image_url: registeredUrls[1],
                         tags: this.state.tags,
-                        venue: this.state.venue
+                        venue: this.state.venue,
+                        artist_id: this.props.originalArtist.id
                     };
                     // console.log('Bundle done:');
                     // console.log(setBundle);
