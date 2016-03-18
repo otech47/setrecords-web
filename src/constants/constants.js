@@ -1,5 +1,5 @@
 var API_VERSION = 7;
-var API_BASE_URL = 'https://setmine.com';
+var API_BASE_URL = 'http://localhost:3000';
 var API_ROOT = API_BASE_URL + '/api/v/' + API_VERSION + '/';
 
 var S3_ROOT = 'http://stredm.s3-website-us-east-1.amazonaws.com/namecheap/';
