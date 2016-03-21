@@ -1,6 +1,9 @@
 var API_VERSION = 7;
-var API_BASE_URL = 'http://localhost:3000';
+var API_BASE_URL = 'https://api.setmine.com';
+var API_BASE_URL_DEV = 'http://localhost:3000';
+
 var API_ROOT = API_BASE_URL + '/api/v/' + API_VERSION + '/';
+var API_ROOT_DEV = API_BASE_URL_DEV + '/api/v/' + API_VERSION + '/';
 
 var S3_ROOT = 'http://stredm.s3-website-us-east-1.amazonaws.com/namecheap/';
 var S3_ROOT_FOR_IMAGES = 'http://d1wbxby8dwa4u.cloudfront.net/namecheap/';
@@ -18,10 +21,12 @@ var colors = {
 	youtube: '#cd201f'
 };
 
+var isProduction = process.env.NODE_ENV === 'production';
+
 module.exports =  {
 	S3_ROOT: S3_ROOT,
 	S3_ROOT_FOR_IMAGES: S3_ROOT_FOR_IMAGES,
 	DEFAULT_IMAGE: DEFAULT_IMAGE,
-	API_ROOT: API_ROOT,
+	API_ROOT: isProduction ? API_ROOT : API_ROOT_DEV,
 	months: months
 };
