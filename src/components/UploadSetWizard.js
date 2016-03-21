@@ -410,19 +410,19 @@ var UploadSetWizard = React.createClass({
     },
 
     registerAudio: function(callback) {
-        console.log('Registering audio...');
+        // console.log('Registering audio...');
         async.waterfall([this.joinFiles, this.registerS3], function(err, audioUrl) {
             if (err) {
-                console.log('An error occurred with registering audio.');
-                console.log(err);
+                // console.log('An error occurred with registering audio.');
+                // console.log(err);
                 callback(err);
                 mixpanel.track("Error", {
                     "Page": "Upload Wizard",
                     "Message": "Error registering audio"
                 });
             } else {
-                console.log('Audio registered on S3.');
-                console.log(audioUrl);
+                // console.log('Audio registered on S3.');
+                // console.log(audioUrl);
                 callback(null, audioUrl);
             }
         });
@@ -430,7 +430,7 @@ var UploadSetWizard = React.createClass({
 
     joinFiles: function(callback) {
         if (this.state.songs.length > 1) {
-            console.log('More than one audio file detected. Running joiner...');
+            // console.log('More than one audio file detected. Running joiner...');
             this.setState({
                 joining: true
             }, () => {
@@ -465,7 +465,7 @@ var UploadSetWizard = React.createClass({
                 });
             })
         } else {
-            console.log('Only one file detected. No join needed.');
+            // console.log('Only one file detected. No join needed.');
             this.setState({
                 filesize: this.state.songs[0].file.size,
                 finalFile: this.state.songs[0].file
@@ -476,12 +476,10 @@ var UploadSetWizard = React.createClass({
     },
 
     registerS3: function(file, callback) {
-        console.log('registerS3');
-
         var uniqueFilename = moment().unix() + file.name;
         $.ajax({
             type: 'POST',
-            url: 'http://localhost:3000/v/10/aws/configureAWS',
+            url: 'https://api.setmine.com/v/10/aws/configureAWS',
             data: {
                 filename: encodeURIComponent(uniqueFilename)
             },
@@ -491,8 +489,6 @@ var UploadSetWizard = React.createClass({
             }
         })
         .done((res) => {
-            console.log('registerS3: done');
-
             AWS.config.update(res.payload.settings);
             var encodedFilename = res.payload.encoded;
             var filesize = file.size;
@@ -510,59 +506,50 @@ var UploadSetWizard = React.createClass({
             upload.on("httpUploadProgress", function(event) {
                 var percentage = (event.loaded / filesize) * 100;
                 var percent = parseInt(percentage).toString() + "%";
-                console.log('Uploading ' + file.type + ' file: ' + percent);
+                // console.log('Uploading ' + file.type + ' file: ' + percent);
             });
 
             upload.send(function(err, data) {
                 if (err) {
-                    console.log('registerS3: done: uploadsend err');
-                    console.log(err)
                     callback(err);
                 } else {
-                    console.log('registerS3: done: uploadsend');
-
                     callback(null, res.payload.encoded);
                 }
             });
         })
         .fail((err) => {
-            console.log(err)
-            console.log('registerS3: fail:  err');
-
             callback(err);
         });
     },
 
     registerImage: function(callback) {
-        console.log('registerImage');
-
         if (this.state.existingImage != null) {
-            console.log('Image exists already on our database.');
+            // console.log('Image exists already on our database.');
             callback(null, this.state.existingImage);
         } else if (this.state.image != null) {
-            console.log('Image is new and needs to be registered on S3.');
+            // console.log('Image is new and needs to be registered on S3.');
             this.registerS3(this.state.image, function(err, imageUrl) {
                 if (err) {
-                    console.log('An error occurred with registering image.');
+                    // console.log('An error occurred with registering image.');
                     callback(err);
                     mixpanel.track("Error", {
                         "Page": "Upload Wizard",
                         "Message": "Error registering image to S3"
                     });
                 } else {
-                    console.log('Image successfully registered on S3.');
+                    // console.log('Image successfully registered on S3.');
                     callback(null, imageUrl);
                 }
             });
         } else {
-            console.log('No image has been uploaded. Will use the default URL.');
+            // console.log('No image has been uploaded. Will use the default URL.');
             var defaultUrl = constants.DEFAULT_IMAGE;
             callback(null, defaultUrl);
         }
     },
 
     uploadSet: function() {
-        console.log('Beginning upload process.');
+        // console.log('Beginning upload process.');
         mixpanel.track("Upload initiated");
         this.setState({
             busy: true,
@@ -574,13 +561,10 @@ var UploadSetWizard = React.createClass({
                 this.registerImage
             ];
 
-            console.log('Performing register functions...');
+            // console.log('Performing register functions...');
             async.parallel(registerFunctions, (err, registeredUrls) => {
-                console.log(err);
-                console.log(registeredUrls);
-
                 if (err) {
-                    console.log('Error in registration functions:');
+                    // console.log('Error in registration functions:');
                     // console.log(err);
 
                     this.setState({
@@ -595,9 +579,9 @@ var UploadSetWizard = React.createClass({
                         "Message": "Error uploading set"
                     });
                 } else {
-                    console.log('Registrations successful.');
+                    // console.log('Registrations successful.');
 
-                    console.log('Creating bundle...');
+                    // console.log('Creating bundle...');
                     var additionalArtists = _.pluck(_.rest(this.state.artists), 'artist');
 
                     console.log(this.props.originalArtist.id)
@@ -617,10 +601,10 @@ var UploadSetWizard = React.createClass({
                         venue: this.state.venue,
                         artist_id: this.props.originalArtist.id
                     };
-                    console.log('Bundle done:');
+                    // console.log('Bundle done:');
                     // console.log(setBundle);
 
-                    console.log('Prepping tracklist...');
+                    // console.log('Prepping tracklist...');
                     var tracklist = update(this.state.tracklist, {$push: []});
                     if (tracklist.length == 0) {
                         tracklist.push({
@@ -641,20 +625,20 @@ var UploadSetWizard = React.createClass({
 
                     this.updateDatabase(setBundle, (err, newSetId) => {
                         if (err) {
-                            console.log('An error occurred.');
+                            // console.log('An error occurred.');
                             // console.log(err);
                             mixpanel.track("Error", {
                                 "Page": "Upload Set",
                                 "Message": err
                             });
                         } else {
-                            console.log('Running release function...');
+                            // console.log('Running release function...');
 
                             if (this.state.paid == 1) {
                                 // console.log('Release to beacon.');
                                 this.beaconRelease(newSetId, this.cleanUp);
                             } else {
-                                console.log('Free release.');
+                                // console.log('Free release.');
                                 this.freeRelease(this.state.finalFile, this.cleanUp);
                             }
                         }
@@ -665,10 +649,10 @@ var UploadSetWizard = React.createClass({
     },
 
     updateDatabase: function(bundle, callback) {
-        console.log('Sending bundle to database:');
+        // console.log('Sending bundle to database:');
         // console.log(bundle);
 
-        var requestUrl = 'https://localhost:3000/v/10/sets/register';
+        var requestUrl = 'https://api.setmine.com/v/10/sets/register';
 
         $.ajax({
             type: 'POST',
@@ -680,13 +664,13 @@ var UploadSetWizard = React.createClass({
             }
         })
         .done((res) => {
-            console.log('Set registered on database.');
+            // console.log('Set registered on database.');
             // console.log(res);
             callback(null, res.payload.new_set);
         })
         .fail((err) => {
-            console.log('An error occurred when updating the database.');
-            console.log(err);
+            // console.log('An error occurred when updating the database.');
+            // console.log(err);
             callback(err);
         });
     },
