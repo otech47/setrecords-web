@@ -579,6 +579,7 @@ var UploadSetWizard = React.createClass({
                         "Message": "Error uploading set"
                     });
                 } else {
+                    
                     // console.log('Registrations successful.');
 
                     // console.log('Creating bundle...');
