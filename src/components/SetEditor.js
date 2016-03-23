@@ -10,6 +10,7 @@ import constants from '../constants/constants';
 import {History, Lifecycle} from 'react-router';
 import Loader from 'react-loader';
 
+import UtilityFunctions from '../mixins/UtilityFunctions';
 import {Motion, spring, presets} from 'react-motion';
 import Notification from './Notification';
 import Icon from './Icon';
@@ -18,7 +19,7 @@ import Dropzone from 'react-dropzone';
 
 var MobileSetEditor = React.createClass({
 
-    mixins: [History, Lifecycle],
+    mixins: [History, Lifecycle, UtilityFunctions],
 
     getInitialState: function() {
         return {
@@ -140,6 +141,7 @@ var MobileSetEditor = React.createClass({
                     <Tracklist
                         deepLinkState={deepLinkState}
                         setLength={this.state.set_length}
+                        estimateStartTimes={this.estimateStartTimes}
                         addTrack={this.addTrack}
                         deleteTrack={this.deleteTrack}
                         tracklistUrl={this.state.tracklist_url}
@@ -646,6 +648,29 @@ var MobileSetEditor = React.createClass({
         .fail((err) => {
             // console.error(err);
         });
+    },
+
+    estimateStartTimes: function(e) {
+        e.preventDefault();
+        var tracklist = this.state.tracklist;
+        var setLength = this.timeStringToSeconds(this.state.set_length);
+
+        if (tracklist.length > 0) {
+            _.each(tracklist, (track, index) => {
+                var updateObj = {};
+
+                updateObj[index] = {$apply: (track) => {
+                    var newTime = index/tracklist.length * setLength;
+                    track.starttime = this.secondsToMinutes(newTime);
+                    return track;
+                }};
+                tracklist = update(tracklist, updateObj);
+            });
+
+            this.setState({
+                tracklist: tracklist
+            });
+        }
     },
 
     loadTracksFromUrl: function (url) {
