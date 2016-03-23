@@ -7,15 +7,19 @@ import Base from './Base';
 import GlobalEventHandler from '../lib/globalEventHandler';
 import NotificationLayer from './NotificationLayer';
 
-var defaultValues = {
+// setting up the immutable app state
+var defaultAppState = {
     artistId: 0,
     headerText: '',
     loaded: false,
     loggedIn: false,
-    notification: 'loading',
-    notificationMessage: 'Checking login status...'
+    notification: {
+        status: 'loading',
+        title: '',
+        message: 'Checking login status...'
+    }
 };
-var initialAppState = Immutable.Map(defaultValues);
+var initialAppState = Immutable.Map(defaultAppState);
 var evtHandler = GlobalEventHandler(initialAppState);
 var evtTypes = evtHandler.types;
 var pushFn = evtHandler.push;
@@ -28,8 +32,6 @@ export default class App extends Base {
     getChildContext() {
         return {
             api: api,
-            artistId: this.state.appState.get('artistId'),
-            auth: auth,
             push: push
         };
     }
@@ -45,33 +47,40 @@ export default class App extends Base {
 
     componentWillMount() {
         this._attachStreams();
-        auth.logIn((err, artistId) => {
-            if (err) {
-                console.log(err);
-                push({
-                    notification: null
-                });
-            } else {
-                console.log(artistId);
+
+        // attempt to log the user in
+        auth.login('nodex', 'nodex')
+            .then((artistId) => {
                 push({
                     artistId: artistId,
-                    notification: null
+                    notification: {
+                        status: null,
+                        title: '',
+                        message: ''
+                    }
                 });
-            }
-        });
+            })
+            .catch((err) => {
+                push({
+                    notification: {
+                        status: null,
+                        title: '',
+                        message: ''
+                    }
+                });
+            });
     }
 
     render() {
         return (
             <div id='App'>
-                App
+                <h1>{'App'}</h1>
+
                 {
                     React.Children.map(this.props.children, (child) => {
                         return React.cloneElement(child, {appState: this.state.appState});
                     })
                 }
-
-                <NotificationLayer appState={this.state.appState} />
             </div>
         );
     }
@@ -88,7 +97,5 @@ export default class App extends Base {
 
 App.childContextTypes = {
     api: React.PropTypes.object,
-    artistId: React.PropTypes.number,
-    auth: React.PropTypes.object,
     push: React.PropTypes.func
 };

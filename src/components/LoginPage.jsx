@@ -12,10 +12,6 @@ export default class LoginPage extends Base {
     }
 };
 
-LoginPage.contextTypes = {
-    auth: React.PropTypes.object
-};
-
 
 // import React from 'react';
 // import {History} from 'react-router';

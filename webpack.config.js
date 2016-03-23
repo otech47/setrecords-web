@@ -5,7 +5,8 @@ var webpack = require('webpack');
 
 module.exports = {
     devServer: {
-        contentBase: 'public/'
+        contentBase: 'public/',
+        historyApiFallback: true
     },
 
     devtool: 'cheap-source-map',
@@ -37,7 +38,8 @@ module.exports = {
 
     output: {
         path: path.resolve(__dirname, 'public'),
-        filename: 'bundle.js'
+        filename: 'bundle.js',
+        pathinfo: true
     },
 
     plugins: [

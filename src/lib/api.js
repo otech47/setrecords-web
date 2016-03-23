@@ -1,64 +1,63 @@
 import {API_GRAPH, API_ROOT} from '../constants/constants';
 
-module.exports = {
-    get(route, callback) {
+export default {
+    get(route, query) {
         return (
-            $.ajax({
-                type: 'get',
-                url: API_ROOT + route,
+            fetch(API_ROOT + route, {
+                method: 'get',
                 crossDomain: true,
                 xhrFields: {
                     withCredentials: true
-                }
+                },
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify(query)
             })
-            .done(res => {
-                return callback(null, res);
-            })
-            .fail(err => {
-                return callback(err);
-            })
-        )
+            .then(handleErrors)
+        );
     },
 
-    graph(query, callback) {
+    graph(query) {
         return (
-            $.ajax({
+            fetch(API_GRAPH, {
                 type: 'get',
-                url: API_GRAPH,
                 crossDomain: true,
                 xhrFields: {
                     withCredentials: true
                 },
                 data: {
-                    query: query
+                    query: JSON.stringify(query)
                 }
             })
-            .done(res => {
-                return callback(null, res);
-            })
-            .fail(err => {
-                return callback(err);
-            })
-        )
+            .then(handleErrors)
+        );
     },
 
-    post(route, data, callback) {
+    post(route, data) {
         return (
-            $.ajax({
-                type: 'post',
-                url: API_ROOT + route,
+            fetch(API_ROOT + route, {
+                method: 'post',
                 crossDomain: true,
                 xhrFields: {
                     withCredentials: true
                 },
-                data: data
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
             })
-            .done(res => {
-                return callback(null, res);
-            })
-            .fail(err => {
-                return callback(err);
-            })
-        )
+            .then(handleErrors)
+        );
     }
 };
+
+function handleErrors(response) {
+    if (!response.ok) {
+        return Promise.reject(response.statusText);
+    } else {
+        return response.json();
+    }
+}
