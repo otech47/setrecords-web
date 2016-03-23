@@ -668,7 +668,7 @@ var UploadSetWizard = React.createClass({
         console.log('Sending bundle to database:');
         // console.log(bundle);
 
-        var requestUrl = 'https://localhost:3000/v/10/sets/register';
+        var requestUrl = 'https://api.setmine.com/v/10/sets/register';
 
         $.ajax({
             type: 'POST',
