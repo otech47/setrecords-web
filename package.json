@@ -16,6 +16,7 @@
   "scripts": {
     "start": "forever stopall; forever start server.js",
     "stop": "forever stopall",
+    "build": "webpack -p --progress --colors",
     "deploy": "webpack -p --progress --colors; npm start",
     "test": "webpack-dev-server --progress --colors --content-base public/"
   },

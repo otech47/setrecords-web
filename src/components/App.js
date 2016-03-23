@@ -189,7 +189,7 @@ var logIn = function (user, pass, cb) {
     });
 }
 
-var logOut = function (cb) {
+var logout = function (cb) {
     // console.log('Logging out...');
 
     var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/logout';
@@ -202,7 +202,7 @@ var logOut = function (cb) {
         }
     })
     .done((res) => {
-        mixpanel.log('Logged out');
+        mixpanel.track('Logged out');
         if (cb) {
             cb();
         }
@@ -385,7 +385,7 @@ module.exports = React.createClass({
     },
 
     logOut: function () {
-        logOut(() => {
+        logout(() => {
             this.history.pushState(null, '/');
         });
     },
