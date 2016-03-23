@@ -1,6 +1,6 @@
 var API_VERSION = 7;
 var API_BASE_URL = 'https://api.setmine.com';
-var API_BASE_URL_DEV = 'http://localhost:3000';
+var API_BASE_URL_DEV = 'https://api.setmine.com';
 
 var API_ROOT = API_BASE_URL + '/api/v/' + API_VERSION + '/';
 var API_ROOT_DEV = API_BASE_URL_DEV + '/api/v/' + API_VERSION + '/';

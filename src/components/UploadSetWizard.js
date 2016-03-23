@@ -481,7 +481,7 @@ var UploadSetWizard = React.createClass({
         var uniqueFilename = moment().unix() + file.name;
         $.ajax({
             type: 'POST',
-            url: 'http://localhost:3000/v/10/aws/configureAWS',
+            url: 'https://api.setmine.com/v/10/aws/configureAWS',
             data: {
                 filename: encodeURIComponent(uniqueFilename)
             },
