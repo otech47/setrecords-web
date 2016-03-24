@@ -283,6 +283,12 @@ var UploadTrackWizard = React.createClass({
         })
         .fail( (err) => {
             // console.log(err);
+            this.props.push({
+                type: 'SHALLOW_MERGE',
+                data: {
+                    loaded: true
+                }
+            });
         });
     },
 
