@@ -3,30 +3,33 @@ var webpack = require('webpack');
 
 var buildPath = path.resolve(__dirname, 'public');
 var mainPath = path.resolve(__dirname, 'src', 'index.jsx');
+var stylePath = path.resolve(__dirname, 'src', 'styles', 'index.less');
 
 module.exports = {
     entry: [
-        'babel-polyfill',
-        mainPath
+        stylePath,
+        mainPath,
+        'webpack-dev-server/client?http://localhost:8080'
     ],
     output: {
-        path: buildPath,
+        publicPath: '/public',
         filename: 'bundle.js',
-        pathinfo: true,
-        historyApiFallback: true
     },
     resolve: {
-        extensions: ['', '.jsx', '.es6', '.js', '.scss']
+        extensions: ['', '.jsx', '.js', '.less']
     },
-    devtool: 'cheap-source-map',
+    devtool: 'eval-source-map',
     module: {
         loaders: [
             {
                 test: /\.jsx?$/,
-                loaders: ['babel'],
-                include: [
-                    path.resolve(__dirname, 'src')
-                ]
+                include: path.resolve(__dirname, 'src'),
+                loader: 'babel'
+            },
+            {
+                test: /\.less$/,
+                include: stylePath,
+                loader: 'style!css!autoprefixer!less'
             }
         ]
     }
