@@ -1,16 +1,20 @@
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 var path = require('path');
 var webpack = require('webpack');
 
-var buildPath = path.resolve(__dirname, 'public');
-var mainPath = path.resolve(__dirname, 'src', 'index.jsx');
-var stylePath = path.resolve(__dirname, 'src', 'styles', 'index.less');
-
 module.exports = {
-    devtool: 'eval-source-map',
+    devServer: {
+        contentBase: 'public/',
+        historyApiFallback: true
+    },
+
+    devtool: 'cheap-source-map',
 
     entry: [
-        stylePath,
-        mainPath,
+        'babel-polyfill',
+        path.resolve(__dirname, 'src', 'styles', 'index.less'),
+        path.resolve(__dirname, 'src', 'index.jsx'),
         'webpack-dev-server/client?http://localhost:8080'
     ],
 
@@ -18,23 +22,36 @@ module.exports = {
         loaders: [
             {
                 test: /\.jsx?$/,
-                include: path.resolve(__dirname, 'src'),
-                loader: 'babel'
+                loaders: ['react-hot', 'babel'],
+                include: [
+                    path.resolve(__dirname, 'src')
+                ],
+                exclude: /node_modules/
             },
             {
-                test: /\.less$/,
-                include: stylePath,
-                loader: 'style!css!autoprefixer!less'
+                test: /\.less/,
+                loader: ExtractTextPlugin.extract('style', 'css!postcss!less'),
+                exclude: /node_modules/
             }
         ]
     },
 
     output: {
-        publicPath: '/public',
+        path: path.resolve(__dirname, 'public'),
         filename: 'bundle.js',
+        pathinfo: true
     },
 
+    plugins: [
+        new webpack.HotModuleReplacementPlugin(),
+        new HtmlWebpackPlugin({
+            filename: 'index.html',
+            template: path.resolve(__dirname, 'src', 'index.html')
+        }),
+        new ExtractTextPlugin('index.css')
+    ],
+
     resolve: {
-        extensions: ['', '.jsx', '.js', '.less']
+        extensions: ['', '.jsx', '.js']
     }
 };
