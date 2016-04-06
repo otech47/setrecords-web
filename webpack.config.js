@@ -6,19 +6,14 @@ var mainPath = path.resolve(__dirname, 'src', 'index.jsx');
 var stylePath = path.resolve(__dirname, 'src', 'styles', 'index.less');
 
 module.exports = {
+    devtool: 'eval-source-map',
+
     entry: [
         stylePath,
         mainPath,
         'webpack-dev-server/client?http://localhost:8080'
     ],
-    output: {
-        publicPath: '/public',
-        filename: 'bundle.js',
-    },
-    resolve: {
-        extensions: ['', '.jsx', '.js', '.less']
-    },
-    devtool: 'eval-source-map',
+
     module: {
         loaders: [
             {
@@ -32,5 +27,14 @@ module.exports = {
                 loader: 'style!css!autoprefixer!less'
             }
         ]
+    },
+
+    output: {
+        publicPath: '/public',
+        filename: 'bundle.js',
+    },
+
+    resolve: {
+        extensions: ['', '.jsx', '.js', '.less']
     }
 };
