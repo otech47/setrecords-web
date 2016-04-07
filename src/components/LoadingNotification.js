@@ -1,7 +1,7 @@
-import Base from './Base';
-import CircularProgress from 'material-ui/lib/circular-progress';
-import Dialog from 'material-ui/lib/dialog';
 import React from 'react';
+
+import Base from './Base';
+import Loader from 'react-loader';
 
 export default class LoadingNotification extends Base {
     constructor(props) {
@@ -10,9 +10,14 @@ export default class LoadingNotification extends Base {
 
     render() {
         return (
-            <Dialog title={this.props.title} modal={true} open={this.props.open} contentStyle={{width: '50%'}} bodyStyle={{textAlign: 'center'}} >
-                <CircularProgress />
-            </Dialog>
-        )
+            <div id="LoadingNotification" className='notification column justify-center align-center'>
+                <div className='modal column align-center'>
+                    <h2 className='message flex'>{this.props.notification.message}</h2>
+                    <div className='loader-icon flex-2x'>
+                        <Loader loaded={false} />
+                    </div>
+                </div>
+            </div>
+        );
     }
 }

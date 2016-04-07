@@ -1,0 +1,46 @@
+#LoginPage {
+    color: @white;
+
+    input {
+        color: @white;
+    }
+
+    .login-body {
+        width: 40%;
+        min-width: 292px;
+    }
+
+    .login-buttons {
+        .log-in {
+            background-color: @blue;
+        }
+        .sign-up {
+            background-color: @green;
+        }
+
+        button:hover {
+            outline: solid 2px white;
+        }
+    }
+
+    .logo {
+        margin: 2rem auto;
+        color: @white;
+        flex-wrap: nowrap;
+        img {
+            height: 6rem;
+            width: 6rem;
+            margin-right: 1rem;
+        }
+    }
+
+    video {
+        left: 0;
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        z-index: -1;
+    }
+}

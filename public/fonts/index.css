@@ -1,62 +1,60 @@
-/* Fonts */
-
 @font-face {
     font-family: Roboto;
-    src: url(../fonts/Roboto-Regular.ttf);
+    src: url(./Roboto-Regular.ttf);
 }
 @font-face {
     font-family: Roboto Thin;
-    src: url(../fonts/Roboto-Thin.ttf);
+    src: url(./Roboto-Thin.ttf);
 }
 @font-face {
     font-family: Yellow Peas;
-    src: url(../fonts/SECRCODE.ttf);
+    src: url(./SECRCODE.ttf);
 }
 @font-face {
     font-family: SF New Republic;
-    src: url(../fonts/SFNewRepublic.ttf);
+    src: url(./SFNewRepublic.ttf);
 }
 @font-face {
     font-family: District;
-    src: url(../fonts/DistProTh.otf);
+    src: url(./DistProTh.otf);
 }
 @font-face {
     font-family: Kasse;
-    src: url(../fonts/KasseFLF.ttf);
+    src: url(./KasseFLF.ttf);
 }
 @font-face {
     font-family: Lane;
-    src: url(../fonts/Lane-Regular.ttf);
+    src: url(./Lane-Regular.ttf);
 }
 @font-face {
     font-family: Source Sans Pro;
-    src: url(../fonts/SourceSansPro-Regular.ttf);
+    src: url(./SourceSansPro-Regular.ttf);
 }
 @font-face {
     font-family: Source Sans Pro Light;
-    src: url(../fonts/SourceSansPro-Light.ttf);
+    src: url(./SourceSansPro-Light.ttf);
 }
 @font-face {
     font-family: Source Sans Pro Extra Light;
-    src: url(../fonts/SourceSansPro-ExtraLight.ttf);
+    src: url(./SourceSansPro-ExtraLight.ttf);
 }
 @font-face {
     font-family: Avenir Demi;
-    src: url(../fonts/AvenirNextLTPro-Demi.otf);
+    src: url(./AvenirNextLTPro-Demi.otf);
 }
 @font-face {
     font-family: Avenir Regular;
-    src: url(../fonts/AvenirNextLTPro-Regular.otf);
+    src: url(./AvenirNextLTPro-Regular.otf);
 }
 @font-face {
     font-family: Avenir Light;
-    src: url(../fonts/AvenirNextLTPro-UltLtCn.otf);
+    src: url(./AvenirNextLTPro-UltLtCn.otf);
 }
 @font-face {
     font-family: Avenir Pro Condensed;
-    src: url(../fonts/AvenirNextLTPro-Cn.otf);
+    src: url(./AvenirNextLTPro-Cn.otf);
 }
 @font-face {
     font-family: Avenir Pro Bold;
-    src: url(../fonts/AvenirNextLTPro-Bold.otf);
+    src: url(./AvenirNextLTPro-Bold.otf);
 }

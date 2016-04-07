@@ -12,7 +12,6 @@ module.exports = {
     devtool: 'cheap-source-map',
 
     entry: [
-        'babel-polyfill',
         path.resolve(__dirname, 'src', 'styles', 'index.less'),
         path.resolve(__dirname, 'src', 'index.jsx'),
         'webpack-dev-server/client?http://localhost:8080'
