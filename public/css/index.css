@@ -1470,3 +1470,14 @@ header .artist img {
   font-family: Avenir Demi;
   border-radius: 12px;
 }
+input {
+  background-color: transparent;
+  border: none;
+  border-bottom: solid 2px #bdc3c7;
+  font-size: 1.5rem;
+  margin: 0.75rem;
+}
+input:focus {
+  outline: none;
+  border-bottom: solid 2px #22a7f0;
+}

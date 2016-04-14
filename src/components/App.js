@@ -12,6 +12,9 @@ import constants from '../constants/constants';
 import SetEditor from './SetEditor';
 import Header from './Header';
 import NavBar from './NavBar';
+import MessageModal from './MessageModal';
+import LoadingNotification from './LoadingNotification';
+import NewArtistModal from './NewArtistModal';
 import Footer from './Footer';
 import ContentView from './ContentView';
 import MetricsView from './MetricsView';
@@ -39,6 +42,9 @@ var defaultValues = {
     upload_set_wizard: false,
     loaded: false,
     loggedIn: false,
+    newArtistModal: false,
+    messageModal: '',
+    loadingModal: false,
     sets: [],
     working_set: {},
     editSet: {},
@@ -343,6 +349,9 @@ module.exports = React.createClass({
                     </div>
                 </div>
 
+                <NewArtistModal push={push} open={appState.get('newArtistModal')} />
+                <LoadingNotification title='Please wait...' open={appState.get('loadingModal')} />
+                <MessageModal push={push} open={appState.get('messageModal').length > 0} message={appState.get('messageModal')} />
                 <Footer/>
             </div>
         );

@@ -36,7 +36,7 @@
     "immutable": "^3.7.4",
     "jquery": "^2.1.4",
     "jsx-loader": "^0.13.2",
-    "material-ui": "^0.14.3",
+    "material-ui": "^0.14.4",
     "moment": "^2.10.6",
     "ramda": "^0.17.1",
     "react": "^0.14.7",
@@ -52,6 +52,7 @@
     "rx": "^3.1.0",
     "soundcloud": "^3.1.0",
     "underscore": "^1.8.3",
+    "validator": "^5.2.0",
     "webpack": "^1.12.13"
   },
   "devDependencies": {
