@@ -54,15 +54,22 @@ module.exports = React.createClass ({
                 </form>
 
                 <div id='CreateAccount'>
-                    <h3>Don't have an account? <a onClick={this.trackSignUp} href='https://docs.google.com/forms/d/1kiid-YjKkzsatkXf3m6ZYJA4McHI3VHD66SO0wRe_V0/viewform?c=0&w=1&usp=send_form' target='_blank'>Create one now</a></h3>
+                    <h3>Don't have an account? <span onClick={this.openNewArtistModal}>Create one now</span></h3>
                 </div>
             </div>
         );
     },
 
-    trackSignUp: function(e) {
+    openNewArtistModal: function(e) {
         e.preventDefault();
         mixpanel.track('Sign Up link clicked');
+
+        this.props.push({
+            type: 'SHALLOW_MERGE',
+            data: {
+                newArtistModal: true
+            }
+        });
     },
 
     submitLogin: function(e) {
