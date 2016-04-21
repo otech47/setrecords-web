@@ -54,7 +54,7 @@ module.exports = React.createClass ({
                 </form>
 
                 <div id='CreateAccount'>
-                    <h3>Don't have an account? <span onClick={this.openNewArtistModal}>Create one now</span></h3>
+                    <h3>Don't have an account? <span className='create-link' onClick={this.openNewArtistModal}>Create one now</span></h3>
                 </div>
             </div>
         );
