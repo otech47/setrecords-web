@@ -51,7 +51,7 @@ export default class NewArtistModal extends Base {
     }
 
     createNewAccount() {
-        var requestUrl = 'http://localhost:3000/v/10/graphql';
+        var requestUrl = 'https://api.setmine.com/v/10/graphql';
 
         var query = `mutation NewUser {createNewSetrecordsUser(username: \"${this.state.username}\", email: \"${this.state.email}\", password: \"${this.state.password}\", artist_name: \"${this.state.artistName}\")}`;
 
