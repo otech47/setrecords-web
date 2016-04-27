@@ -31,7 +31,7 @@ export default class NewArtistModal extends Base {
 
         return (
             <div id='NewArtistModal'>
-                <Dialog title='New Artist Account' open={this.props.open} actions={actions} modal={false} onRequestClose={this.handleClose} >
+                <Dialog title='New Artist Account' open={this.props.open} actions={actions} modal={false} onRequestClose={this.handleClose} autoScrollBodyContent={true} >
                     <h3 className='warning'>{this.state.error}</h3>
                     <div className='flex-column'>
                         <h4>Artist Name</h4>
