@@ -37,10 +37,15 @@ var UtilityFunctions = {
             seconds -= 60;
             minutes++;
         }
+        var minutesString = minutes.toString();
+        if (minutesString.length < 2) {
+            minutesString = '0' + minutesString;
+        }
+
         if (seconds < 10) {
-            return minutes + ':0' + seconds.toFixed();
+            return minutesString + ':0' + seconds.toFixed();
         } else {
-            return minutes + ':' + seconds.toFixed();
+            return minutesString + ':' + seconds.toFixed();
         }
     },
     timeStringToSeconds: function(str) {
