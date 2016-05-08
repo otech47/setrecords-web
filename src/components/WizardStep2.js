@@ -60,7 +60,7 @@ var WizardStep2 = React.createClass({
                     <button className="step-button" onClick={this.browse}>
                         Upload
                     </button>
-                    <p>MP3/WAV only. Multiple files will be joined.</p>
+                    <p>Upload your audio file here. MP3/WAV only.</p>
                 </div>
 
                 <PreviewPlayer songs={this.props.songs} removeSong={this.removeSong}

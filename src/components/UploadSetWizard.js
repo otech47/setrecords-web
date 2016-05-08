@@ -106,7 +106,7 @@ var UploadSetWizard = React.createClass({
             this.setState({
                 pending_file: null,
                 temp_url: null,
-                songs: update(this.state.songs, {$push: [processedSong]}),
+                songs: update(this.state.songs, {$set: [processedSong]}),
                 set_length: newSetLength
             });
         }).bind(this);
@@ -411,15 +411,15 @@ var UploadSetWizard = React.createClass({
 
     registerAudio: function(callback) {
         console.log('Registering audio...');
-        async.waterfall([this.joinFiles, this.registerS3], function(err, audioUrl) {
+        this.registerS3(this.state.songs[0].file, function(err, audioUrl) {
             if (err) {
                 console.log('An error occurred with registering audio.');
                 console.log(err);
-                callback(err);
                 mixpanel.track("Error", {
                     "Page": "Upload Wizard",
                     "Message": "Error registering audio"
                 });
+                callback(err);
             } else {
                 console.log('Audio registered on S3.');
                 console.log(audioUrl);
