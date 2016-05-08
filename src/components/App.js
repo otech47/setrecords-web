@@ -340,57 +340,19 @@ module.exports = React.createClass({
 
         return (
             <div className='flex-column' id='App'>
-                <Header artistImage={appState.get('artist_data').icon_image.imageURL} artistName={appState.get('artist_data').artist} headerText={appState.get('header')} logOut={this.logOut} loggedIn={appState.get('loggedIn')} />
-
-                <div className='flex-row view-container'>
-                    {this.props.location.pathname == '/' ? '' : <div className='nav-bar-wrapper'><NavBar push={push} /></div> }
-                    <div className='view flex-column flex'>
-                        {this.renderChildren()}
-                    </div>
-                </div>
-
+                {
+                    React.Children.map(this.props.children, (child) => {
+                        return React.cloneElement(child, {
+                            appState: appState,
+                            push: push
+                        });
+                    })
+                }
                 <NewArtistModal push={push} open={appState.get('newArtistModal')} />
                 <LoadingNotification title='Please wait...' open={appState.get('loadingModal')} />
                 <MessageModal push={push} open={appState.get('messageModal').length > 0} message={appState.get('messageModal')} />
-                <Footer/>
             </div>
         );
-    },
-
-    renderChildren() {
-        var appState = this.state.appState;
-        return React.Children.map(this.props.children, function (child) {
-            var props = {};
-
-            switch (child.type) {
-                case ContentView:
-                props = {push: push, loaded: appState.get('loaded'), sets: appState.get('sets'), artistId: appState.get('artistId')};
-                break;
-
-                case LoginPage:
-                props = {push: push, loggedIn: appState.get('loggedIn'), submitLogIn: logIn};
-                break;
-
-                case SetEditor:
-                props = {push: push, loaded: appState.get('loaded'), originalArtist: appState.get('artist_data')};
-                break;
-
-                case SettingsEditor:
-                props = {push: push, artistId: appState.get('artistId'), loaded: appState.get('loaded'), artistData: appState.get('artist_data')};
-                break;
-
-                case UploadSetWizard:
-                case UploadTrackWizard:
-                props = {push: push, originalArtist: appState.get('artist_data'), loaded: appState.get('loaded')};
-                break;
-
-                default:
-                props = {push: push, appState: appState};
-                break;
-            }
-
-            return React.cloneElement(child, props);
-        });
     },
 
     logOut: function () {
