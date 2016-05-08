@@ -3,7 +3,6 @@ import {History} from 'react-router';
 import LinkedStateMixin from 'react-addons-linked-state-mixin';
 
 import CreateAccount from './CreateAccount';
-import ForgotPassword from './ForgotPassword';
 import Icon from './Icon';
 import auth from './auth';
 
@@ -29,7 +28,6 @@ module.exports = React.createClass ({
     },
 
     render: function () {
-        var password = this.state.changePassword ? <ForgotPassword /> : <p onClick={() => this.setState({changePassword: true})}>Forgot password?</p>
         return(
             <div id='Login' className='flex-column'>
                 <video id='introvid' autoPlay='auto' loop='loop' muted>
@@ -49,7 +47,6 @@ module.exports = React.createClass ({
                             {this.state.error}
                         </div>
                         <button className='flex-container' onClick={this.submitLogin} disabled={(this.state.username.length > 0 && this.state.password.length > 0 ? false : true)}>Sign In</button>
-                        {password}
                     </div>
                 </form>
 
