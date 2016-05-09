@@ -12,7 +12,6 @@ module.exports = {
     devtool: 'cheap-source-map',
 
     entry: [
-        path.resolve(__dirname, 'src', 'styles', 'index.less'),
         path.resolve(__dirname, 'src', 'index.jsx'),
         'webpack-dev-server/client?http://localhost:8080'
     ],
@@ -26,11 +25,6 @@ module.exports = {
                     path.resolve(__dirname, 'src')
                 ],
                 exclude: /node_modules/
-            },
-            {
-                test: /\.less/,
-                loader: ExtractTextPlugin.extract('style', 'css!postcss!less'),
-                exclude: /node_modules/
             }
         ]
     },
@@ -43,7 +37,6 @@ module.exports = {
 
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
-        new ExtractTextPlugin('index.css'),
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: path.resolve(__dirname, 'src', 'index.html')
