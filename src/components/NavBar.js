@@ -1,45 +1,42 @@
 import React from 'react';
+import {IndexLink, Link, History} from 'react-router';
+import Icon from './Icon';
 
-import Base from './Base';
-import ExpandingMenuOption from './ExpandingMenuOption';
-import NavLink from './NavLink';
+var NavBar = React.createClass({
 
-export default class NavBar extends Base {
-    constructor(props) {
-        super(props);
-        this.autoBind('toggleExpand');
-
-        this.state = {
-            expanded: false
-        }
-    }
+    mixins: [History],
 
     render() {
         return (
-            <div id='NavBar' className={'column align-stretch ' + (this.state.expanded ? 'expanded' : 'collapsed')} >
-                <div className='logo row align-center'>
-                    <img src='/images/setrecords-logo-white.png' />
-                    {this.state.expanded ? <p>setrecords</p> : null}
-                </div>
-
-                <div className='column flex'>
-                    <NavLink expanded={this.state.expanded} icon={'trending_up'} text={'Dashboard'} to={'/dashboard'} />
-                    <NavLink expanded={this.state.expanded} icon={'library_music'} text={'Uploads'} to={'/content'} />
-                    <NavLink expanded={this.state.expanded} icon={'queue_music'} text={'New Set'} to={'/upload-set'} />
-                    <NavLink expanded={this.state.expanded} icon={'music_note'} text={'New Track'} to={'/upload-track'} />
-                    <NavLink expanded={this.state.expanded} icon={'settings'} text={'Settings'} to={'/account'} />
-                    <NavLink expanded={this.state.expanded} icon={'phone'} text={'Contact'} to={'/contact'} />
-                    <div onClick={this.toggleExpand}>
-                        <ExpandingMenuOption text='Collapse' icon='list' expanded={this.state.expanded} />
-                    </div>
-                </div>
+            <div className='flex-column' id='NavBar'>
+                <IndexLink className='flex-row flex click' to='/dashboard' activeClassName='active' >
+                    <Icon>trending_up</Icon>
+                    <div>Dashboard</div>
+                </IndexLink>
+                <Link className='flex-row flex click' to='/content' activeClassName='active' onlyActiveOnIndex={true}>
+                    <Icon>library_music</Icon>
+                    <div>Uploads</div>
+                </Link>
+                <Link className='flex-row flex click' to='/upload-set' activeClassName='active' ref='set'>
+                    <Icon>queue_music</Icon>
+                    <div>Add Set</div>
+                </Link>
+                <Link className='flex-row flex click' to='/upload-track' activeClassName='active' ref='track'>
+                    <Icon>music_note</Icon>
+                    <div>Add Track</div>
+                </Link>
+                <Link className='flex-row flex click' to='/account' activeClassName='active'>
+                    <i className='fa fa-fw fa-cog'/>
+                    <div>Settings</div>
+                </Link>
+                <Link className='flex-row flex click' to='/contact' activeClassName='active'>
+                    <i className='fa fa-fw fa-phone'/>
+                    <div>Contact</div>
+                </Link>
+                <div className='buffer-5x'/>
             </div>
         );
     }
+});
 
-    toggleExpand() {
-        this.setState({
-            expanded: !this.state.expanded
-        });
-    }
-}
+module.exports = NavBar;

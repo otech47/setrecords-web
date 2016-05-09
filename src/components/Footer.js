@@ -34,8 +34,31 @@ var Footer = React.createClass({
                         <a href='https://instagram.com/setmine/' className='fa fa-fw fa-instagram'/>
                         <a href='http://setmine.tumblr.com/' className='fa fa-fw fa-tumblr-square'/>
                     </nav>
+                    {/*<ul className='hidden'>
+                        <li onClick={this.redirect}>
+                            <i className='fa fa-fw fa-envelope-o'/>
+                            <span>{contact}</span>
+                        </li>
+                        <li>
+                            <a href='https://www.facebook.com/SetmineApp' className='fa fa-fw fa-facebook-square'/>
+                            <span>Facebook</span>
+                        </li>
+                        <li>
+                            <a href='https://twitter.com/setmineapp' className='fa fa-fw fa-twitter-square'/>
+                            <span>Twitter</span>
+                        </li>
+                        <li>
+                            <a href='https://instagram.com/setmine/' className='fa fa-fw fa-instagram'/>
+                            <span>Instagram</span>
+                        </li>
+                        <li>
+                            <a href='http://setmine.tumblr.com/' className='fa fa-fw fa-tumblr-square'/>
+                            <span>Tumblr</span>
+                        </li>
+                    </ul>*/}
                 </div>
                 <div className='flex-column sponsors'>
+                    <a className='center' href='https://teamtreehouse.com'><img src='/images/treehouse.png' /></a>
                     <a className='center' href='https://mixpanel.com/f/partner'><img src='//cdn.mxpnl.com/site_media/images/partner/badge_light.png' alt='Mobile Analytics' /></a>
                 </div>
             </footer>

@@ -12,7 +12,7 @@ var Icon = React.createClass({
 
 	render() {
 		return (
-			<i className={`fa material-icons ${this.props.className}`} onClick={this.props.onClick} style={this.props.style}>
+			<i className={`fa-fw material-icons ${this.props.className}`} onClick={this.props.onClick} style={this.props.style}>
 				{this.props.children}
 			</i>
 		);

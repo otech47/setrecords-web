@@ -11,7 +11,7 @@ import UploadSetWizard from './UploadSetWizard';
 import UploadTrackWizard from './UploadTrackWizard';
 
 
-export default class MainInterface extends Base {
+export default class ViewContainer extends Base {
     constructor(props) {
         super(props);
         this.autoBind('renderChildren');
@@ -22,14 +22,16 @@ export default class MainInterface extends Base {
         var push = this.props.push;
 
         return (
-            <div id='MainInterface' className='row'>
-                <NavBar push={push} />
-
-                <div className='column flex main-view align-stretch'>
-                    <Header artistImage={appState.get('artist_data').icon_image.imageURL} artistName={appState.get('artist_data').artist} headerText={appState.get('header')} logOut={this.logOut} loggedIn={appState.get('loggedIn')} />
-                    {this.renderChildren()}
-                    <Footer />
+            <div id='ViewContainer'>
+                <Header artistImage={appState.get('artist_data').icon_image.imageURL} artistName={appState.get('artist_data').artist} headerText={appState.get('header')} logOut={this.logOut} loggedIn={appState.get('loggedIn')} />
+                <div className='flex-row view-container'>
+                    {this.props.location.pathname == '/' ? '' : <div className='nav-bar-wrapper'><NavBar push={push} /></div> }
+                    <div className='view flex-column flex'>
+                        {this.renderChildren()}
+                    </div>
                 </div>
+
+                <Footer />
             </div>
         );
     }

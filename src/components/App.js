@@ -1,15 +1,38 @@
-import _ from 'underscore';
+import R from 'ramda';
 import React from 'react';
-import {History} from 'react-router';
+import ReactDOM from 'react-dom';
+import LinkedStateMixin from 'react-addons-linked-state-mixin';
 import Immutable from 'immutable';
-
+import {IndexRoute, Link, Route, Router, History } from 'react-router';
+import GlobalEventHandler from '../services/globalEventHandler';
+import _ from 'underscore';
 import async from 'async';
 import constants from '../constants/constants';
-import GlobalEventHandler from '../services/globalEventHandler';
-import LoadingNotification from './LoadingNotification';
-import LoginPage from './LoginPage';
+
+import SetEditor from './SetEditor';
+import Header from './Header';
+import NavBar from './NavBar';
 import MessageModal from './MessageModal';
+import LoadingNotification from './LoadingNotification';
 import NewArtistModal from './NewArtistModal';
+import Footer from './Footer';
+import ContentView from './ContentView';
+import MetricsView from './MetricsView';
+import UploadSetWizard from './UploadSetWizard';
+import UploadTrackWizard from './UploadTrackWizard';
+import SettingsEditor from './SettingsEditor';
+import Contact from './Contact';
+
+import BeaconReport from './BeaconReport';
+import SetmineReport from './SetmineReport';
+import SocialReport from './SocialReport';
+import SoundcloudReport from './SoundcloudReport';
+import YoutubeReport from './YoutubeReport';
+import LoginPage from './LoginPage';
+
+import ForgotPassword from './ForgotPassword';
+import Icon from './Icon';
+
 import UpdateFunctions from '../mixins/UpdateFunctions';
 import UtilityFunctions from '../mixins/UtilityFunctions';
 
@@ -316,7 +339,7 @@ module.exports = React.createClass({
         var appState = this.state.appState;
 
         return (
-            <div id='App'>
+            <div className='flex-column' id='App'>
                 {
                     React.Children.map(this.props.children, (child) => {
                         return React.cloneElement(child, {
