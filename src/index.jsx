@@ -10,7 +10,6 @@ import SettingsEditor from './components/SettingsEditor';
 import Contact from './components/Contact';
 import UploadSetWizard from './components/UploadSetWizard';
 import UploadTrackWizard from './components/UploadTrackWizard';
-import ViewContainer from './components/ViewContainer';
 
 
 var bodyMount = document.getElementById('body-mount-point');
@@ -21,15 +20,13 @@ var routes = (
     <Route path='/' component={App} >
         <IndexRoute component={LoginPage} />
 
-        <Route component={ViewContainer} >
-            <Route path='dashboard' component={Dashboard} />
-            <Route path='content' component={ContentView} />
-            <Route path='edit/:id' component={SetEditor} />
-            <Route path='account' component={SettingsEditor} />
-            <Route path='contact' component={Contact} />
-            <Route path='upload-set' component={UploadSetWizard} />
-            <Route path='upload-track' component={UploadTrackWizard} />
-        </Route>
+        <Route path='dashboard' component={Dashboard} />
+        <Route path='content' component={ContentView} />
+        <Route path='edit/:id' component={SetEditor} />
+        <Route path='account' component={SettingsEditor} />
+        <Route path='contact' component={Contact} />
+        <Route path='upload-set' component={UploadSetWizard} />
+        <Route path='upload-track' component={UploadTrackWizard} />
     </Route>
 );
 
