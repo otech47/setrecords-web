@@ -1,31 +1,34 @@
 import React from 'react';
+
+import Base from './Base';
 import constants from '../constants/constants';
 
-var Header = React.createClass({
+export default class Header extends Base {
+    constructor(props) {
+        super(props);
+    }
+
     render() {
         var artistImage = this.props.artistImage || constants.DEFAULT_IMAGE;
         var artistName = this.props.artistName || 'Not Logged In';
 
         return (
-            <header className='flex-row'>
-                <div className='logo flex-row'>
-                    <img src='/images/setrecords-logo-white.png' />
-                    setrecords
-                </div>
-                <div className='header-main flex flex-row'>
-                    <h1>{this.props.headerText}</h1>
-                    <div className='buffer'/>
-                    <div className='artist flex-row'>
-                        <div className='options flex-column'>
-                            <h1>{artistName}</h1>
-                            <p onClick={this.props.logOut} hidden={!this.props.loggedIn}>Logout</p>
-                        </div>
-                        <img src={constants.S3_ROOT_FOR_IMAGES + artistImage} />
+            <header id='Header' className='row justify-space-between align-center'>
+                <h1>{this.props.headerText}</h1>
+
+                <div className='artist-detail row align-center'>
+                    <div className='artist-info column align-end justify-center'>
+                        <h1 className='bold'>{artistName}</h1>
+                        <a href='' onClick={this.logOut}>Logout</a>
                     </div>
+
+                    <img src={constants.S3_ROOT_FOR_IMAGES + artistImage} />
                 </div>
             </header>
         );
     }
-});
 
-module.exports = Header;
+    logOut() {
+        console.log('logout');
+    }
+}

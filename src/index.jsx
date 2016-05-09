@@ -10,7 +10,7 @@ import SettingsEditor from './components/SettingsEditor';
 import Contact from './components/Contact';
 import UploadSetWizard from './components/UploadSetWizard';
 import UploadTrackWizard from './components/UploadTrackWizard';
-import ViewContainer from './components/ViewContainer';
+import MainInterface from './components/MainInterface';
 
 
 var bodyMount = document.getElementById('body-mount-point');
@@ -21,7 +21,7 @@ var routes = (
     <Route path='/' component={App} >
         <IndexRoute component={LoginPage} />
 
-        <Route component={ViewContainer} >
+        <Route component={MainInterface} >
             <Route path='dashboard' component={Dashboard} />
             <Route path='content' component={ContentView} />
             <Route path='edit/:id' component={SetEditor} />
