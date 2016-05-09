@@ -12,7 +12,6 @@ module.exports = {
     devtool: 'cheap-module-source-map',
 
     entry: [
-        path.resolve(__dirname, 'src', 'styles', 'index.less'),
         path.resolve(__dirname, 'src', 'index.jsx')
     ],
 

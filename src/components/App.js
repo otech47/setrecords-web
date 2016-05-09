@@ -1,15 +1,38 @@
-import _ from 'underscore';
+import R from 'ramda';
 import React from 'react';
-import {History} from 'react-router';
+import ReactDOM from 'react-dom';
+import LinkedStateMixin from 'react-addons-linked-state-mixin';
 import Immutable from 'immutable';
-
+import {IndexRoute, Link, Route, Router, History } from 'react-router';
+import GlobalEventHandler from '../services/globalEventHandler';
+import _ from 'underscore';
 import async from 'async';
 import constants from '../constants/constants';
-import GlobalEventHandler from '../services/globalEventHandler';
-import LoadingNotification from './LoadingNotification';
-import LoginPage from './LoginPage';
+
+import SetEditor from './SetEditor';
+import Header from './Header';
+import NavBar from './NavBar';
 import MessageModal from './MessageModal';
+import LoadingNotification from './LoadingNotification';
 import NewArtistModal from './NewArtistModal';
+import Footer from './Footer';
+import ContentView from './ContentView';
+import MetricsView from './MetricsView';
+import UploadSetWizard from './UploadSetWizard';
+import UploadTrackWizard from './UploadTrackWizard';
+import SettingsEditor from './SettingsEditor';
+import Contact from './Contact';
+
+import BeaconReport from './BeaconReport';
+import SetmineReport from './SetmineReport';
+import SocialReport from './SocialReport';
+import SoundcloudReport from './SoundcloudReport';
+import YoutubeReport from './YoutubeReport';
+import LoginPage from './LoginPage';
+
+import ForgotPassword from './ForgotPassword';
+import Icon from './Icon';
+
 import UpdateFunctions from '../mixins/UpdateFunctions';
 import UtilityFunctions from '../mixins/UtilityFunctions';
 
@@ -316,20 +339,58 @@ module.exports = React.createClass({
         var appState = this.state.appState;
 
         return (
-            <div id='App'>
-                {
-                    React.Children.map(this.props.children, (child) => {
-                        return React.cloneElement(child, {
-                            appState: appState,
-                            push: push
-                        });
-                    })
-                }
+            <div className='flex-column' id='App'>
+                <Header artistImage={appState.get('artist_data').icon_image.imageURL} artistName={appState.get('artist_data').artist} headerText={appState.get('header')} logOut={this.logOut} loggedIn={appState.get('loggedIn')} />
+
+                <div className='flex-row view-container'>
+                    {this.props.location.pathname == '/' ? '' : <div className='nav-bar-wrapper'><NavBar push={push} /></div> }
+                    <div className='view flex-column flex'>
+                        {this.renderChildren()}
+                    </div>
+                </div>
+
                 <NewArtistModal push={push} open={appState.get('newArtistModal')} />
                 <LoadingNotification title='Please wait...' open={appState.get('loadingModal')} />
                 <MessageModal push={push} open={appState.get('messageModal').length > 0} message={appState.get('messageModal')} />
+                <Footer/>
             </div>
         );
+    },
+
+    renderChildren() {
+        var appState = this.state.appState;
+        return React.Children.map(this.props.children, function (child) {
+            var props = {};
+
+            switch (child.type) {
+                case ContentView:
+                props = {push: push, loaded: appState.get('loaded'), sets: appState.get('sets'), artistId: appState.get('artistId')};
+                break;
+
+                case LoginPage:
+                props = {push: push, loggedIn: appState.get('loggedIn'), submitLogIn: logIn};
+                break;
+
+                case SetEditor:
+                props = {push: push, loaded: appState.get('loaded'), originalArtist: appState.get('artist_data')};
+                break;
+
+                case SettingsEditor:
+                props = {push: push, artistId: appState.get('artistId'), loaded: appState.get('loaded'), artistData: appState.get('artist_data')};
+                break;
+
+                case UploadSetWizard:
+                case UploadTrackWizard:
+                props = {push: push, originalArtist: appState.get('artist_data'), loaded: appState.get('loaded')};
+                break;
+
+                default:
+                props = {push: push, appState: appState};
+                break;
+            }
+
+            return React.cloneElement(child, props);
+        });
     },
 
     logOut: function () {

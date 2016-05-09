@@ -5,6 +5,27 @@
 @import "variables.less";
 @import "fonts.less";
 
+
+// base settings
+
+html {
+    font-size: 16px;
+    font-family: @regular;
+}
+
+body {
+    margin: 0;
+    overflow: auto;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    &:hover {
+        color: inherit;
+    }
+}
+
 .invisible {
     visibility: hidden;
 }
@@ -18,6 +39,24 @@ button {
 
 input:focus {
     outline: none;
+}
+
+#App {
+    min-height: @windowHeight;
+    background: @white;
+    .view-container {
+        margin-top: @headerHeight;
+        min-height: @pageHeight;
+        flex-wrap: nowrap;
+        .view {
+            .scrollable;
+            min-height: 80vh;
+            >.loader {
+                position: relative;
+                height: @pageHeight;
+            }
+        }
+    }
 }
 
 #apply-changes {
@@ -154,6 +193,96 @@ footer {
         outline: none;
         font-size: inherit;
         padding-left: 0.5rem;
+    }
+}
+
+header {
+    height: @headerHeight;
+    position: fixed;
+    width: 100%;
+    z-index: 21;
+    flex-wrap: nowrap;
+    .background(@white, @dark-gray);
+    justify-content: space-between;
+    .header-main {
+        .card(2);
+        h1 {
+            font-size: 1.5rem;
+            margin: auto 1rem;
+        }
+        flex-wrap: nowrap;
+    }
+    .logo {
+        .background(@dark-gray*1.25, @white);
+        font-size: 1.5rem;
+        align-items: center;
+        font-family: @regular;
+        letter-spacing: 0.1rem;
+        width: 15%;
+        flex-wrap: nowrap;
+        min-width: 205px;
+        img {
+            width: 3rem;
+        }
+    }
+    .artist {
+        align-items: center;
+        flex-wrap: nowrap;
+        .options {
+            align-items: flex-end;
+            justify-content: center;
+            h1 {
+                font-size: 2rem;
+                margin: 0;
+            }
+            p {
+                margin: 0;
+                color: @blue;
+                text-decoration: underline;
+                cursor: pointer;
+            }
+            span:hover {
+                cursor: pointer;
+                color: @blue;
+            }
+        }
+        img {
+            .size(40px, 40px);
+            border-radius: 50%;
+            margin: 0 1rem;
+            border: solid 3px @blue;
+        }
+    }
+}
+
+.nav-bar-wrapper {
+    background-color: @dark-gray;
+}
+
+#NavBar {
+    min-height: @pageHeight;
+    width: 15%;
+    min-width: 205px;
+    font-size: 1rem;
+    .background(@dark-gray, @white);
+    a {
+        align-items: center;
+        cursor: pointer;
+        &:hover {
+            .background(@dark-gray*0.9, @light-gray);
+        }
+        &.active {
+            .transition(0.3s);
+            .background(@dark-gray*0.8, white);
+            border-left: solid 3px @blue;
+        }
+    }
+    h3 {
+        margin: 1rem;
+    }
+    i {
+        margin: auto 1vw auto 1rem;
+        font-size: 1.5rem;
     }
 }
 
