@@ -28,7 +28,6 @@ var routes = (
             <Route path='account' component={SettingsEditor} />
             <Route path='contact' component={Contact} />
             <Route path='upload-set' component={UploadSetWizard} />
-            <Route path='upload-track' component={UploadTrackWizard} />
         </Route>
     </Route>
 );

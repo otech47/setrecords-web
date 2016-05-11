@@ -26,10 +26,7 @@ var api = module.exports = (function() {
                     credentials: 'include'
                 })
                 .then( function(response) {
-                    console.log('==response===');
-                    console.log(response.json());
-
-                    return response.json();
+                    response.json();
                 })
                 .then(handleErrors)
             );

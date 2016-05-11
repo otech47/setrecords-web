@@ -26,7 +26,6 @@ export default class NavBar extends Base {
                     <NavLink expanded={this.state.expanded} icon={'trending_up'} text={'Dashboard'} to={'/dashboard'} />
                     <NavLink expanded={this.state.expanded} icon={'library_music'} text={'Uploads'} to={'/content'} />
                     <NavLink expanded={this.state.expanded} icon={'queue_music'} text={'New Set'} to={'/upload-set'} />
-                    <NavLink expanded={this.state.expanded} icon={'music_note'} text={'New Track'} to={'/upload-track'} />
                     <NavLink expanded={this.state.expanded} icon={'settings'} text={'Settings'} to={'/account'} />
                     <NavLink expanded={this.state.expanded} icon={'phone'} text={'Contact'} to={'/contact'} />
                     <div onClick={this.toggleExpand}>

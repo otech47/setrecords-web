@@ -21,10 +21,7 @@ var auth = module.exports = (function() {
         },
 
         logout: function() {
-            return api.get('setrecordsuser/logout')
-                .then((response) => {
-                    console.log(response);
-                });
+            return api.get('setrecordsuser/logout', null);
         }
     }
 })();

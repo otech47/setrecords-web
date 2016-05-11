@@ -17,7 +17,7 @@ module.exports = React.createClass({
                 <div className='artist-detail row align-center'>
                     <div className='artist-info column align-end justify-center'>
                         <h1 className='bold'>{artistName}</h1>
-                        <a href='' onClick={this.logout}>Logout</a>
+                        <a href='#' onClick={this.logout}>Logout</a>
                     </div>
 
                     <img src={constants.S3_ROOT_FOR_IMAGES + artistImage} />
@@ -26,11 +26,15 @@ module.exports = React.createClass({
         );
     },
 
-    logout() {
-        console.log('logout');
+    logout(e) {
+        e.preventDefault();
         auth.logout()
             .then(() => {
-                this.history.replaceState('/');
+                this.history.pushState(null, '/');
+            })
+            .catch((err) => {
+                console.log('==err===');
+                console.log(err);
             });
     }
 });

@@ -1,7 +1,7 @@
 // some constants code that will have to be ported over very carefully!
 
 var API_VERSION = 10;
-var API_BASE_URL = 'http://localhost:3000';
+var API_BASE_URL = 'https://api.setmine.com';
 var API_ROOT = API_BASE_URL + '/v/' + API_VERSION + '/';
 var API_GRAPH = API_ROOT + 'setrecordsuser/graph';
 
