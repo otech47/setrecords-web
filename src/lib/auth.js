@@ -1,0 +1,27 @@
+import api from './api';
+
+var auth = module.exports = (function() {
+    return {
+        login: function(user, pass) {
+            return new Promise((resolve, reject) => {
+                api.post('setrecordsuser/login', {
+                    username: user,
+                    password: pass
+                })
+                .then((payload) => {
+                    console.log('==payload===');
+                    console.log(payload);
+
+                    resolve(payload.setrecordsuser_login.artist.id);
+                })
+                .catch((err) => {
+                    reject(err);
+                });
+            });
+        },
+
+        logout: function() {
+            return api.get('setrecordsuser/logout');
+        }
+    }
+})();

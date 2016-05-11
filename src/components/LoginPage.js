@@ -1,33 +1,45 @@
 import React from 'react';
 import {History} from 'react-router';
-import LinkedStateMixin from 'react-addons-linked-state-mixin';
 
 import CreateAccount from './CreateAccount';
 import Icon from './Icon';
-import auth from './auth';
+import auth from '../lib/auth';
+import Base from './Base';
+import reactLink from '../lib/reactLink';
 
-module.exports = React.createClass ({
+export default class LoginPage extends Base {
+    constructor(props) {
+        super(props);
+        this.autoBind('openNewArtistModal', 'submitLogin');
 
-    mixins: [LinkedStateMixin, History],
-
-    componentWillMount: function() {
-        auth.loggedIn((artistId) => {
-            if (artistId) {
-                this.history.replaceState(null, '/dashboard');
-            }
-        });
-    },
-
-    getInitialState: function() {
-        return {
+        this.state = {
             username: '',
             password: '',
             error: null,
             changePassword: false
-        }
-    },
+        };
+    }
 
-    render: function () {
+    componentWillMount() {
+        console.log('component will mount');
+
+        auth.login()
+            .then((artistId) => {
+                this.props.push({
+                    type: 'SHALLOW_MERGE',
+                    data: {
+                        artistId: artistId
+                    }
+                });
+            })
+            .catch((err) => {
+                console.log('==err===');
+                console.log(err);
+            });
+    }
+
+    render() {
+        var linkState = reactLink(this);
         return(
             <div id='Login' className='flex-column'>
                 <video id='introvid' autoPlay='auto' loop='loop' muted>
@@ -37,11 +49,11 @@ module.exports = React.createClass ({
                     <div className='form center'>
                         <div className='flex-row' onClick={() => this.setState({changePassword:false})}>
                             <Icon className='center'>perm_identity</Icon>
-                            <input type='text' placeholder='Username' valueLink={this.linkState('username')} />
+                            <input type='text' placeholder='Username' value={this.state.username} onChange={linkState('username')} />
                         </div>
                         <div className='flex-row' onClick={() => this.setState({changePassword:false})}>
                             <Icon className='center'>lock_outline</Icon>
-                            <input type='password' placeholder='Password' valueLink={this.linkState('password')} />
+                            <input type='password' placeholder='Password' value={this.state.password} onChange={linkState('password')} />
                         </div>
                         <div className={'set-flex login-error ' + (this.state.error ? '' : 'hidden')}>
                             {this.state.error}
@@ -55,9 +67,9 @@ module.exports = React.createClass ({
                 </div>
             </div>
         );
-    },
+    }
 
-    openNewArtistModal: function(e) {
+    openNewArtistModal(e) {
         e.preventDefault();
         mixpanel.track('Sign Up link clicked');
 
@@ -67,20 +79,25 @@ module.exports = React.createClass ({
                 newArtistModal: true
             }
         });
-    },
+    }
 
-    submitLogin: function(e) {
+    submitLogin(e) {
         e.preventDefault();
         // console.log('Submitting login with:');
         // console.log(this.state.username);
         // console.log(this.state.password);
 
-        this.props.submitLogIn(this.state.username, this.state.password, (err) => {
-            // console.log('Errors?');
-            // console.log(err);
+        auth.login(this.state.username, this.state.password)
+            .then((artistId) => {
+                console.log('==artistId===');
+                console.log(artistId);
+                // mixpanel.track('Successfully logged in');
+            })
+            .catch((err) => {
+                console.log('==err===');
+                console.log(err);
 
-            if (err) {
-                switch (err.responseJSON.error) {
+                switch (err) {
                     case 'User not found':
                     // console.log('Username was incorrect.');
                     this.setState({
@@ -107,14 +124,10 @@ module.exports = React.createClass ({
                     });
                     break;
                 }
-                mixpanel.track("Error", {
-                    "Page": "Login Page",
-                    "Message": err.responseJSON.error
-                });
-            } else {
-                mixpanel.track('Successfully logged in');
-                this.history.pushState(null, '/dashboard');
-            }
-        });
-    },
-});
+                // mixpanel.track("Error", {
+                //     "Page": "Login Page",
+                //     "Message": err.responseJSON.error
+                // });
+            });
+    }
+}
