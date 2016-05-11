@@ -1,54 +1,30 @@
-var API_VERSION = 7;
-var API_BASE_URL = 'https://api.setmine.com';
-var API_BASE_URL_DEV = 'https://api.setmine.com';
+var constants = module.exports = (function() {
+    var API_VERSION = 10;
 
-var API_ROOT = API_BASE_URL + '/api/v/' + API_VERSION + '/';
-var API_ROOT_DEV = API_BASE_URL_DEV + '/api/v/' + API_VERSION + '/';
+    if (process.env.NODE_ENV == 'production') {
+        console.log('this is a production environment');
+        var API_BASE_URL = 'https://api.setmine.com';
+    } else {
+        console.log('this is a test environment');
+        var API_BASE_URL = 'http://localhost:3000';
+    }
 
-var S3_ROOT = 'http://stredm.s3-website-us-east-1.amazonaws.com/namecheap/';
-var S3_ROOT_FOR_IMAGES = 'http://d1wbxby8dwa4u.cloudfront.net/namecheap/';
-var DEFAULT_IMAGE = 'ca6a250fc84f30e571a62286fc8c2c16c7ce64b4.png';
-var IMAGE_ROOT = '/images/';
-var ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.setmine.android';
-var IOS_URL = 'https://itunes.apple.com/us/app/setmine/id921325688?mt=8';
-var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var API_ROOT = API_BASE_URL + '/v/' + API_VERSION + '/';
+    var API_GRAPH = API_ROOT + 'setrecordsuser/graph';
 
-var colors = {
-	fb: '#3b5998',
-	twitter_: '#55acee',
-	instagram: '#3f729b',
-	soundcloud: '#ff8800',
-	youtube: '#cd201f'
-};
+    var S3_ROOT = 'http://stredm.s3-website-us-east-1.amazonaws.com/namecheap/';
+    var S3_ROOT_FOR_IMAGES = 'http://d1wbxby8dwa4u.cloudfront.net/namecheap/';
+    var DEFAULT_IMAGE = 'ca6a250fc84f30e571a62286fc8c2c16c7ce64b4.png';
+    var ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.setmine.android';
+    var IOS_URL = 'https://itunes.apple.com/us/app/setmine/id921325688?mt=8';
 
-var isProduction = process.env.NODE_ENV === 'production';
-
-module.exports =  {
-	S3_ROOT: S3_ROOT,
-	S3_ROOT_FOR_IMAGES: S3_ROOT_FOR_IMAGES,
-	DEFAULT_IMAGE: DEFAULT_IMAGE,
-	API_ROOT: isProduction ? API_ROOT : API_ROOT_DEV,
-	months: months
-};
-
-// some constants code that will have to be ported over very carefully!
-// var API_VERSION = 10;
-// var API_BASE_URL = 'https://api.setmine.com';
-// var API_ROOT = API_BASE_URL + '/v/' + API_VERSION + '/';
-// var API_GRAPH = API_ROOT + 'setrecordsuser/graph';
-//
-// var S3_ROOT = 'http://stredm.s3-website-us-east-1.amazonaws.com/namecheap/';
-// var S3_ROOT_FOR_IMAGES = 'http://d1wbxby8dwa4u.cloudfront.net/namecheap/';
-// var DEFAULT_IMAGE = 'ca6a250fc84f30e571a62286fc8c2c16c7ce64b4.png';
-// var ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.setmine.android';
-// var IOS_URL = 'https://itunes.apple.com/us/app/setmine/id921325688?mt=8';
-//
-// module.exports =  {
-//     S3_ROOT: S3_ROOT,
-//     S3_ROOT_FOR_IMAGES: S3_ROOT_FOR_IMAGES,
-//     DEFAULT_IMAGE: DEFAULT_IMAGE,
-//     API_GRAPH: API_GRAPH,
-//     API_ROOT: API_ROOT,
-//     ANDROID_URL: ANDROID_URL,
-//     IOS_URL: IOS_URL
-// };
+    return {
+        S3_ROOT: S3_ROOT,
+        S3_ROOT_FOR_IMAGES: S3_ROOT_FOR_IMAGES,
+        DEFAULT_IMAGE: DEFAULT_IMAGE,
+        API_GRAPH: API_GRAPH,
+        API_ROOT: API_ROOT,
+        ANDROID_URL: ANDROID_URL,
+        IOS_URL: IOS_URL
+    };
+})();

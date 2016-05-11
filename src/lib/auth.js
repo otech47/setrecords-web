@@ -2,6 +2,24 @@ import api from './api';
 
 var auth = module.exports = (function() {
     return {
+        loggedIn: function() {
+            return new Promise((resolve, reject) => {
+                console.log('checking login status...');
+                api.post('setrecordsuser/login')
+                    .then((response) => {
+                        console.log('==response===');
+                        console.log(response);
+                        resolve(response.payload.artist.id);
+                    })
+                    .catch((err) => {
+                        console.log('==auth err===');
+                        console.log(err);
+
+                        reject(err);
+                    });
+            });
+        },
+
         login: function(user, pass) {
             return new Promise((resolve, reject) => {
                 api.post('setrecordsuser/login', {
@@ -15,6 +33,9 @@ var auth = module.exports = (function() {
                     resolve(response.payload.setrecordsuser_login.artist.id);
                 })
                 .catch((err) => {
+                    console.log('==auth err===');
+                    console.log(err);
+
                     reject(err);
                 });
             });

@@ -1,4 +1,4 @@
-import {API_GRAPH, API_ROOT} from '../constants/migrationConstants';
+import {API_GRAPH, API_ROOT} from '../constants/constants';
 
 var api = module.exports = (function() {
     var handleErrors = function(response) {
