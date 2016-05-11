@@ -5,7 +5,7 @@ var api = module.exports = (function() {
         if (response && response.status == 'failure') {
             return Promise.reject(response.error);
         } else {
-            return Promise.resolve(response.payload);
+            return Promise.resolve(response);
         }
     }
 
@@ -13,7 +13,7 @@ var api = module.exports = (function() {
         get: function(route, query) {
             return (
                 fetch(API_ROOT + route, {
-                    method: 'get',
+                    method: 'GET',
                     crossDomain: true,
                     xhrFields: {
                         withCredentials: true
@@ -22,7 +22,14 @@ var api = module.exports = (function() {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
-                    data: JSON.stringify(query)
+                    data: JSON.stringify(query),
+                    credentials: 'include'
+                })
+                .then( function(response) {
+                    console.log('==response===');
+                    console.log(response.json());
+
+                    return response.json();
                 })
                 .then(handleErrors)
             );
@@ -41,7 +48,11 @@ var api = module.exports = (function() {
                     xhrFields: {
                         withCredentials: true
                     },
-                    data: requestData
+                    data: requestData,
+                    credentials: 'include'
+                })
+                .then( function(response) {
+                    return response.json();
                 })
                 .then(handleErrors)
             );

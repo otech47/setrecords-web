@@ -1,12 +1,10 @@
 import React from 'react';
-
-import Base from './Base';
+import {History} from 'react-router';
 import constants from '../constants/constants';
+import auth from '../lib/auth';
 
-export default class Header extends Base {
-    constructor(props) {
-        super(props);
-    }
+module.exports = React.createClass({
+    mixins: [History],
 
     render() {
         var artistImage = this.props.artistImage || constants.DEFAULT_IMAGE;
@@ -19,16 +17,20 @@ export default class Header extends Base {
                 <div className='artist-detail row align-center'>
                     <div className='artist-info column align-end justify-center'>
                         <h1 className='bold'>{artistName}</h1>
-                        <a href='' onClick={this.logOut}>Logout</a>
+                        <a href='' onClick={this.logout}>Logout</a>
                     </div>
 
                     <img src={constants.S3_ROOT_FOR_IMAGES + artistImage} />
                 </div>
             </header>
         );
-    }
+    },
 
-    logOut() {
+    logout() {
         console.log('logout');
+        auth.logout()
+            .then(() => {
+                this.history.replaceState('/');
+            });
     }
-}
+});

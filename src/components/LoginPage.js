@@ -7,36 +7,35 @@ import auth from '../lib/auth';
 import Base from './Base';
 import reactLink from '../lib/reactLink';
 
-export default class LoginPage extends Base {
-    constructor(props) {
-        super(props);
-        this.autoBind('openNewArtistModal', 'submitLogin');
+module.exports = React.createClass({
+    mixins: [History],
 
-        this.state = {
+    getInitialState() {
+        return {
             username: '',
             password: '',
             error: null,
             changePassword: false
         };
-    }
+    },
 
     componentWillMount() {
-        console.log('component will mount');
-
         auth.login()
             .then((artistId) => {
                 this.props.push({
                     type: 'SHALLOW_MERGE',
                     data: {
-                        artistId: artistId
+                        artistId: artistId,
+                        loggedIn: true
                     }
                 });
+                this.history.push('/dashboard');
             })
             .catch((err) => {
                 console.log('==err===');
                 console.log(err);
             });
-    }
+    },
 
     render() {
         var linkState = reactLink(this);
@@ -67,7 +66,7 @@ export default class LoginPage extends Base {
                 </div>
             </div>
         );
-    }
+    },
 
     openNewArtistModal(e) {
         e.preventDefault();
@@ -79,7 +78,7 @@ export default class LoginPage extends Base {
                 newArtistModal: true
             }
         });
-    }
+    },
 
     submitLogin(e) {
         e.preventDefault();
@@ -91,6 +90,14 @@ export default class LoginPage extends Base {
             .then((artistId) => {
                 console.log('==artistId===');
                 console.log(artistId);
+                this.props.push({
+                    type: 'SHALLOW_MERGE',
+                    data: {
+                        artistId: artistId,
+                        loggedIn: true
+                    }
+                });
+                this.history.push('/dashboard');
                 // mixpanel.track('Successfully logged in');
             })
             .catch((err) => {
@@ -130,4 +137,4 @@ export default class LoginPage extends Base {
                 // });
             });
     }
-}
+});

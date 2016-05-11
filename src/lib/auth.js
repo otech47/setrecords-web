@@ -8,11 +8,11 @@ var auth = module.exports = (function() {
                     username: user,
                     password: pass
                 })
-                .then((payload) => {
-                    console.log('==payload===');
-                    console.log(payload);
+                .then((response) => {
+                    console.log('==response===');
+                    console.log(response);
 
-                    resolve(payload.setrecordsuser_login.artist.id);
+                    resolve(response.payload.setrecordsuser_login.artist.id);
                 })
                 .catch((err) => {
                     reject(err);
@@ -21,7 +21,10 @@ var auth = module.exports = (function() {
         },
 
         logout: function() {
-            return api.get('setrecordsuser/logout');
+            return api.get('setrecordsuser/logout')
+                .then((response) => {
+                    console.log(response);
+                });
         }
     }
 })();
