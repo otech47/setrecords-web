@@ -1,47 +1,48 @@
+import FontIcon from 'material-ui/FontIcon';
 import React from 'react';
 
-var Footer = React.createClass({
+import Base from './Base';
 
+export default class Footer extends Base {
     render() {
         var contact = 'artists@setmine.com';
 
         return (
-            <footer>
-                <div className='flex-column links'>
-                    <a className='click' href='https://www.setmine.com/about'>
+            <footer id='Footer' className='row justify-space-between'>
+                <div className='column justify-space-around'>
+                    <a className='click' target='_blank' href='https://www.setmine.com/about'>
                         About
                     </a>
-                    <a href='http://bit.ly/SetmineiOS' title='view on App Store' className='click'>
-                        iOS
+                    <a href='http://bit.ly/SetmineiOS' target='_blank' className='click'>
+                        iOS App
                     </a>
-                    <a href='http://bit.ly/SetmineAndroid' title='view on Google Play'className='click'>
-                        Android
+                    <a href='http://bit.ly/SetmineAndroid' target='_blank' className='click'>
+                        Android App
                     </a>
-                    <div className='copyright'>
-                         <i className='fa fa-copyright'/>
-                         {' Setmusic LLC. 2015'}
-                     </div>
-              </div>
-                <div className='flex-column social'>
-                    <h4 className='flex-row'>
-                        <i className='fa fa-share-alt hidden'/>
-                        <span>CONNECT WITH US</span>
-                    </h4>
-                    <nav className='flex-row'>
-                        <a className='fa fa-fw fa-envelope-o' href={`mailto:${contact}`} />
-                        <a href='https://www.facebook.com/SetmineApp' className='fa fa-fw fa-facebook-square'/>
-                        <a href='https://twitter.com/setmineapp' className='fa fa-fw fa-twitter-square'/>
-                        <a href='https://instagram.com/setmine/' className='fa fa-fw fa-instagram'/>
-                        <a href='http://setmine.tumblr.com/' className='fa fa-fw fa-tumblr-square'/>
+                </div>
+
+                <div className='column justify-center align-center social'>
+                    <h4>CONNECT WITH US</h4>
+                    <nav className='row justify-space-between align-center'>
+                        <a target='_blank' href='https://www.facebook.com/SetmineApp' >
+                            <i className='fa fa-facebook-official fa-2x' style={{color: '#3B5998'}}></i>
+                        </a>
+                        <a target='_blank' href='https://twitter.com/setmineapp' >
+                            <i className='fa fa-twitter-square fa-2x' style={{color: '#55ACEE'}} ></i>
+                        </a>
+                        <a target='_blank' href='https://instagram.com/setmine/' >
+                            <i className='fa fa-instagram fa-2x' style={{color: '#3F729B'}} ></i>
+                        </a>
+                        <a target='_blank' href={`mailto:${contact}`} >
+                            <i className='fa fa-envelope fa-2x' style={{color: 'white'}} ></i>
+                        </a>
                     </nav>
                 </div>
-                <div className='flex-column sponsors'>
+
+                <div className='column justify-space-around'>
                     <a className='center' href='https://mixpanel.com/f/partner'><img src='//cdn.mxpnl.com/site_media/images/partner/badge_light.png' alt='Mobile Analytics' /></a>
                 </div>
             </footer>
         );
     }
-
- });
-
-module.exports = Footer;
+};

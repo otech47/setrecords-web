@@ -73,7 +73,7 @@ export default class Header extends Base {
         e.preventDefault();
         auth.logout()
             .then(() => {
-                this.context.router.push('/login');
+                this.context.router.push('/');
             })
             .catch((err) => {
                 console.log('==err===');

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Route, IndexRoute} from 'react-router';
+import {Route, IndexRoute, Redirect} from 'react-router';
 
 import App from './components/App';
 import auth from './lib/auth';
@@ -41,10 +41,9 @@ var routeGuard = (nextState, replace, callback) => {
 
 var routes = module.exports = (
     <Route path='/' component={App} >
-        <Route path='/login' component={LoginPage} onEnter={loginGuard} />
+        <IndexRoute component={LoginPage} onEnter={loginGuard} />
 
         <Route component={MainInterface} onEnter={routeGuard} >
-            <IndexRoute component={Dashboard} />
             <Route path='/dashboard' component={Dashboard} />
         </Route>
     </Route>

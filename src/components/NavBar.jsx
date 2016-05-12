@@ -28,7 +28,7 @@ export default class NavBar extends Base {
                     <NavLink expanded={this.state.expanded} icon={'queue_music'} text={'New Set'} to={'/upload-set'} />
                     <NavLink expanded={this.state.expanded} icon={'settings'} text={'Settings'} to={'/account'} />
                     <NavLink expanded={this.state.expanded} icon={'phone'} text={'Contact'} to={'/contact'} />
-                    <div onClick={this.toggleExpand}>
+                    <div className='hover-darken' onClick={this.toggleExpand}>
                         <ExpandingMenuOption text='Collapse' icon='list' expanded={this.state.expanded} />
                     </div>
                 </div>

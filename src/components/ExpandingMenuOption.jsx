@@ -1,3 +1,4 @@
+import FontIcon from 'material-ui/FontIcon';
 import React from 'react';
 
 import Base from './Base';
@@ -11,7 +12,7 @@ export default class ExpandingMenuOption extends Base {
     render() {
         return (
             <div id='ExpandingMenuOption' className='click row align-center'>
-                <Icon>{this.props.icon}</Icon>
+                <FontIcon className='material-icons' style={styles.icon}>{this.props.icon}</FontIcon>
                 {this.props.expanded ?
                     <p>{this.props.text}</p>
                     :
@@ -21,3 +22,9 @@ export default class ExpandingMenuOption extends Base {
         );
     }
 }
+
+const styles = {
+    icon: {
+        color: 'white'
+    }
+};
