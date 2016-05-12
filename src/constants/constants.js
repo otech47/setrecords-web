@@ -2,15 +2,13 @@ var constants = module.exports = (function() {
     var API_VERSION = 10;
 
     if (process.env.NODE_ENV == 'production') {
-        console.log('this is a production environment');
         var API_BASE_URL = 'https://api.setmine.com';
     } else {
-        console.log('this is a test environment');
         var API_BASE_URL = 'http://localhost:3000';
     }
 
     var API_ROOT = API_BASE_URL + '/v/' + API_VERSION + '/';
-    var API_GRAPH = API_ROOT + 'setrecordsuser/graph';
+    var API_GRAPH = API_ROOT + 'graphql';
 
     var S3_ROOT = 'http://stredm.s3-website-us-east-1.amazonaws.com/namecheap/';
     var S3_ROOT_FOR_IMAGES = 'http://d1wbxby8dwa4u.cloudfront.net/namecheap/';

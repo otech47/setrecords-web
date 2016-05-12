@@ -4,17 +4,11 @@ var auth = module.exports = (function() {
     return {
         loggedIn: function() {
             return new Promise((resolve, reject) => {
-                console.log('checking login status...');
                 api.post('setrecordsuser/login')
                     .then((response) => {
-                        console.log('==response===');
-                        console.log(response);
                         resolve(response.payload.artist.id);
                     })
                     .catch((err) => {
-                        console.log('==auth err===');
-                        console.log(err);
-
                         reject(err);
                     });
             });

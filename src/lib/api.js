@@ -32,20 +32,19 @@ var api = module.exports = (function() {
             );
         },
 
-        graph: function(params) {
-            var requestData = (params.operation == 'query' ?
-                {query: JSON.stringify(params.query)}
-                :
-                {mutation: JSON.stringify(params.query)});
-
+        graph: function(graphData) {
             return (
                 fetch(API_GRAPH, {
-                    type: 'get',
+                    method: 'POST',
                     crossDomain: true,
                     xhrFields: {
                         withCredentials: true
                     },
-                    data: requestData,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(graphData),
                     credentials: 'include'
                 })
                 .then( function(response) {

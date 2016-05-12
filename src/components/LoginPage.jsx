@@ -56,21 +56,12 @@ export default class LoginPage extends Base {
 
     submitLogin(e) {
         e.preventDefault();
-        console.log('Submitting login with:');
-        console.log(this.state.username);
-        console.log(this.state.password);
-
         auth.login(this.state.username, this.state.password)
             .then((artistId) => {
-                console.log('==artistId===');
-                console.log(artistId);
                 this.context.router.push('/dashboard');
                 // mixpanel.track('Successfully logged in');
             })
             .catch((err) => {
-                console.log('==err===');
-                console.log(err);
-
                 switch (err) {
                     case 'User not found':
                     // console.log('Username was incorrect.');

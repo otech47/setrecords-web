@@ -7,6 +7,12 @@ export default class Dashboard extends Base {
         super(props);
     }
 
+    componentWillMount() {
+        this.context.push({
+            headerText: 'Dashboard'
+        });
+    }
+
     render() {
         return (
             <div id='Dashboard'>
@@ -15,3 +21,7 @@ export default class Dashboard extends Base {
         );
     }
 }
+
+Dashboard.contextTypes = {
+    push: React.PropTypes.func
+};

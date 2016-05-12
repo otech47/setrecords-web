@@ -8,12 +8,8 @@ import LoginPage from './components/LoginPage';
 import MainInterface from './components/MainInterface';
 
 var loginGuard = (nextState, replace, callback) => {
-    console.log('running login guard to make sure we don\'t already have a session');
-
     auth.loggedIn()
         .then((artistId) => {
-            console.log('==artistId===');
-            console.log(artistId);
             replace({
                 pathname: '/dashboard',
                 state: {
@@ -23,24 +19,16 @@ var loginGuard = (nextState, replace, callback) => {
             callback();
         })
         .catch((err) => {
-            console.log('==loginguard err===');
-            console.log(err);
             callback();
         });
 }
 
 var routeGuard = (nextState, replace, callback) => {
-    console.log('running route guard to make sure we have a session');
-
     auth.loggedIn()
         .then((artistId) => {
-            console.log('==artistId===');
-            console.log(artistId);
             callback();
         })
         .catch((err) => {
-            console.log('==routeguard err===');
-            console.log(err);
             replace({
                 pathname: '/login',
                 state: {

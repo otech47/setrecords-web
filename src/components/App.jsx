@@ -3,12 +3,14 @@ import Immutable from 'immutable';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import React from 'react';
 
+import auth from '../lib/auth';
 import Base from './Base';
 import constants from '../constants/constants';
 import GlobalEventHandler from '../lib/globalEventHandler';
 
 var defaultValues = {
     artistId: 0,
+    headerText: '',
     notification: false
 };
 
@@ -43,6 +45,19 @@ export default class App extends Base {
 
     componentWillMount() {
         this._attachStreams(); //global event handler
+    }
+
+    componentDidMount() {
+        auth.loggedIn()
+            .then((artistId) => {
+                push({
+                    artistId: artistId
+                });
+            })
+            .catch((err) => {
+                console.log('==err===');
+                console.log(err);
+            })
     }
 
     render() {
