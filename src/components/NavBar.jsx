@@ -23,14 +23,14 @@ export default class NavBar extends Base {
                 </div>
 
                 <div className='column flex'>
-                    <NavLink expanded={this.state.expanded} icon={'trending_up'} text={'Dashboard'} to={'/dashboard'} />
-                    <NavLink expanded={this.state.expanded} icon={'library_music'} text={'Uploads'} to={'/content'} />
-                    <NavLink expanded={this.state.expanded} icon={'queue_music'} text={'New Set'} to={'/upload-set'} />
-                    <NavLink expanded={this.state.expanded} icon={'settings'} text={'Settings'} to={'/account'} />
-                    <NavLink expanded={this.state.expanded} icon={'phone'} text={'Contact'} to={'/contact'} />
                     <div className='hover-darken' onClick={this.toggleExpand}>
                         <ExpandingMenuOption text='Collapse' icon='list' expanded={this.state.expanded} />
                     </div>
+                    <NavLink expanded={this.state.expanded} icon={'trending_up'} text={'Dashboard'} to={'/dashboard'} />
+                    <NavLink expanded={this.state.expanded} icon={'library_music'} text={'Uploads'} to={'/content'} />
+                    <NavLink expanded={this.state.expanded} icon={'library_add'} text={'New Set'} to={'/upload-set'} />
+                    <NavLink expanded={this.state.expanded} icon={'settings'} text={'Settings'} to={'/account'} />
+                    <NavLink expanded={this.state.expanded} icon={'phone'} text={'Contact'} to={'/contact'} />
                 </div>
             </div>
         );

@@ -11,7 +11,7 @@ import GlobalEventHandler from '../lib/globalEventHandler';
 var defaultValues = {
     artistId: 0,
     headerText: '',
-    notification: false
+    modal: null
 };
 
 var initialAppState = Immutable.Map(defaultValues);
@@ -73,6 +73,8 @@ export default class App extends Base {
                             });
                         })
                     }
+
+                    {appState.get('modal')}
                 </div>
             </MuiThemeProvider>
         );

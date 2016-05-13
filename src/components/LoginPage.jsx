@@ -4,18 +4,19 @@ import React from 'react';
 
 import auth from '../lib/auth';
 import Base from './Base';
+import ForgotPasswordModal from './ForgotPasswordModal';
+import LoadingModal from './LoadingModal';
 import reactLink from '../lib/reactLink';
 
 export default class LoginPage extends Base {
     constructor(props) {
         super(props);
-        this.autoBind('submitLogin');
+        this.autoBind('showForgotPasswordModal', 'submitLogin');
 
         this.state = {
             username: '',
             password: '',
-            error: '',
-            changePassword: false
+            error: ''
         }
     }
 
@@ -49,22 +50,39 @@ export default class LoginPage extends Base {
                     </div>
                 </form>
 
-                <FlatButton className='forgot-password' style={styles.button} backgroundColor='#9B59B6' label='Forgot Password?' />
+                <FlatButton onClick={this.showForgotPasswordModal} className='forgot-password' style={styles.button} backgroundColor='#9B59B6' label='Forgot Password?' />
             </div>
         );
     }
 
+    showForgotPasswordModal(e) {
+        e.preventDefault();
+        this.context.push({
+            modal: (<ForgotPasswordModal />)
+        });
+    }
+
     submitLogin(e) {
         e.preventDefault();
+        this.context.push({
+            modal: (<LoadingModal title='Logging In...' />)
+        });
+
         auth.login(this.state.username, this.state.password)
             .then((artistId) => {
                 this.context.push({
                     artistId: artistId
                 });
                 this.context.router.push('/dashboard');
+                this.context.push({
+                    modal: null
+                });
                 // mixpanel.track('Successfully logged in');
             })
             .catch((err) => {
+                this.context.push({
+                    modal: null
+                });
                 switch (err) {
                     case 'User not found':
                     // console.log('Username was incorrect.');
@@ -132,4 +150,4 @@ const styles = {
         color: 'white',
         fontSize: '1.5rem'
     }
-}
+};
