@@ -58,6 +58,9 @@ export default class LoginPage extends Base {
         e.preventDefault();
         auth.login(this.state.username, this.state.password)
             .then((artistId) => {
+                this.context.push({
+                    artistId: artistId
+                });
                 this.context.router.push('/dashboard');
                 // mixpanel.track('Successfully logged in');
             })

@@ -5,7 +5,8 @@ var webpack = require('webpack');
 
 module.exports = {
     devServer: {
-        contentBase: 'public/'
+        contentBase: 'public/',
+        historyApiFallback: true
     },
 
     devtool: 'cheap-source-map',
