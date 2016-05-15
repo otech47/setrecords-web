@@ -4,34 +4,37 @@ import React from 'react';
 import TextField from 'material-ui/TextField';
 import validator from 'validator';
 
+import api from '../lib/api';
 import Base from './Base';
 import reactLink from '../lib/reactLink';
 
 export default class ForgotPasswordModal extends Base {
     constructor(props) {
         super(props);
-        this.autoBind('closeModal');
+        this.autoBind('closeModal', 'submitPasswordRecovery');
 
         this.state = {
-            email: ''
+            email: '',
+            error: null
         };
     }
 
     render() {
         var linkState = reactLink(this);
         var validEmail = validator.isEmail(this.state.email);
-        console.log(!validEmail);
 
         var actions = [
             <FlatButton onClick={this.closeModal} labelStyle={styles.buttonText} style={styles.button} backgroundColor='#BDC3C7' label='Cancel' />,
+
             <FlatButton type='submit' onClick={this.submitPasswordRecovery} labelStyle={styles.buttonText} style={this.state.email.length == 0 || !validEmail ? styles.disabledButton : styles.button} backgroundColor='#22A7F0' label='Submit' disabled={this.state.email.length == 0 || !validEmail} />
         ];
 
         return (
-            <Dialog title='Password Recovery' open={true} contentStyle={{width: '50%'}} bodyStyle={{textAlign: 'center'}} actions={actions} >
+            <Dialog title='Password Recovery' open={this.props.modal} contentStyle={{width: '50%'}} bodyStyle={{textAlign: 'center'}} actions={actions} >
                 <h2>Enter your email address below to receive a password reset link.</h2>
 
                 <TextField fullWidth={true} floatingLabelStyle={styles.floatingLabel} inputStyle={styles.input} floatingLabelText='email address' value={this.state.email} type='email' onChange={linkState('email')} />
+                <h3 className='warning'>{this.state.error}</h3>
             </Dialog>
         )
     }
@@ -39,12 +42,46 @@ export default class ForgotPasswordModal extends Base {
     closeModal(e) {
         e.preventDefault();
         this.context.push({
-            modal: null
+            forgotPasswordModal: false
         });
     }
 
     submitPasswordRecovery(e) {
         e.preventDefault();
+
+        this.context.push({
+            forgotPasswordModal: false,
+            loadingModal: {
+                open: true,
+                title: 'Please Wait...'
+            }
+        });
+
+        var requestUrl = 'setrecordsuser/password/recover';
+        api.post(requestUrl, {email: this.state.email})
+            .then((res) => {
+                this.context.push({
+                    loadingModal: {
+                        open: false
+                    },
+                    infoModal: {
+                        message: 'An email has been sent to ' + this.state.email + ' with instructions on how to reset your password.',
+                        open: true,
+                        title: 'Recovery Link Sent'
+                    }
+                });
+            })
+            .catch((err) => {
+                this.context.push({
+                    forgotPasswordModal: true,
+                    loadingModal: {
+                        open: false
+                    }
+                });
+                this.setState({
+                    error: 'Sorry, we couldn\'t find a user with that email.'
+                });
+            });
     }
 };
 

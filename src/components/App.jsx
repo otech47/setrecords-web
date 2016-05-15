@@ -6,12 +6,25 @@ import React from 'react';
 import auth from '../lib/auth';
 import Base from './Base';
 import constants from '../constants/constants';
+import ForgotPasswordModal from './ForgotPasswordModal';
 import GlobalEventHandler from '../lib/globalEventHandler';
+import InfoModal from './InfoModal';
+import LoadingModal from './LoadingModal';
 
 var defaultValues = {
     artistId: 0,
+    forgotPasswordModal: false,
     headerText: '',
-    modal: null
+    infoModal: {
+        open: false,
+        title: '',
+        message: ''
+    },
+    loadingModal: {
+        open: false,
+        title: '',
+        message: ''
+    }
 };
 
 var initialAppState = Immutable.Map(defaultValues);
@@ -74,7 +87,9 @@ export default class App extends Base {
                         })
                     }
 
-                    {appState.get('modal')}
+                    <InfoModal modal={appState.get('infoModal')} />
+                    <LoadingModal modal={appState.get('loadingModal')} />
+                    <ForgotPasswordModal modal={appState.get('forgotPasswordModal')} />
                 </div>
             </MuiThemeProvider>
         );

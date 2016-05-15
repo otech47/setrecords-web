@@ -4,8 +4,6 @@ import React from 'react';
 
 import auth from '../lib/auth';
 import Base from './Base';
-import ForgotPasswordModal from './ForgotPasswordModal';
-import LoadingModal from './LoadingModal';
 import reactLink from '../lib/reactLink';
 
 export default class LoginPage extends Base {
@@ -46,6 +44,7 @@ export default class LoginPage extends Base {
 
                     <div className='row login-buttons'>
                         <FlatButton labelStyle={styles.buttonText} style={styles.button} backgroundColor='#36D7B7' className='flex' label='Sign Up' />
+
                         <FlatButton type='submit' onClick={this.submitLogin} labelStyle={styles.buttonText} style={this.state.username.length == 0 || this.state.password.length == 0 ? styles.disabledButton : styles.button} backgroundColor='#22A7F0' className='flex' label='Log In' disabled={this.state.username.length == 0 || this.state.password.length == 0} />
                     </div>
                 </form>
@@ -58,14 +57,17 @@ export default class LoginPage extends Base {
     showForgotPasswordModal(e) {
         e.preventDefault();
         this.context.push({
-            modal: (<ForgotPasswordModal />)
+            forgotPasswordModal: true
         });
     }
 
     submitLogin(e) {
         e.preventDefault();
         this.context.push({
-            modal: (<LoadingModal title='Logging In...' />)
+            loadingModal: {
+                open: true,
+                title: 'Logging In...'
+            }
         });
 
         auth.login(this.state.username, this.state.password)
@@ -75,13 +77,17 @@ export default class LoginPage extends Base {
                 });
                 this.context.router.push('/dashboard');
                 this.context.push({
-                    modal: null
+                    loadingModal: {
+                        open: false
+                    }
                 });
                 // mixpanel.track('Successfully logged in');
             })
             .catch((err) => {
                 this.context.push({
-                    modal: null
+                    loadingModal: {
+                        open: false
+                    }
                 });
                 switch (err) {
                     case 'User not found':
