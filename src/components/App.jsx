@@ -3,6 +3,7 @@ import Immutable from 'immutable';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import React from 'react';
 
+import ArtistSignupModal from './ArtistSignupModal';
 import auth from '../lib/auth';
 import Base from './Base';
 import constants from '../constants/constants';
@@ -13,6 +14,7 @@ import LoadingModal from './LoadingModal';
 
 var defaultValues = {
     artistId: 0,
+    artistSignupModal: false,
     forgotPasswordModal: false,
     headerText: '',
     infoModal: {
@@ -68,9 +70,9 @@ export default class App extends Base {
                 });
             })
             .catch((err) => {
-                console.log('==err===');
-                console.log(err);
-            })
+                // console.log('==err==');
+                // console.log(err);
+            });
     }
 
     render() {
@@ -87,6 +89,7 @@ export default class App extends Base {
                         })
                     }
 
+                    <ArtistSignupModal modal={appState.get('artistSignupModal')} />
                     <InfoModal modal={appState.get('infoModal')} />
                     <LoadingModal modal={appState.get('loadingModal')} />
                     <ForgotPasswordModal modal={appState.get('forgotPasswordModal')} />

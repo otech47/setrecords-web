@@ -9,7 +9,7 @@ import reactLink from '../lib/reactLink';
 export default class LoginPage extends Base {
     constructor(props) {
         super(props);
-        this.autoBind('showForgotPasswordModal', 'submitLogin');
+        this.autoBind('showArtistSignupModal', 'showForgotPasswordModal', 'submitLogin');
 
         this.state = {
             username: '',
@@ -43,7 +43,7 @@ export default class LoginPage extends Base {
                     </div>
 
                     <div className='row login-buttons'>
-                        <FlatButton labelStyle={styles.buttonText} style={styles.button} backgroundColor='#36D7B7' className='flex' label='Sign Up' />
+                        <FlatButton onClick={this.showArtistSignupModal} labelStyle={styles.buttonText} style={styles.button} backgroundColor='#36D7B7' className='flex' label='Sign Up' />
 
                         <FlatButton type='submit' onClick={this.submitLogin} labelStyle={styles.buttonText} style={this.state.username.length == 0 || this.state.password.length == 0 ? styles.disabledButton : styles.button} backgroundColor='#22A7F0' className='flex' label='Log In' disabled={this.state.username.length == 0 || this.state.password.length == 0} />
                     </div>
@@ -52,6 +52,13 @@ export default class LoginPage extends Base {
                 <FlatButton onClick={this.showForgotPasswordModal} className='forgot-password' style={styles.button} backgroundColor='#9B59B6' label='Forgot Password?' />
             </div>
         );
+    }
+
+    showArtistSignupModal(e) {
+        e.preventDefault();
+        this.context.push({
+            artistSignupModal: true
+        });
     }
 
     showForgotPasswordModal(e) {

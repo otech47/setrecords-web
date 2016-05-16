@@ -11,9 +11,6 @@ export default class InfoModal extends Base {
     }
 
     render() {
-        console.log('==this.props.modal.open==');
-        console.log(this.props.modal.open);
-
         var actions = [
             <FlatButton type='submit' onClick={this.closeModal} labelStyle={styles.buttonText} style={styles.button} backgroundColor='#22A7F0' label='Ok' />
         ];
