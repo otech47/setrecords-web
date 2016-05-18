@@ -53,7 +53,7 @@ export default class NewArtistModal extends Base {
     createNewAccount() {
         var requestUrl = 'https://api.setmine.com/v/10/graphql';
 
-        var query = `mutation NewUser {createNewSetrecordsUser(username: \"${this.state.username}\", email: \"${this.state.email}\", password: \"${this.state.password}\", artist_name: \"${this.state.artistName}\")}`;
+        var queryString = `mutation NewUser {createNewSetrecordsUser(username: \"${this.state.username}\", email: \"${this.state.email}\", password: \"${this.state.password}\", artist_name: \"${this.state.artistName}\")}`;
 
         this.props.push({
             type: 'SHALLOW_MERGE',
@@ -64,7 +64,7 @@ export default class NewArtistModal extends Base {
         });
 
         fetch(requestUrl, {
-            method: 'GET',
+            method: 'post',
             crossDomain: true,
             xhrFields: {
                 withCredentials: true
@@ -73,14 +73,13 @@ export default class NewArtistModal extends Base {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            data: {query: query},
+            body: JSON.stringify({query: queryString}),
             credentials: 'include'
         })
         .then((response) => {
-            return response.json();
+            return Promise.resolve(response.json());
         })
         .then((response) => {
-            console.log(response);
             if (response && response.status == 'failure') {
                 return Promise.reject(response.error);
             } else {
@@ -99,8 +98,7 @@ export default class NewArtistModal extends Base {
             this.handleClose();
         })
         .catch((err) => {
-            console.log(err);
-            var errorMessage = err.responseJSON.error[0].message;
+            var errorMessage = err[0].message;
 
             switch(errorMessage) {
                 case 'Artist name is taken.':
