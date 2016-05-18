@@ -63,6 +63,7 @@ export default class NewArtistModal extends Base {
             }
         });
 
+
         fetch(requestUrl, {
             method: 'post',
             crossDomain: true,
