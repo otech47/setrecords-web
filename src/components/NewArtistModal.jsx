@@ -63,18 +63,31 @@ export default class NewArtistModal extends Base {
             }
         });
 
-        $.ajax({
-            type: 'POST',
-            url: requestUrl,
+        fetch(requestUrl, {
+            method: 'GET',
             crossDomain: true,
             xhrFields: {
                 withCredentials: true
             },
-            data: {
-                query: query
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            data: {query: query},
+            credentials: 'include'
+        })
+        .then((response) => {
+            return response.json();
+        })
+        .then((response) => {
+            console.log(response);
+            if (response && response.status == 'failure') {
+                return Promise.reject(response.error);
+            } else {
+                return Promise.resolve(response);
             }
         })
-        .done((res) => {
+        .then((res) => {
             this.props.push({
                 type: 'SHALLOW_MERGE',
                 data: {
@@ -85,7 +98,8 @@ export default class NewArtistModal extends Base {
 
             this.handleClose();
         })
-        .fail((err) => {
+        .catch((err) => {
+            console.log(err);
             var errorMessage = err.responseJSON.error[0].message;
 
             switch(errorMessage) {
