@@ -53,7 +53,7 @@ export default class NewArtistModal extends Base {
     createNewAccount() {
         var requestUrl = 'https://api.setmine.com/v/10/graphql';
 
-        var query = `mutation NewUser {createNewSetrecordsUser(username: \"${this.state.username}\", email: \"${this.state.email}\", password: \"${this.state.password}\", artist_name: \"${this.state.artistName}\")}`;
+        var queryString = `mutation NewUser {createNewSetrecordsUser(username: \"${this.state.username}\", email: \"${this.state.email}\", password: \"${this.state.password}\", artist_name: \"${this.state.artistName}\")}`;
 
         this.props.push({
             type: 'SHALLOW_MERGE',
@@ -63,18 +63,31 @@ export default class NewArtistModal extends Base {
             }
         });
 
-        $.ajax({
-            type: 'POST',
-            url: requestUrl,
+
+        fetch(requestUrl, {
+            method: 'post',
             crossDomain: true,
             xhrFields: {
                 withCredentials: true
             },
-            data: {
-                query: query
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({query: queryString}),
+            credentials: 'include'
+        })
+        .then((response) => {
+            return Promise.resolve(response.json());
+        })
+        .then((response) => {
+            if (response && response.status == 'failure') {
+                return Promise.reject(response.error);
+            } else {
+                return Promise.resolve(response);
             }
         })
-        .done((res) => {
+        .then((res) => {
             this.props.push({
                 type: 'SHALLOW_MERGE',
                 data: {
@@ -85,8 +98,8 @@ export default class NewArtistModal extends Base {
 
             this.handleClose();
         })
-        .fail((err) => {
-            var errorMessage = err.responseJSON.error[0].message;
+        .catch((err) => {
+            var errorMessage = err[0].message;
 
             switch(errorMessage) {
                 case 'Artist name is taken.':
