@@ -1,6 +1,5 @@
 @import "variables.less";
 @import "colors.less";
-@import "fonts.less";
 
 // complementary color scheme
 @base: #663333;
@@ -90,7 +89,7 @@
     .flex(6,1,auto)!important;
 }
 .buffer-lg {
-    .flex(10,1,auto)!important;   
+    .flex(10,1,auto)!important;
 }
 .card(@level: 1) {
     & when (@level = 1) {
@@ -190,7 +189,7 @@
 }
 .flex(@flexGrow:1, @flexShrink: 1, @flexBasis: auto) {
     -webkit-box-flex: @flexGrow @flexShrink @flexBasis;
-    -moz-box-flex: @flexGrow @flexShrink @flexBasis; 
+    -moz-box-flex: @flexGrow @flexShrink @flexBasis;
     -webkit-flex: @flexGrow @flexShrink @flexBasis;
     -ms-flex: @flexGrow @flexShrink @flexBasis;
     flex: @flexGrow @flexShrink @flexBasis;

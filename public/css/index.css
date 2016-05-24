@@ -262,67 +262,6 @@
 .unflex-container {
   display: initial;
 }
-/* Fonts */
-@font-face {
-  font-family: Roboto;
-  src: url(../fonts/Roboto-Regular.ttf);
-}
-@font-face {
-  font-family: Roboto Thin;
-  src: url(../fonts/Roboto-Thin.ttf);
-}
-@font-face {
-  font-family: Yellow Peas;
-  src: url(../fonts/SECRCODE.ttf);
-}
-@font-face {
-  font-family: SF New Republic;
-  src: url(../fonts/SFNewRepublic.ttf);
-}
-@font-face {
-  font-family: District;
-  src: url(../fonts/DistProTh.otf);
-}
-@font-face {
-  font-family: Kasse;
-  src: url(../fonts/KasseFLF.ttf);
-}
-@font-face {
-  font-family: Lane;
-  src: url(../fonts/Lane-Regular.ttf);
-}
-@font-face {
-  font-family: Source Sans Pro;
-  src: url(../fonts/SourceSansPro-Regular.ttf);
-}
-@font-face {
-  font-family: Source Sans Pro Light;
-  src: url(../fonts/SourceSansPro-Light.ttf);
-}
-@font-face {
-  font-family: Source Sans Pro Extra Light;
-  src: url(../fonts/SourceSansPro-ExtraLight.ttf);
-}
-@font-face {
-  font-family: Avenir Demi;
-  src: url(../fonts/AvenirNextLTPro-Demi.otf);
-}
-@font-face {
-  font-family: Avenir Regular;
-  src: url(../fonts/AvenirNextLTPro-Regular.otf);
-}
-@font-face {
-  font-family: Avenir Light;
-  src: url(../fonts/AvenirNextLTPro-UltLtCn.otf);
-}
-@font-face {
-  font-family: Avenir Pro Condensed;
-  src: url(../fonts/AvenirNextLTPro-Cn.otf);
-}
-@font-face {
-  font-family: Avenir Pro Bold;
-  src: url(../fonts/AvenirNextLTPro-Bold.otf);
-}
 .invisible {
   visibility: hidden;
 }
@@ -400,7 +339,6 @@ input:focus {
   min-height: 100px;
   min-width: 35vw;
   font-size: 1rem;
-  font-family: Avenir Regular;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
@@ -775,7 +713,6 @@ footer .social {
   }
 }
 .metrics-panel .title {
-  font-family: Avenir Demi;
   font-size: 1.5rem;
   background-color: #f7f7f7;
   align-items: center;
@@ -803,7 +740,6 @@ footer .social {
 .not-found {
   margin: auto;
   color: #313542;
-  font-family: Avenir Regular;
   font-size: 1.25rem;
 }
 .time-selector {
@@ -816,7 +752,6 @@ footer .social {
   height: 2.5rem;
   text-transform: uppercase;
   font-size: 1rem;
-  font-family: Avenir Pro Condensed;
   cursor: pointer;
   box-shadow: 0 1px 4px 0 rgba(49, 53, 66, 0.37);
 }
@@ -1088,7 +1023,6 @@ footer .social {
   color: black;
   background-color: #bdc3c7;
   border-color: #bdc3c7;
-  font-family: Avenir Demi;
   font-weight: bold;
   padding: 0;
   border: none;
@@ -1102,7 +1036,6 @@ footer .social {
   display: none;
 }
 #UploadSetWizard .step-counter {
-  font-family: Avenir Regular;
   color: #313542;
   text-align: center;
   justify-content: space-between;
@@ -1134,7 +1067,6 @@ footer .social {
   width: 25rem;
   font-size: 1rem;
   border: 4px dotted #9b59b6;
-  font-family: Avenir Regular;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
@@ -1343,7 +1275,6 @@ footer .social {
   border: none;
   color: white;
   background-color: #33b510;
-  font-family: Avenir Demi;
   border-radius: 12px;
 }
 input {
