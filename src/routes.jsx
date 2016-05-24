@@ -30,7 +30,7 @@ var routeGuard = (nextState, replace, callback) => {
         })
         .catch((err) => {
             replace({
-                pathname: '/login',
+                pathname: '/',
                 state: {
                     nextPathname: nextState.location.pathname
                 }
