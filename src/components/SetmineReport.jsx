@@ -51,7 +51,6 @@ export default class SetmineReport extends Base {
         var currentViews = metrics.views && metrics.views.current ? metrics.views.current : 0;
         var currentFavorites = metrics.favorites && metrics.favorites.current ? metrics.favorites.current : 0;
 
-
         return (
             <div id='SetmineReport' className='dashboard-tile column align-center'>
                 <TitleCard title='Setmine' iconPath='images/setminelogo.png' />

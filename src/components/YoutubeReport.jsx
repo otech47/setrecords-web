@@ -1,19 +1,140 @@
+import moment from 'moment';
 import React from 'react';
 
+import api from '../lib/api';
 import Base from './Base';
+import CircularProgress from 'material-ui/CircularProgress';
+import CohortSelector from './CohortSelector';
+import MetricsGraph from './MetricsGraph';
+import MetricsToggle from './MetricsToggle';
+import TitleCard from './TitleCard';
 
 export default class YoutubeReport extends Base {
     constructor(props) {
         super(props);
+        this.autoBind('fetchYoutubeMetrics', 'toggleVisibility');
+
+        this.state = {
+            cohort: 'daily',
+            loaded: false,
+            metrics: {},
+            plays: true,
+            followers: true
+        };
+    }
+
+    componentDidMount() {
+        this.fetchYoutubeMetrics({artistId: this.context.artistId});
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        if (nextContext.artistId !== this.context.artistId) {
+            this.fetchYoutubeMetrics({artistId: nextContext.artistId});
+        }
     }
 
     render() {
+        var metrics = this.state.metrics;
+        var visibleMetrics = [];
+        if (this.state.plays) {
+            visibleMetrics.push(metrics.plays);
+        }
+        if (this.state.followers) {
+            visibleMetrics.push(metrics.followers);
+        }
+
+        var currentPlays = metrics.plays && metrics.plays.current ? metrics.plays.current : 0;
+        var currentFollowers = metrics.followers && metrics.followers.current ? metrics.followers.current : 0;
+
         return (
-            <div id='YoutubeReport' className='dashboard-tile'>
+            <div id='YoutubeReport' className='dashboard-tile column align-center'>
+                <TitleCard title='Youtube' iconPath='images/youtube_icon.png' />
+
+                <CohortSelector ready={this.state.loaded} onChange={this.fetchYoutubeMetrics} />
+
+                <div className='row metrics-toggle'>
+                    <MetricsToggle title='plays' metric={currentPlays} onToggle={this.toggleVisibility} />
+                    <MetricsToggle title='followers' metric={currentFollowers} onToggle={this.toggleVisibility} />
+                </div>
+
+                {this.state.loaded ?
+                    <MetricsGraph metrics={visibleMetrics} />
+                    :
+                    <CircularProgress />
+                }
             </div>
         )
     }
+
+    fetchYoutubeMetrics(params) {
+        var artistId = params.artistId;
+        if (artistId) {
+            this.setState({
+                loaded: false
+            });
+
+            var cohort = params.cohort || 'daily';
+            var timezoneOffset = moment().utcOffset();
+
+            var queryString = `{
+                youtube_metrics (artist_id: ${artistId}) {
+                    plays_overtime (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
+                        date,
+                        count
+                    },
+                    plays_current,
+                    followers_overtime (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
+                        date,
+                        count
+                    },
+                    followers_current
+                }
+            }`;
+
+            api.graph({
+                query: queryString
+            }).then((res) => {
+                if (res.payload.youtube_metrics != null) {
+                    var youtube = res.payload.youtube_metrics;
+
+                    return {
+                        plays: {
+                            current: youtube.plays_current,
+                            overtime: youtube.plays_overtime
+                        },
+                        followers: {
+                            current: youtube.followers_current,
+                            overtime: youtube.followers_overtime
+                        }
+                    };
+                }
+            })
+            .then((youtubeMetrics) => {
+                this.setState({
+                    metrics: youtubeMetrics
+                });
+            })
+            .then(() => {
+                this.setState({
+                    loaded: true
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        }
+    }
+
+    toggleVisibility(metricName) {
+        this.setState({
+            [metricName]: !this.state[metricName]
+        });
+    }
 }
+
+YoutubeReport.contextTypes = {
+    artistId: React.PropTypes.number
+};
 
 // var YoutubeReport = React.createClass({
 //     getInitialState() {

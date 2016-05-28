@@ -1,63 +1,141 @@
+import moment from 'moment';
 import React from 'react';
 
+import api from '../lib/api';
 import Base from './Base';
+import CircularProgress from 'material-ui/CircularProgress';
+import CohortSelector from './CohortSelector';
+import MetricsGraph from './MetricsGraph';
+import MetricsToggle from './MetricsToggle';
+import TitleCard from './TitleCard';
 
 export default class SoundcloudReport extends Base {
     constructor(props) {
         super(props);
+        this.autoBind('fetchSoundcloudMetrics', 'toggleVisibility');
+
+        this.state = {
+            cohort: 'daily',
+            loaded: false,
+            metrics: {},
+            plays: true,
+            followers: true
+        };
+    }
+
+    componentDidMount() {
+        this.fetchSoundcloudMetrics({artistId: this.context.artistId});
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        if (nextContext.artistId !== this.context.artistId) {
+            this.fetchSoundcloudMetrics({artistId: nextContext.artistId});
+        }
     }
 
     render() {
+        var metrics = this.state.metrics;
+        var visibleMetrics = [];
+        if (this.state.plays) {
+            visibleMetrics.push(metrics.plays);
+        }
+        if (this.state.followers) {
+            visibleMetrics.push(metrics.followers);
+        }
+
+        var currentPlays = metrics.plays && metrics.plays.current ? metrics.plays.current : 0;
+        var currentFollowers = metrics.followers && metrics.followers.current ? metrics.followers.current : 0;
+
         return (
-            <div id='SoundcloudReport' className='dashboard-tile'>
+            <div id='SoundcloudReport' className='dashboard-tile column align-center'>
+                <TitleCard title='Soundcloud' iconPath='images/soundcloud_icon.png' />
+
+                <CohortSelector ready={this.state.loaded} onChange={this.fetchSoundcloudMetrics} />
+
+                <div className='row metrics-toggle'>
+                    <MetricsToggle title='plays' metric={currentPlays} onToggle={this.toggleVisibility} />
+                    <MetricsToggle title='followers' metric={currentFollowers} onToggle={this.toggleVisibility} />
+                </div>
+
+                {this.state.loaded ?
+                    <MetricsGraph metrics={visibleMetrics} />
+                    :
+                    <CircularProgress />
+                }
             </div>
         )
     }
+
+    fetchSoundcloudMetrics(params) {
+        var artistId = params.artistId;
+        if (artistId) {
+            this.setState({
+                loaded: false
+            });
+
+            var cohort = params.cohort || 'daily';
+            var timezoneOffset = moment().utcOffset();
+
+            var queryString = `{
+                soundcloud_metrics (artist_id: ${artistId}) {
+                    plays_overtime (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
+                        date,
+                        count
+                    },
+                    plays_current,
+                    followers_overtime (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
+                        date,
+                        count
+                    },
+                    followers_current
+                }
+            }`;
+
+            api.graph({
+                query: queryString
+            }).then((res) => {
+                if (res.payload.soundcloud_metrics != null) {
+                    var soundcloud = res.payload.soundcloud_metrics;
+
+                    return {
+                        plays: {
+                            current: soundcloud.plays_current,
+                            overtime: soundcloud.plays_overtime
+                        },
+                        followers: {
+                            current: soundcloud.followers_current,
+                            overtime: soundcloud.followers_overtime
+                        }
+                    };
+                }
+            })
+            .then((soundcloudMetrics) => {
+                this.setState({
+                    metrics: soundcloudMetrics
+                });
+            })
+            .then(() => {
+                this.setState({
+                    loaded: true
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        }
+    }
+
+    toggleVisibility(metricName) {
+        this.setState({
+            [metricName]: !this.state[metricName]
+        });
+    }
 }
 
-// var SoundcloudReport = React.createClass({
-//     getInitialState() {
-//         return {
-//             cohort: 'daily',
-//             followers: true,
-//             loaded: false,
-//             plays: true
-//         }
-//     },
-//
-//     shouldComponentUpdate (nextProps, nextState) {
-//         if (nextProps.artistId != this.props.artistId) {
-//             this.updateSoundcloud(nextProps.artistId, this.state.cohort);
-//
-//             return true;
-//         }
-//
-//         if (!_.isEqual(nextState, this.state)) {
-//             return true;
-//         }
-//
-//         return false;
-//     },
-//
-//     componentDidMount() {
-//         this.updateSoundcloud(this.props.artistId, this.state.cohort);
-//     },
-//
-//     toggleData(metricType) {
-//         var clicked = {};
-//         clicked[metricType] = !this.state[metricType];
-//
-//         this.setState(clicked);
-//     },
-//
-//     changeCohort(newCohort) {
-//         if (this.state.loaded && (newCohort != this.state.cohort)) {
-//             this.setState({
-//                 cohort: newCohort,
-//                 loaded: false
-//             }, this.updateSoundcloud(this.props.artistId, newCohort));
-//         }
-//     },
+SoundcloudReport.contextTypes = {
+    artistId: React.PropTypes.number
+};
+
 //
 //     lineGraph() {
 //         if ((this.state.plays || this.state.followers) && this.state.loaded) {
@@ -123,20 +201,6 @@ export default class SoundcloudReport extends Base {
 //
 //     updateSoundcloud(artistId, cohort) {
 //         var timezoneOffset = moment().utcOffset();
-//         var query = `{
-//             soundcloud_metrics (artist_id: ${artistId}) {
-//                 plays_overtime (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
-//                     date,
-//                     count
-//                 },
-//                 plays_current,
-//                 followers_overtime (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
-//                     date,
-//                     count
-//                 },
-//                 followers_current
-//             }
-//         }`;
 //
 //         var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
 //

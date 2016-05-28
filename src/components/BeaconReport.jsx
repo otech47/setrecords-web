@@ -1,63 +1,145 @@
+import moment from 'moment';
 import React from 'react';
 
+import api from '../lib/api';
 import Base from './Base';
+import CircularProgress from 'material-ui/CircularProgress';
+import CohortSelector from './CohortSelector';
+import MetricsGraph from './MetricsGraph';
+import MetricsToggle from './MetricsToggle';
+import TitleCard from './TitleCard';
 
 export default class BeaconReport extends Base {
     constructor(props) {
         super(props);
+        this.autoBind('fetchBeaconMetrics', 'toggleVisibility');
+
+        this.state = {
+            cohort: 'daily',
+            loaded: false,
+            metrics: {},
+            unlocks: true,
+            revenue: true
+        };
+    }
+
+    componentDidMount() {
+        this.fetchBeaconMetrics({artistId: this.context.artistId});
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        if (nextContext.artistId !== this.context.artistId) {
+            this.fetchBeaconMetrics({artistId: nextContext.artistId});
+        }
     }
 
     render() {
+        var metrics = this.state.metrics;
+        var visibleMetrics = [];
+        if (this.state.unlocks) {
+            visibleMetrics.push(metrics.unlocks);
+        }
+        if (this.state.revenue) {
+            visibleMetrics.push(metrics.revenue);
+        }
+
+        var currentUnlocks = metrics.unlocks && metrics.unlocks.current ? metrics.unlocks.current : 0;
+        var currentRevenue = metrics.revenue && metrics.revenue.current ? metrics.revenue.current : 0;
+
         return (
-            <div id='BeaconReport' className='dashboard-tile'>
+            <div id='BeaconReport' className='dashboard-tile column align-center'>
+                <TitleCard title='Beacons' iconPath='images/beacon_icon.png' />
+
+                <CohortSelector ready={this.state.loaded} onChange={this.fetchBeaconMetrics} />
+
+                <div className='row metrics-toggle'>
+                    <MetricsToggle title='unlocks' metric={currentUnlocks} onToggle={this.toggleVisibility} />
+                    <MetricsToggle title='revenue' metric={currentRevenue} onToggle={this.toggleVisibility} />
+                </div>
+
+                {this.state.loaded ?
+                    <MetricsGraph metrics={visibleMetrics} />
+                    :
+                    <CircularProgress />
+                }
             </div>
         )
     }
+
+    fetchBeaconMetrics(params) {
+        var artistId = params.artistId;
+        if (artistId) {
+            this.setState({
+                loaded: false
+            });
+
+            var cohort = params.cohort || 'daily';
+            var timezoneOffset = moment().utcOffset();
+
+            var queryString = `{
+                beacon_metrics (artist_id: ${artistId}) {
+                    unlocks (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
+                        date,
+                        count
+                    },
+                    revenue (cohort: \"${cohort}\", timezoneOffset: ${timezoneOffset}) {
+                        date,
+                        count
+                    }
+                },
+                artist (id: ${artistId}) {
+                    unlocks,
+                    revenue
+                }
+            }`;
+
+            api.graph({
+                query: queryString
+            }).then((res) => {
+                if (res.payload.artist != null && res.payload.beacon_metrics != null) {
+                    var artist = res.payload.artist;
+                    var overtime = res.payload.beacon_metrics;
+
+                    return {
+                        unlocks: {
+                            current: artist.unlocks,
+                            overtime: overtime.unlocks
+                        },
+                        revenue: {
+                            current: artist.revenue,
+                            overtime: overtime.revenue
+                        }
+                    };
+                }
+            })
+            .then((beaconMetrics) => {
+                this.setState({
+                    metrics: beaconMetrics
+                });
+            })
+            .then(() => {
+                this.setState({
+                    loaded: true
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        }
+    }
+
+    toggleVisibility(metricName) {
+        this.setState({
+            [metricName]: !this.state[metricName]
+        });
+    }
 }
 
-// var BeaconReport = React.createClass({
-//     getInitialState() {
-//         return {
-//             cohort: 'daily',
-//             loaded: false,
-//             revenue: true,
-//             unlocks: true
-//         }
-//     },
-//
-//     shouldComponentUpdate (nextProps, nextState) {
-//         if (nextProps.artistId != this.props.artistId) {
-//             this.updateBeacon(nextProps.artistId, this.state.cohort);
-//
-//             return true;
-//         }
-//
-//         if (!_.isEqual(nextState, this.state)) {
-//             return true;
-//         }
-//
-//         return false;
-//     },
-//
-//     componentDidMount() {
-//         this.updateBeacon(this.props.artistId, this.state.cohort);
-//     },
-//
-//     toggleData(metricType) {
-//         var clicked = {};
-//         clicked[metricType] = !this.state[metricType];
-//
-//         this.setState(clicked);
-//     },
-//
-//     changeCohort(newCohort) {
-//         if (this.state.loaded && (newCohort != this.state.cohort)) {
-//             this.setState({
-//                 cohort: newCohort,
-//                 loaded: false
-//             }, this.updateBeacon(this.props.artistId, newCohort));
-//         }
-//     },
+BeaconReport.contextTypes = {
+    artistId: React.PropTypes.number
+};
+
+
 //
 //     lineGraph() {
 //         if ((this.state.revenue || this.state.unlocks) && this.state.loaded) {
