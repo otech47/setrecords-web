@@ -36,15 +36,20 @@ export default class SetmineReport extends Base {
 
     render() {
         var metrics = this.state.metrics;
+        var colors = [];
         var visibleMetrics = [];
+
         if (this.state.plays) {
             visibleMetrics.push(metrics.plays);
+            colors.push('#9b59b6');
         }
         if (this.state.views) {
             visibleMetrics.push(metrics.views);
+            colors.push('#22a7f0');
         }
         if (this.state.favorites) {
             visibleMetrics.push(metrics.favorites);
+            colors.push('#36d7b7');
         }
 
         var currentPlays = metrics.plays && metrics.plays.current ? metrics.plays.current : 0;
@@ -64,7 +69,7 @@ export default class SetmineReport extends Base {
                 </div>
 
                 {this.state.loaded ?
-                    <MetricsGraph metrics={visibleMetrics} />
+                    <MetricsGraph metrics={visibleMetrics} colors={colors} cohort={this.state.cohort} />
                     :
                     <CircularProgress />
                 }

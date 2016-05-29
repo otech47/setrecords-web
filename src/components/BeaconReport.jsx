@@ -58,7 +58,7 @@ export default class BeaconReport extends Base {
                 </div>
 
                 {this.state.loaded ?
-                    <MetricsGraph metrics={visibleMetrics} />
+                    <MetricsGraph metrics={visibleMetrics} cohort={this.state.cohort} />
                     :
                     <CircularProgress />
                 }
