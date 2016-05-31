@@ -21,6 +21,7 @@ import async from 'async';
 import Icon from './Icon';
 import {History} from 'react-router';
 import LoadingNotification from './LoadingNotification';
+import ProgressNotification from './ProgressNotification';
 
 var SC = require('soundcloud');
 
@@ -38,6 +39,8 @@ var UploadSetWizard = React.createClass({
             success: false,
             failure: false,
             joining: false,
+            uploadProgress: 0,
+            registrationStep: '',
 
             // step 1
             type: null,
@@ -214,7 +217,7 @@ var UploadSetWizard = React.createClass({
                     {stepComponent}
                 </div>
             </div>
-            <LoadingNotification title='Uploading set...' open={this.state.applying} />
+            <ProgressNotification progress={this.state.registrationStep == 'Uploading music...' || this.state.registrationStep == 'Uploading image...'} title='Uploading set...' message={this.state.registrationStep} open={this.state.applying} percentageComplete={this.state.uploadProgress} />
         </div>
         );
     },
@@ -409,22 +412,29 @@ var UploadSetWizard = React.createClass({
         });
     },
 
-    registerAudio: function(callback) {
-        console.log('Registering audio...');
-        this.registerS3(this.state.songs[0].file, function(err, audioUrl) {
-            if (err) {
-                console.log('An error occurred with registering audio.');
-                console.log(err);
-                mixpanel.track("Error", {
-                    "Page": "Upload Wizard",
-                    "Message": "Error registering audio"
-                });
-                callback(err);
-            } else {
-                console.log('Audio registered on S3.');
-                console.log(audioUrl);
-                callback(null, audioUrl);
-            }
+    registerAudio: function() {
+        return new Promise((resolve, reject) => {
+            console.log('Registering audio...');
+            this.setState({
+                registrationStep: 'Uploading music...',
+                uploadProgress: 0
+            });
+
+            this.registerS3(this.state.songs[0].file, function(err, audioUrl) {
+                if (err) {
+                    console.log('An error occurred with registering audio.');
+                    console.log(err);
+                    mixpanel.track("Error", {
+                        "Page": "Upload Wizard",
+                        "Message": "Error registering audio"
+                    });
+                    reject(err);
+                } else {
+                    console.log('Audio registered on S3.');
+                    console.log(audioUrl);
+                    resolve(audioUrl);
+                }
+            });
         });
     },
 
@@ -507,9 +517,14 @@ var UploadSetWizard = React.createClass({
             };
             var options = {partSize: 10 * 1024 * 1024, queueSize: 2};
             var upload = s3.upload(params, options);
-            upload.on("httpUploadProgress", function(event) {
+            upload.on("httpUploadProgress", (event) => {
                 var percentage = (event.loaded / filesize) * 100;
                 var percent = parseInt(percentage).toString() + "%";
+
+                this.setState({
+                    uploadProgress: percentage
+                });
+
                 console.log('Uploading ' + file.type + ' file: ' + percent);
             });
 
@@ -526,7 +541,7 @@ var UploadSetWizard = React.createClass({
             });
         })
         .fail((err) => {
-            console.log(err)
+            console.log(err);
             console.log('registerS3: fail:  err');
 
             callback(err);
@@ -534,134 +549,146 @@ var UploadSetWizard = React.createClass({
     },
 
     registerImage: function(callback) {
-        console.log('registerImage');
+        return new Promise((resolve, reject) => {
+            console.log('registerImage');
 
-        if (this.state.existingImage != null) {
-            console.log('Image exists already on our database.');
-            callback(null, this.state.existingImage);
-        } else if (this.state.image != null) {
-            console.log('Image is new and needs to be registered on S3.');
-            this.registerS3(this.state.image, function(err, imageUrl) {
-                if (err) {
-                    console.log('An error occurred with registering image.');
-                    callback(err);
-                    mixpanel.track("Error", {
-                        "Page": "Upload Wizard",
-                        "Message": "Error registering image to S3"
-                    });
-                } else {
-                    console.log('Image successfully registered on S3.');
-                    callback(null, imageUrl);
-                }
-            });
-        } else {
-            console.log('No image has been uploaded. Will use the default URL.');
-            var defaultUrl = constants.DEFAULT_IMAGE;
-            callback(null, defaultUrl);
-        }
+            if (this.state.existingImage != null) {
+                console.log('Image exists already on our database.');
+                resolve(this.state.existingImage);
+            } else if (this.state.image != null) {
+                console.log('Image is new and needs to be registered on S3.');
+                this.setState({
+                    registrationStep: 'Uploading image...',
+                    uploadProgress: 0
+                });
+
+                this.registerS3(this.state.image, (err, imageUrl) => {
+                    if (err) {
+                        console.log('An error occurred with registering image.');
+                        reject(err);
+                        mixpanel.track("Error", {
+                            "Page": "Upload Wizard",
+                            "Message": "Error registering image to S3"
+                        });
+                    } else {
+                        console.log('Image successfully registered on S3.');
+                        resolve(imageUrl);
+                    }
+                });
+            } else {
+                console.log('No image has been uploaded. Will use the default URL.');
+                var defaultUrl = constants.DEFAULT_IMAGE;
+                resolve(defaultUrl);
+            }
+        });
     },
 
     uploadSet: function() {
         console.log('Beginning upload process.');
+        var pendingSet = this.state;
         mixpanel.track("Upload initiated");
         this.setState({
             busy: true,
             applying: true
-        }, () => {
-            var pendingSet = this.state;
-            var registerFunctions = [
-                this.registerAudio,
-                this.registerImage
-            ];
+        });
 
-            console.log('Performing register functions...');
-            async.parallel(registerFunctions, (err, registeredUrls) => {
-                console.log(err);
+        console.log('Performing register functions...');
+        var registeredUrls = [];
+
+        this.registerAudio()
+            .then((audioUrl) => {
+                registeredUrls.push(audioUrl);
+                return this.registerImage();
+            })
+            .then((imageUrl) => {
+                registeredUrls.push(imageUrl);
+                return registeredUrls;
+            })
+            .then((registeredUrls) => {
                 console.log(registeredUrls);
+                this.setState({
+                    registrationStep: 'Cleaning up...'
+                });
+                // console.log('Registrations successful.');
+                console.log('Creating bundle...');
+                var additionalArtists = _.pluck(_.rest(this.state.artists), 'artist');
 
-                if (err) {
-                    console.log('Error in registration functions:');
-                    // console.log(err);
+                console.log(this.props.originalArtist.id)
 
-                    this.setState({
-                        failure: true,
-                        applying: false
-                    }, () => {
-                        this.history.pushState(null, '/content');
-                    });
+                var setBundle = {
+                    event_name: this.state.event,
+                    event_type: this.state.type.toLowerCase(),
+                    episode: this.state.episode,
+                    audio_url: registeredUrls[0],
+                    filesize: this.state.filesize,
+                    set_length: this.secondsToMinutes(this.state.set_length),
+                    tracklist_url: this.state.tracklist_url,
+                    paid: this.state.paid,
+                    additional_artists: additionalArtists,
+                    image_url: registeredUrls[1],
+                    tags: this.state.tags,
+                    venue: this.state.venue,
+                    artist_id: this.props.originalArtist.id
+                };
+                console.log('Bundle done:');
+                // console.log(setBundle);
 
-                    mixpanel.track("Error", {
-                        "Page": "Upload Wizard",
-                        "Message": "Error uploading set"
-                    });
-                } else {
-                    // console.log('Registrations successful.');
-
-                    console.log('Creating bundle...');
-                    var additionalArtists = _.pluck(_.rest(this.state.artists), 'artist');
-
-                    console.log(this.props.originalArtist.id)
-
-                    var setBundle = {
-                        event_name: this.state.event,
-                        event_type: this.state.type.toLowerCase(),
-                        episode: this.state.episode,
-                        audio_url: registeredUrls[0],
-                        filesize: this.state.filesize,
-                        set_length: this.secondsToMinutes(this.state.set_length),
-                        tracklist_url: this.state.tracklist_url,
-                        paid: this.state.paid,
-                        additional_artists: additionalArtists,
-                        image_url: registeredUrls[1],
-                        tags: this.state.tags,
-                        venue: this.state.venue,
-                        artist_id: this.props.originalArtist.id
-                    };
-                    console.log('Bundle done:');
-                    // console.log(setBundle);
-
-                    console.log('Prepping tracklist...');
-                    var tracklist = update(this.state.tracklist, {$push: []});
-                    if (tracklist.length == 0) {
-                        tracklist.push({
-                            'id': -1,
-                            'starttime': '00:00',
-                            'artistname': 'unknown artist',
-                            'songname': 'unknown track'
-                        });
-                    }
-                    // console.log('Tracklist done:');
-                    // console.log(tracklist);
-
-                    setBundle.tracklist = tracklist;
-
-                    var releaseFunctions = [
-                        this.updateDatabase.bind(this, setBundle)
-                    ];
-
-                    this.updateDatabase(setBundle, (err, newSetId) => {
-                        if (err) {
-                            console.log('An error occurred.');
-                            // console.log(err);
-                            mixpanel.track("Error", {
-                                "Page": "Upload Set",
-                                "Message": err
-                            });
-                        } else {
-                            console.log('Running release function...');
-
-                            if (this.state.paid == 1) {
-                                // console.log('Release to beacon.');
-                                this.beaconRelease(newSetId, this.cleanUp);
-                            } else {
-                                console.log('Free release.');
-                                this.freeRelease(this.state.finalFile, this.cleanUp);
-                            }
-                        }
+                console.log('Prepping tracklist...');
+                var tracklist = update(this.state.tracklist, {$push: []});
+                if (tracklist.length == 0) {
+                    tracklist.push({
+                        'id': -1,
+                        'starttime': '00:00',
+                        'artistname': 'unknown artist',
+                        'songname': 'unknown track'
                     });
                 }
+                // console.log('Tracklist done:');
+                // console.log(tracklist);
+
+                setBundle.tracklist = tracklist;
+
+                var releaseFunctions = [
+                    this.updateDatabase.bind(this, setBundle)
+                ];
+
+                this.updateDatabase(setBundle, (err, newSetId) => {
+                    if (err) {
+                        console.log('An error occurred.');
+                        // console.log(err);
+                        mixpanel.track("Error", {
+                            "Page": "Upload Set",
+                            "Message": err
+                        });
+                    } else {
+                        console.log('Running release function...');
+
+                        if (this.state.paid == 1) {
+                            // console.log('Release to beacon.');
+                            this.beaconRelease(newSetId, this.cleanUp);
+                        } else {
+                            console.log('Free release.');
+                            this.freeRelease(this.state.finalFile, this.cleanUp);
+                        }
+                    }
+                });
+            })
+            .catch((err) => {
+                console.log('Error in registration functions:');
+                console.log(err);
+
+                this.setState({
+                    failure: true,
+                    applying: false
+                }, () => {
+                    this.history.pushState(null, '/content');
+                });
+
+                mixpanel.track("Error", {
+                    "Page": "Upload Wizard",
+                    "Message": "Error uploading set"
+                });
             });
-        });
     },
 
     updateDatabase: function(bundle, callback) {
