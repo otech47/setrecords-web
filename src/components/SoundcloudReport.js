@@ -98,6 +98,7 @@ var SoundcloudReport = React.createClass({
             var chartOptions = {
                 bezierCurve: false,
                 datasetFill: false,
+                responsive: true,
                 scaleLineColor: '#313542',
                 scaleLineWidth: 2,
                 scaleFontSize: 16,
@@ -177,7 +178,7 @@ var SoundcloudReport = React.createClass({
         var followersCurrent = metrics.followers.current;
 
         return (
-            <div className='metrics-panel' id='SoundcloudReport'>
+            <div className='metrics-panel flex-column' id='SoundcloudReport'>
                 <div className='title flex-row'>
                     <i className='fa fa-soundcloud'/>
                     soundcloud
@@ -198,7 +199,7 @@ var SoundcloudReport = React.createClass({
                     </div>
                 </div>
                 <Loader loaded={this.state.loaded}>
-                    <div className='graph'>
+                    <div className='graph flex'>
                         {this.lineGraph()}
                     </div>
                 </Loader>
