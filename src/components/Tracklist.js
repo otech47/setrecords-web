@@ -52,11 +52,11 @@ var Tracklist = React.createClass({
                 </div>
                 <div className='tracks flex-column form-panel'>
                     <h1>Edit Tracks</h1>
-                    {trackComponents}
                     <div className='flex-row'>
                         <button className='tracklist-buttons' onClick={estimateStartTimes}>Estimate Start Times</button>
                         <button className='tracklist-buttons' onClick={addTrack}>Add Track</button>
                     </div>
+                    {trackComponents}
                 </div>
             </div>
         );
