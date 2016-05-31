@@ -18,7 +18,10 @@ export default class ProgressNotification extends Base {
                     null
                 }
                 {this.props.progress ?
-                    <LinearProgress mode='determinate' value={this.props.percentageComplete} />
+                    <div>
+                        <p>{(this.props.percentageComplete).toFixed(1) + '%'}</p>
+                        <LinearProgress mode='determinate' value={this.props.percentageComplete} />
+                    </div>
                     :
                     <CircularProgress />
                 }
