@@ -1,6 +1,7 @@
 import React from 'react';
 import {History} from 'react-router';
 import LinkedStateMixin from 'react-addons-linked-state-mixin';
+import LoadingNotification from './LoadingNotification';
 
 import CreateAccount from './CreateAccount';
 import ForgotPassword from './ForgotPassword';
@@ -24,7 +25,8 @@ module.exports = React.createClass ({
             username: '',
             password: '',
             error: null,
-            changePassword: false
+            changePassword: false,
+            showLoading: false
         }
     },
 
@@ -56,6 +58,8 @@ module.exports = React.createClass ({
                 <div id='CreateAccount'>
                     <h3>Don't have an account? <span className='create-link' onClick={this.openNewArtistModal}>Create one now</span></h3>
                 </div>
+
+                <LoadingNotification title='Logging in...' open={this.state.showLoading} />
             </div>
         );
     },
@@ -77,10 +81,16 @@ module.exports = React.createClass ({
         // console.log('Submitting login with:');
         // console.log(this.state.username);
         // console.log(this.state.password);
+        this.setState({
+            showLoading: true
+        });
 
         this.props.submitLogIn(this.state.username, this.state.password, (err) => {
             // console.log('Errors?');
             // console.log(err);
+            this.setState({
+                showLoading: false
+            });
 
             if (err) {
                 switch (err.responseJSON.error) {
