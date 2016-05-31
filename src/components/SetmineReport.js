@@ -102,13 +102,13 @@ var SetmineReport = React.createClass({
             var chartOptions = {
                 bezierCurve: false,
                 datasetFill: false,
+                responsive: true,
                 scaleLineColor: '#313542',
                 scaleLineWidth: 2,
                 scaleFontSize: 16,
                 scaleFontColor: '#313542',
                 scaleShowGridLines: false
             };
-
 
             return (<LineChart data={chartData} className='linechart' options={chartOptions} redraw />);
         }
@@ -205,11 +205,12 @@ var SetmineReport = React.createClass({
         var favoritesCurrent = metrics.favorites.current;
 
         return (
-            <div className='metrics-panel' id='SetmineReport'>
+            <div className='metrics-panel flex-column' id='SetmineReport'>
                 <div className='title flex-row'>
                     <i className='fa icon-setmine center'/>
                     setmine
                 </div>
+
                 <div className='time-selector flex-row'>
                     <p onClick={this.changeCohort.bind(this, 'daily')} className={this.state.cohort == 'daily' ? 'active':''} name='daily'>
                         <span>day</span>
@@ -221,6 +222,7 @@ var SetmineReport = React.createClass({
                         <span>month</span>
                     </p>
                 </div>
+
                 <div className='numbers flex-row'>
                     <div className={'toggle click plays flex-column flex-fixed ' + (this.state.plays ? '':'deactivated')} id='plays' onClick={this.toggleData.bind(this, 'plays')}>
                         <h1>{numberWithSuffix(playsCurrent)}</h1>
@@ -235,8 +237,9 @@ var SetmineReport = React.createClass({
                         <p>favorites</p>
                     </div>
                 </div>
+
                 <Loader loaded={this.state.loaded}>
-                    <div className='graph'>
+                    <div className='graph flex'>
                         {this.lineGraph()}
                     </div>
                 </Loader>

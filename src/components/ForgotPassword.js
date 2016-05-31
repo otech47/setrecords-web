@@ -79,14 +79,7 @@ var ForgotPassword = React.createClass({
             <div id='ForgotPassword' className='flex-container center'>
                     <div className='flex-row'>
                         <input placeholder='Email Address' ref='mail' onFocus={this.handleFocus} onBlur={this.handleBlur} value={this.state.value} onChange={this.handleChange}/>
-                        <Motion style={{
-                            shift: spring(this.state.email ? 220 : 0, presets.gentle)
-                        }}>
-                            {
-                                ({shift}) =>
-                                <Icon onClick={this.submit} style={{right: `${shift}`}}>{this.state.icon}</Icon>
-                            }
-                        </Motion>
+                        <Icon onClick={this.submit}>{this.state.icon}</Icon>
                     </div>
             </div>
         );
