@@ -99,6 +99,7 @@ var YoutubeReport = React.createClass({
             var chartOptions = {
                 bezierCurve: false,
                 datasetFill: false,
+                responsive: true,
                 scaleLineColor: '#313542',
                 scaleLineWidth: 2,
                 scaleFontSize: 16,
@@ -178,7 +179,7 @@ var YoutubeReport = React.createClass({
         var followersCurrent = metrics.followers.current;
 
         return (
-            <div className='metrics-panel' id='YoutubeReport'>
+            <div className='metrics-panel flex-column' id='YoutubeReport'>
                 <div className='title flex-row'>
                     <i className='fa fa-youtube'/>
                     youtube
@@ -199,7 +200,7 @@ var YoutubeReport = React.createClass({
                     </div>
                 </div>
                 <Loader loaded={this.state.loaded}>
-                    <div className='graph'>
+                    <div className='graph flex'>
                         {this.lineGraph()}
                     </div>
                 </Loader>

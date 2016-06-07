@@ -1,3 +1,4 @@
+import {Link} from 'react-router';
 import React from 'react';
 import constants from '../constants/constants';
 
@@ -17,10 +18,10 @@ var Header = React.createClass({
                     <div className='buffer'/>
                     <div className='artist flex-row'>
                         <div className='options flex-column'>
-                            <h1>{artistName}</h1>
+                            <Link to='/account'><h1>{artistName}</h1></Link>
                             <p onClick={this.props.logOut} hidden={!this.props.loggedIn}>Logout</p>
                         </div>
-                        <img src={constants.S3_ROOT_FOR_IMAGES + artistImage} />
+                        <Link to='/account'><img onClick={this.settingsRedirect} className='click' src={constants.S3_ROOT_FOR_IMAGES + artistImage} /></Link>
                     </div>
                 </div>
             </header>

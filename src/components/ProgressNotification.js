@@ -1,9 +1,10 @@
 import Base from './Base';
 import CircularProgress from 'material-ui/lib/circular-progress';
+import LinearProgress from 'material-ui/lib/linear-progress';
 import Dialog from 'material-ui/lib/dialog';
 import React from 'react';
 
-export default class LoadingNotification extends Base {
+export default class ProgressNotification extends Base {
     constructor(props) {
         super(props);
     }
@@ -16,7 +17,15 @@ export default class LoadingNotification extends Base {
                     :
                     null
                 }
-                <CircularProgress />
+                {this.props.progress ?
+                    <div>
+                        <p>{(this.props.percentageComplete).toFixed(1) + '%'}</p>
+                        <LinearProgress mode='determinate' value={this.props.percentageComplete} />
+                    </div>
+                    :
+                    <CircularProgress />
+                }
+
             </Dialog>
         )
     }

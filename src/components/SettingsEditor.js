@@ -295,6 +295,13 @@ var SettingsEditor = React.createClass({
         if ( (this.state.newPass.length > 0 || this.state.confirmPass.length > 0) && !passwordMatch ) {
             alert('New password and confirm password fields must match.');
         } else {
+            this.props.push({
+                type: 'SHALLOW_MERGE',
+                data: {
+                    loadingModal: true
+                }
+            });
+
             var originalSettings = this.props.artistData;
 
             var changeFunctions = [];
@@ -351,6 +358,13 @@ var SettingsEditor = React.createClass({
                 applying: true
             }, () => {
                 async.parallel(changeFunctions, (err, results) => {
+                    this.props.push({
+                        type: 'SHALLOW_MERGE',
+                        data: {
+                            loadingModal: false
+                        }
+                    });
+
                     if(err) {
                         // console.log('There was an error when applying changes to your settings.');
                         // console.log(err);

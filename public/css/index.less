@@ -438,13 +438,7 @@ header {
 *************/
 
 .graph {
-    display: flex;
-    justify-content: center;
     margin: 2rem;
-    .linechart {
-        height: 16rem!important;
-        width: 100%!important;
-    }
 }
 .metrics-page {
     background-color: @white;
@@ -713,6 +707,7 @@ header {
         letter-spacing: inherit;
     }
     button {
+        cursor: pointer;
         height: 3rem;
         width: 10rem;
         margin: 2rem auto;
@@ -740,8 +735,9 @@ header {
     text-align: center;
     z-index: 3;
 
-    a {
+    .create-link {
         color: @blue;
+        cursor: pointer;
         text-decoration: underline !important;
     }
 }

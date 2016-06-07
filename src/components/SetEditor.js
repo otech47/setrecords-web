@@ -463,6 +463,13 @@ var MobileSetEditor = React.createClass({
         if (errors.length > 0) {
             alert('Please correct the following errors:\n' + errors.join('\n'));
         } else {
+            this.props.push({
+                type: 'SHALLOW_MERGE',
+                data: {
+                    loadingModal: true
+                }
+            });
+
             var changeFunctions = [];
 
             if (pendingSet.uploadedImage.length > 0) {
@@ -490,6 +497,12 @@ var MobileSetEditor = React.createClass({
                 applying: true
             }, () => {
                 async.parallel(changeFunctions, (err, results) => {
+                    this.props.push({
+                        type: 'SHALLOW_MERGE',
+                        data: {
+                            loadingModal: false
+                        }
+                    });
                     if (err) {
                         // console.log('There was an error when applying changes to this set.');
                         // console.log(err);

@@ -16,9 +16,9 @@
   "scripts": {
     "start": "forever stopall; forever start server.js",
     "stop": "forever stopall",
-    "build": "webpack -p --progress --colors",
-    "deploy": "webpack -p --progress --colors; npm start",
-    "test": "webpack-dev-server --progress --colors"
+    "build": "webpack -p --progress --colors --config webpack.config.production.js",
+    "deploy": "webpack -p --progress --colors --config webpack.config.production.js; npm start",
+    "dev": "webpack-dev-server --progress --colors"
   },
   "dependencies": {
     "async": "^1.5.2",

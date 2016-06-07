@@ -98,6 +98,7 @@ var BeaconReport = React.createClass({
             var chartOptions = {
                 bezierCurve: false,
                 datasetFill: false,
+                responsive: true,
                 scaleLineColor: '#313542',
                 scaleLineWidth: 2,
                 scaleFontSize: 16,
@@ -199,7 +200,7 @@ var BeaconReport = React.createClass({
         }
 
         return (
-        <div className='metrics-panel' id='BeaconReport'>
+        <div className='metrics-panel flex-column' id='BeaconReport'>
             <div className='title flex-row'>
                 <img src='/images/beacon_icon.png' />
                 beacons
@@ -220,7 +221,7 @@ var BeaconReport = React.createClass({
                 </div>
             </div>
             <Loader loaded={this.state.loaded}>
-                <div className='graph'>
+                <div className='graph flex'>
                     {this.lineGraph()}
                 </div>
             </Loader>

@@ -31,7 +31,7 @@ export default class NewArtistModal extends Base {
 
         return (
             <div id='NewArtistModal'>
-                <Dialog title='New Artist Account' open={this.props.open} actions={actions} modal={false} onRequestClose={this.handleClose} >
+                <Dialog title='New Artist Account' open={this.props.open} actions={actions} modal={false} onRequestClose={this.handleClose} autoScrollBodyContent={true} >
                     <h3 className='warning'>{this.state.error}</h3>
                     <div className='flex-column'>
                         <h4>Artist Name</h4>
@@ -51,13 +51,9 @@ export default class NewArtistModal extends Base {
     }
 
     createNewAccount() {
-        console.log('Create new account!');
-
         var requestUrl = 'https://api.setmine.com/v/10/graphql';
 
-        var query = `mutation NewArtist {
-            createNewSetrecordsUser(username: \"${this.state.username}\", email: \"${this.state.email}\", password: \"${this.state.password}\", artist_name: \"${this.state.artistName}\")
-        }`;
+        var queryString = `mutation NewUser {createNewSetrecordsUser(username: \"${this.state.username}\", email: \"${this.state.email}\", password: \"${this.state.password}\", artist_name: \"${this.state.artistName}\")}`;
 
         this.props.push({
             type: 'SHALLOW_MERGE',
@@ -67,42 +63,60 @@ export default class NewArtistModal extends Base {
             }
         });
 
-        $.ajax({
-            type: 'POST',
-            url: requestUrl,
+
+        fetch(requestUrl, {
+            method: 'post',
             crossDomain: true,
             xhrFields: {
                 withCredentials: true
             },
-            data: {
-                query: query
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({query: queryString}),
+            credentials: 'include'
+        })
+        .then((response) => {
+            return Promise.resolve(response.json());
+        })
+        .then((response) => {
+            if (response && response.status == 'failure') {
+                return Promise.reject(response.error);
+            } else {
+                return Promise.resolve(response);
             }
         })
-        .done((res) => {
-            console.log(res);
-
+        .then((res) => {
             this.props.push({
-                loadingModal: false,
-                messageModal: 'Your new account is ready to be used. Please log in with the credentials you provided.'
+                type: 'SHALLOW_MERGE',
+                data: {
+                    loadingModal: false,
+                    messageModal: 'Your new account is ready to be used. Please log in with the credentials you provided.'
+                }
             });
 
             this.handleClose();
         })
-        .fail((err) => {
-            console.log(err);
-            var errorMessage = err.responseJSON.error[0].message;
-            console.log(errorMessage);
+        .catch((err) => {
+            var errorMessage = err[0].message;
 
             switch(errorMessage) {
-                case 'Artist name is taken':
+                case 'Artist name is taken.':
                 this.setState({
                     error: 'Sorry, that artist name is taken.'
                 });
                 break;
 
-                case 'Username is taken':
+                case 'Username is taken.':
                 this.setState({
                     error: 'Sorry, that username is taken.'
+                });
+                break;
+
+                case 'Email is taken.':
+                this.setState({
+                    error: 'Sorry, that email is already in use.'
                 });
                 break;
 
