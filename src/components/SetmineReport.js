@@ -141,7 +141,7 @@ var SetmineReport = React.createClass({
             }
         }`;
 
-        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
+        var requestUrl = 'https://api.setmine.com/v/11/graph';
 
         $.ajax({
             type: 'GET',
@@ -155,9 +155,11 @@ var SetmineReport = React.createClass({
             }
         })
         .done((res) => {
-            if (res.payload.artist !== null && res.payload.setmine_metrics !== null) {
-                var overtime = res.payload.setmine_metrics;
-                var artist = res.payload.artist;
+            console.log(res);
+
+            if (res.data.artist !== null && res.data.setmine_metrics !== null) {
+                var overtime = res.data.setmine_metrics;
+                var artist = res.data.artist;
 
                 var setmineMetrics = {
                     plays: {

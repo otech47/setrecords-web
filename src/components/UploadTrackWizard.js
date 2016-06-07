@@ -230,7 +230,7 @@ var UploadTrackWizard = React.createClass({
     },
 
     getSinglesSets: function() {
-        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
+        var requestUrl = 'https://api.setmine.com/v/11/graph';
         var query = `{
             artist (id: ${this.props.originalArtist.id}) {
                 sets (event_type: \"singles\") {
@@ -271,7 +271,7 @@ var UploadTrackWizard = React.createClass({
         .done( (res) => {
             // console.log(res);
             this.setState({
-                singlesSets: res.payload.artist.sets
+                singlesSets: res.data.artist.sets
             });
 
             this.props.push({

@@ -221,7 +221,7 @@ var SettingsEditor = React.createClass({
 
         $.ajax({
             type: 'get',
-            url: 'https://api.setmine.com/v/10/setrecordsuser/graph',
+            url: 'https://api.setmine.com/v/11/graph',
             data: {
                 query: query
             },
@@ -231,17 +231,17 @@ var SettingsEditor = React.createClass({
             }
         })
         .done((res) => {
-            if (res.payload.artist !== null) {
+            if (res.data.artist !== null) {
                 // console.log(res);
                 this.props.push({
                     type: 'SHALLOW_MERGE',
                     data: {
                         loaded: true,
-                        artist_data: res.payload.artist
+                        artist_data: res.data.artist
                     }
                 });
 
-                this.setState(res.payload.artist);
+                this.setState(res.data.artist);
             }
         })
         .fail((err) => {

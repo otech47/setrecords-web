@@ -129,7 +129,7 @@ var YoutubeReport = React.createClass({
             }
         }`;
 
-        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
+        var requestUrl = 'https://api.setmine.com/v/11/graph';
 
         $.ajax({
             type: 'get',
@@ -143,8 +143,8 @@ var YoutubeReport = React.createClass({
             }
         })
         .done((res) => {
-            if (res.payload.youtube_metrics !== null) {
-                var metrics = res.payload.youtube_metrics;
+            if (res.data.youtube_metrics !== null) {
+                var metrics = res.data.youtube_metrics;
 
                 this.props.push({
                     type: 'SHALLOW_MERGE',

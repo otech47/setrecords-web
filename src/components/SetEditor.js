@@ -619,7 +619,7 @@ var MobileSetEditor = React.createClass({
             }
         }`;
 
-        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
+        var requestUrl = 'https://api.setmine.com/v/11/graph';
         $.ajax({
             type: 'GET',
             url: requestUrl,
@@ -637,7 +637,7 @@ var MobileSetEditor = React.createClass({
                 type: 'SHALLOW_MERGE',
                 data: {
                     loaded: true,
-                    header: `Edit Set - ${res.payload.set.event.event}`
+                    header: `Edit Set - ${res.data.set.event.event}`
                 }
             });
 

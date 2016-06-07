@@ -128,7 +128,7 @@ var SoundcloudReport = React.createClass({
             }
         }`;
 
-        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
+        var requestUrl = 'https://api.setmine.com/v/11/graph';
 
         $.ajax({
             type: 'get',
@@ -142,8 +142,8 @@ var SoundcloudReport = React.createClass({
             }
         })
         .done((res) => {
-            if (res.payload.soundcloud_metrics !== null) {
-                var metrics = res.payload.soundcloud_metrics;
+            if (res.data.soundcloud_metrics !== null) {
+                var metrics = res.data.soundcloud_metrics;
 
                 this.props.push({
                     type: 'SHALLOW_MERGE',
