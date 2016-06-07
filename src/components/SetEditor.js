@@ -654,8 +654,8 @@ var MobileSetEditor = React.createClass({
                 }
             });
 
-            this.setState(_.extend(res.payload.set, {
-                originalSet: res.payload.set
+            this.setState(_.extend(res.data.set, {
+                originalSet: res.data.set
             }));
         })
         .fail((err) => {
