@@ -392,7 +392,7 @@ var UploadSetWizard = React.createClass({
             }
         }`;
         $.ajax({
-            url: 'https://api.setmine.com/v/10/setrecordsuser/graph',
+            url: 'https://api.setmine.com/v/11/graph',
             type: 'get',
             data: {
                 query: query
@@ -404,7 +404,7 @@ var UploadSetWizard = React.createClass({
         })
         .done((res) => {
             this.setState({
-                venues: res.payload.venues
+                venues: res.data.venues
             });
         })
         .fail((error) => {

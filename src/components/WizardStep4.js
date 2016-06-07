@@ -223,7 +223,7 @@ var WizardStep4 = React.createClass({
 
         query += '}';
 
-        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
+        var requestUrl = 'https://api.setmine.com/v/11/graph';
         $.ajax({
             type: 'get',
             url: requestUrl,
@@ -237,21 +237,21 @@ var WizardStep4 = React.createClass({
         })
         .done( (res) => {
             // console.log(res);
-            var eventLookup = _.groupBy(res.payload.events, function (event) {
+            var eventLookup = _.groupBy(res.data.events, function (event) {
                 return event.optionName;
             });
 
-            var venueLookup = _.groupBy(res.payload.venues, function (venue) {
+            var venueLookup = _.groupBy(res.data.venues, function (venue) {
                 return venue.optionName;
             });
 
             this.props.loadDatalists({
-                tagList: res.payload.tags,
-                eventList: res.payload.events,
+                tagList: res.data.tags,
+                eventList: res.data.events,
                 eventLookup: eventLookup,
                 venueLookup: venueLookup,
-                artistList: res.payload.artists,
-                venueList: res.payload.venues
+                artistList: res.data.artists,
+                venueList: res.data.venues
             });
         })
         .fail( (err) => {

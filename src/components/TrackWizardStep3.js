@@ -105,7 +105,7 @@ var TrackWizardStep3 = React.createClass({
             },
         }`;
 
-        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
+        var requestUrl = 'https://api.setmine.com/v/11/graph';
         $.ajax({
             type: 'get',
             url: requestUrl,
@@ -120,7 +120,7 @@ var TrackWizardStep3 = React.createClass({
         .done( (res) => {
             // console.log(res);
             this.props.loadDatalists({
-                tagList: res.payload.tags
+                tagList: res.data.tags
             });
         })
         .fail( (err) => {

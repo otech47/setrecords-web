@@ -131,7 +131,7 @@ var BeaconReport = React.createClass({
             }
         }`;
 
-        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
+        var requestUrl = 'https://api.setmine.com/v/11/graph';
 
         $.ajax({
             type: 'GET',
@@ -145,9 +145,9 @@ var BeaconReport = React.createClass({
             }
         })
         .done((res) => {
-            if (res.payload.artist !== null && res.payload.beacon_metrics !== null) {
-                var overtime = res.payload.beacon_metrics;
-                var artist = res.payload.artist;
+            if (res.data.artist !== null && res.data.beacon_metrics !== null) {
+                var overtime = res.data.beacon_metrics;
+                var artist = res.data.artist;
 
                 var beaconMetrics = {
                     revenue: {

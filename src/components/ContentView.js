@@ -80,7 +80,7 @@ var ContentView = React.createClass({
 
     updateSets(artistId) {
         // console.log(artistId);
-        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
+        var requestUrl = 'https://api.setmine.com/v/11/graph';
 
         var query = `{
             artist (id: ${artistId}) {
@@ -132,14 +132,14 @@ var ContentView = React.createClass({
             }
         })
         .done((res) => {
-            // console.log(res);
+            console.log(res);
 
-            if (res.payload.artist !== null) {
+            if (res.data.artist !== null) {
                 this.props.push({
                     type: 'SHALLOW_MERGE',
                     data: {
                         loaded: true,
-                        sets: res.payload.artist.sets
+                        sets: res.data.artist.sets
                     }
                 });
             }

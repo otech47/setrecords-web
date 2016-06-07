@@ -40,7 +40,7 @@ var SocialReport = React.createClass({
     },
 
     checkSocial() {
-        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
+        var requestUrl = 'https://api.setmine.com/v/11/graph';
 
         var query = `{
             artist (id: ${this.props.artistId}) {
@@ -63,8 +63,8 @@ var SocialReport = React.createClass({
         })
         .done( (res) => {
             // console.log(res);
-            if (res.payload.artist !== null) {
-                var links = res.payload.artist;
+            if (res.data.artist !== null) {
+                var links = res.data.artist;
                 links.loaded = true;
                 this.setState(links);
             }
@@ -75,7 +75,7 @@ var SocialReport = React.createClass({
     },
 
     updateSocial(artistId) {
-        var requestUrl = 'https://api.setmine.com/v/10/setrecordsuser/graph';
+        var requestUrl = 'https://api.setmine.com/v/11/graph';
 
         var query = `{
             social_metrics (artist_id: ${artistId}) {
@@ -100,11 +100,11 @@ var SocialReport = React.createClass({
             }
         })
         .done( (res) => {
-            if (res.payload.social_metrics !== null) {
+            if (res.data.social_metrics !== null) {
                 this.props.push({
                     type: 'SHALLOW_MERGE',
                     data: {
-                        socialMetrics: res.payload.social_metrics
+                        socialMetrics: res.data.social_metrics
                     }
                 });
 
