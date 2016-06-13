@@ -33,7 +33,7 @@ var UtilityFunctions = {
     },
     secondsToMinutes: function(seconds) {
         var minutes = 0;
-        while (seconds > 60) {
+        while (seconds >= 60) {
             seconds -= 60;
             minutes++;
         }
