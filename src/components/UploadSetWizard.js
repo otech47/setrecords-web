@@ -89,7 +89,7 @@ var UploadSetWizard = React.createClass({
 
         // console.log('Initializing soundcloud...');
         SC.initialize({
-            client_id: 'c00cb419a074ad09052ef2d44fdc65ff',
+            client_id: '547093cc2484787c217e15a84033f6b8',
             redirect_uri: 'https://setrecords.setmine.com/soundcloudcallback'
         });
     },
@@ -668,7 +668,7 @@ var UploadSetWizard = React.createClass({
                             this.beaconRelease(newSetId, this.cleanUp);
                         } else {
                             console.log('Free release.');
-                            this.freeRelease(this.state.finalFile, this.cleanUp);
+                            this.freeRelease(this.state.songs[0].file, this.cleanUp);
                         }
                     }
                 });
@@ -719,48 +719,48 @@ var UploadSetWizard = React.createClass({
     },
 
     freeRelease: function (setFile, callback) {
-        // console.log('Free release for file:');
-        // console.log(setFile);
+        console.log(setFile);
+        console.log('Free release for file:');
 
         if (this.state.outlets.indexOf('Soundcloud') > -1) {
             var uploadName = this.state.event;
             if (this.state.episode && this.state.episode.length > 0) {
                 uploadName += ` - ${this.state.episode}`;
             }
-            // console.log('Upload name is ' + uploadName);
+            console.log('Upload name is ' + uploadName);
 
-            // console.log('Authenticating...');
+            console.log('Authenticating...');
             SC.connect()
             .then( () => {
-                // console.log('Successfully authenticated.');
+                console.log('Successfully authenticated.');
 
-                // console.log('Uploading file to Soundcloud...');
+                console.log('Uploading file to Soundcloud...');
                 var upload = SC.upload({
                     file: setFile,
                     title: uploadName
                 });
 
                 upload.request.addEventListener('progress', (e) => {
-                    // console.log('Soundcloud ', (e.loaded / e.total) * 100, '%');
+                    console.log('Soundcloud ', (e.loaded / e.total) * 100, '%');
                 });
 
                 upload.then( (track) => {
-                    // console.log('Soundcloud complete. Link: ', track.permalink_url);
+                    console.log('Soundcloud complete. Link: ', track.permalink_url);
                     callback(null);
                 })
                 .catch( (err) => {
-                    // console.log('Error uploading to Soundcloud.');
-                    // console.log(err);
+                    console.log('Error uploading to Soundcloud.');
+                    console.log(err);
                     callback(err);
                 });
             })
             .catch( (err) => {
-                // console.log('Error authenticating.');
-                // console.log(err);
+                console.log('Error authenticating.');
+                console.log(err);
                 callback(err);
             });
         } else {
-            // console.log('Done.');
+            console.log('Done.');
             callback(null);
         }
     },
