@@ -143,6 +143,10 @@ var TrackWizardStep3 = React.createClass({
             errors.push('Set Title cannot be empty.');
         }
 
+        if (!this.props.image) {
+            errors.push('Please upload an image for your track.');
+        }
+
         if (errors.length == 0) {
             this.props.stepForward();
         } else {
