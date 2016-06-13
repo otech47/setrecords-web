@@ -405,6 +405,7 @@ var UploadTrackWizard = React.createClass({
                 xhrFields: {
                     withCredentials: true
                 },
+                timeout: 0,
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
