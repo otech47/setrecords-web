@@ -1,3 +1,5 @@
+import Dialog from 'material-ui/lib/dialog';
+import FlatButton from 'material-ui/lib/flat-button';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import update from 'react-addons-update';
@@ -117,6 +119,10 @@ var UploadSetWizard = React.createClass({
 
     render: function() {
         var stepComponent;
+
+        const actions = [
+            <FlatButton label="OK" primary={true} onClick={this.closeFailure} />
+        ];
 
         switch(this.state.current_step) {
             case 1:
@@ -660,6 +666,7 @@ var UploadSetWizard = React.createClass({
                             "Page": "Upload Set",
                             "Message": err
                         });
+                        return Promise.reject(err);
                     } else {
                         console.log('Running release function...');
 
@@ -680,9 +687,16 @@ var UploadSetWizard = React.createClass({
                 this.setState({
                     failure: true,
                     applying: false
-                }, () => {
-                    this.history.pushState(null, '/content');
                 });
+
+                this.props.push({
+                    type: 'SHALLOW_MERGE',
+                    data: {
+                        messageModal: 'Sorry, an error occurred while uploading your set. Please try again. If the problem persists, contact artists@setmine.com.'
+                    }
+                });
+
+                this.history.pushState(null, '/content');
 
                 mixpanel.track("Error", {
                     "Page": "Upload Wizard",
