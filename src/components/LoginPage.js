@@ -55,9 +55,11 @@ module.exports = React.createClass ({
                     </div>
                 </form>
 
+                {/*
                 <div id='CreateAccount'>
                     <h3>Don't have an account? <span className='create-link' onClick={this.openNewArtistModal}>Create one now</span></h3>
                 </div>
+                */}
 
                 <LoadingNotification title='Logging in...' open={this.state.showLoading} />
             </div>

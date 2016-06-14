@@ -334,129 +334,165 @@ var UploadTrackWizard = React.createClass({
         }
     },
 
-    registerAudio: function(callback) {
-        // console.log('Registering audio...');
-
-        if (this.state.selectedSetIndex == -1) {
-            // console.log('Set is new and audio needs to be registered.');
-
-            this.registerS3(this.state.songs[0].file, encodeURIComponent(moment().unix() + this.state.songs[0].file.name), (err, audioUrl) => {
-                if (err) {
-                    // console.log('An error occurred with registering audio.');
-                    // console.log(err);
-                    callback(err);
+    registerAudio: function() {
+        return new Promise((resolve, reject) => {
+            console.log('Registering audio...');
+            this.registerS3(this.state.songs[0].file)
+                .then((audioUrl) => {
+                    resolve(audioUrl);
+                })
+                .catch((err) => {
                     mixpanel.track("Error", {
                         "Page": "Upload Wizard",
                         "Message": "Error registering audio in Track Wizard"
                     });
-                } else {
-                    // console.log('Audio registered on S3.');
-                    // console.log(audioUrl);
-                    callback(null, audioUrl);
-                }
-            });
-        } else {
-            // console.log('Track needs to be joined to the existing audio for this set.');
+                    reject(err);
+                });
 
-            async.waterfall([this.joinFiles, this.updateS3], (err, audioUrl) => {
-                if (err) {
-                    // console.log('An error occurred with registering audio.');
-                    // console.log(err);
-                    callback(err);
-                    mixpanel.track("Error", {
-                        "Page": "Upload Wizard",
-                        "Message": "Error registering audio"
-                    });
-                } else {
-                    // console.log('Audio registered on S3.');
-                    // console.log(audioUrl);
-                    callback(null, audioUrl);
-                }
-            });
-        }
+            // if (this.state.selectedSetIndex == -1) {
+            //     console.log('Set is new and audio needs to be registered.');
+            //
+            //     this.registerS3(this.state.songs[0].file, encodeURIComponent(moment().unix() + this.state.songs[0].file.name), (err, audioUrl) => {
+            //         if (err) {
+            //             // console.log('An error occurred with registering audio.');
+            //             // console.log(err);
+            //             callback(err);
+            //             mixpanel.track("Error", {
+            //                 "Page": "Upload Wizard",
+            //                 "Message": "Error registering audio in Track Wizard"
+            //             });
+            //         } else {
+            //             // console.log('Audio registered on S3.');
+            //             // console.log(audioUrl);
+            //             callback(null, audioUrl);
+            //         }
+            //     });
+            // } else {
+            //     // console.log('Track needs to be joined to the existing audio for this set.');
+            //
+            //     async.waterfall([this.joinFiles, this.updateS3], (err, audioUrl) => {
+            //         if (err) {
+            //             // console.log('An error occurred with registering audio.');
+            //             // console.log(err);
+            //             callback(err);
+            //             mixpanel.track("Error", {
+            //                 "Page": "Upload Wizard",
+            //                 "Message": "Error registering audio"
+            //             });
+            //         } else {
+            //             // console.log('Audio registered on S3.');
+            //             // console.log(audioUrl);
+            //             callback(null, audioUrl);
+            //         }
+            //     });
+            // }
+        });
     },
 
-    joinFiles: function(callback) {
-        // console.log('Grabbing original audio from URL...');
-        var originalUrl = this.state.singlesSets[this.state.selectedSetIndex].songURL;
+    joinFiles: function(params) {
+        return new Promise((resolve, reject) => {
+            console.log('join files...');
+            var newUrl = params.new_url;
+            var oldUrl = params.old_url;
 
-        this.setState({
-            joining: true
-        }, () => {
-            Downloader.downloadAudioFile(originalUrl, (originalBlob) => {
-                var toJoin = [originalBlob, this.state.songs[0].file];
+            var requestUrl = 'https://api.setmine.com/v/11/graph';
 
-                Joiner.combineAudioFiles(toJoin, (err, joinedBlob) => {
-                    if (err) {
-                        // console.log('Join unsuccessful');
-                        this.setState({
-                            joining: false
-                        }, function() {
-                            callback(err);
-                        });
-                        mixpanel.track("Error", {
-                            "Page": "Upload Wizard",
-                            "Message": "Error joining files"
-                        });
-                    } else {
-                        // console.log('Join successful.');
-                        var joinedFile = new File([joinedBlob], originalUrl);
+            var queryString = `mutation {
+                joinAudio(
+                    new_url: \"${newUrl}\",
+                    old_url: \"${oldUrl}\"
+                )
+            }`;
 
-                        this.setState({
-                            filesize: joinedFile.size,
-                            joining: false
-                        }, function() {
-                            callback(null, joinedFile);
-                        });
-                    }
+            var graphData = {
+                query: queryString,
+                operationName: 'mutation'
+            };
+
+            fetch(requestUrl, {
+                method: 'post',
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                timeout: 0,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(graphData),
+                credentials: 'include'
+            })
+            .then((response) => {
+                return Promise.resolve(response.json());
+            })
+            .then((response) => {
+                if (response && response.status == 'failure') {
+                    return Promise.reject(response.error);
+                } else {
+                    return Promise.resolve(response);
+                }
+            })
+            .then((res) => {
+                console.log('==res==');
+                console.log(res);
+                resolve()
+            })
+            .catch((err) => {
+                mixpanel.track("Error", {
+                    "Page": "Upload Wizard",
+                    "Message": "Error joining files"
                 });
+                reject(err);
             });
         });
     },
 
-    registerS3: function(file, filename, callback) {
-        $.ajax({
-            type: 'POST',
-            url: 'https://api.setmine.com/v/10/aws/configureAWS',
-            data: {
-                filename: filename
-            },
-            crossDomain: true,
-            xhrFields: {
-                withCredentials: true
-            }
-        })
-        .done((res) => {
-            AWS.config.update(res.payload.settings);
-            var encodedFilename = res.payload.encoded;
-            var filesize = file.size;
-            var s3 = new AWS.S3();
-
-            s3.timeout = 50000;
-            var params = {
-                Bucket: 'stredm',
-                Key: 'namecheap/' + encodedFilename,
-                ContentType: file.type,
-                Body: file
-            };
-            var options = {partSize: 10 * 1024 * 1024, queueSize: 2};
-            var upload = s3.upload(params, options);
-            upload.on("httpUploadProgress", function(event) {
-                var percentage = (event.loaded / filesize) * 100;
-                var percent = parseInt(percentage).toString() + "%";
-                // console.log('Uploading ' + file.type + ' file: ' + percent);
-            });
-
-            upload.send(function(err, data) {
-                if (err) {
-                    callback(err);
-                } else {
-                    callback(null, res.payload.encoded);
+    registerS3: function(file) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: 'POST',
+                url: 'https://api.setmine.com/v/10/aws/configureAWS',
+                data: {
+                    filename: encodeURIComponent(moment().unix() + file.name)
+                },
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
                 }
+            }).done((res) => {
+                AWS.config.update(res.payload.settings);
+                var encodedFilename = res.payload.encoded;
+                var filesize = file.size;
+                var s3 = new AWS.S3();
+                console.log('==file.type==');
+                console.log('audio/mp3');
+
+                s3.timeout = 50000;
+                var params = {
+                    Bucket: 'stredm',
+                    Key: 'namecheap/' + encodedFilename,
+                    ContentType: file.type,
+                    Body: file
+                };
+                var options = {partSize: 10 * 1024 * 1024, queueSize: 2};
+                var upload = s3.upload(params, options);
+                upload.on("httpUploadProgress", function(event) {
+                    var percentage = (event.loaded / filesize) * 100;
+                    var percent = parseInt(percentage).toString() + "%";
+                    console.log('Uploading ' + file.type + ' file: ' + percent);
+                });
+
+                upload.send(function(err, data) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res.payload.encoded);
+                    }
+                });
+            }).fail((err) => {
+                reject(err);
             });
-        })
-        .fail((err) => {
-            callback(err);
         });
     },
 
@@ -512,28 +548,29 @@ var UploadTrackWizard = React.createClass({
         });
     },
 
-    registerImage: function(callback) {
-        if (this.state.selectedSetIndex == -1) {
-            // console.log('Image is new and needs to be registered on S3.');
-            var uniqueFilename = encodeURIComponent(moment().unix() + this.state.uploadedImage.name);
-            this.registerS3(this.state.uploadedImage, uniqueFilename, function(err, imageUrl) {
-                if (err) {
-                    // console.log('An error occurred with registering image.');
-                    callback(err);
-                    mixpanel.track("Error", {
-                        "Page": "Upload Wizard",
-                        "Message": "Error registering image to S3"
+    registerImage: function() {
+        return new Promise((resolve, reject) => {
+            if (this.state.selectedSetIndex == -1) {
+                console.log('Image is new and needs to be registered on S3.');
+                var uniqueFilename = encodeURIComponent(moment().unix() + this.state.uploadedImage.name);
+                this.registerS3(this.state.uploadedImage)
+                    .then((imageUrl) => {
+                        console.log('Image successfully registered on S3');
+                        resolve(imageUrl);
+                    })
+                    .catch((err) => {
+                        mixpanel.track("Error", {
+                            "Page": "Upload Wizard",
+                            "Message": "Error registering image to S3"
+                        });
+                        reject(err);
                     });
-                } else {
-                    // console.log('Image successfully registered on S3.');
-                    callback(null, imageUrl);
-                }
-            });
-        } else {
-            // console.log('No new image needed, using image URL from existing set.');
-            var imageUrl = this.state.singlesSets[this.state.selectedSetIndex].icon_image.imageURL;
-            callback(null, imageUrl);
-        }
+            } else {
+                console.log('No new image needed, using image URL from existing set.');
+                var imageUrl = this.state.singlesSets[this.state.selectedSetIndex].icon_image.imageURL;
+                resolve(imageUrl);
+            }
+        });
     },
 
     packageSetData: function(audioURL) {
@@ -595,198 +632,192 @@ var UploadTrackWizard = React.createClass({
         return eventData;
     },
 
-    uploadTrack: function() {
-        // console.log('Beginning upload process.');
-        mixpanel.track("Upload initiated");
-        this.setState({
-            busy: true,
-            applying: true
-        }, () => {
-            var pendingSet = this.state;
-            var registerFunctions = [
-                this.registerAudio,
-                this.registerImage
-            ];
-
-            // console.log('Performing register functions...');
-            async.parallel(registerFunctions, (err, registeredUrls) => {
-                if (err) {
-                    // console.log('Error in registration functions:');
-                    // console.log(err);
-
-                    this.setState({
-                        failure: true,
-                        applying: false
-                    }, () => {
-                        this.history.pushState(null, '/content');
-                    });
-
-                    mixpanel.track("Error", {
-                        "Page": "Upload Wizard",
-                        "Message": "Error uploading track"
-                    });
-                } else {
-                    // console.log('Registrations successful.');
-
-                    // console.log('Creating bundle...');
-
-                    if (this.state.selectedSetIndex == -1) {
-                        // console.log('Bundle is for a brand new set.');
-
-                        var setBundle = {
-                            id: -1,
-                            event_name: this.state.event,
-                            event_type: 'singles',
-                            episode: '',
-                            audio_url: registeredUrls[0],
-                            filesize: this.state.filesize,
-                            set_length: this.secondsToMinutes(this.state.setLength),
-                            tracklist_url: '',
-                            image_url: registeredUrls[1],
-                            tags: this.state.tags,
-                            paid: 0,
-                            tracklist: [
-                                {
-                                    starttime: '00:00',
-                                    artistname: this.state.trackArtist,
-                                    songname: this.state.trackName
-                                }
-                            ]
-                        };
-
-                        // console.log('Bundle done.');
-                        // console.log(setBundle);
-
-                        // console.log('Sending bundle to database...');
-                        this.registerSet(setBundle);
-                    } else {
-                        // console.log('Set on the database needs to be updated.');
-                        var originalSet = this.state.singlesSets[this.state.selectedSetIndex];
-
-                        // console.log('Prepping tracklist...');
-                        var originalSeconds = this.timeStringToSeconds(originalSet.set_length);
-                        // console.log('==original seconds==');
-                        // console.log(originalSeconds);
-
-                        originalSeconds += 1;
-                        // console.log(originalSeconds);
-
-                        var newStartTime = this.secondsToMinutes(originalSeconds);
-                        // console.log('==new start time==');
-                        // console.log(newStartTime);
-
-                        var newTracklist = update(originalSet.tracklist, {$push: [
-                            {
-                                starttime: newStartTime,
-                                songname: this.state.trackName,
-                                artistname: this.state.trackArtist
-                            }
-                        ]});
-                        // console.log('Tracklist:');
-                        // console.log(newTracklist);
-
-                        var newSetLength = this.secondsToMinutes(   this.timeStringToSeconds(originalSet.set_length) + this.state.setLength
-                        );
-
-                        async.parallel([
-                            this.updateSetLength.bind(null, newSetLength),
-                            this.updateTracklist.bind(null, newTracklist)
-                        ], (err, results) => {
-                            if (err) {
-                                // console.log('There was an error when applying changes to this set.');
-                                // console.log(err);
-
-                                mixpanel.track("Error", {
-                                    "Page": "Upload Track",
-                                    "Message": err
-                                });
-                                this.history.pushState(null, 'content');
-                            } else {
-                                // console.log('All changes applied successfully.');
-                                mixpanel.track('Track uploaded successfully');
-                                this.history.pushState(null, '/content');
-                            }
-                        });
-                    }
-                }
+    appendTrack: function(newTrackUrl) {
+        return new Promise((resolve, reject) => {
+            this.joinFiles({
+                new_url: newTrackUrl,
+                old_url: this.state.singlesSets[this.state.selectedSetIndex].songURL
+            }).then(() => {
+                console.log('Set on the database needs to be updated.');
+                return Promise.all([
+                    this.updateSetLength(),
+                    this.updateTracklist()
+                ]);
+            }).then(() => {
+                resolve();
+            }).catch((err) => {
+                reject(err);
             });
         });
     },
 
-    updateSetLength: function (newSetLength, callback) {
-        // console.log('Updating set length on database...');
-        // console.log(newSetLength);
-        var requestUrl = 'https://api.setmine.com/v/10/sets/setLength';
+    uploadTrack: function() {
+        console.log('Beginning upload process.');
+        var pendingSet = this.state;
+        var registeredUrls = [];
 
-        $.ajax({
-            type: 'POST',
-            url: requestUrl,
-            data: {
-                set_id: this.state.singlesSets[this.state.selectedSetIndex].id,
-                set_length: newSetLength
-            },
-            crossDomain: true,
-            xhrFields: {
-                withCredentials: true
-            }
-        })
-        .done((res) => {
-            // console.log('Set length updated on database.');
-            callback(null);
-        })
-        .fail((err) => {
-            // console.log('An error occurred when updating set length on database.');
-            callback(err);
+        mixpanel.track("Upload initiated");
+        this.setState({
+            busy: true,
+            applying: true
+        });
+
+        this.registerAudio()
+            .then((audioUrl) => {
+                registeredUrls.push(audioUrl);
+                return this.registerImage();
+            })
+            .then((imageUrl) => {
+                registeredUrls.push(imageUrl);
+                return registeredUrls;
+            })
+            .then((registeredUrls) => {
+                console.log('Registrations successful.');
+                if (this.state.selectedSetIndex == -1) {
+                    console.log('This is a brand new set, no join needed.');
+                    var setBundle = {
+                        id: -1,
+                        event_name: this.state.event,
+                        event_type: 'singles',
+                        episode: '',
+                        audio_url: registeredUrls[0],
+                        filesize: this.state.filesize,
+                        set_length: this.secondsToMinutes(this.state.setLength),
+                        tracklist_url: '',
+                        image_url: registeredUrls[1],
+                        tags: this.state.tags,
+                        paid: 0,
+                        tracklist: [
+                            {
+                                starttime: '00:00',
+                                artistname: this.state.trackArtist,
+                                songname: this.state.trackName
+                            }
+                        ]
+                    };
+
+                    console.log('Bundle done.');
+                    console.log(setBundle);
+                    return this.registerSet(setBundle);
+                } else {
+                    console.log('New track needs to be appended to old singles set.');
+                    var newUrl = registeredUrls[0];
+                    return this.appendTrack(newUrl);
+                }
+            })
+            .then(() => {
+                mixpanel.track('Track uploaded successfully');
+                this.history.pushState(null, '/content');
+            })
+            .catch((err) => {
+                console.log('Error:');
+                console.log(err);
+
+                this.setState({
+                    failure: true,
+                    applying: false
+                });
+
+                mixpanel.track("Error", {
+                    "Page": "Upload Wizard",
+                    "Message": "Error uploading track"
+                });
+
+                this.history.pushState(null, '/content');
+            });
+    },
+
+    updateSetLength: function () {
+        return new Promise((resolve, reject) => {
+            console.log('Updating set length on database...');
+            var originalSet = this.state.singlesSets[this.state.selectedSetIndex]
+            var newSetLength = this.secondsToMinutes(this.timeStringToSeconds(originalSet.set_length) + this.state.setLength);
+            var requestUrl = 'https://api.setmine.com/v/10/sets/setLength';
+
+            $.ajax({
+                type: 'POST',
+                url: requestUrl,
+                data: {
+                    set_id: this.state.singlesSets[this.state.selectedSetIndex].id,
+                    set_length: newSetLength
+                },
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                }
+            })
+            .done((res) => {
+                // console.log('Set length updated on database.');
+                resolve();
+            })
+            .fail((err) => {
+                // console.log('An error occurred when updating set length on database.');
+                reject(err);
+            });
         });
     },
 
-    updateTracklist: function (newTracklist, callback) {
-        // console.log('Updating tracklist on database...');
-        var requestUrl = 'https://api.setmine.com/v/10/sets/tracklist';
+    updateTracklist: function () {
+        return new Promise((resolve, reject) => {
+            console.log('Updating tracklist on database...');
+            console.log('Prepping tracklist...');
+            var originalSet = this.state.singlesSets[this.state.selectedSetIndex];
+            var originalSeconds = this.timeStringToSeconds(originalSet.set_length);
+            originalSeconds += 1;
+            var newStartTime = this.secondsToMinutes(originalSeconds);
+            var newTracklist = update(originalSet.tracklist, {$push: [
+                {
+                    starttime: newStartTime,
+                    songname: this.state.trackName,
+                    artistname: this.state.trackArtist
+                }
+            ]});
 
-        $.ajax({
-            type: 'POST',
-            url: requestUrl,
-            data: {
-                tracklist: newTracklist,
-                set_id: this.state.singlesSets[this.state.selectedSetIndex].id
-            },
-            crossDomain: true,
-            xhrFields: {
-                withCredentials: true
-            }
-        })
-        .done( (res) => {
-            // console.log('Tracklist updated on database.');
-            callback(null);
-        })
-        .fail( (err) => {
-            // console.log('An error occurred when updating tracklist on database.');
-            callback(err);
+            var requestUrl = 'https://api.setmine.com/v/10/sets/tracklist';
+
+            $.ajax({
+                type: 'POST',
+                url: requestUrl,
+                data: {
+                    tracklist: newTracklist,
+                    set_id: originalSet.id
+                },
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                }
+            })
+            .done( (res) => {
+                console.log('Tracklist updated on database.');
+                resolve();
+            })
+            .fail( (err) => {
+                console.log('An error occurred when updating tracklist on database.');
+                reject(err);
+            });
         });
     },
 
     registerSet: function(bundle) {
-        var requestUrl = 'https://api.setmine.com/v/10/sets/register';
-
-        $.ajax({
-            type: 'POST',
-            url: requestUrl,
-            data: bundle,
-            crossDomain: true,
-            xhrFields: {
-                withCredentials: true
-            }
-        })
-        .done((res) => {
-            // console.log('Set registered on database.');
-            // console.log(res);
-            this.history.pushState(null, '/content');
-        })
-        .fail((err) => {
-            // console.log('An error occurred when updating the database.');
-            // console.log(err);
-            this.history.pushState(null, '/content');
+        return new Promise((resolve, reject) => {
+            var requestUrl = 'https://api.setmine.com/v/10/sets/register';
+            $.ajax({
+                type: 'POST',
+                url: requestUrl,
+                data: bundle,
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                }
+            })
+            .done((res) => {
+                console.log('Set registered on database.');
+                resolve();
+            })
+            .fail((err) => {
+                console.log('An error occurred when updating the database.');
+                reject(err);
+            });
         });
     },
 
